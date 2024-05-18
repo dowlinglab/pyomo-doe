@@ -616,3 +616,18 @@ def extract_plot_results(tc_exp_data, model):
     print("CpS =", round(1/value(model.inv_CpS), 4), "Joules/degC")
 
     return pyomo_results
+
+def results_summary(result):
+    print("======Results Summary======")
+    print("Four design criteria log10() value:")
+    print("A-optimality:", np.log10(result.trace))
+    print("D-optimality:", np.log10(result.det))
+    print("E-optimality:", np.log10(result.min_eig))
+    print("Modified E-optimality:", np.log10(result.cond))
+    print("\nFIM:\n",result.FIM)
+
+    eigenvalues, eigenvectors = np.linalg.eig(result.FIM)
+
+    print("\neigenvalues:\n", eigenvalues)
+
+    print("\neigenvectors:\n", eigenvectors)
