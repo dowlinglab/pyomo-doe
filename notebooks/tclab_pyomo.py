@@ -183,7 +183,7 @@ def create_model(
     if mode not in valid_modes:
         raise ValueError("mode needs to be one of"+valid_modes+".")
     
-    if mode == 'doe' and sine_amplitude and sine_frequency:
+    if mode == 'doe' and sine_amplitude is not None and sine_frequency is not None:
         
         print("Defining a sine wave control signal for sensitivity analysis.")
 
@@ -195,6 +195,7 @@ def create_model(
 
         # Calculate parameterized control signal for u1
         u1 = 50 + sine_amplitude*np.sin(2*np.pi*sine_frequency*time)
+
 
 
     Tmax = 85.0 # Maximum temperature (K)
@@ -240,10 +241,10 @@ def create_model(
 
     else:
         # otherwise (optimize, doe) control decisions are variables
-        m.U1 = Var(m.t, bounds=(0, 100))
+        m.U1 = Var(m.t, bounds=(0, 100), initialize=helper(u1))
 
         if m.four_states:
-            m.U2 = Var(m.t, bounds=(0, 100))
+            m.U2 = Var(m.t, bounds=(0, 100), initialize=helper(u2))
 
     # for the simulate and optimize modes
     if mode in ['simulate', 'optimize', 'estimate', 'parmest', 'doe']:
@@ -429,7 +430,7 @@ def create_model(
         m.Total_Cost_Objective = Objective(expr=m.FirstStageCost + m.SecondStageCost, sense=minimize)
 
 
-    if mode == 'doe' and sine_amplitude and sine_frequency:
+    if mode == 'doe' and sine_amplitude is not None and sine_frequency is not None:
         
         # Add measurement control decision variables
         m.u1_frequency = Var(initialize=sine_frequency)
