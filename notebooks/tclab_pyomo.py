@@ -8,12 +8,12 @@ import idaes
 
 from pyomo.contrib.doe import (
     ModelOptionLib,
-    DesignOfExperiments,
-    MeasurementVariables,
-    DesignVariables,
+    # DesignOfExperiments,
+    # MeasurementVariables,
+    # DesignVariables,
 )
 
-from pyomo.environ import ConcreteModel, Var, Param, Constraint, TransformationFactory, SolverFactory, Objective, minimize, value, Suffix, Expression
+from pyomo.environ import ConcreteModel, Var, Param, Constraint, TransformationFactory, SolverFactory, Objective, minimize, value, Suffix, Expression, sin
 from pyomo.dae import DerivativeVar, ContinuousSet, Simulator
 
 from dataclasses import dataclass
@@ -93,7 +93,9 @@ def create_model(
         obj_weight_estimate = 0.01, # Weight in the estimation objective function
         time_finite_difference = 'BACKWARD', # Finite difference scheme
         integrate_to_initialize = False, # Integrate to initialize
-        number_of_states = 4 # Number of states in the model
+        number_of_states = 4, # Number of states in the model
+        sine_frequency = None, # Optional argument for sensitivity analysis of sine ID test
+        sine_amplitude = None, # Optional argument for sensitivity analysis of sine ID test
 ):
         
     """
@@ -181,7 +183,18 @@ def create_model(
     if mode not in valid_modes:
         raise ValueError("mode needs to be one of"+valid_modes+".")
     
+    if mode == 'doe' and sine_amplitude and sine_frequency:
+        
+        print("Defining a sine wave control signal for sensitivity analysis.")
 
+        assert sine_amplitude <= 50, "Sine amplitude must be less than 50."
+        assert sine_amplitude >= 0, "Sine amplitude must be greater than 0."
+        
+        # Create a copy to prevent overwriting the original data
+        u1 = u1.copy()
+
+        # Calculate parameterized control signal for u1
+        u1 = 50 + sine_amplitude*np.sin(2*np.pi*sine_frequency*time)
 
 
     Tmax = 85.0 # Maximum temperature (K)
@@ -415,6 +428,16 @@ def create_model(
         m.SecondStageCost = Expression(expr=sum((m.Ts1[t] - m.Ts1_measure[t])**2 + obj_weight_estimate*(m.Th1[t] - m.Ts1_measure[t])**2 for t in m.t))
         m.Total_Cost_Objective = Objective(expr=m.FirstStageCost + m.SecondStageCost, sense=minimize)
 
+
+    if mode == 'doe' and sine_amplitude and sine_frequency:
+        
+        # Add measurement control decision variables
+        m.u1_frequency = Var(initialize=sine_frequency)
+        m.u1_amplitude = Var(initialize=sine_amplitude)
+
+        # Add constraint to calculate u1
+        m.u1_constraint = Constraint(m.t, rule = lambda m, t: m.U1[t] == 50 + m.u1_amplitude*sin(2*np.pi*m.u1_frequency*value(t)))
+        
     # initial conditions
     # For moving horizion we check if t=0 is in the horizon t data and fix initial conditions
     if time[0] == 0:
