@@ -34,7 +34,6 @@ def _print_single_solver_version(solvername):
     print(v.stdout)
     print(v.stderr)
 
-
 def _print_solver_versions():
     """Print versions of solvers in idaes get-extensions
 
@@ -74,7 +73,7 @@ if "google.colab" in sys.modules:
         print(v.stderr)
 
     # Install Ipopt
-    if not package_available("ipopt"):
+    if not _check_available("ipopt"):
         print("Running idaes get-extensions to install Ipopt, k_aug, and more...")
         v = subprocess.run(
             ["idaes", "get-extensions"], check=True, capture_output=True, text=True
