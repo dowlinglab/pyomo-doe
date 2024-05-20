@@ -100,6 +100,7 @@ if "google.colab" in sys.modules:
     # Install updated version of Pyomo
     if reinstall_pyomo:
         print("Installing updated version of Pyomo.DoE...")
+        print("  (this takes up to 5 minutes)")
         v = subprocess.run(
             [sys.executable, "-m", "pip", "install", "-q", "git+https://github.com/adowling2/pyomo.git@pyomo-doe-fixes"],
             check=True,
@@ -109,6 +110,7 @@ if "google.colab" in sys.modules:
         if verbose:
             print(v.stdout)
             print(v.stderr)
+    print("Finished installing software")
 
 ###### End note
 
