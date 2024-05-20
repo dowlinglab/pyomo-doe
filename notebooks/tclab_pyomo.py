@@ -3,7 +3,117 @@ from scipy import interpolate
 import numpy as np
 import pandas as pd
 
-# ensure that IDEAS is imported if there is an error calling Ipopt
+import shutil
+import sys
+import os.path
+import os
+import re
+
+import subprocess
+
+###### The code below was adapted from IDAES
+# And this covered under the IDAES license
+# https://github.com/IDAES/idaes-pse/blob/main/scripts/colab_helper.py
+
+def _check_available(executable_name):
+    """Utility to check in an executable is available"""
+    return shutil.which(executable_name) or os.path.isfile(executable_name)
+
+def _update_path():
+    """Add idaes executables to PATH"""
+    if not re.search(re.escape("/root/.idaes/bin/"), os.environ["PATH"]):
+        os.environ["PATH"] = "/root/.idaes/bin/:" + os.environ["PATH"]
+
+
+def _print_single_solver_version(solvername):
+    """Print the version for a single solver
+    Arg:
+        solvername: solver executable name (string)
+    """
+    v = subprocess.run([solvername, "-v"], check=True, capture_output=True, text=True)
+    print(v.stdout)
+    print(v.stderr)
+
+
+def _print_solver_versions():
+    """Print versions of solvers in idaes get-extensions
+
+    This is the primary check that solvers installed correctly and are callable
+    """
+
+    # This does not work for cbc and clp; calling --version with these solvers,
+    # enters their scripting language mode.
+    for s in ["ipopt", "k_aug", "couenne", "bonmin", "ipopt_l1", "dot_sens"]:
+        _print_single_solver_version(s)
+
+# Install software if on Google colab
+if "google.colab" in sys.modules:
+
+    verbose = True
+
+    # Install IDAES
+    try:
+        import idaes
+        print("idaes was found! No need to install.")
+    except ImportError:
+        print("Installing idaes via pip...")
+        v = subprocess.run(
+            [sys.executable, "-m", "pip", "install", "-q", "idaes_pse"],
+            check=True,
+            capture_output=True,
+            text=True,
+        )
+        if verbose:
+            print(v.stdout)
+            print(v.stderr)
+        print("idaes was successfully installed")
+        v = subprocess.run(
+            ["idaes", "--version"], check=True, capture_output=True, text=True
+        )
+        print(v.stdout)
+        print(v.stderr)
+
+    # Install Ipopt
+    if not package_available("ipopt"):
+        print("Running idaes get-extensions to install Ipopt, k_aug, and more...")
+        v = subprocess.run(
+            ["idaes", "get-extensions"], check=True, capture_output=True, text=True
+        )
+        if verbose:
+            print(v.stdout)
+            print(v.stderr)
+        _update_path()
+        print("Checking solver versions:")
+        _print_solver_versions()
+
+    # Check if correct version of Pyomo is installed
+    try:
+        v = subprocess.run(
+            ["pyomo", "--version"], check=True, capture_output=True, text=True
+        )
+        if "pyomo-doe-fixes" in v.stdout:
+            reinstall_pyomo = False
+        else:
+            reinstall_pyomo = True
+    except FileNotFoundError:
+        reinstall_pyomo = True
+
+    # Install updated version of Pyomo
+    if reinstall_pyomo:
+        print("Installing updated version of Pyomo.DoE...")
+        v = subprocess.run(
+            [sys.executable, "-m", "pip", "install", "-q", "git+https://github.com/adowling2/pyomo.git@pyomo-doe-fixes"],
+            check=True,
+            capture_output=True,
+            text=True,
+        )
+        if verbose:
+            print(v.stdout)
+            print(v.stderr)
+
+###### End note
+
+# Need to import IDAES for Ipopt
 import idaes
 
 from pyomo.contrib.doe import (
@@ -94,7 +204,7 @@ def create_model(
         time_finite_difference = 'BACKWARD', # Finite difference scheme
         integrate_to_initialize = False, # Integrate to initialize
         number_of_states = 4, # Number of states in the model
-        sine_frequency = None, # Optional argument for sensitivity analysis of sine ID test
+        sine_period = None, # Optional argument for sensitivity analysis of sine ID test
         sine_amplitude = None, # Optional argument for sensitivity analysis of sine ID test
 ):
         
@@ -184,24 +294,22 @@ def create_model(
         raise ValueError("mode needs to be one of"+valid_modes+".")
     
 
-    if mode == 'doe' and sine_amplitude is not None and sine_frequency is not None:
+    if mode == 'doe' and sine_amplitude is not None and sine_period is not None:
 
-        sine_frequency_max = 1/15
-        sine_frequency_min = 1/600
+        sine_period_max = 10 # minutes
+        sine_period_min = 10/60 # minutes
 
         assert sine_amplitude <= 50, "Sine amplitude must be less than 50."
         assert sine_amplitude >= 0, "Sine amplitude must be greater than 0."
 
-        assert sine_frequency <= sine_frequency_max, "Sine frequency must be less than " + str(sine_frequency_max)
-        assert sine_frequency >= sine_frequency_min, "Sine frequency must be greater than " + str(sine_frequency_min)
+        assert sine_period <= sine_period_max, "Sine period must be less than " + str(sine_period_max)
+        assert sine_period >= sine_period_min, "Sine period must be greater than " + str(sine_period_min)
         
         # Create a copy to prevent overwriting the original data
         u1 = u1.copy()
 
         # Calculate parameterized control signal for u1
-        u1 = 50 + sine_amplitude*np.sin(2*np.pi*sine_frequency*time)
-
-
+        u1 = 50 + sine_amplitude*np.sin(2*np.pi/(sine_period*60)*time)
 
     Tmax = 85.0 # Maximum temperature (K)
 
@@ -214,8 +322,6 @@ def create_model(
     if m.four_states:
         m.Th2 = Var(m.t, bounds=[0, Tmax], initialize=Tamb)
         m.Ts2 = Var(m.t, bounds=[0, Tmax], initialize=Tamb)
-
-
 
     def helper(my_array):
         '''
@@ -250,6 +356,7 @@ def create_model(
 
         if m.four_states:
             m.U2 = Var(m.t, bounds=(0, 100), initialize=helper(u2))
+
 
     # for the simulate and optimize modes
     if mode in ['simulate', 'optimize', 'estimate', 'parmest', 'doe']:
@@ -435,14 +542,14 @@ def create_model(
         m.Total_Cost_Objective = Objective(expr=m.FirstStageCost + m.SecondStageCost, sense=minimize)
 
 
-    if mode == 'doe' and sine_amplitude is not None and sine_frequency is not None:
+    if mode == 'doe' and sine_amplitude is not None and sine_period is not None:
         
         # Add measurement control decision variables
-        m.u1_frequency = Var(initialize=sine_frequency, bounds = (sine_frequency_min, sine_frequency_max))
-        m.u1_amplitude = Var(initialize=sine_amplitude)
+        m.u1_period = Var(initialize=sine_period, bounds = (sine_period_min, sine_period_max)) # minutes
+        m.u1_amplitude = Var(initialize=sine_amplitude) # % power
 
         # Add constraint to calculate u1
-        m.u1_constraint = Constraint(m.t, rule = lambda m, t: m.U1[t] == 50 + m.u1_amplitude*sin(2*np.pi*m.u1_frequency*value(t)))
+        m.u1_constraint = Constraint(m.t, rule = lambda m, t: m.U1[t] == 50 + m.u1_amplitude*sin(2*np.pi/(m.u1_period*60)*value(t)))
         
     # initial conditions
     # For moving horizion we check if t=0 is in the horizon t data and fix initial conditions
@@ -644,10 +751,12 @@ def extract_plot_results(tc_exp_data, model):
     print("CpH =", round(1/value(model.inv_CpH), 4), "Joules/degC")
     print("CpS =", round(1/value(model.inv_CpS), 4), "Joules/degC")
 
-    if hasattr(model, 'u1_frequency'):
-        print("u1_frequency = ",round(value(model.u1_frequency),4)," Hz")
+    if hasattr(model, 'u1_period'):
+        print("u1_period =",round(value(model.u1_period),2),"minutes")
     if hasattr(model, 'u1_amplitude'):
-        print("u1_amplitude = ",round(value(model.u1_amplitude),4), "% power")
+        print("u1_amplitude =",round(value(model.u1_amplitude),4), "% power")
+
+    print(" ") # New line
 
     return pyomo_results
 
