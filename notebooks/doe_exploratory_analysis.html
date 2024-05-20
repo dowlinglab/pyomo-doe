@@ -1,13 +1,12 @@
 
-
 <!DOCTYPE html>
 
 
-<html lang="en" data-content_root="" >
+<html lang="en" data-content_root="../" >
 
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <title>Pyomo.DoE: Exploratory Analysis &#8212; Pyomo.DoE Workshop and Tutorials</title>
   
@@ -19,49 +18,45 @@
   </script>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../_static/styles/theme.css?digest=5b4479735964841361fd" rel="stylesheet" />
-<link href="../_static/styles/bootstrap.css?digest=5b4479735964841361fd" rel="stylesheet" />
-<link href="../_static/styles/pydata-sphinx-theme.css?digest=5b4479735964841361fd" rel="stylesheet" />
+  <link href="../_static/styles/theme.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
 
   
-  <link href="../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=5b4479735964841361fd" rel="stylesheet" />
-  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
-<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
-<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+  <link href="../_static/vendor/fontawesome/6.5.1/css/all.min.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.1/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.1/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.1/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
-    <link rel="stylesheet" href="../_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
-    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=384b581d" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=13237357" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css?v=be8a1c11" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=5b4479735964841361fd" />
-<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=5b4479735964841361fd" />
-  <script src="../_static/vendor/fontawesome/6.1.2/js/all.min.js?digest=5b4479735964841361fd"></script>
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae" />
+  <script src="../_static/vendor/fontawesome/6.5.1/js/all.min.js?digest=8d27b9dea8ad943066ae"></script>
 
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-    <script src="../_static/jquery.js"></script>
-    <script src="../_static/underscore.js"></script>
-    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
-    <script src="../_static/doctools.js"></script>
-    <script src="../_static/clipboard.min.js"></script>
-    <script src="../_static/copybutton.js"></script>
-    <script src="../_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
+    <script src="../_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=f281be69"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?v=efea14e4"></script>
     <script>let toggleHintShow = 'Click to show';</script>
     <script>let toggleHintHide = 'Click to hide';</script>
     <script>let toggleOpenOnPrint = 'true';</script>
-    <script src="../_static/togglebutton.js"></script>
+    <script src="../_static/togglebutton.js?v=4a39c7ea"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
-    <script src="../_static/design-tabs.js"></script>
-    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
-const thebe_selector = ".thebe,.cell"
-const thebe_selector_input = "pre"
-const thebe_selector_output = ".output, .cell_output"
-</script>
-    <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <script src="../_static/design-tabs.js?v=36754332"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="../_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'notebooks/doe_exploratory_analysis';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -76,10 +71,9 @@ const thebe_selector_output = ".output, .cell_output"
 
   
   
-  <a class="skip-link" href="#main-content">Skip to main content</a>
+  <a id="pst-skip-link" class="skip-link" href="#main-content">Skip to main content</a>
   
   <div id="pst-scroll-pixel-helper"></div>
-
   
   <button type="button" class="btn rounded-pill" id="pst-back-to-top">
     <i class="fa-solid fa-arrow-up"></i>
@@ -120,11 +114,14 @@ const thebe_selector_output = ".output, .cell_output"
 </form></div>
   </div>
   
-    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
-    </nav>
+    <header class="bd-header navbar navbar-expand-lg bd-navbar">
+    </header>
   
+
   <div class="bd-container">
     <div class="bd-container__inner bd-page-width">
+      
+      
       
       <div class="bd-sidebar-primary bd-sidebar">
         
@@ -158,7 +155,18 @@ const thebe_selector_output = ".output, .cell_output"
   
   
 </a></div>
-        <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn navbar-btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
     <div class="bd-toc-item navbar-nav active">
         
         <ul class="nav bd-sidenav bd-sidenav__home-link">
@@ -169,7 +177,6 @@ const thebe_selector_output = ".output, .cell_output"
             </li>
         </ul>
         <ul class="current nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="../getting_started.html">Getting Started</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../tclab.html">Modeling Example: TCLab</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="tclab_model.html">TCLab Mathematical Model</a></li>
 <li class="toctree-l2"><a class="reference internal" href="numpy_simulation.html">Numpy Simulation</a></li>
@@ -418,8 +425,10 @@ document.write(`
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#load-experimental-data-sine-test">Load experimental data (sine test)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#analyze-fim-with-pyomo-doe-sine-test">Analyze FIM with Pyomo.DoE (sine test)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#perform-sensitivity-analysis">Perform sensitivity analysis</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#analyze-fim-with-pyomo-doe-at-initial-point-sine-test">Analyze FIM with Pyomo.DoE at initial point (sine test)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#define-parameterized-sine-wave-experiment">Define parameterized sine wave experiment</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#peform-sensitivity-analysis-to-sine-wave-frequency-and-period">Peform sensitivity analysis to sine wave frequency and period</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#visualize-and-interpret-sensitivity-analysis-results">Visualize and interpret sensitivity analysis results</a></li>
 </ul>
             </nav>
         </div>
@@ -429,13 +438,19 @@ document.write(`
               
                 
 <div id="searchbox"></div>
-                <article class="bd-article" role="main">
+                <article class="bd-article">
                   
   <section class="tex2jax_ignore mathjax_ignore" id="pyomo-doe-exploratory-analysis">
-<h1>Pyomo.DoE: Exploratory Analysis<a class="headerlink" href="#pyomo-doe-exploratory-analysis" title="Permalink to this heading">#</a></h1>
+<h1>Pyomo.DoE: Exploratory Analysis<a class="headerlink" href="#pyomo-doe-exploratory-analysis" title="Link to this heading">#</a></h1>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># import TCLab model, simulation, and data analysis functions</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">sys</span>
+<span class="c1"># If running on Google Colab, install Pyomo and Ipopt via IDAES</span>
+<span class="n">on_colab</span> <span class="o">=</span> <span class="s2">&quot;google.colab&quot;</span> <span class="ow">in</span> <span class="n">sys</span><span class="o">.</span><span class="n">modules</span>
+<span class="k">if</span> <span class="n">on_colab</span><span class="p">:</span>
+    <span class="o">!</span>wget<span class="w"> </span><span class="s2">&quot;https://raw.githubusercontent.com/dowlinglab/pyomo-doe/main/notebooks/tclab_pyomo.py&quot;</span>
+
+<span class="c1"># import TCLab model, simulation, and data analysis functions</span>
 <span class="kn">from</span> <span class="nn">tclab_pyomo</span> <span class="kn">import</span> <span class="n">TCLabExperiment</span><span class="p">,</span> <span class="n">create_model</span><span class="p">,</span> <span class="n">extract_results</span><span class="p">,</span> <span class="n">extract_plot_results</span><span class="p">,</span> <span class="n">results_summary</span>
 
 <span class="c1"># set default number of states in the TCLab model</span>
@@ -445,12 +460,14 @@ document.write(`
 </div>
 </div>
 <section id="load-experimental-data-sine-test">
-<h2>Load experimental data (sine test)<a class="headerlink" href="#load-experimental-data-sine-test" title="Permalink to this heading">#</a></h2>
+<h2>Load experimental data (sine test)<a class="headerlink" href="#load-experimental-data-sine-test" title="Link to this heading">#</a></h2>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
-<span class="n">file</span> <span class="o">=</span> <span class="s1">&#39;../data/tclab_sine_test.csv&#39;</span>
-<span class="c1"># file = &#39;./data/tclab_step_test.csv&#39;</span>
+<span class="k">if</span> <span class="n">on_colab</span><span class="p">:</span>
+    <span class="n">file</span> <span class="o">=</span> <span class="s2">&quot;https://raw.githubusercontent.com/dowlinglab/pyomo-doe/main/data/tclab_sine_test.csv&quot;</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="n">file</span> <span class="o">=</span> <span class="s1">&#39;../data/tclab_sine_test.csv&#39;</span>
 <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
 <span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
 </pre></div>
@@ -567,8 +584,8 @@ document.write(`
 </div>
 </div>
 </section>
-<section id="analyze-fim-with-pyomo-doe-sine-test">
-<h2>Analyze FIM with Pyomo.DoE (sine test)<a class="headerlink" href="#analyze-fim-with-pyomo-doe-sine-test" title="Permalink to this heading">#</a></h2>
+<section id="analyze-fim-with-pyomo-doe-at-initial-point-sine-test">
+<h2>Analyze FIM with Pyomo.DoE at initial point (sine test)<a class="headerlink" href="#analyze-fim-with-pyomo-doe-at-initial-point-sine-test" title="Link to this heading">#</a></h2>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Load Pyomo.DoE functions</span>
@@ -676,8 +693,7 @@ This version of Ipopt was compiled using HSL, a collection of Fortran codes
         computation. See http://www.hsl.rl.ac.uk.
 ******************************************************************************
 
-This is Ipopt version 3.13.2, running with linear solver mumps.
-NOTE: Other linear solvers might be more efficient (see Ipopt documentation).
+This is Ipopt version 3.13.2, running with linear solver ma27.
 
 Number of nonzeros in equality constraint Jacobian...:   111616
 Number of nonzeros in inequality constraint Jacobian.:        0
@@ -697,16 +713,16 @@ iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
    0  0.0000000e+00 1.00e+00 0.00e+00  -1.0 0.00e+00    -  0.00e+00 0.00e+00   0
    1  0.0000000e+00 1.00e-02 1.12e-01  -1.0 1.00e+00    -  9.80e-01 9.90e-01h  1
    2  0.0000000e+00 9.90e-05 9.90e+00  -1.0 1.00e-02    -  1.00e+00 9.90e-01h  1
-   3  0.0000000e+00 2.13e-14 1.26e-05  -1.0 9.90e-05    -  1.00e+00 1.00e+00h  1
+   3  0.0000000e+00 1.53e-14 1.26e-05  -1.0 9.90e-05    -  1.00e+00 1.00e+00h  1
 
 Number of Iterations....: 3
 
                                    (scaled)                 (unscaled)
 Objective...............:   0.0000000000000000e+00    0.0000000000000000e+00
 Dual infeasibility......:   0.0000000000000000e+00    0.0000000000000000e+00
-Constraint violation....:   2.1316282072803006e-14    2.1316282072803006e-14
+Constraint violation....:   1.5279139797464566e-14    1.5279139797464566e-14
 Complementarity.........:   0.0000000000000000e+00    0.0000000000000000e+00
-Overall NLP error.......:   2.1316282072803006e-14    2.1316282072803006e-14
+Overall NLP error.......:   1.5279139797464566e-14    1.5279139797464566e-14
 
 
 Number of objective function evaluations             = 4
@@ -716,11 +732,11 @@ Number of inequality constraint evaluations          = 0
 Number of equality constraint Jacobian evaluations   = 4
 Number of inequality constraint Jacobian evaluations = 0
 Number of Lagrangian Hessian evaluations             = 3
-Total CPU secs in IPOPT (w/o function evaluations)   =      0.616
-Total CPU secs in NLP function evaluations           =      0.006
+Total CPU secs in IPOPT (w/o function evaluations)   =      0.120
+Total CPU secs in NLP function evaluations           =      0.002
 
 EXIT: Optimal Solution Found.
-INFO: elapsed time: 8.3 seconds
+INFO: elapsed time: 4.0 seconds
 </pre></div>
 </div>
 </div>
@@ -734,10 +750,10 @@ INFO: elapsed time: 8.3 seconds
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>======Results Summary======
 Four design criteria log10() value:
-A-optimality: 9.698903678286152
-D-optimality: 7.837752571097882
-E-optimality: -15.673734558200351
-Modified E-optimality: 25.356611592208946
+A-optimality: 9.698903678283168
+D-optimality: 8.292425086814568
+E-optimality: -15.256790847776848
+Modified E-optimality: 24.939667881782306
 
 FIM:
  [[ 1.88459415e+08 -1.91393890e+08 -8.24201918e+06 -1.04121590e+03]
@@ -746,21 +762,20 @@ FIM:
  [-1.04121590e+03  2.58102008e+04  3.51179540e+02  1.38519624e-01]]
 
 eigenvalues:
- [4.81811358e+09 1.80716021e+08 4.06846518e+05 2.11965628e-16]
+ [4.81811358e+09 1.80716021e+08 4.06846518e+05 5.53616662e-16]
 
 eigenvectors:
- [[ 4.13259139e-02 -9.98655750e-01  3.12867703e-02 -1.00557444e-13]
+ [[ 4.13259139e-02 -9.98655750e-01  3.12867703e-02 -1.00385955e-13]
  [-9.99053330e-01 -4.17276557e-02 -1.22982147e-02 -5.33299017e-06]
- [-1.35872064e-02  3.07489171e-02  9.99434786e-01 -2.48897567e-06]
- [-5.36175981e-06 -1.45999972e-07  2.42198261e-06  1.00000000e+00]]
+ [-1.35872064e-02  3.07489171e-02  9.99434786e-01 -2.48897568e-06]
+ [-5.36175981e-06 -1.45999971e-07  2.42198262e-06  1.00000000e+00]]
 </pre></div>
 </div>
 </div>
 </div>
 </section>
-<section id="perform-sensitivity-analysis">
-<h2>Perform sensitivity analysis<a class="headerlink" href="#perform-sensitivity-analysis" title="Permalink to this heading">#</a></h2>
-<p>Specify a new sine way frequency.</p>
+<section id="define-parameterized-sine-wave-experiment">
+<h2>Define parameterized sine wave experiment<a class="headerlink" href="#define-parameterized-sine-wave-experiment" title="Link to this heading">#</a></h2>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">create_model_sens</span><span class="p">(</span><span class="n">mod</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">model_option</span><span class="o">=</span><span class="s2">&quot;stage2&quot;</span><span class="p">,</span> <span class="n">theta</span><span class="o">=</span><span class="n">theta_values</span><span class="p">):</span>
@@ -800,10 +815,11 @@ eigenvectors:
 
 <span class="n">solver</span> <span class="o">=</span> <span class="n">SolverFactory</span><span class="p">(</span><span class="s1">&#39;ipopt&#39;</span><span class="p">)</span>
 <span class="c1"># solver.options[&#39;bound_push&#39;] = 1E-10</span>
-<span class="c1"># solver.options[&#39;halt_on_ampl_error&#39;] = &#39;yes&#39;</span>
+<span class="n">solver</span><span class="o">.</span><span class="n">options</span><span class="p">[</span><span class="s1">&#39;halt_on_ampl_error&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;yes&#39;</span>
 <span class="c1"># solver.options[&#39;tol&#39;] = 1E-5</span>
 <span class="c1"># solver.options[&#39;acceptable_tol&#39;] = 1E-4</span>
-<span class="n">solver</span><span class="o">.</span><span class="n">options</span><span class="p">[</span><span class="s1">&#39;max_iter&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">400</span>
+<span class="n">solver</span><span class="o">.</span><span class="n">options</span><span class="p">[</span><span class="s1">&#39;max_iter&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1000</span>
+<span class="n">solver</span><span class="o">.</span><span class="n">options</span><span class="p">[</span><span class="s1">&#39;linear_solver&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;ma57&#39;</span>
 
 <span class="kn">import</span> <span class="nn">logging</span>
 
@@ -830,7 +846,9 @@ eigenvectors:
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Ipopt 3.13.2: max_iter=400
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Ipopt 3.13.2: halt_on_ampl_error=yes
+max_iter=1000
+linear_solver=ma57
 
 
 ******************************************************************************
@@ -851,8 +869,7 @@ This version of Ipopt was compiled using HSL, a collection of Fortran codes
         computation. See http://www.hsl.rl.ac.uk.
 ******************************************************************************
 
-This is Ipopt version 3.13.2, running with linear solver mumps.
-NOTE: Other linear solvers might be more efficient (see Ipopt documentation).
+This is Ipopt version 3.13.2, running with linear solver ma57.
 
 Number of nonzeros in equality constraint Jacobian...:   127834
 Number of nonzeros in inequality constraint Jacobian.:        0
@@ -891,11 +908,11 @@ Number of inequality constraint evaluations          = 0
 Number of equality constraint Jacobian evaluations   = 4
 Number of inequality constraint Jacobian evaluations = 0
 Number of Lagrangian Hessian evaluations             = 3
-Total CPU secs in IPOPT (w/o function evaluations)   =      0.445
-Total CPU secs in NLP function evaluations           =      0.017
+Total CPU secs in IPOPT (w/o function evaluations)   =      0.146
+Total CPU secs in NLP function evaluations           =      0.005
 
 EXIT: Optimal Solution Found.
-INFO: elapsed time: 8.6 seconds
+INFO: elapsed time: 4.3 seconds
 </pre></div>
 </div>
 <img alt="../_images/8396f6fd23a11091d801c20d2e89ea2296b00bd0a18483c87da419751c6cee30.png" src="../_images/8396f6fd23a11091d801c20d2e89ea2296b00bd0a18483c87da419751c6cee30.png" />
@@ -906,21 +923,14 @@ CpH = 6.8386 Joules/degC
 CpS = 0.01 Joules/degC
 u1_period = 1.0 minutes
 u1_amplitude = 50 % power
+ 
 </pre></div>
 </div>
 </div>
 </div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># from idaes.core.util.model_diagnostics import DiagnosticsToolbox</span>
-<span class="c1"># dt = DiagnosticsToolbox(doe_object2.model, constraint_residual_tolerance=0.1)</span>
-<span class="c1"># dt.display_constraints_with_large_residuals()</span>
-<span class="c1"># for i, t in enumerate(doe_object2.model.t):</span>
-<span class="c1">#    print(&quot;u1[&quot;,t,&quot;]=&quot;,doe_object2.model.U1[t].value)</span>
-</pre></div>
-</div>
-</div>
-</div>
+</section>
+<section id="peform-sensitivity-analysis-to-sine-wave-frequency-and-period">
+<h2>Peform sensitivity analysis to sine wave frequency and period<a class="headerlink" href="#peform-sensitivity-analysis-to-sine-wave-frequency-and-period" title="Link to this heading">#</a></h2>
 <p>Specify a 2D sensitivity analysis</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -931,8 +941,8 @@ u1_amplitude = 50 % power
 <span class="k">if</span> <span class="ow">not</span> <span class="n">quick_run</span><span class="p">:</span>
     <span class="c1"># Larger sensitivity analysis with more detailed plots</span>
     <span class="n">design_ranges</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s2">&quot;u1_period&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">],</span>
-        <span class="s2">&quot;u1_amplitude&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">20</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span> <span class="mi">50</span><span class="p">],</span>
+        <span class="s2">&quot;u1_period&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">],</span>
+        <span class="s2">&quot;u1_amplitude&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">15</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="mi">35</span><span class="p">,</span> <span class="mi">45</span><span class="p">],</span>
     <span class="p">}</span>
 
 <span class="k">else</span><span class="p">:</span>
@@ -943,8 +953,8 @@ u1_amplitude = 50 % power
     <span class="p">}</span>
 
 <span class="c1"># Choose from &#39;sequential_finite&#39;, &#39;direct_kaug&#39;</span>
-<span class="n">sensi_opt</span> <span class="o">=</span> <span class="s2">&quot;sequential_finite&quot;</span>
-<span class="c1"># sensi_opt = &quot;direct_kaug&quot;</span>
+<span class="c1"># sensi_opt = &quot;sequential_finite&quot;</span>
+<span class="n">sensi_opt</span> <span class="o">=</span> <span class="s2">&quot;direct_kaug&quot;</span>
 </pre></div>
 </div>
 </div>
@@ -963,507 +973,622 @@ u1_amplitude = 50 % power
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>names = u1_period for i= 0
-names = u1_amplitude for i= 1
-INFO: =======Iteration Number: 1 =====
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>INFO: =======Iteration Number: 1 =====
 DEBUG: Design variable values of this iteration: {&#39;u1_period&#39;: 1,
-&#39;u1_amplitude&#39;: 20}
-INFO: elapsed time: 8.9 seconds
-INFO: This is run 1 out of 24.
-INFO: The code has run  8.86 seconds.
-INFO: Estimated remaining time:  203.88 seconds
+&#39;u1_amplitude&#39;: 15}
+DEBUG: The variable is fixed:  Ts1[0.0]
+INFO: elapsed time: 1.0 seconds
+INFO: This is run 1 out of 32.
+INFO: The code has run  0.95 seconds.
+INFO: Estimated remaining time:  29.56 seconds
 </pre></div>
 </div>
-<img alt="../_images/a81729f0e5cf503925f9f9bd0a4b33c27013e1ba3fe47dac8ef7665f2ff1440c.png" src="../_images/a81729f0e5cf503925f9f9bd0a4b33c27013e1ba3fe47dac8ef7665f2ff1440c.png" />
+<img alt="../_images/115aafb5ea56ab589df8c6128b109520d73cc2fb84e44b5b48fa468787a58d5b.png" src="../_images/115aafb5ea56ab589df8c6128b109520d73cc2fb84e44b5b48fa468787a58d5b.png" />
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model parameters:
 Ua = 0.0515 Watts/degC
 Ub = 0.0005 Watts/degC
 CpH = 6.8386 Joules/degC
 CpS = 0.01 Joules/degC
 u1_period = 1 minutes
-u1_amplitude = 20 % power
-names = u1_period for i= 0
-names = u1_amplitude for i= 1
+u1_amplitude = 15 % power
+ 
 INFO: =======Iteration Number: 2 =====
 DEBUG: Design variable values of this iteration: {&#39;u1_period&#39;: 1,
-&#39;u1_amplitude&#39;: 30}
-INFO: elapsed time: 8.4 seconds
-INFO: This is run 2 out of 24.
-INFO: The code has run  17.29 seconds.
-INFO: Estimated remaining time:  190.16 seconds
+&#39;u1_amplitude&#39;: 25}
+DEBUG: The variable is fixed:  Ts1[0.0]
+INFO: elapsed time: 1.3 seconds
+INFO: This is run 2 out of 32.
+INFO: The code has run  2.21 seconds.
+INFO: Estimated remaining time:  33.18 seconds
 </pre></div>
 </div>
-<img alt="../_images/02b8a6e372d0ee352c8f179bfb0e6a938eec54bcb363efd6dc4168662be33dd2.png" src="../_images/02b8a6e372d0ee352c8f179bfb0e6a938eec54bcb363efd6dc4168662be33dd2.png" />
+<img alt="../_images/0ee6940661b797d9b99cdd16e0c2e116d4f7ea557428a964d7f8c99a48cd4856.png" src="../_images/0ee6940661b797d9b99cdd16e0c2e116d4f7ea557428a964d7f8c99a48cd4856.png" />
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model parameters:
 Ua = 0.0515 Watts/degC
 Ub = 0.0005 Watts/degC
 CpH = 6.8386 Joules/degC
 CpS = 0.01 Joules/degC
 u1_period = 1 minutes
-u1_amplitude = 30 % power
-names = u1_period for i= 0
-names = u1_amplitude for i= 1
+u1_amplitude = 25 % power
+ 
 INFO: =======Iteration Number: 3 =====
 DEBUG: Design variable values of this iteration: {&#39;u1_period&#39;: 1,
-&#39;u1_amplitude&#39;: 40}
-INFO: elapsed time: 8.0 seconds
-INFO: This is run 3 out of 24.
-INFO: The code has run  25.29 seconds.
-INFO: Estimated remaining time:  177.0 seconds
+&#39;u1_amplitude&#39;: 35}
+DEBUG: The variable is fixed:  Ts1[0.0]
+INFO: elapsed time: 0.9 seconds
+INFO: This is run 3 out of 32.
+INFO: The code has run  3.16 seconds.
+INFO: Estimated remaining time:  30.5 seconds
 </pre></div>
 </div>
-<img alt="../_images/7e4ca645a67dcf227397f44d446220cfadcdad91b30e64b7695224e80227f269.png" src="../_images/7e4ca645a67dcf227397f44d446220cfadcdad91b30e64b7695224e80227f269.png" />
+<img alt="../_images/a6a6d40415ba04ff8f9d05569837f2002b8f529a0d428f7a891bac5e23c32d9d.png" src="../_images/a6a6d40415ba04ff8f9d05569837f2002b8f529a0d428f7a891bac5e23c32d9d.png" />
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model parameters:
 Ua = 0.0515 Watts/degC
 Ub = 0.0005 Watts/degC
 CpH = 6.8386 Joules/degC
 CpS = 0.01 Joules/degC
 u1_period = 1 minutes
-u1_amplitude = 40 % power
-names = u1_period for i= 0
-names = u1_amplitude for i= 1
+u1_amplitude = 35 % power
+ 
 INFO: =======Iteration Number: 4 =====
 DEBUG: Design variable values of this iteration: {&#39;u1_period&#39;: 1,
-&#39;u1_amplitude&#39;: 50}
-INFO: elapsed time: 8.2 seconds
-INFO: This is run 4 out of 24.
-INFO: The code has run  33.52 seconds.
-INFO: Estimated remaining time:  167.58 seconds
+&#39;u1_amplitude&#39;: 45}
+DEBUG: The variable is fixed:  Ts1[0.0]
+INFO: elapsed time: 1.2 seconds
+INFO: This is run 4 out of 32.
+INFO: The code has run  4.34 seconds.
+INFO: Estimated remaining time:  30.4 seconds
 </pre></div>
 </div>
-<img alt="../_images/823d9995817186ad8264d856b4eff66dfcad65f98bf5a0d3a8a815b58e5452bb.png" src="../_images/823d9995817186ad8264d856b4eff66dfcad65f98bf5a0d3a8a815b58e5452bb.png" />
+<img alt="../_images/93ca0a78aaea139297265b0752490922769cb709ac259607a5f75221e77f78a8.png" src="../_images/93ca0a78aaea139297265b0752490922769cb709ac259607a5f75221e77f78a8.png" />
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model parameters:
 Ua = 0.0515 Watts/degC
 Ub = 0.0005 Watts/degC
 CpH = 6.8386 Joules/degC
 CpS = 0.01 Joules/degC
 u1_period = 1 minutes
-u1_amplitude = 50 % power
-names = u1_period for i= 0
-names = u1_amplitude for i= 1
+u1_amplitude = 45 % power
+ 
 INFO: =======Iteration Number: 5 =====
 DEBUG: Design variable values of this iteration: {&#39;u1_period&#39;: 2,
-&#39;u1_amplitude&#39;: 20}
-INFO: elapsed time: 65.3 seconds
-INFO: This is run 5 out of 24.
-INFO: The code has run  98.79 seconds.
-INFO: Estimated remaining time:  375.41 seconds
+&#39;u1_amplitude&#39;: 15}
+DEBUG: The variable is fixed:  Ts1[0.0]
+INFO: elapsed time: 0.9 seconds
+INFO: This is run 5 out of 32.
+INFO: The code has run  5.29 seconds.
+INFO: Estimated remaining time:  28.55 seconds
 </pre></div>
 </div>
-<img alt="../_images/51b1406b853ca277078bef0077e5985ce61135259d913faf43f3d83711f379ec.png" src="../_images/51b1406b853ca277078bef0077e5985ce61135259d913faf43f3d83711f379ec.png" />
+<img alt="../_images/de177096bc72b45550d05d266a8f0fdc58559ab0423b0bab3f232ed56f3e8ff6.png" src="../_images/de177096bc72b45550d05d266a8f0fdc58559ab0423b0bab3f232ed56f3e8ff6.png" />
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model parameters:
 Ua = 0.0515 Watts/degC
 Ub = 0.0005 Watts/degC
 CpH = 6.8386 Joules/degC
 CpS = 0.01 Joules/degC
 u1_period = 2 minutes
-u1_amplitude = 20 % power
-names = u1_period for i= 0
-names = u1_amplitude for i= 1
+u1_amplitude = 15 % power
+ 
 INFO: =======Iteration Number: 6 =====
 DEBUG: Design variable values of this iteration: {&#39;u1_period&#39;: 2,
-&#39;u1_amplitude&#39;: 30}
-INFO: elapsed time: 34.8 seconds
-INFO: This is run 6 out of 24.
-INFO: The code has run  133.64 seconds.
-INFO: Estimated remaining time:  400.93 seconds
+&#39;u1_amplitude&#39;: 25}
+DEBUG: The variable is fixed:  Ts1[0.0]
+INFO: elapsed time: 0.9 seconds
+INFO: This is run 6 out of 32.
+INFO: The code has run  6.22 seconds.
+INFO: Estimated remaining time:  26.97 seconds
 </pre></div>
 </div>
-<img alt="../_images/1ecd8f1e232a155ae4d4d31e6cdf2bc6846789b678159d7357b91ab189d4c5f1.png" src="../_images/1ecd8f1e232a155ae4d4d31e6cdf2bc6846789b678159d7357b91ab189d4c5f1.png" />
+<img alt="../_images/82bdb0bf55e89d2fd1d847f120c40941b8004d9f41fc88718b0097c8f318d276.png" src="../_images/82bdb0bf55e89d2fd1d847f120c40941b8004d9f41fc88718b0097c8f318d276.png" />
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model parameters:
 Ua = 0.0515 Watts/degC
 Ub = 0.0005 Watts/degC
 CpH = 6.8386 Joules/degC
 CpS = 0.01 Joules/degC
 u1_period = 2 minutes
-u1_amplitude = 30 % power
-names = u1_period for i= 0
-names = u1_amplitude for i= 1
+u1_amplitude = 25 % power
+ 
 INFO: =======Iteration Number: 7 =====
 DEBUG: Design variable values of this iteration: {&#39;u1_period&#39;: 2,
-&#39;u1_amplitude&#39;: 40}
-INFO: elapsed time: 44.0 seconds
-INFO: This is run 7 out of 24.
-INFO: The code has run  177.66 seconds.
-INFO: Estimated remaining time:  431.47 seconds
+&#39;u1_amplitude&#39;: 35}
+DEBUG: The variable is fixed:  Ts1[0.0]
+INFO: elapsed time: 1.2 seconds
+INFO: This is run 7 out of 32.
+INFO: The code has run  7.46 seconds.
+INFO: Estimated remaining time:  26.64 seconds
 </pre></div>
 </div>
-<img alt="../_images/a42531fc1a38d193e36f5a4a178b172cea8d7abc3118d87e9cfb5289ee3aac6e.png" src="../_images/a42531fc1a38d193e36f5a4a178b172cea8d7abc3118d87e9cfb5289ee3aac6e.png" />
+<img alt="../_images/ae3dea812810b84247751eafe5c6366aa21ff0fb58546fd6ce129a90bf5e46c7.png" src="../_images/ae3dea812810b84247751eafe5c6366aa21ff0fb58546fd6ce129a90bf5e46c7.png" />
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model parameters:
 Ua = 0.0515 Watts/degC
 Ub = 0.0005 Watts/degC
 CpH = 6.8386 Joules/degC
 CpS = 0.01 Joules/degC
 u1_period = 2 minutes
-u1_amplitude = 40 % power
-names = u1_period for i= 0
-names = u1_amplitude for i= 1
+u1_amplitude = 35 % power
+ 
 INFO: =======Iteration Number: 8 =====
 DEBUG: Design variable values of this iteration: {&#39;u1_period&#39;: 2,
-&#39;u1_amplitude&#39;: 50}
-WARNING: Loading a SolverResults object with a warning status into
-model.name=&quot;unknown&quot;;
-    - termination condition: maxIterations
-    - message from solver: Ipopt 3.13.2\x3a Maximum Number of Iterations
-      Exceeded.
-INFO: elapsed time: 81.5 seconds
-INFO: This is run 8 out of 24.
-INFO: The code has run  259.15 seconds.
-INFO: Estimated remaining time:  518.3 seconds
+&#39;u1_amplitude&#39;: 45}
+DEBUG: The variable is fixed:  Ts1[0.0]
+INFO: elapsed time: 0.9 seconds
+INFO: This is run 8 out of 32.
+INFO: The code has run  8.4 seconds.
+INFO: Estimated remaining time:  25.2 seconds
 </pre></div>
 </div>
-<img alt="../_images/91633b25262d098755410af6f8addd58d02c231337c3e76cf260e58cd1ceb134.png" src="../_images/91633b25262d098755410af6f8addd58d02c231337c3e76cf260e58cd1ceb134.png" />
+<img alt="../_images/cef3b49b5388b1573716e7dc328abe75dad20e50cd70bee4416e384ed8e16346.png" src="../_images/cef3b49b5388b1573716e7dc328abe75dad20e50cd70bee4416e384ed8e16346.png" />
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model parameters:
 Ua = 0.0515 Watts/degC
 Ub = 0.0005 Watts/degC
 CpH = 6.8386 Joules/degC
 CpS = 0.01 Joules/degC
 u1_period = 2 minutes
-u1_amplitude = 50 % power
-names = u1_period for i= 0
-names = u1_amplitude for i= 1
+u1_amplitude = 45 % power
+ 
 INFO: =======Iteration Number: 9 =====
 DEBUG: Design variable values of this iteration: {&#39;u1_period&#39;: 3,
-&#39;u1_amplitude&#39;: 20}
-WARNING: Loading a SolverResults object with a warning status into
-model.name=&quot;unknown&quot;;
-    - termination condition: maxIterations
-    - message from solver: Ipopt 3.13.2\x3a Maximum Number of Iterations
-      Exceeded.
-INFO: elapsed time: 87.6 seconds
-INFO: This is run 9 out of 24.
-INFO: The code has run  346.77 seconds.
-INFO: Estimated remaining time:  577.94 seconds
+&#39;u1_amplitude&#39;: 15}
+DEBUG: The variable is fixed:  Ts1[0.0]
+INFO: elapsed time: 1.2 seconds
+INFO: This is run 9 out of 32.
+INFO: The code has run  9.59 seconds.
+INFO: Estimated remaining time:  24.52 seconds
 </pre></div>
 </div>
-<img alt="../_images/19a74e2bb94de3128b53f59cf2c0a83f31395ad327780835178eacb0790a6682.png" src="../_images/19a74e2bb94de3128b53f59cf2c0a83f31395ad327780835178eacb0790a6682.png" />
+<img alt="../_images/c7979a974aa91620173946621a30cc799616c09adcca140cb77097b6481c8529.png" src="../_images/c7979a974aa91620173946621a30cc799616c09adcca140cb77097b6481c8529.png" />
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model parameters:
 Ua = 0.0515 Watts/degC
 Ub = 0.0005 Watts/degC
 CpH = 6.8386 Joules/degC
 CpS = 0.01 Joules/degC
 u1_period = 3 minutes
-u1_amplitude = 20 % power
-names = u1_period for i= 0
-names = u1_amplitude for i= 1
+u1_amplitude = 15 % power
+ 
 INFO: =======Iteration Number: 10 =====
 DEBUG: Design variable values of this iteration: {&#39;u1_period&#39;: 3,
-&#39;u1_amplitude&#39;: 30}
-INFO: elapsed time: 42.7 seconds
-INFO: This is run 10 out of 24.
-INFO: The code has run  389.48 seconds.
-INFO: Estimated remaining time:  545.27 seconds
+&#39;u1_amplitude&#39;: 25}
+DEBUG: The variable is fixed:  Ts1[0.0]
+INFO: elapsed time: 0.9 seconds
+INFO: This is run 10 out of 32.
+INFO: The code has run  10.54 seconds.
+INFO: Estimated remaining time:  23.19 seconds
 </pre></div>
 </div>
-<img alt="../_images/a41a317c8c8b83e74d708eb06db12e0574f65c180c059250a7492eb62525395c.png" src="../_images/a41a317c8c8b83e74d708eb06db12e0574f65c180c059250a7492eb62525395c.png" />
+<img alt="../_images/33172eda42a9401a2de2a4bc19022cae80e7535880b775c3400170c524fa2f0a.png" src="../_images/33172eda42a9401a2de2a4bc19022cae80e7535880b775c3400170c524fa2f0a.png" />
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model parameters:
 Ua = 0.0515 Watts/degC
 Ub = 0.0005 Watts/degC
 CpH = 6.8386 Joules/degC
 CpS = 0.01 Joules/degC
 u1_period = 3 minutes
-u1_amplitude = 30 % power
-names = u1_period for i= 0
-names = u1_amplitude for i= 1
+u1_amplitude = 25 % power
+ 
 INFO: =======Iteration Number: 11 =====
 DEBUG: Design variable values of this iteration: {&#39;u1_period&#39;: 3,
-&#39;u1_amplitude&#39;: 40}
-INFO: elapsed time: 48.6 seconds
-INFO: This is run 11 out of 24.
-INFO: The code has run  438.07 seconds.
-INFO: Estimated remaining time:  517.72 seconds
+&#39;u1_amplitude&#39;: 35}
+DEBUG: The variable is fixed:  Ts1[0.0]
+INFO: elapsed time: 0.9 seconds
+INFO: This is run 11 out of 32.
+INFO: The code has run  11.49 seconds.
+INFO: Estimated remaining time:  21.93 seconds
 </pre></div>
 </div>
-<img alt="../_images/6f15b7c1f82f5742370ec9e07fbb6c0084db47d924a61520ad096868c7d71c8e.png" src="../_images/6f15b7c1f82f5742370ec9e07fbb6c0084db47d924a61520ad096868c7d71c8e.png" />
+<img alt="../_images/112189c9d98b6325c60abbe867b09d8a2a563353c9cc788887760b93ff0bfc1a.png" src="../_images/112189c9d98b6325c60abbe867b09d8a2a563353c9cc788887760b93ff0bfc1a.png" />
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model parameters:
 Ua = 0.0515 Watts/degC
 Ub = 0.0005 Watts/degC
 CpH = 6.8386 Joules/degC
 CpS = 0.01 Joules/degC
 u1_period = 3 minutes
-u1_amplitude = 40 % power
-names = u1_period for i= 0
-names = u1_amplitude for i= 1
+u1_amplitude = 35 % power
+ 
 INFO: =======Iteration Number: 12 =====
 DEBUG: Design variable values of this iteration: {&#39;u1_period&#39;: 3,
-&#39;u1_amplitude&#39;: 50}
-WARNING: Loading a SolverResults object with a warning status into
-model.name=&quot;unknown&quot;;
-    - termination condition: maxIterations
-    - message from solver: Ipopt 3.13.2\x3a Maximum Number of Iterations
-      Exceeded.
-INFO: elapsed time: 91.8 seconds
-INFO: This is run 12 out of 24.
-INFO: The code has run  529.87 seconds.
-INFO: Estimated remaining time:  529.87 seconds
+&#39;u1_amplitude&#39;: 45}
+DEBUG: The variable is fixed:  Ts1[0.0]
+INFO: elapsed time: 1.2 seconds
+INFO: This is run 12 out of 32.
+INFO: The code has run  12.72 seconds.
+INFO: Estimated remaining time:  21.2 seconds
 </pre></div>
 </div>
-<img alt="../_images/e5844aabd3e3354b378038da604b6afb9865281aaf998448a0e23a6590c361d5.png" src="../_images/e5844aabd3e3354b378038da604b6afb9865281aaf998448a0e23a6590c361d5.png" />
+<img alt="../_images/3a3d5451046833b66f358cffb54c77dfaf95aa9dd6cb307b5aa6d8c2aa6dea64.png" src="../_images/3a3d5451046833b66f358cffb54c77dfaf95aa9dd6cb307b5aa6d8c2aa6dea64.png" />
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model parameters:
 Ua = 0.0515 Watts/degC
 Ub = 0.0005 Watts/degC
 CpH = 6.8386 Joules/degC
 CpS = 0.01 Joules/degC
 u1_period = 3 minutes
-u1_amplitude = 50 % power
-names = u1_period for i= 0
-names = u1_amplitude for i= 1
+u1_amplitude = 45 % power
+ 
 INFO: =======Iteration Number: 13 =====
 DEBUG: Design variable values of this iteration: {&#39;u1_period&#39;: 4,
-&#39;u1_amplitude&#39;: 20}
-INFO: elapsed time: 89.5 seconds
-INFO: This is run 13 out of 24.
-INFO: The code has run  619.39 seconds.
-INFO: Estimated remaining time:  524.1 seconds
+&#39;u1_amplitude&#39;: 15}
+DEBUG: The variable is fixed:  Ts1[0.0]
+INFO: elapsed time: 0.9 seconds
+INFO: This is run 13 out of 32.
+INFO: The code has run  13.67 seconds.
+INFO: Estimated remaining time:  19.98 seconds
 </pre></div>
 </div>
-<img alt="../_images/0d77bca4b003bf1e2916cd603be2c122c7f287edabdec942b0e274d7894f1a35.png" src="../_images/0d77bca4b003bf1e2916cd603be2c122c7f287edabdec942b0e274d7894f1a35.png" />
+<img alt="../_images/463438dfa24de995d21bfa15ed2aa3200f572d82add7dc62f3b11672a3eb0fe3.png" src="../_images/463438dfa24de995d21bfa15ed2aa3200f572d82add7dc62f3b11672a3eb0fe3.png" />
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model parameters:
 Ua = 0.0515 Watts/degC
 Ub = 0.0005 Watts/degC
 CpH = 6.8386 Joules/degC
 CpS = 0.01 Joules/degC
 u1_period = 4 minutes
-u1_amplitude = 20 % power
-names = u1_period for i= 0
-names = u1_amplitude for i= 1
+u1_amplitude = 15 % power
+ 
 INFO: =======Iteration Number: 14 =====
 DEBUG: Design variable values of this iteration: {&#39;u1_period&#39;: 4,
-&#39;u1_amplitude&#39;: 30}
-INFO: elapsed time: 67.8 seconds
-INFO: This is run 14 out of 24.
-INFO: The code has run  687.21 seconds.
-INFO: Estimated remaining time:  490.87 seconds
+&#39;u1_amplitude&#39;: 25}
+DEBUG: The variable is fixed:  Ts1[0.0]
+INFO: elapsed time: 1.2 seconds
+INFO: This is run 14 out of 32.
+INFO: The code has run  14.86 seconds.
+INFO: Estimated remaining time:  19.11 seconds
 </pre></div>
 </div>
-<img alt="../_images/5148a368731e72153be0ba428b945e975b43db53d868454a7707440c77825c72.png" src="../_images/5148a368731e72153be0ba428b945e975b43db53d868454a7707440c77825c72.png" />
+<img alt="../_images/45de18f17bd29920392653d6d825c17970608c11ac28d63e9fc655bed57415b5.png" src="../_images/45de18f17bd29920392653d6d825c17970608c11ac28d63e9fc655bed57415b5.png" />
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model parameters:
 Ua = 0.0515 Watts/degC
 Ub = 0.0005 Watts/degC
 CpH = 6.8386 Joules/degC
 CpS = 0.01 Joules/degC
 u1_period = 4 minutes
-u1_amplitude = 30 % power
-names = u1_period for i= 0
-names = u1_amplitude for i= 1
+u1_amplitude = 25 % power
+ 
 INFO: =======Iteration Number: 15 =====
 DEBUG: Design variable values of this iteration: {&#39;u1_period&#39;: 4,
-&#39;u1_amplitude&#39;: 40}
-INFO: elapsed time: 68.5 seconds
-INFO: This is run 15 out of 24.
-INFO: The code has run  755.7 seconds.
-INFO: Estimated remaining time:  453.42 seconds
+&#39;u1_amplitude&#39;: 35}
+DEBUG: The variable is fixed:  Ts1[0.0]
+INFO: elapsed time: 0.9 seconds
+INFO: This is run 15 out of 32.
+INFO: The code has run  15.81 seconds.
+INFO: Estimated remaining time:  17.91 seconds
 </pre></div>
 </div>
-<img alt="../_images/0bee77b0a628b0c0d8b2c9ceddeb57e45ab3917cf256e5c2135cc062cff01d9a.png" src="../_images/0bee77b0a628b0c0d8b2c9ceddeb57e45ab3917cf256e5c2135cc062cff01d9a.png" />
+<img alt="../_images/c7a48a8dbefb63fb945a6a4367f8cec671a5583608e8864e0c2e4df962d7c1d8.png" src="../_images/c7a48a8dbefb63fb945a6a4367f8cec671a5583608e8864e0c2e4df962d7c1d8.png" />
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model parameters:
 Ua = 0.0515 Watts/degC
 Ub = 0.0005 Watts/degC
 CpH = 6.8386 Joules/degC
 CpS = 0.01 Joules/degC
 u1_period = 4 minutes
-u1_amplitude = 40 % power
-names = u1_period for i= 0
-names = u1_amplitude for i= 1
+u1_amplitude = 35 % power
+ 
 INFO: =======Iteration Number: 16 =====
 DEBUG: Design variable values of this iteration: {&#39;u1_period&#39;: 4,
-&#39;u1_amplitude&#39;: 50}
-WARNING: Loading a SolverResults object with a warning status into
-model.name=&quot;unknown&quot;;
-    - termination condition: maxIterations
-    - message from solver: Ipopt 3.13.2\x3a Maximum Number of Iterations
-      Exceeded.
-INFO: elapsed time: 85.5 seconds
-INFO: This is run 16 out of 24.
-INFO: The code has run  841.23 seconds.
-INFO: Estimated remaining time:  420.61 seconds
+&#39;u1_amplitude&#39;: 45}
+DEBUG: The variable is fixed:  Ts1[0.0]
+INFO: elapsed time: 0.9 seconds
+INFO: This is run 16 out of 32.
+INFO: The code has run  16.75 seconds.
+INFO: Estimated remaining time:  16.75 seconds
 </pre></div>
 </div>
-<img alt="../_images/a9529486df8b0587264828363de1f9cafae7c3633a528ffff6add31ec08ec099.png" src="../_images/a9529486df8b0587264828363de1f9cafae7c3633a528ffff6add31ec08ec099.png" />
+<img alt="../_images/607673cb581a16f8fa2389d528bff277978f1663f60e5806d261a6144666499c.png" src="../_images/607673cb581a16f8fa2389d528bff277978f1663f60e5806d261a6144666499c.png" />
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model parameters:
 Ua = 0.0515 Watts/degC
 Ub = 0.0005 Watts/degC
 CpH = 6.8386 Joules/degC
 CpS = 0.01 Joules/degC
 u1_period = 4 minutes
-u1_amplitude = 50 % power
-names = u1_period for i= 0
-names = u1_amplitude for i= 1
+u1_amplitude = 45 % power
+ 
 INFO: =======Iteration Number: 17 =====
 DEBUG: Design variable values of this iteration: {&#39;u1_period&#39;: 5,
-&#39;u1_amplitude&#39;: 20}
-WARNING: Loading a SolverResults object with a warning status into
-model.name=&quot;unknown&quot;;
-    - termination condition: maxIterations
-    - message from solver: Ipopt 3.13.2\x3a Maximum Number of Iterations
-      Exceeded.
-INFO: elapsed time: 92.4 seconds
-INFO: This is run 17 out of 24.
-INFO: The code has run  933.61 seconds.
-INFO: Estimated remaining time:  384.43 seconds
+&#39;u1_amplitude&#39;: 15}
+DEBUG: The variable is fixed:  Ts1[0.0]
+INFO: elapsed time: 1.2 seconds
+INFO: This is run 17 out of 32.
+INFO: The code has run  17.98 seconds.
+INFO: Estimated remaining time:  15.87 seconds
 </pre></div>
 </div>
-<img alt="../_images/997920cf95f266a6f1912ec2c33ddcc452596f690eaae030ba99c55026d79eda.png" src="../_images/997920cf95f266a6f1912ec2c33ddcc452596f690eaae030ba99c55026d79eda.png" />
+<img alt="../_images/5d9b0a83d167c7cb74a5b7fd8169c79a32019570d4711939e8363e5618527651.png" src="../_images/5d9b0a83d167c7cb74a5b7fd8169c79a32019570d4711939e8363e5618527651.png" />
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model parameters:
 Ua = 0.0515 Watts/degC
 Ub = 0.0005 Watts/degC
 CpH = 6.8386 Joules/degC
 CpS = 0.01 Joules/degC
 u1_period = 5 minutes
-u1_amplitude = 20 % power
-names = u1_period for i= 0
-names = u1_amplitude for i= 1
+u1_amplitude = 15 % power
+ 
 INFO: =======Iteration Number: 18 =====
 DEBUG: Design variable values of this iteration: {&#39;u1_period&#39;: 5,
-&#39;u1_amplitude&#39;: 30}
-INFO: elapsed time: 80.4 seconds
-INFO: This is run 18 out of 24.
-INFO: The code has run  1014.01 seconds.
-INFO: Estimated remaining time:  338.0 seconds
+&#39;u1_amplitude&#39;: 25}
+DEBUG: The variable is fixed:  Ts1[0.0]
+INFO: elapsed time: 1.0 seconds
+INFO: This is run 18 out of 32.
+INFO: The code has run  18.94 seconds.
+INFO: Estimated remaining time:  14.73 seconds
 </pre></div>
 </div>
-<img alt="../_images/7e274de2754fea0538958dcae24ad32640a4296e4f2556e7e3f2def489dd6f92.png" src="../_images/7e274de2754fea0538958dcae24ad32640a4296e4f2556e7e3f2def489dd6f92.png" />
+<img alt="../_images/35058f921c779bb9c06f06b921f738b52a53aa32e43347b1af9cb2ea0d1ab707.png" src="../_images/35058f921c779bb9c06f06b921f738b52a53aa32e43347b1af9cb2ea0d1ab707.png" />
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model parameters:
 Ua = 0.0515 Watts/degC
 Ub = 0.0005 Watts/degC
 CpH = 6.8386 Joules/degC
 CpS = 0.01 Joules/degC
 u1_period = 5 minutes
-u1_amplitude = 30 % power
-names = u1_period for i= 0
-names = u1_amplitude for i= 1
+u1_amplitude = 25 % power
+ 
 INFO: =======Iteration Number: 19 =====
 DEBUG: Design variable values of this iteration: {&#39;u1_period&#39;: 5,
-&#39;u1_amplitude&#39;: 40}
-INFO: elapsed time: 74.5 seconds
-INFO: This is run 19 out of 24.
-INFO: The code has run  1088.54 seconds.
-INFO: Estimated remaining time:  286.46 seconds
+&#39;u1_amplitude&#39;: 35}
+DEBUG: The variable is fixed:  Ts1[0.0]
+INFO: elapsed time: 1.2 seconds
+INFO: This is run 19 out of 32.
+INFO: The code has run  20.12 seconds.
+INFO: Estimated remaining time:  13.77 seconds
 </pre></div>
 </div>
-<img alt="../_images/d1b3c72ebf437fe6f8cff451731ea31df9c21ae97a4a06345b1dba41b4048676.png" src="../_images/d1b3c72ebf437fe6f8cff451731ea31df9c21ae97a4a06345b1dba41b4048676.png" />
+<img alt="../_images/e87b8b9c32f90995947f6ae2b88b0d2f82400b8c04cf77e2d2a0f00a17c63f10.png" src="../_images/e87b8b9c32f90995947f6ae2b88b0d2f82400b8c04cf77e2d2a0f00a17c63f10.png" />
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model parameters:
 Ua = 0.0515 Watts/degC
 Ub = 0.0005 Watts/degC
 CpH = 6.8386 Joules/degC
 CpS = 0.01 Joules/degC
 u1_period = 5 minutes
-u1_amplitude = 40 % power
-names = u1_period for i= 0
-names = u1_amplitude for i= 1
+u1_amplitude = 35 % power
+ 
 INFO: =======Iteration Number: 20 =====
 DEBUG: Design variable values of this iteration: {&#39;u1_period&#39;: 5,
-&#39;u1_amplitude&#39;: 50}
-WARNING: Loading a SolverResults object with a warning status into
-model.name=&quot;unknown&quot;;
-    - termination condition: maxIterations
-    - message from solver: Ipopt 3.13.2\x3a Maximum Number of Iterations
-      Exceeded.
-INFO: elapsed time: 82.3 seconds
-INFO: This is run 20 out of 24.
-INFO: The code has run  1170.84 seconds.
-INFO: Estimated remaining time:  234.17 seconds
+&#39;u1_amplitude&#39;: 45}
+DEBUG: The variable is fixed:  Ts1[0.0]
+INFO: elapsed time: 0.9 seconds
+INFO: This is run 20 out of 32.
+INFO: The code has run  21.07 seconds.
+INFO: Estimated remaining time:  12.64 seconds
 </pre></div>
 </div>
-<img alt="../_images/871d09add72201fbc2deb8e1b4436de2a661782bda3b4c61ad2107ef988a4d1f.png" src="../_images/871d09add72201fbc2deb8e1b4436de2a661782bda3b4c61ad2107ef988a4d1f.png" />
+<img alt="../_images/fa6b5a19212d11878637ba0bdc5285bb47c8de8575a291572bb7ff54abbf636f.png" src="../_images/fa6b5a19212d11878637ba0bdc5285bb47c8de8575a291572bb7ff54abbf636f.png" />
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model parameters:
 Ua = 0.0515 Watts/degC
 Ub = 0.0005 Watts/degC
 CpH = 6.8386 Joules/degC
 CpS = 0.01 Joules/degC
 u1_period = 5 minutes
-u1_amplitude = 50 % power
-names = u1_period for i= 0
-names = u1_amplitude for i= 1
+u1_amplitude = 45 % power
+ 
 INFO: =======Iteration Number: 21 =====
 DEBUG: Design variable values of this iteration: {&#39;u1_period&#39;: 6,
-&#39;u1_amplitude&#39;: 20}
-WARNING: Loading a SolverResults object with a warning status into
-model.name=&quot;unknown&quot;;
-    - termination condition: maxIterations
-    - message from solver: Ipopt 3.13.2\x3a Maximum Number of Iterations
-      Exceeded.
-INFO: elapsed time: 89.6 seconds
-INFO: This is run 21 out of 24.
-INFO: The code has run  1260.49 seconds.
-INFO: Estimated remaining time:  180.07 seconds
+&#39;u1_amplitude&#39;: 15}
+DEBUG: The variable is fixed:  Ts1[0.0]
+INFO: elapsed time: 0.9 seconds
+INFO: This is run 21 out of 32.
+INFO: The code has run  22.0 seconds.
+INFO: Estimated remaining time:  11.52 seconds
 </pre></div>
 </div>
-<img alt="../_images/e8e6f5d2a2e78896a5c25863dac9189844f0eef43141373057e305e711090af7.png" src="../_images/e8e6f5d2a2e78896a5c25863dac9189844f0eef43141373057e305e711090af7.png" />
+<img alt="../_images/ddc5e0d95d81a5839ea0c34654337c8863d4192f6a641d040a4d524838aa3593.png" src="../_images/ddc5e0d95d81a5839ea0c34654337c8863d4192f6a641d040a4d524838aa3593.png" />
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model parameters:
 Ua = 0.0515 Watts/degC
 Ub = 0.0005 Watts/degC
 CpH = 6.8386 Joules/degC
 CpS = 0.01 Joules/degC
 u1_period = 6 minutes
-u1_amplitude = 20 % power
-names = u1_period for i= 0
-names = u1_amplitude for i= 1
+u1_amplitude = 15 % power
+ 
 INFO: =======Iteration Number: 22 =====
 DEBUG: Design variable values of this iteration: {&#39;u1_period&#39;: 6,
-&#39;u1_amplitude&#39;: 30}
-INFO: elapsed time: 66.0 seconds
-INFO: This is run 22 out of 24.
-INFO: The code has run  1326.52 seconds.
-INFO: Estimated remaining time:  120.59 seconds
+&#39;u1_amplitude&#39;: 25}
+DEBUG: The variable is fixed:  Ts1[0.0]
+INFO: elapsed time: 1.2 seconds
+INFO: This is run 22 out of 32.
+INFO: The code has run  23.23 seconds.
+INFO: Estimated remaining time:  10.56 seconds
 </pre></div>
 </div>
-<img alt="../_images/bf0a51dba309a4e14896eac6f7815df254c8ab2ea9607672028a7998df778e57.png" src="../_images/bf0a51dba309a4e14896eac6f7815df254c8ab2ea9607672028a7998df778e57.png" />
+<img alt="../_images/cc807c7264b63ff8d2aa85b4c099067e6be0c858263d256e0251438a44160b42.png" src="../_images/cc807c7264b63ff8d2aa85b4c099067e6be0c858263d256e0251438a44160b42.png" />
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model parameters:
 Ua = 0.0515 Watts/degC
 Ub = 0.0005 Watts/degC
 CpH = 6.8386 Joules/degC
 CpS = 0.01 Joules/degC
 u1_period = 6 minutes
-u1_amplitude = 30 % power
-names = u1_period for i= 0
-names = u1_amplitude for i= 1
+u1_amplitude = 25 % power
+ 
 INFO: =======Iteration Number: 23 =====
 DEBUG: Design variable values of this iteration: {&#39;u1_period&#39;: 6,
-&#39;u1_amplitude&#39;: 40}
-INFO: elapsed time: 80.9 seconds
-INFO: This is run 23 out of 24.
-INFO: The code has run  1407.39 seconds.
-INFO: Estimated remaining time:  61.19 seconds
+&#39;u1_amplitude&#39;: 35}
+DEBUG: The variable is fixed:  Ts1[0.0]
+INFO: elapsed time: 0.9 seconds
+INFO: This is run 23 out of 32.
+INFO: The code has run  24.17 seconds.
+INFO: Estimated remaining time:  9.46 seconds
 </pre></div>
 </div>
-<img alt="../_images/865671215181cc0d47c322058ca03fe68e5c1b6013504cce3c9d0a7c8c6c270a.png" src="../_images/865671215181cc0d47c322058ca03fe68e5c1b6013504cce3c9d0a7c8c6c270a.png" />
+<img alt="../_images/dadb51e04d600edde6958e28390352c60617084b12553a13e65f03119d79e6b8.png" src="../_images/dadb51e04d600edde6958e28390352c60617084b12553a13e65f03119d79e6b8.png" />
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model parameters:
 Ua = 0.0515 Watts/degC
 Ub = 0.0005 Watts/degC
 CpH = 6.8386 Joules/degC
 CpS = 0.01 Joules/degC
 u1_period = 6 minutes
-u1_amplitude = 40 % power
-names = u1_period for i= 0
-names = u1_amplitude for i= 1
+u1_amplitude = 35 % power
+ 
 INFO: =======Iteration Number: 24 =====
 DEBUG: Design variable values of this iteration: {&#39;u1_period&#39;: 6,
-&#39;u1_amplitude&#39;: 50}
-WARNING: Loading a SolverResults object with a warning status into
-model.name=&quot;unknown&quot;;
-    - termination condition: maxIterations
-    - message from solver: Ipopt 3.13.2\x3a Maximum Number of Iterations
-      Exceeded.
-INFO: elapsed time: 89.4 seconds
-INFO: This is run 24 out of 24.
-INFO: The code has run  1496.81 seconds.
+&#39;u1_amplitude&#39;: 45}
+DEBUG: The variable is fixed:  Ts1[0.0]
+INFO: elapsed time: 1.2 seconds
+INFO: This is run 24 out of 32.
+INFO: The code has run  25.36 seconds.
+INFO: Estimated remaining time:  8.45 seconds
+</pre></div>
+</div>
+<img alt="../_images/a2ec9d51e922ad6eef99ce36da4a6109864feb99698ccbcf521e6b93414d9f70.png" src="../_images/a2ec9d51e922ad6eef99ce36da4a6109864feb99698ccbcf521e6b93414d9f70.png" />
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model parameters:
+Ua = 0.0515 Watts/degC
+Ub = 0.0005 Watts/degC
+CpH = 6.8386 Joules/degC
+CpS = 0.01 Joules/degC
+u1_period = 6 minutes
+u1_amplitude = 45 % power
+ 
+INFO: =======Iteration Number: 25 =====
+DEBUG: Design variable values of this iteration: {&#39;u1_period&#39;: 7,
+&#39;u1_amplitude&#39;: 15}
+DEBUG: The variable is fixed:  Ts1[0.0]
+INFO: elapsed time: 0.9 seconds
+INFO: This is run 25 out of 32.
+INFO: The code has run  26.31 seconds.
+INFO: Estimated remaining time:  7.37 seconds
+</pre></div>
+</div>
+<img alt="../_images/d8070024ceeda81c49b9c7d9bdc01d026f6d96f93fdb1a628b7793ae3e57f60d.png" src="../_images/d8070024ceeda81c49b9c7d9bdc01d026f6d96f93fdb1a628b7793ae3e57f60d.png" />
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model parameters:
+Ua = 0.0515 Watts/degC
+Ub = 0.0005 Watts/degC
+CpH = 6.8386 Joules/degC
+CpS = 0.01 Joules/degC
+u1_period = 7 minutes
+u1_amplitude = 15 % power
+ 
+INFO: =======Iteration Number: 26 =====
+DEBUG: Design variable values of this iteration: {&#39;u1_period&#39;: 7,
+&#39;u1_amplitude&#39;: 25}
+DEBUG: The variable is fixed:  Ts1[0.0]
+INFO: elapsed time: 0.9 seconds
+INFO: This is run 26 out of 32.
+INFO: The code has run  27.24 seconds.
+INFO: Estimated remaining time:  6.29 seconds
+</pre></div>
+</div>
+<img alt="../_images/251e12673755cc432456ad87aa38fcff7d22e57f9f651eeece6263e2a9487f24.png" src="../_images/251e12673755cc432456ad87aa38fcff7d22e57f9f651eeece6263e2a9487f24.png" />
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model parameters:
+Ua = 0.0515 Watts/degC
+Ub = 0.0005 Watts/degC
+CpH = 6.8386 Joules/degC
+CpS = 0.01 Joules/degC
+u1_period = 7 minutes
+u1_amplitude = 25 % power
+ 
+INFO: =======Iteration Number: 27 =====
+DEBUG: Design variable values of this iteration: {&#39;u1_period&#39;: 7,
+&#39;u1_amplitude&#39;: 35}
+DEBUG: The variable is fixed:  Ts1[0.0]
+INFO: elapsed time: 1.2 seconds
+INFO: This is run 27 out of 32.
+INFO: The code has run  28.48 seconds.
+INFO: Estimated remaining time:  5.27 seconds
+</pre></div>
+</div>
+<img alt="../_images/6e76fc003ff137094858a4a7a77704e8a64e69af6c139d1dfedcab7f870e316c.png" src="../_images/6e76fc003ff137094858a4a7a77704e8a64e69af6c139d1dfedcab7f870e316c.png" />
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model parameters:
+Ua = 0.0515 Watts/degC
+Ub = 0.0005 Watts/degC
+CpH = 6.8386 Joules/degC
+CpS = 0.01 Joules/degC
+u1_period = 7 minutes
+u1_amplitude = 35 % power
+ 
+INFO: =======Iteration Number: 28 =====
+DEBUG: Design variable values of this iteration: {&#39;u1_period&#39;: 7,
+&#39;u1_amplitude&#39;: 45}
+DEBUG: The variable is fixed:  Ts1[0.0]
+INFO: elapsed time: 0.9 seconds
+INFO: This is run 28 out of 32.
+INFO: The code has run  29.43 seconds.
+INFO: Estimated remaining time:  4.2 seconds
+</pre></div>
+</div>
+<img alt="../_images/65a51faafefea5e31f1d1050a9d60db0aedba5eb19661cba6395fcf79b154355.png" src="../_images/65a51faafefea5e31f1d1050a9d60db0aedba5eb19661cba6395fcf79b154355.png" />
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model parameters:
+Ua = 0.0515 Watts/degC
+Ub = 0.0005 Watts/degC
+CpH = 6.8386 Joules/degC
+CpS = 0.01 Joules/degC
+u1_period = 7 minutes
+u1_amplitude = 45 % power
+ 
+INFO: =======Iteration Number: 29 =====
+DEBUG: Design variable values of this iteration: {&#39;u1_period&#39;: 8,
+&#39;u1_amplitude&#39;: 15}
+DEBUG: The variable is fixed:  Ts1[0.0]
+INFO: elapsed time: 1.2 seconds
+INFO: This is run 29 out of 32.
+INFO: The code has run  30.64 seconds.
+INFO: Estimated remaining time:  3.17 seconds
+</pre></div>
+</div>
+<img alt="../_images/cbf1859cf87d15e55db4c2da82c5f789314162141a5fb7f88f88ae7a5c5dfd92.png" src="../_images/cbf1859cf87d15e55db4c2da82c5f789314162141a5fb7f88f88ae7a5c5dfd92.png" />
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model parameters:
+Ua = 0.0515 Watts/degC
+Ub = 0.0005 Watts/degC
+CpH = 6.8386 Joules/degC
+CpS = 0.01 Joules/degC
+u1_period = 8 minutes
+u1_amplitude = 15 % power
+ 
+INFO: =======Iteration Number: 30 =====
+DEBUG: Design variable values of this iteration: {&#39;u1_period&#39;: 8,
+&#39;u1_amplitude&#39;: 25}
+DEBUG: The variable is fixed:  Ts1[0.0]
+INFO: elapsed time: 1.0 seconds
+INFO: This is run 30 out of 32.
+INFO: The code has run  31.59 seconds.
+INFO: Estimated remaining time:  2.11 seconds
+</pre></div>
+</div>
+<img alt="../_images/ff66e292516062a57438b95910344da5d6b0003316a5ff34502ef612f1a2b2c0.png" src="../_images/ff66e292516062a57438b95910344da5d6b0003316a5ff34502ef612f1a2b2c0.png" />
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model parameters:
+Ua = 0.0515 Watts/degC
+Ub = 0.0005 Watts/degC
+CpH = 6.8386 Joules/degC
+CpS = 0.01 Joules/degC
+u1_period = 8 minutes
+u1_amplitude = 25 % power
+ 
+INFO: =======Iteration Number: 31 =====
+DEBUG: Design variable values of this iteration: {&#39;u1_period&#39;: 8,
+&#39;u1_amplitude&#39;: 35}
+DEBUG: The variable is fixed:  Ts1[0.0]
+INFO: elapsed time: 0.9 seconds
+INFO: This is run 31 out of 32.
+INFO: The code has run  32.53 seconds.
+INFO: Estimated remaining time:  1.05 seconds
+</pre></div>
+</div>
+<img alt="../_images/dc4fe7e9ba445cdc51d74938d004d5fcc99c82e19ad85daedf024626fec583ea.png" src="../_images/dc4fe7e9ba445cdc51d74938d004d5fcc99c82e19ad85daedf024626fec583ea.png" />
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model parameters:
+Ua = 0.0515 Watts/degC
+Ub = 0.0005 Watts/degC
+CpH = 6.8386 Joules/degC
+CpS = 0.01 Joules/degC
+u1_period = 8 minutes
+u1_amplitude = 35 % power
+ 
+INFO: =======Iteration Number: 32 =====
+DEBUG: Design variable values of this iteration: {&#39;u1_period&#39;: 8,
+&#39;u1_amplitude&#39;: 45}
+DEBUG: The variable is fixed:  Ts1[0.0]
+INFO: elapsed time: 1.3 seconds
+INFO: This is run 32 out of 32.
+INFO: The code has run  33.78 seconds.
 INFO: Estimated remaining time:  0.0 seconds
 </pre></div>
 </div>
-<img alt="../_images/422363a6e7169c7c170574b593dcb324c1a85b988a0569fc3ce42393ac8984f7.png" src="../_images/422363a6e7169c7c170574b593dcb324c1a85b988a0569fc3ce42393ac8984f7.png" />
+<img alt="../_images/22e05b9561c8fb716167016c3884423d4cbca447e7c2ee2a9e6d5bbac9f96423.png" src="../_images/22e05b9561c8fb716167016c3884423d4cbca447e7c2ee2a9e6d5bbac9f96423.png" />
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model parameters:
 Ua = 0.0515 Watts/degC
 Ub = 0.0005 Watts/degC
 CpH = 6.8386 Joules/degC
 CpS = 0.01 Joules/degC
-u1_period = 6 minutes
-u1_amplitude = 50 % power
-INFO: Overall wall clock time [s]:  1496.8141293060035
+u1_period = 8 minutes
+u1_amplitude = 45 % power
+ 
+INFO: Overall wall clock time [s]:  33.784262415007106
 </pre></div>
 </div>
 </div>
 </div>
+</section>
+<section id="visualize-and-interpret-sensitivity-analysis-results">
+<h2>Visualize and interpret sensitivity analysis results<a class="headerlink" href="#visualize-and-interpret-sensitivity-analysis-results" title="Link to this heading">#</a></h2>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Extract criteria from FIM</span>
@@ -1479,20 +1604,18 @@ INFO: Overall wall clock time [s]:  1496.8141293060035
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/Users/adowling/DowlingLab/pyomo/pyomo/contrib/doe/result.py:663: RuntimeWarning: invalid value encountered in log10
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/Users/adowling/DowlingLab/dev/pyomo/pyomo/contrib/doe/result.py:663: RuntimeWarning: invalid value encountered in log10
   hes_e = np.log10(self.cri_e)
-/Users/adowling/DowlingLab/pyomo/pyomo/contrib/doe/result.py:664: RuntimeWarning: divide by zero encountered in log10
+/Users/adowling/DowlingLab/dev/pyomo/pyomo/contrib/doe/result.py:664: RuntimeWarning: invalid value encountered in log10
   hes_d = np.log10(self.cri_d)
-/Users/adowling/DowlingLab/pyomo/pyomo/contrib/doe/result.py:664: RuntimeWarning: invalid value encountered in log10
-  hes_d = np.log10(self.cri_d)
-/Users/adowling/DowlingLab/pyomo/pyomo/contrib/doe/result.py:665: RuntimeWarning: invalid value encountered in log10
+/Users/adowling/DowlingLab/dev/pyomo/pyomo/contrib/doe/result.py:665: RuntimeWarning: invalid value encountered in log10
   hes_e2 = np.log10(self.cri_e_cond)
 </pre></div>
 </div>
-<img alt="../_images/3897adcc8df212d4ba07b62be4f5ecf95caf8205748b975c5862b9aa609a5dbd.png" src="../_images/3897adcc8df212d4ba07b62be4f5ecf95caf8205748b975c5862b9aa609a5dbd.png" />
-<img alt="../_images/03cc03bac27fd4c626e69df6c884b46efc6890a9a338f39bd66aa7d0ac551755.png" src="../_images/03cc03bac27fd4c626e69df6c884b46efc6890a9a338f39bd66aa7d0ac551755.png" />
-<img alt="../_images/be2b6fc2245806d6000c969f03defd18d5f1c82dbd93fa5dd0142c854957d186.png" src="../_images/be2b6fc2245806d6000c969f03defd18d5f1c82dbd93fa5dd0142c854957d186.png" />
-<img alt="../_images/159b7180a882b1ac68fb0759b75f065b3e00a8c0ccb7cd4dc883816c84368df7.png" src="../_images/159b7180a882b1ac68fb0759b75f065b3e00a8c0ccb7cd4dc883816c84368df7.png" />
+<img alt="../_images/bebc0bb59899db8c7ee2d5a89ed18aec10eadecd9c71d446dbefc46cdc5b3862.png" src="../_images/bebc0bb59899db8c7ee2d5a89ed18aec10eadecd9c71d446dbefc46cdc5b3862.png" />
+<img alt="../_images/7b36e40ee82222537a6ea64de8e6b00b26f3fd883fead5f6d3319b3c62202e12.png" src="../_images/7b36e40ee82222537a6ea64de8e6b00b26f3fd883fead5f6d3319b3c62202e12.png" />
+<img alt="../_images/7107f6e3774cfffcce88393e0cee82a862b11a7d1e1bcbbe0dc8b7895c630b7d.png" src="../_images/7107f6e3774cfffcce88393e0cee82a862b11a7d1e1bcbbe0dc8b7895c630b7d.png" />
+<img alt="../_images/61f8f88ad4da4563f027941aefbbc0b297faf832902115ec824baa1b61bffcdb.png" src="../_images/61f8f88ad4da4563f027941aefbbc0b297faf832902115ec824baa1b61bffcdb.png" />
 </div>
 </div>
 </section>
@@ -1555,6 +1678,7 @@ INFO: Overall wall clock time [s]:  1496.8141293060035
               
                 <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
 
+
   <div class="sidebar-secondary-item">
   <div class="page-toc tocsection onthispage">
     <i class="fa-solid fa-list"></i> Contents
@@ -1562,8 +1686,10 @@ INFO: Overall wall clock time [s]:  1496.8141293060035
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#load-experimental-data-sine-test">Load experimental data (sine test)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#analyze-fim-with-pyomo-doe-sine-test">Analyze FIM with Pyomo.DoE (sine test)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#perform-sensitivity-analysis">Perform sensitivity analysis</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#analyze-fim-with-pyomo-doe-at-initial-point-sine-test">Analyze FIM with Pyomo.DoE at initial point (sine test)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#define-parameterized-sine-wave-experiment">Define parameterized sine wave experiment</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#peform-sensitivity-analysis-to-sine-wave-frequency-and-period">Peform sensitivity analysis to sine wave frequency and period</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#visualize-and-interpret-sensitivity-analysis-results">Visualize and interpret sensitivity analysis results</a></li>
 </ul>
   </nav></div>
 
@@ -1588,7 +1714,7 @@ By Alexander Dowling
 
   <p class="copyright">
     
-      © Copyright 2022.
+      © Copyright 2023.
       <br/>
     
   </p>
@@ -1612,8 +1738,8 @@ By Alexander Dowling
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="../_static/scripts/bootstrap.js?digest=5b4479735964841361fd"></script>
-<script src="../_static/scripts/pydata-sphinx-theme.js?digest=5b4479735964841361fd"></script>
+  <script src="../_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae"></script>
 
   <footer class="bd-footer">
   </footer>

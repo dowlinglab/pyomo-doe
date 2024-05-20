@@ -1,13 +1,12 @@
 
-
 <!DOCTYPE html>
 
 
-<html lang="en" data-content_root="" >
+<html lang="en" data-content_root="../" >
 
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <title>Regression with ParmEst &#8212; Pyomo.DoE Workshop and Tutorials</title>
   
@@ -19,49 +18,45 @@
   </script>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../_static/styles/theme.css?digest=5b4479735964841361fd" rel="stylesheet" />
-<link href="../_static/styles/bootstrap.css?digest=5b4479735964841361fd" rel="stylesheet" />
-<link href="../_static/styles/pydata-sphinx-theme.css?digest=5b4479735964841361fd" rel="stylesheet" />
+  <link href="../_static/styles/theme.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
 
   
-  <link href="../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=5b4479735964841361fd" rel="stylesheet" />
-  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
-<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
-<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+  <link href="../_static/vendor/fontawesome/6.5.1/css/all.min.css?digest=8d27b9dea8ad943066ae" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.1/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.1/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.1/webfonts/fa-regular-400.woff2" />
 
-    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
-    <link rel="stylesheet" href="../_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
-    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=384b581d" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=13237357" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css?v=be8a1c11" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=5b4479735964841361fd" />
-<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=5b4479735964841361fd" />
-  <script src="../_static/vendor/fontawesome/6.1.2/js/all.min.js?digest=5b4479735964841361fd"></script>
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae" />
+  <script src="../_static/vendor/fontawesome/6.5.1/js/all.min.js?digest=8d27b9dea8ad943066ae"></script>
 
-    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-    <script src="../_static/jquery.js"></script>
-    <script src="../_static/underscore.js"></script>
-    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
-    <script src="../_static/doctools.js"></script>
-    <script src="../_static/clipboard.min.js"></script>
-    <script src="../_static/copybutton.js"></script>
-    <script src="../_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
+    <script src="../_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=f281be69"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?v=efea14e4"></script>
     <script>let toggleHintShow = 'Click to show';</script>
     <script>let toggleHintHide = 'Click to hide';</script>
     <script>let toggleOpenOnPrint = 'true';</script>
-    <script src="../_static/togglebutton.js"></script>
+    <script src="../_static/togglebutton.js?v=4a39c7ea"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
-    <script src="../_static/design-tabs.js"></script>
-    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
-const thebe_selector = ".thebe,.cell"
-const thebe_selector_input = "pre"
-const thebe_selector_output = ".output, .cell_output"
-</script>
-    <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <script src="../_static/design-tabs.js?v=36754332"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="../_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'notebooks/parmest';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -76,10 +71,9 @@ const thebe_selector_output = ".output, .cell_output"
 
   
   
-  <a class="skip-link" href="#main-content">Skip to main content</a>
+  <a id="pst-skip-link" class="skip-link" href="#main-content">Skip to main content</a>
   
   <div id="pst-scroll-pixel-helper"></div>
-
   
   <button type="button" class="btn rounded-pill" id="pst-back-to-top">
     <i class="fa-solid fa-arrow-up"></i>
@@ -120,11 +114,14 @@ const thebe_selector_output = ".output, .cell_output"
 </form></div>
   </div>
   
-    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
-    </nav>
+    <header class="bd-header navbar navbar-expand-lg bd-navbar">
+    </header>
   
+
   <div class="bd-container">
     <div class="bd-container__inner bd-page-width">
+      
+      
       
       <div class="bd-sidebar-primary bd-sidebar">
         
@@ -158,7 +155,18 @@ const thebe_selector_output = ".output, .cell_output"
   
   
 </a></div>
-        <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn navbar-btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
     <div class="bd-toc-item navbar-nav active">
         
         <ul class="nav bd-sidenav bd-sidenav__home-link">
@@ -169,7 +177,6 @@ const thebe_selector_output = ".output, .cell_output"
             </li>
         </ul>
         <ul class="current nav bd-sidenav">
-<li class="toctree-l1"><a class="reference internal" href="../getting_started.html">Getting Started</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../tclab.html">Modeling Example: TCLab</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="tclab_model.html">TCLab Mathematical Model</a></li>
 <li class="toctree-l2"><a class="reference internal" href="numpy_simulation.html">Numpy Simulation</a></li>
@@ -431,17 +438,23 @@ document.write(`
               
                 
 <div id="searchbox"></div>
-                <article class="bd-article" role="main">
+                <article class="bd-article">
                   
   <section class="tex2jax_ignore mathjax_ignore" id="regression-with-parmest">
-<h1>Regression with ParmEst<a class="headerlink" href="#regression-with-parmest" title="Permalink to this heading">#</a></h1>
+<h1>Regression with ParmEst<a class="headerlink" href="#regression-with-parmest" title="Link to this heading">#</a></h1>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">sys</span>
 <span class="c1"># If running on Google Colab, install Pyomo and Ipopt via IDAES</span>
-<span class="n">on_colab</span> <span class="o">=</span> <span class="s2">&quot;google.colab&quot;</span> <span class="ow">in</span> <span class="n">sys</span><span class="o">.</span><span class="n">modules</span><span class="p">:</span>
+<span class="n">on_colab</span> <span class="o">=</span> <span class="s2">&quot;google.colab&quot;</span> <span class="ow">in</span> <span class="n">sys</span><span class="o">.</span><span class="n">modules</span>
 <span class="k">if</span> <span class="n">on_colab</span><span class="p">:</span>
     <span class="o">!</span>wget<span class="w"> </span><span class="s2">&quot;https://raw.githubusercontent.com/dowlinglab/pyomo-doe/main/notebooks/tclab_pyomo.py&quot;</span>
+
+<span class="c1"># import TCLab model, simulation, and data analysis functions</span>
+<span class="kn">from</span> <span class="nn">tclab_pyomo</span> <span class="kn">import</span> <span class="n">TCLabExperiment</span><span class="p">,</span> <span class="n">create_model</span><span class="p">,</span> <span class="n">extract_results</span><span class="p">,</span> <span class="n">extract_plot_results</span><span class="p">,</span> <span class="n">results_summary</span>
+
+<span class="c1"># set default number of states in the TCLab model</span>
+<span class="n">number_tclab_states</span> <span class="o">=</span> <span class="mi">2</span>
 </pre></div>
 </div>
 </div>
@@ -458,7 +471,7 @@ document.write(`
 </div>
 </div>
 <section id="load-and-explore-experimental-data">
-<h2>Load and explore experimental data<a class="headerlink" href="#load-and-explore-experimental-data" title="Permalink to this heading">#</a></h2>
+<h2>Load and explore experimental data<a class="headerlink" href="#load-and-explore-experimental-data" title="Link to this heading">#</a></h2>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
@@ -564,7 +577,7 @@ document.write(`
 </div>
 </section>
 <section id="store-in-custom-data-class">
-<h2>Store in Custom Data Class<a class="headerlink" href="#store-in-custom-data-class" title="Permalink to this heading">#</a></h2>
+<h2>Store in Custom Data Class<a class="headerlink" href="#store-in-custom-data-class" title="Link to this heading">#</a></h2>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">tc_data</span> <span class="o">=</span> <span class="n">TCLabExperiment</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;Sine Wave Test for Heater 1&quot;</span><span class="p">,</span>
@@ -705,7 +718,7 @@ document.write(`
 </div>
 </section>
 <section id="paramter-estimation-in-vanilla-pyomo">
-<h2>Paramter Estimation in Vanilla Pyomo<a class="headerlink" href="#paramter-estimation-in-vanilla-pyomo" title="Permalink to this heading">#</a></h2>
+<h2>Paramter Estimation in Vanilla Pyomo<a class="headerlink" href="#paramter-estimation-in-vanilla-pyomo" title="Link to this heading">#</a></h2>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyomo.environ</span> <span class="kn">import</span> <span class="n">SolverFactory</span>
@@ -745,8 +758,7 @@ This version of Ipopt was compiled using HSL, a collection of Fortran codes
         computation. See http://www.hsl.rl.ac.uk.
 ******************************************************************************
 
-This is Ipopt version 3.13.2, running with linear solver mumps.
-NOTE: Other linear solvers might be more efficient (see Ipopt documentation).
+This is Ipopt version 3.13.2, running with linear solver ma27.
 
 Number of nonzeros in equality constraint Jacobian...:    15301
 Number of nonzeros in inequality constraint Jacobian.:        0
@@ -785,16 +797,16 @@ iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
   18  2.4931145e+02 1.80e-07 1.31e-04  -3.8 1.14e-01    -  1.00e+00 1.00e+00h  1
   19  2.4931130e+02 5.23e-07 5.09e-06  -5.7 1.40e-01    -  1.00e+00 1.00e+00h  1
 iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
-  20  2.4931130e+02 1.10e-10 7.44e-09  -8.6 2.14e-03    -  1.00e+00 1.00e+00h  1
+  20  2.4931130e+02 1.10e-10 7.15e-09  -8.6 2.14e-03    -  1.00e+00 1.00e+00h  1
 
 Number of Iterations....: 20
 
                                    (scaled)                 (unscaled)
-Objective...............:   2.4931130187792564e+02    2.4931130187792564e+02
-Dual infeasibility......:   7.4449821210603169e-09    7.4449821210603169e-09
-Constraint violation....:   1.1029199775691723e-10    1.1029199775691723e-10
-Complementarity.........:   2.5886083464128528e-09    2.5886083464128528e-09
-Overall NLP error.......:   7.4449821210603169e-09    7.4449821210603169e-09
+Objective...............:   2.4931130187792567e+02    2.4931130187792567e+02
+Dual infeasibility......:   7.1544707616314029e-09    7.1544707616314029e-09
+Constraint violation....:   1.1029233082382461e-10    1.1029233082382461e-10
+Complementarity.........:   2.5886083464125124e-09    2.5886083464125124e-09
+Overall NLP error.......:   7.1544707616314029e-09    7.1544707616314029e-09
 
 
 Number of objective function evaluations             = 53
@@ -804,8 +816,8 @@ Number of inequality constraint evaluations          = 0
 Number of equality constraint Jacobian evaluations   = 21
 Number of inequality constraint Jacobian evaluations = 0
 Number of Lagrangian Hessian evaluations             = 20
-Total CPU secs in IPOPT (w/o function evaluations)   =      0.221
-Total CPU secs in NLP function evaluations           =      0.035
+Total CPU secs in IPOPT (w/o function evaluations)   =      0.180
+Total CPU secs in NLP function evaluations           =      0.015
 
 EXIT: Optimal Solution Found.
 </pre></div>
@@ -825,13 +837,14 @@ Ua = 0.0515 Watts/degC
 Ub = 0.0005 Watts/degC
 CpH = 6.8386 Joules/degC
 CpS = 0.01 Joules/degC
+ 
 </pre></div>
 </div>
 </div>
 </div>
 </section>
 <section id="parameter-estimation-with-parmest">
-<h2>Parameter Estimation with ParmEst<a class="headerlink" href="#parameter-estimation-with-parmest" title="Permalink to this heading">#</a></h2>
+<h2>Parameter Estimation with ParmEst<a class="headerlink" href="#parameter-estimation-with-parmest" title="Link to this heading">#</a></h2>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pyomo.contrib.parmest.parmest</span> <span class="k">as</span> <span class="nn">parmest</span>
@@ -875,8 +888,7 @@ This version of Ipopt was compiled using HSL, a collection of Fortran codes
         computation. See http://www.hsl.rl.ac.uk.
 ******************************************************************************
 
-This is Ipopt version 3.13.2, running with linear solver mumps.
-NOTE: Other linear solvers might be more efficient (see Ipopt documentation).
+This is Ipopt version 3.13.2, running with linear solver ma27.
 
 Number of nonzeros in equality constraint Jacobian...:    15301
 Number of nonzeros in inequality constraint Jacobian.:        0
@@ -915,16 +927,16 @@ iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
   18  2.4931145e+02 1.80e-07 1.31e-04  -3.8 1.14e-01    -  1.00e+00 1.00e+00h  1
   19  2.4931130e+02 5.23e-07 5.09e-06  -5.7 1.40e-01    -  1.00e+00 1.00e+00h  1
 iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
-  20  2.4931130e+02 1.10e-10 7.44e-09  -8.6 2.14e-03    -  1.00e+00 1.00e+00h  1
+  20  2.4931130e+02 1.10e-10 7.15e-09  -8.6 2.14e-03    -  1.00e+00 1.00e+00h  1
 
 Number of Iterations....: 20
 
                                    (scaled)                 (unscaled)
-Objective...............:   2.4931130187792564e+02    2.4931130187792564e+02
-Dual infeasibility......:   7.4449821210603169e-09    7.4449821210603169e-09
-Constraint violation....:   1.1029199775691723e-10    1.1029199775691723e-10
-Complementarity.........:   2.5886083464128528e-09    2.5886083464128528e-09
-Overall NLP error.......:   7.4449821210603169e-09    7.4449821210603169e-09
+Objective...............:   2.4931130187792567e+02    2.4931130187792567e+02
+Dual infeasibility......:   7.1544707616314029e-09    7.1544707616314029e-09
+Constraint violation....:   1.1029233082382461e-10    1.1029233082382461e-10
+Complementarity.........:   2.5886083464125124e-09    2.5886083464125124e-09
+Overall NLP error.......:   7.1544707616314029e-09    7.1544707616314029e-09
 
 
 Number of objective function evaluations             = 53
@@ -934,8 +946,8 @@ Number of inequality constraint evaluations          = 0
 Number of equality constraint Jacobian evaluations   = 21
 Number of inequality constraint Jacobian evaluations = 0
 Number of Lagrangian Hessian evaluations             = 20
-Total CPU secs in IPOPT (w/o function evaluations)   =      0.221
-Total CPU secs in NLP function evaluations           =      0.042
+Total CPU secs in IPOPT (w/o function evaluations)   =      0.179
+Total CPU secs in NLP function evaluations           =      0.017
 
 EXIT: Optimal Solution Found.
 </pre></div>
@@ -944,7 +956,7 @@ EXIT: Optimal Solution Found.
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">parmest_regression_results</span> <span class="o">=</span> <span class="n">extract_plot_results</span><span class="p">(</span><span class="n">tc_data</span><span class="p">,</span> <span class="n">pest</span><span class="o">.</span><span class="n">parmest_model</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">parmest_regression_results</span> <span class="o">=</span> <span class="n">extract_plot_results</span><span class="p">(</span><span class="n">tc_data</span><span class="p">,</span> <span class="n">pest</span><span class="o">.</span><span class="n">pest_deprecated</span><span class="o">.</span><span class="n">parmest_model</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -955,6 +967,7 @@ Ua = 0.0515 Watts/degC
 Ub = 0.0005 Watts/degC
 CpH = 6.8386 Joules/degC
 CpS = 0.01 Joules/degC
+ 
 </pre></div>
 </div>
 </div>
@@ -968,14 +981,14 @@ CpS = 0.01 Joules/degC
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Estimated parameters:
- {&#39;Ua&#39;: 0.05147278733764012, &#39;Ub&#39;: 0.0005342082856927798, &#39;inv_CpH&#39;: 0.14622879403418604, &#39;inv_CpS&#39;: 99.99999754623846}
+ {&#39;Ua&#39;: 0.05147278733764144, &#39;Ub&#39;: 0.0005342082803591553, &#39;inv_CpH&#39;: 0.14622879403174288, &#39;inv_CpS&#39;: 99.99999854623738}
 </pre></div>
 </div>
 </div>
 </div>
 </section>
 <section id="covariance-matrix">
-<h2>Covariance Matrix<a class="headerlink" href="#covariance-matrix" title="Permalink to this heading">#</a></h2>
+<h2>Covariance Matrix<a class="headerlink" href="#covariance-matrix" title="Link to this heading">#</a></h2>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Estimate the covariance matrix</span>
@@ -1008,8 +1021,7 @@ This version of Ipopt was compiled using HSL, a collection of Fortran codes
         computation. See http://www.hsl.rl.ac.uk.
 ******************************************************************************
 
-This is Ipopt version 3.13.2, running with linear solver mumps.
-NOTE: Other linear solvers might be more efficient (see Ipopt documentation).
+This is Ipopt version 3.13.2, running with linear solver ma27.
 
 Number of nonzeros in equality constraint Jacobian...:    15301
 Number of nonzeros in inequality constraint Jacobian.:        0
@@ -1048,16 +1060,16 @@ iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
   18  2.4931145e+02 1.80e-07 1.31e-04  -3.8 1.14e-01    -  1.00e+00 1.00e+00h  1
   19  2.4931130e+02 5.23e-07 5.10e-06  -5.7 1.40e-01    -  1.00e+00 1.00e+00h  1
 iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
-  20  2.4931130e+02 1.10e-10 7.16e-09  -8.6 2.14e-03    -  1.00e+00 1.00e+00h  1
+  20  2.4931130e+02 1.10e-10 7.33e-09  -8.6 2.14e-03    -  1.00e+00 1.00e+00h  1
 
 Number of Iterations....: 20
 
                                    (scaled)                 (unscaled)
-Objective...............:   2.4931130187898057e+02    2.4931130187898057e+02
-Dual infeasibility......:   7.1642132584458480e-09    7.1642132584458480e-09
-Constraint violation....:   1.1029199775691723e-10    1.1029199775691723e-10
-Complementarity.........:   2.5886072589443955e-09    2.5886072589443955e-09
-Overall NLP error.......:   7.1642132584458480e-09    7.1642132584458480e-09
+Objective...............:   2.4931130187898160e+02    2.4931130187898160e+02
+Dual infeasibility......:   7.3346699968806952e-09    7.3346699968806952e-09
+Constraint violation....:   1.1029177571231230e-10    1.1029177571231230e-10
+Complementarity.........:   2.5886072589459556e-09    2.5886072589459556e-09
+Overall NLP error.......:   7.3346699968806952e-09    7.3346699968806952e-09
 
 
 Number of objective function evaluations             = 53
@@ -1067,8 +1079,8 @@ Number of inequality constraint evaluations          = 0
 Number of equality constraint Jacobian evaluations   = 21
 Number of inequality constraint Jacobian evaluations = 0
 Number of Lagrangian Hessian evaluations             = 20
-Total CPU secs in IPOPT (w/o function evaluations)   =      0.238
-Total CPU secs in NLP function evaluations           =      0.060
+Total CPU secs in IPOPT (w/o function evaluations)   =      0.178
+Total CPU secs in NLP function evaluations           =      0.018
 
 EXIT: Optimal Solution Found.
 </pre></div>
@@ -1077,7 +1089,7 @@ EXIT: Optimal Solution Found.
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">parmest_regression_results2</span> <span class="o">=</span> <span class="n">extract_plot_results</span><span class="p">(</span><span class="n">tc_data</span><span class="p">,</span> <span class="n">pest</span><span class="o">.</span><span class="n">parmest_model</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">parmest_regression_results2</span> <span class="o">=</span> <span class="n">extract_plot_results</span><span class="p">(</span><span class="n">tc_data</span><span class="p">,</span> <span class="n">pest</span><span class="o">.</span><span class="n">pest_deprecated</span><span class="o">.</span><span class="n">parmest_model</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1088,6 +1100,7 @@ Ua = 0.0515 Watts/degC
 Ub = 0.0005 Watts/degC
 CpH = 6.8386 Joules/degC
 CpS = 0.01 Joules/degC
+ 
 </pre></div>
 </div>
 </div>
@@ -1168,6 +1181,7 @@ inv_CpS  7.737639e-13  6.894656e-09  3.246808e-09 -1.292939e-03
               
                 <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
 
+
   <div class="sidebar-secondary-item">
   <div class="page-toc tocsection onthispage">
     <i class="fa-solid fa-list"></i> Contents
@@ -1203,7 +1217,7 @@ By Alexander Dowling
 
   <p class="copyright">
     
-      © Copyright 2022.
+      © Copyright 2023.
       <br/>
     
   </p>
@@ -1227,8 +1241,8 @@ By Alexander Dowling
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="../_static/scripts/bootstrap.js?digest=5b4479735964841361fd"></script>
-<script src="../_static/scripts/pydata-sphinx-theme.js?digest=5b4479735964841361fd"></script>
+  <script src="../_static/scripts/bootstrap.js?digest=8d27b9dea8ad943066ae"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=8d27b9dea8ad943066ae"></script>
 
   <footer class="bd-footer">
   </footer>
