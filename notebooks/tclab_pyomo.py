@@ -86,19 +86,24 @@ if "google.colab" in sys.modules:
         _print_solver_versions()
 
     # Check if correct version of Pyomo is installed
-    try:
-        v = subprocess.run(
-            ["pyomo", "--version"], check=True, capture_output=True, text=True
-        )
-        if "pyomo-doe-fixes" in v.stdout:
-            reinstall_pyomo = False
-        else:
+    def _check_pyomo_installed():
+
+        try:
+            v = subprocess.run(
+                ["pyomo", "--version"], check=True, capture_output=True, text=True
+            )
+            if "pyomo-doe-fixes" in v.stdout:
+                reinstall_pyomo = False
+                print("Correct version of Pyomo.DoE is installed.")
+            else:
+                reinstall_pyomo = True
+        except FileNotFoundError:
             reinstall_pyomo = True
-    except FileNotFoundError:
-        reinstall_pyomo = True
+
+        return reinstall_pyomo
 
     # Install updated version of Pyomo
-    if reinstall_pyomo:
+    if _check_pyomo_installed():
         print("Installing updated version of Pyomo.DoE...")
         print("  (this takes up to 5 minutes)")
         v = subprocess.run(
@@ -110,6 +115,7 @@ if "google.colab" in sys.modules:
         if verbose:
             print(v.stdout)
             print(v.stderr)
+        _check_pyomo_installed()
     print("Finished installing software")
 
 ###### End note
