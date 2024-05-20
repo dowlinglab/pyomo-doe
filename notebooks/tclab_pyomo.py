@@ -183,12 +183,17 @@ def create_model(
     if mode not in valid_modes:
         raise ValueError("mode needs to be one of"+valid_modes+".")
     
+
     if mode == 'doe' and sine_amplitude is not None and sine_frequency is not None:
-        
-        print("Defining a sine wave control signal for sensitivity analysis.")
+
+        sine_frequency_max = 1/15
+        sine_frequency_min = 1/600
 
         assert sine_amplitude <= 50, "Sine amplitude must be less than 50."
         assert sine_amplitude >= 0, "Sine amplitude must be greater than 0."
+
+        assert sine_frequency <= sine_frequency_max, "Sine frequency must be less than " + str(sine_frequency_max)
+        assert sine_frequency >= sine_frequency_min, "Sine frequency must be greater than " + str(sine_frequency_min)
         
         # Create a copy to prevent overwriting the original data
         u1 = u1.copy()
@@ -433,7 +438,7 @@ def create_model(
     if mode == 'doe' and sine_amplitude is not None and sine_frequency is not None:
         
         # Add measurement control decision variables
-        m.u1_frequency = Var(initialize=sine_frequency)
+        m.u1_frequency = Var(initialize=sine_frequency, bounds = (sine_frequency_min, sine_frequency_max))
         m.u1_amplitude = Var(initialize=sine_amplitude)
 
         # Add constraint to calculate u1
@@ -638,6 +643,11 @@ def extract_plot_results(tc_exp_data, model):
         print("Uc =", round(value(model.Uc), 4), "Watts/degC")
     print("CpH =", round(1/value(model.inv_CpH), 4), "Joules/degC")
     print("CpS =", round(1/value(model.inv_CpS), 4), "Joules/degC")
+
+    if hasattr(model, 'u1_frequency'):
+        print("u1_frequency = ",round(value(model.u1_frequency),4)," Hz")
+    if hasattr(model, 'u1_amplitude'):
+        print("u1_amplitude = ",round(value(model.u1_amplitude),4), "% power")
 
     return pyomo_results
 
