@@ -53,9 +53,10 @@ def process_notebook(folder_original, folder_new, filename, remove_output=False,
     replace_code(SOLUTION_CODE, "# Add your solution here")
     replace_code(HIDDEN_TESTS, "# Removed autograder test. You may delete this cell.")
     
+    # Disabling this for now. Current examples have correct path hard coded with an if statement for colab
     OLD_DATA_PATH = "\.\./data/" # recall "\." escapes the "." character in regex
     NEW_DATA_PATH = "https://raw.githubusercontent.com/dowlinglab/pyomo-doe/main/notebooks/data/"    
-    replace_code(OLD_DATA_PATH, NEW_DATA_PATH)
+    # replace_code(OLD_DATA_PATH, NEW_DATA_PATH)
     
     ## Replace elements in markdown cells
     def replace_markdown(pattern, replacement):
