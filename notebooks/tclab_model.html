@@ -422,14 +422,14 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#temperature-control-lab">Temperature Control Lab</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#system-identification-data">System Identification Data</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#step-test">Step Test</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#sine-test">Sine Test</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#temperature-control-lab">Temperature control lab</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#system-identification-data">System identification data</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#step-test">Step test</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#sine-test">Sine test</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#two-state-mathematical-model">Two-State Mathematical Model</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#state-space-model">State Space Model</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#two-state-mathematical-model">Two-state mathematical model</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#state-space-model">State space model</a></li>
 </ul>
             </nav>
         </div>
@@ -445,16 +445,16 @@ document.write(`
 <h1>TCLab Mathematical Model<a class="headerlink" href="#tclab-mathematical-model" title="Link to this heading">#</a></h1>
 <p>We will use the TCLab as a motivating example for this workshop.</p>
 <section id="temperature-control-lab">
-<h2>Temperature Control Lab<a class="headerlink" href="#temperature-control-lab" title="Link to this heading">#</a></h2>
+<h2>Temperature control lab<a class="headerlink" href="#temperature-control-lab" title="Link to this heading">#</a></h2>
 <p>The <a class="reference external" href="http://apmonitor.com/pdc/index.php/Main/ArduinoTemperatureControl">temperature control lab</a> is an Arduino-based hands-on experiment for teaching dynamic modeling and process control developed by Prof. John Hedengren. At Notre Dame, we restructured our core <a class="reference external" href="https://ndcbe.github.io/controls/Readme.html">undergraduate process control class</a> around hands-on labratory assignments with the TCLab.</p>
 <p>The TCLab board contains two heater plus temperature sensor assemblies. Using Python (or MATLAB), students can independently maninputate the electrical power to each heater and sense the temperatures.</p>
 <p><img alt="TC Lab hardware" src="https://ndcbe.github.io/controls/_images/TCLab_labelled.jpg" /></p>
 </section>
 <section id="system-identification-data">
-<h2>System Identification Data<a class="headerlink" href="#system-identification-data" title="Link to this heading">#</a></h2>
+<h2>System identification data<a class="headerlink" href="#system-identification-data" title="Link to this heading">#</a></h2>
 <p>Using the TCLab, we performed two system identification tests: step test and sine wave test. Below are the resulting data.</p>
 <section id="step-test">
-<h3>Step Test<a class="headerlink" href="#step-test" title="Link to this heading">#</a></h3>
+<h3>Step test<a class="headerlink" href="#step-test" title="Link to this heading">#</a></h3>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">sys</span>
@@ -566,7 +566,7 @@ document.write(`
 </div>
 </section>
 <section id="sine-test">
-<h3>Sine Test<a class="headerlink" href="#sine-test" title="Link to this heading">#</a></h3>
+<h3>Sine test<a class="headerlink" href="#sine-test" title="Link to this heading">#</a></h3>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="n">on_colab</span><span class="p">:</span>
@@ -673,7 +673,7 @@ document.write(`
 </section>
 </section>
 <section id="two-state-mathematical-model">
-<h2>Two-State Mathematical Model<a class="headerlink" href="#two-state-mathematical-model" title="Link to this heading">#</a></h2>
+<h2>Two-state mathematical model<a class="headerlink" href="#two-state-mathematical-model" title="Link to this heading">#</a></h2>
 <p>Using these data, we want to develop a science-based mathematical model for the TCLab. For simplicity, we will focus on a single heater and temperature sensor assembly.</p>
 <p><img alt="TCLab schematic" src="../_images/tclab_schematic.jpg" /></p>
 <p>We will define two <strong>states</strong>:</p>
@@ -713,7 +713,7 @@ C^S_p\frac{dT_{S,1}}{dt} &amp; = U_b(T_{H,1} - T_{S,1})
 </ul>
 </section>
 <section id="state-space-model">
-<h2>State Space Model<a class="headerlink" href="#state-space-model" title="Link to this heading">#</a></h2>
+<h2>State space model<a class="headerlink" href="#state-space-model" title="Link to this heading">#</a></h2>
 <p>Although not essential for this tutorial, we can write this model a a state space linear system.</p>
 <p>The initial steady state is <span class="math notranslate nohighlight">\(T_{amb}\)</span>. So let’s write the dependent variables as excursions from the ambient temperature.</p>
 <div class="math notranslate nohighlight">
@@ -843,14 +843,14 @@ C = \begin{bmatrix}0 &amp; 1 \end{bmatrix} \\
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#temperature-control-lab">Temperature Control Lab</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#system-identification-data">System Identification Data</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#step-test">Step Test</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#sine-test">Sine Test</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#temperature-control-lab">Temperature control lab</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#system-identification-data">System identification data</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#step-test">Step test</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#sine-test">Sine test</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#two-state-mathematical-model">Two-State Mathematical Model</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#state-space-model">State Space Model</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#two-state-mathematical-model">Two-state mathematical model</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#state-space-model">State space model</a></li>
 </ul>
   </nav></div>
 
