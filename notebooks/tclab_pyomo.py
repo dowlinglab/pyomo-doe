@@ -11,6 +11,8 @@ import re
 
 import subprocess
 
+### -------------- Part 1: Install software -------------- ###
+
 ###### The code below was adapted from IDAES
 # And this covered under the IDAES license
 # https://github.com/IDAES/idaes-pse/blob/main/scripts/colab_helper.py
@@ -120,6 +122,8 @@ if "google.colab" in sys.modules:
 
 ###### End note
 
+### -------------- Part 2: Load libraries -------------- ###
+
 # Need to import IDAES for Ipopt
 import idaes
 
@@ -134,6 +138,8 @@ from pyomo.environ import ConcreteModel, Var, Param, Constraint, TransformationF
 from pyomo.dae import DerivativeVar, ContinuousSet, Simulator
 
 from dataclasses import dataclass
+
+### -------------- Part 3: Handling experimental data -------------- ###
 
 @dataclass
 class TCLabExperiment:
@@ -182,21 +188,7 @@ class TCLabExperiment:
 
         return df
 
-
-# Discretize using Pyomo.DAE
-def disc_for_measure(m):
-    """
-    Pyomo.DAE discretization
-
-    Arguments
-    ---------
-    m: Pyomo model
-
-    """
-
-    # Due to some enhancements in Pyomo, this function is no longer necessary
-    # It just needs to return the model
-    return m
+### -------------- Part 4: Construct Pyomo Model -------------- ###
 
 def create_model(
         m=None, # Pyomo mdoel
@@ -606,7 +598,8 @@ def create_model(
 
     if return_m:
         return m
-    
+
+### -------------- Part 5: Extract and visualize results -------------- ###
 
 def extract_results(model, name = "Pyomo results"):
     """ Extract results from the Pyomo model
