@@ -57,6 +57,8 @@
     <script async="async" src="_static/sphinx-thebe.js?v=c100c467"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'tclab';</script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -179,14 +181,11 @@
         <ul class="current nav bd-sidenav">
 <li class="toctree-l1 current active has-children"><a class="current reference internal" href="#">Modeling Example: TCLab</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="notebooks/tclab_model.html">TCLab Mathematical Model</a></li>
-<li class="toctree-l2"><a class="reference internal" href="notebooks/numpy_simulation.html">Numpy Simulation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="notebooks/pyomo_simulation.html">Pyomo Simulation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="notebooks/experimental_data.html">Experimental Data</a></li>
-<li class="toctree-l2"><a class="reference internal" href="notebooks/pyomo_helper_functions.html">Pyomo Helper Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/numpy_simulation.html">Prototyping the Model in Numpy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notebooks/pyomo_simulation.html">Modeling with Pyomo</a></li>
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="regression.html">Parameter Estimation</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-2"><i class="fa-solid fa-chevron-down"></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="notebooks/numpy_regression.html">Regression with Numpy</a></li>
 <li class="toctree-l2"><a class="reference internal" href="notebooks/parmest.html">Regression with ParmEst</a></li>
 <li class="toctree-l2"><a class="reference internal" href="notebooks/parmest_exercise.html">Exercise: ParmEst</a></li>
 </ul>
@@ -194,7 +193,6 @@
 <li class="toctree-l1 has-children"><a class="reference internal" href="mbdoe.html">Optimal Experiment Design</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-3"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="notebooks/doe_exploratory_analysis.html">Pyomo.DoE: Exploratory Analysis</a></li>
 <li class="toctree-l2"><a class="reference internal" href="notebooks/doe_optimize.html">Pyomo.DoE: Optimization</a></li>
-<li class="toctree-l2"><a class="reference internal" href="notebooks/doe_extras.html">Pyomo.DoE: Extra Features</a></li>
 <li class="toctree-l2"><a class="reference internal" href="notebooks/doe_exercise.html">Exercise: Pyomo.DoE</a></li>
 </ul>
 </li>
@@ -398,6 +396,11 @@ document.write(`
   <section class="tex2jax_ignore mathjax_ignore" id="modeling-example-tclab">
 <h1>Modeling Example: TCLab<a class="headerlink" href="#modeling-example-tclab" title="Link to this heading">#</a></h1>
 <div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="notebooks/tclab_model.html">TCLab Mathematical Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notebooks/numpy_simulation.html">Prototyping the Model in Numpy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notebooks/pyomo_simulation.html">Modeling with Pyomo</a></li>
+</ul>
 </div>
 </section>
 

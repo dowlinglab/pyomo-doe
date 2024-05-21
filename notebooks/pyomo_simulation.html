@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Pyomo Simulation &#8212; Pyomo.DoE Workshop and Tutorials</title>
+    <title>Modeling with Pyomo &#8212; Pyomo.DoE Workshop and Tutorials</title>
   
   
   
@@ -57,11 +57,13 @@
     <script async="async" src="../_static/sphinx-thebe.js?v=c100c467"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'notebooks/pyomo_simulation';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Experimental Data" href="experimental_data.html" />
-    <link rel="prev" title="Numpy Simulation" href="numpy_simulation.html" />
+    <link rel="next" title="Parameter Estimation" href="../regression.html" />
+    <link rel="prev" title="Prototyping the Model in Numpy" href="numpy_simulation.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -179,14 +181,11 @@
         <ul class="current nav bd-sidenav">
 <li class="toctree-l1 current active has-children"><a class="reference internal" href="../tclab.html">Modeling Example: TCLab</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="tclab_model.html">TCLab Mathematical Model</a></li>
-<li class="toctree-l2"><a class="reference internal" href="numpy_simulation.html">Numpy Simulation</a></li>
-<li class="toctree-l2 current active"><a class="current reference internal" href="#">Pyomo Simulation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="experimental_data.html">Experimental Data</a></li>
-<li class="toctree-l2"><a class="reference internal" href="pyomo_helper_functions.html">Pyomo Helper Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="numpy_simulation.html">Prototyping the Model in Numpy</a></li>
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">Modeling with Pyomo</a></li>
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../regression.html">Parameter Estimation</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-2"><i class="fa-solid fa-chevron-down"></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="numpy_regression.html">Regression with Numpy</a></li>
 <li class="toctree-l2"><a class="reference internal" href="parmest.html">Regression with ParmEst</a></li>
 <li class="toctree-l2"><a class="reference internal" href="parmest_exercise.html">Exercise: ParmEst</a></li>
 </ul>
@@ -194,7 +193,6 @@
 <li class="toctree-l1 has-children"><a class="reference internal" href="../mbdoe.html">Optimal Experiment Design</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-3"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="doe_exploratory_analysis.html">Pyomo.DoE: Exploratory Analysis</a></li>
 <li class="toctree-l2"><a class="reference internal" href="doe_optimize.html">Pyomo.DoE: Optimization</a></li>
-<li class="toctree-l2"><a class="reference internal" href="doe_extras.html">Pyomo.DoE: Extra Features</a></li>
 <li class="toctree-l2"><a class="reference internal" href="doe_exercise.html">Exercise: Pyomo.DoE</a></li>
 </ul>
 </li>
@@ -401,7 +399,9 @@ document.write(`
   </button>
 `);
 </script>
-
+<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</label>
 </div></div>
       
     </div>
@@ -412,11 +412,23 @@ document.write(`
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>Pyomo Simulation</h1>
+    <h1>Modeling with Pyomo</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
             
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#simulate-a-step-test-ramp">Simulate a Step Test (ramp)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#activity">Activity</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#feedforward-optimal-control">Feedforward Optimal Control</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#controlling-to-a-reference-tractory">Controlling to a Reference Tractory</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#take-away-messages">Take Away Messages</a></li>
+</ul>
+            </nav>
         </div>
     </div>
 </div>
@@ -426,8 +438,341 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section class="tex2jax_ignore mathjax_ignore" id="pyomo-simulation">
-<h1>Pyomo Simulation<a class="headerlink" href="#pyomo-simulation" title="Link to this heading">#</a></h1>
+  <section class="tex2jax_ignore mathjax_ignore" id="modeling-with-pyomo">
+<h1>Modeling with Pyomo<a class="headerlink" href="#modeling-with-pyomo" title="Link to this heading">#</a></h1>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Install Pyomo and solvers for Google Colab</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="k">if</span> <span class="s2">&quot;google.colab&quot;</span> <span class="ow">in</span> <span class="n">sys</span><span class="o">.</span><span class="n">modules</span><span class="p">:</span>
+    <span class="o">!</span>wget<span class="w"> </span>-N<span class="w"> </span>-q<span class="w"> </span>https://raw.githubusercontent.com/jckantor/MO-book/main/tools/install_on_colab.py<span class="w"> </span>
+    <span class="o">%</span><span class="k">run</span> install_on_colab.py
+</pre></div>
+</div>
+</div>
+</div>
+<p>This page is <a class="reference external" href="https://github.com/ndcbe/controls/blob/main/notebooks/06.02-Simulation-and-Open-Loop-Optimal-Control.ipynb">adapted from our process control class</a> at Notre Dame; it was developed by Prof. Jeff Kantor.</p>
+<p>Now we want to define our TCLab model in Pyomo. Recall the two-state model for a single heater/sensor assembly:</p>
+<div class="amsmath math notranslate nohighlight">
+\[\begin{align*}
+C_p^H \frac{dT_H}{dt} &amp; = U_a (T_{amb} - T_H) + U_b (T_S - T_H) + \alpha P u(t) + d(t)\\
+C_p^S \frac{dT_S}{dt} &amp; = - U_c (T_S - T_H) 
+\end{align*}\]</div>
+<p>Let’s start by defining some model coefficients:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># parameters</span>
+<span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.00016</span>       <span class="c1"># watts / (units P * percent U1)</span>
+<span class="n">P</span> <span class="o">=</span> <span class="mi">200</span>               <span class="c1"># P units</span>
+<span class="n">Ua</span> <span class="o">=</span> <span class="mf">0.050</span>            <span class="c1"># heat transfer coefficient from heater to environment</span>
+<span class="n">CpH</span> <span class="o">=</span> <span class="mf">2.2</span>             <span class="c1"># heat capacity of the heater (J/deg C)</span>
+<span class="n">CpS</span> <span class="o">=</span> <span class="mf">1.9</span>             <span class="c1"># heat capacity of the sensor (J/deg C)</span>
+<span class="n">Ub</span> <span class="o">=</span> <span class="mf">0.021</span>            <span class="c1"># heat transfer coefficient from heater to sensor</span>
+<span class="n">Tamb</span> <span class="o">=</span> <span class="mf">21.0</span>           <span class="c1"># ambient temperature</span>
+</pre></div>
+</div>
+</div>
+</div>
+<section id="simulate-a-step-test-ramp">
+<h2>Simulate a Step Test (ramp)<a class="headerlink" href="#simulate-a-step-test-ramp" title="Link to this heading">#</a></h2>
+<p>Let’s establish a goal of bringing the heater temperature to 60 deg C.  Let’s see how well an initial guess at a control strategy will work for us subject to initial conditions</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{align*}
+T_H(t_0) &amp; = T_{amb} \\
+T_S(t_0) &amp; = T_{amb}
+\end{align*}
+\end{split}\]</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># final time [seconds]</span>
+<span class="n">tf</span> <span class="o">=</span> <span class="mi">200</span>
+
+<span class="c1"># control input [%]</span>
+<span class="n">u</span> <span class="o">=</span> <span class="mf">50.0</span>
+
+<span class="c1"># import Pyomo library</span>
+<span class="kn">import</span> <span class="nn">pyomo.environ</span> <span class="k">as</span> <span class="nn">pyo</span>
+<span class="kn">import</span> <span class="nn">pyomo.dae</span> <span class="k">as</span> <span class="nn">dae</span>
+
+<span class="c1"># Create a Pyomo model</span>
+<span class="n">m</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">ConcreteModel</span><span class="p">(</span><span class="s1">&#39;TCLab Heater/Sensor&#39;</span><span class="p">)</span>
+
+<span class="c1"># Define time domain</span>
+<span class="n">m</span><span class="o">.</span><span class="n">t</span> <span class="o">=</span> <span class="n">dae</span><span class="o">.</span><span class="n">ContinuousSet</span><span class="p">(</span><span class="n">bounds</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">tf</span><span class="p">))</span>
+
+<span class="c1"># Define the state variables as a function of time</span>
+<span class="n">m</span><span class="o">.</span><span class="n">Th</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Var</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">t</span><span class="p">)</span>
+<span class="n">m</span><span class="o">.</span><span class="n">Ts</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Var</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">t</span><span class="p">)</span>
+
+<span class="c1"># Define the derivatives of the state variables</span>
+<span class="n">m</span><span class="o">.</span><span class="n">dTh</span> <span class="o">=</span> <span class="n">dae</span><span class="o">.</span><span class="n">DerivativeVar</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">Th</span><span class="p">)</span>
+<span class="n">m</span><span class="o">.</span><span class="n">dTs</span> <span class="o">=</span> <span class="n">dae</span><span class="o">.</span><span class="n">DerivativeVar</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">Ts</span><span class="p">)</span>
+
+<span class="c1"># Define the first differential equation</span>
+<span class="nd">@m</span><span class="o">.</span><span class="n">Constraint</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">t</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">heater1</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">CpH</span> <span class="o">*</span> <span class="n">m</span><span class="o">.</span><span class="n">dTh</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="o">==</span> <span class="n">Ua</span> <span class="o">*</span><span class="p">(</span><span class="n">Tamb</span> <span class="o">-</span> <span class="n">m</span><span class="o">.</span><span class="n">Th</span><span class="p">[</span><span class="n">t</span><span class="p">])</span> <span class="o">+</span> <span class="n">Ub</span><span class="o">*</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">Ts</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="o">-</span> <span class="n">m</span><span class="o">.</span><span class="n">Th</span><span class="p">[</span><span class="n">t</span><span class="p">])</span> <span class="o">+</span> <span class="n">alpha</span><span class="o">*</span><span class="n">P</span><span class="o">*</span><span class="n">u</span>
+
+<span class="c1"># Define the second differential equation</span>
+<span class="nd">@m</span><span class="o">.</span><span class="n">Constraint</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">t</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">sensor1</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">CpS</span> <span class="o">*</span> <span class="n">m</span><span class="o">.</span><span class="n">dTs</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="o">==</span> <span class="n">Ub</span> <span class="o">*</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">Th</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="o">-</span> <span class="n">m</span><span class="o">.</span><span class="n">Ts</span><span class="p">[</span><span class="n">t</span><span class="p">])</span> 
+
+<span class="c1"># Set the initial conditions</span>
+<span class="n">m</span><span class="o">.</span><span class="n">Th</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">fix</span><span class="p">(</span><span class="n">Tamb</span><span class="p">)</span>
+<span class="n">m</span><span class="o">.</span><span class="n">Ts</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">fix</span><span class="p">(</span><span class="n">Tamb</span><span class="p">)</span>
+
+<span class="c1"># Apply a finite difference formula to numerically integrate the differential equations</span>
+<span class="n">pyo</span><span class="o">.</span><span class="n">TransformationFactory</span><span class="p">(</span><span class="s1">&#39;dae.finite_difference&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">apply_to</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">nfe</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">wrt</span><span class="o">=</span><span class="n">m</span><span class="o">.</span><span class="n">t</span><span class="p">)</span>
+
+<span class="c1"># Call our nonlinear optimization/equation solver, Ipopt</span>
+<span class="n">pyo</span><span class="o">.</span><span class="n">SolverFactory</span><span class="p">(</span><span class="s1">&#39;ipopt&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
+
+<span class="c1"># Plot the results</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">6</span><span class="p">),</span> <span class="n">sharex</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="c1"># Plot 1: Temperature</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">t</span><span class="p">,</span> <span class="p">[</span><span class="n">m</span><span class="o">.</span><span class="n">Th</span><span class="p">[</span><span class="n">t</span><span class="p">]()</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">m</span><span class="o">.</span><span class="n">t</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Th&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">t</span><span class="p">,</span> <span class="p">[</span><span class="n">m</span><span class="o">.</span><span class="n">Ts</span><span class="p">[</span><span class="n">t</span><span class="p">]()</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">m</span><span class="o">.</span><span class="n">t</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Ts&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;Temperature&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">grid</span><span class="p">()</span>
+
+<span class="c1"># Plot 2: Heater Power</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">axhline</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Power&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;Time&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;Heater Power&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">grid</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/5df2454a727cd5387d019b3e8171f1ed5c4374e672fa4f629d5df867ad7536af.png" src="../_images/5df2454a727cd5387d019b3e8171f1ed5c4374e672fa4f629d5df867ad7536af.png" />
+</div>
+</div>
+</section>
+<section id="activity">
+<h2>Activity<a class="headerlink" href="#activity" title="Link to this heading">#</a></h2>
+<p>Modify the code above to find the value for <code class="docutils literal notranslate"><span class="pre">u</span></code> that causes <code class="docutils literal notranslate"><span class="pre">Th</span></code> to reach 60 deg C at the final time.</p>
+</section>
+<section id="feedforward-optimal-control">
+<h2>Feedforward Optimal Control<a class="headerlink" href="#feedforward-optimal-control" title="Link to this heading">#</a></h2>
+<p>An optimal control policy minimizes the differences</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{align*}
+\min_{u} \int_{t_0}^{t_f} \|SP(t) - T_H(t)\|^2\,dt \\
+\end{align*}
+\end{split}\]</div>
+<p>subject to constraints</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{align*}
+C_p^H \frac{dT_H}{dt} &amp; = U_a (T_{amb} - T_H) + U_c (T_S - T_H) + \alpha P u(t)\\
+C_p^S \frac{dT_S}{dt} &amp; = - U_c (T_S - T_H)  \\
+\\
+\text{control limits}\qquad0 \leq u(t) &amp; \leq 100.0
+\\
+\text{initial condition}\qquad T_H(t_0) &amp; = T_{amb} \\
+\text{initial condition}\qquad T_S(t_0) &amp; = T_{amb}
+\end{align*}
+\end{split}\]</div>
+<p>and prior knowledge of <span class="math notranslate nohighlight">\(d(t)\)</span>. Note that <code class="docutils literal notranslate"><span class="pre">pyomo.dae</span></code> has an <code class="docutils literal notranslate"><span class="pre">Integral</span></code> object to help with these situations.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Set point, deg C</span>
+<span class="n">SP</span> <span class="o">=</span> <span class="mf">60.0</span>
+
+<span class="c1"># Final time, seconds</span>
+<span class="n">tf</span> <span class="o">=</span> <span class="mf">500.0</span>
+
+<span class="c1"># Create a Pyomo model</span>
+<span class="n">m</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">ConcreteModel</span><span class="p">(</span><span class="s1">&#39;TCLab Heater/Sensor&#39;</span><span class="p">)</span>
+
+<span class="c1"># Define time domain</span>
+<span class="n">m</span><span class="o">.</span><span class="n">t</span> <span class="o">=</span> <span class="n">dae</span><span class="o">.</span><span class="n">ContinuousSet</span><span class="p">(</span><span class="n">bounds</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">tf</span><span class="p">))</span>
+
+<span class="c1"># Define the state variables as a function of time</span>
+<span class="n">m</span><span class="o">.</span><span class="n">Th1</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Var</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">t</span><span class="p">)</span>
+<span class="n">m</span><span class="o">.</span><span class="n">Ts1</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Var</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">t</span><span class="p">)</span>
+
+<span class="c1"># Define the derivatives of the state variables</span>
+<span class="n">m</span><span class="o">.</span><span class="n">dTh1</span> <span class="o">=</span> <span class="n">dae</span><span class="o">.</span><span class="n">DerivativeVar</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">Th1</span><span class="p">)</span>
+<span class="n">m</span><span class="o">.</span><span class="n">dTs1</span> <span class="o">=</span> <span class="n">dae</span><span class="o">.</span><span class="n">DerivativeVar</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">Ts1</span><span class="p">)</span>
+
+<span class="c1"># Define the control variable (heater power) as a function of time</span>
+<span class="n">m</span><span class="o">.</span><span class="n">u1</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Var</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">t</span><span class="p">,</span> <span class="n">bounds</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">))</span>
+
+<span class="c1"># Define the integral of the squared error</span>
+<span class="nd">@m</span><span class="o">.</span><span class="n">Integral</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">t</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">ise</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">SP</span> <span class="o">-</span> <span class="n">m</span><span class="o">.</span><span class="n">Th1</span><span class="p">[</span><span class="n">t</span><span class="p">])</span><span class="o">**</span><span class="mi">2</span>
+
+<span class="c1"># Define the first differential equation</span>
+<span class="nd">@m</span><span class="o">.</span><span class="n">Constraint</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">t</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">heater1</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">CpH</span> <span class="o">*</span> <span class="n">m</span><span class="o">.</span><span class="n">dTh1</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="o">==</span> <span class="n">Ua</span> <span class="o">*</span><span class="p">(</span><span class="n">Tamb</span> <span class="o">-</span> <span class="n">m</span><span class="o">.</span><span class="n">Th1</span><span class="p">[</span><span class="n">t</span><span class="p">])</span> <span class="o">+</span> <span class="n">Ub</span><span class="o">*</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">Ts1</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="o">-</span> <span class="n">m</span><span class="o">.</span><span class="n">Th1</span><span class="p">[</span><span class="n">t</span><span class="p">])</span> <span class="o">+</span> <span class="n">alpha</span><span class="o">*</span><span class="n">P</span><span class="o">*</span><span class="n">m</span><span class="o">.</span><span class="n">u1</span><span class="p">[</span><span class="n">t</span><span class="p">]</span>
+
+<span class="c1"># Define the second differential equation</span>
+<span class="nd">@m</span><span class="o">.</span><span class="n">Constraint</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">t</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">sensor1</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">CpS</span> <span class="o">*</span> <span class="n">m</span><span class="o">.</span><span class="n">dTs1</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="o">==</span> <span class="n">Ub</span> <span class="o">*</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">Th1</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="o">-</span> <span class="n">m</span><span class="o">.</span><span class="n">Ts1</span><span class="p">[</span><span class="n">t</span><span class="p">])</span> 
+
+<span class="c1"># Set the initial conditions</span>
+<span class="n">m</span><span class="o">.</span><span class="n">Th1</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">fix</span><span class="p">(</span><span class="n">Tamb</span><span class="p">)</span>
+<span class="n">m</span><span class="o">.</span><span class="n">Ts1</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">fix</span><span class="p">(</span><span class="n">Tamb</span><span class="p">)</span>
+                           
+<span class="c1"># Define the objective function</span>
+<span class="nd">@m</span><span class="o">.</span><span class="n">Objective</span><span class="p">(</span><span class="n">sense</span><span class="o">=</span><span class="n">pyo</span><span class="o">.</span><span class="n">minimize</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">objective</span><span class="p">(</span><span class="n">m</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">m</span><span class="o">.</span><span class="n">ise</span>
+
+<span class="c1"># Apply a collocation method to numerically integrate the differential equations</span>
+<span class="n">pyo</span><span class="o">.</span><span class="n">TransformationFactory</span><span class="p">(</span><span class="s1">&#39;dae.collocation&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">apply_to</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">nfe</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span> <span class="n">wrt</span><span class="o">=</span><span class="n">m</span><span class="o">.</span><span class="n">t</span><span class="p">)</span>
+
+<span class="c1"># Call our nonlinear optimization/equation solver, Ipopt</span>
+<span class="n">pyo</span><span class="o">.</span><span class="n">SolverFactory</span><span class="p">(</span><span class="s1">&#39;ipopt&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
+
+<span class="c1"># Plot the results</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">t</span><span class="p">,</span> <span class="p">[</span><span class="n">m</span><span class="o">.</span><span class="n">Th1</span><span class="p">[</span><span class="n">t</span><span class="p">]()</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">m</span><span class="o">.</span><span class="n">t</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Th1&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">t</span><span class="p">,</span> <span class="p">[</span><span class="n">m</span><span class="o">.</span><span class="n">Ts1</span><span class="p">[</span><span class="n">t</span><span class="p">]()</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">m</span><span class="o">.</span><span class="n">t</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Ts1&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;Time&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;Temperature&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">grid</span><span class="p">()</span>
+
+<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">t</span><span class="p">,</span> <span class="p">[</span><span class="n">m</span><span class="o">.</span><span class="n">u1</span><span class="p">[</span><span class="n">t</span><span class="p">]()</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">m</span><span class="o">.</span><span class="n">t</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;U1&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">grid</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/993782bd15fc51728f5dea4f8366527fde2c74dca996fe315fd5dc7234250c78.png" src="../_images/993782bd15fc51728f5dea4f8366527fde2c74dca996fe315fd5dc7234250c78.png" />
+</div>
+</div>
+</section>
+<section id="controlling-to-a-reference-tractory">
+<h2>Controlling to a Reference Tractory<a class="headerlink" href="#controlling-to-a-reference-tractory" title="Link to this heading">#</a></h2>
+<p>The reference trajectory is a sequence of ramp/soak intervals.  Python function <code class="docutils literal notranslate"><span class="pre">r(t)</span></code> uses <code class="docutils literal notranslate"><span class="pre">numpy.interp</span></code> to compute values of the reference trajectory at any point in time.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="c1"># time grid</span>
+<span class="n">tf</span> <span class="o">=</span> <span class="mi">1000</span>
+<span class="n">dt</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="n">n</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">tf</span><span class="o">/</span><span class="n">dt</span><span class="p">)</span>
+<span class="n">t_grid</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1000</span><span class="p">,</span> <span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="c1"># ambient temperature</span>
+<span class="n">Tamb</span> <span class="o">=</span> <span class="mi">21</span>
+
+<span class="c1"># setpoint/reference</span>
+<span class="k">def</span> <span class="nf">r</span><span class="p">(</span><span class="n">t</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">interp</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">150</span><span class="p">,</span> <span class="mi">450</span><span class="p">,</span> <span class="mi">550</span><span class="p">],</span> <span class="p">[</span><span class="n">Tamb</span><span class="p">,</span> <span class="n">Tamb</span><span class="p">,</span> <span class="mi">60</span><span class="p">,</span> <span class="mi">60</span><span class="p">,</span> <span class="mi">35</span><span class="p">])</span>
+
+<span class="c1"># plot function</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t_grid</span><span class="p">,</span> <span class="n">r</span><span class="p">(</span><span class="n">t_grid</span><span class="p">),</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;setpoint&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;setpoint&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;deg C&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/0dd3a29a1fe6a87e12cf5ebf479e2d8835c790421a168197d252c3fb915a13dc.png" src="../_images/0dd3a29a1fe6a87e12cf5ebf479e2d8835c790421a168197d252c3fb915a13dc.png" />
+</div>
+</div>
+<p>Now let’s solve the optimal control problem to find a control policy <span class="math notranslate nohighlight">\(u(t)\)</span> for the interval <span class="math notranslate nohighlight">\(0 \leq t \leq t_f\)</span> which causes the output <span class="math notranslate nohighlight">\(y(t)\)</span> to track a desired setpoint or reference tracjectory <span class="math notranslate nohighlight">\(r(t)\)</span>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create a Pyomo model</span>
+<span class="n">m</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">ConcreteModel</span><span class="p">(</span><span class="s1">&#39;TCLab Heater/Sensor&#39;</span><span class="p">)</span>
+
+<span class="c1"># Define time domain</span>
+<span class="n">m</span><span class="o">.</span><span class="n">t</span> <span class="o">=</span> <span class="n">dae</span><span class="o">.</span><span class="n">ContinuousSet</span><span class="p">(</span><span class="n">bounds</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">tf</span><span class="p">))</span>
+
+<span class="c1"># Define the state variables as a function of time</span>
+<span class="n">m</span><span class="o">.</span><span class="n">Th1</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Var</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">t</span><span class="p">)</span>
+<span class="n">m</span><span class="o">.</span><span class="n">Ts1</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Var</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">t</span><span class="p">)</span>
+
+<span class="c1"># Define the derivatives of the state variables</span>
+<span class="n">m</span><span class="o">.</span><span class="n">dTh1</span> <span class="o">=</span> <span class="n">dae</span><span class="o">.</span><span class="n">DerivativeVar</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">Th1</span><span class="p">)</span>
+<span class="n">m</span><span class="o">.</span><span class="n">dTs1</span> <span class="o">=</span> <span class="n">dae</span><span class="o">.</span><span class="n">DerivativeVar</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">Ts1</span><span class="p">)</span>
+
+<span class="c1"># Define the control variable (heater power) as a function of time</span>
+<span class="n">m</span><span class="o">.</span><span class="n">u1</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Var</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">t</span><span class="p">,</span> <span class="n">bounds</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">))</span>
+
+<span class="c1"># Define the integral of the squared error</span>
+<span class="nd">@m</span><span class="o">.</span><span class="n">Integral</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">t</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">ise</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">r</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="o">-</span> <span class="n">m</span><span class="o">.</span><span class="n">Th1</span><span class="p">[</span><span class="n">t</span><span class="p">])</span><span class="o">**</span><span class="mi">2</span>
+
+<span class="c1"># Define the first differential equation</span>
+<span class="nd">@m</span><span class="o">.</span><span class="n">Constraint</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">t</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">heater1</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">CpH</span> <span class="o">*</span> <span class="n">m</span><span class="o">.</span><span class="n">dTh1</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="o">==</span> <span class="n">Ua</span> <span class="o">*</span><span class="p">(</span><span class="n">Tamb</span> <span class="o">-</span> <span class="n">m</span><span class="o">.</span><span class="n">Th1</span><span class="p">[</span><span class="n">t</span><span class="p">])</span> <span class="o">+</span> <span class="n">Ub</span><span class="o">*</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">Ts1</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="o">-</span> <span class="n">m</span><span class="o">.</span><span class="n">Th1</span><span class="p">[</span><span class="n">t</span><span class="p">])</span> <span class="o">+</span> <span class="n">alpha</span><span class="o">*</span><span class="n">P</span><span class="o">*</span><span class="n">m</span><span class="o">.</span><span class="n">u1</span><span class="p">[</span><span class="n">t</span><span class="p">]</span>
+
+<span class="c1"># Define the second differential equation</span>
+<span class="nd">@m</span><span class="o">.</span><span class="n">Constraint</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">t</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">sensor1</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">CpS</span> <span class="o">*</span> <span class="n">m</span><span class="o">.</span><span class="n">dTs1</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="o">==</span> <span class="n">Ub</span> <span class="o">*</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">Th1</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="o">-</span> <span class="n">m</span><span class="o">.</span><span class="n">Ts1</span><span class="p">[</span><span class="n">t</span><span class="p">])</span> 
+
+<span class="c1"># Fix the initial conditions</span>
+<span class="n">m</span><span class="o">.</span><span class="n">Th1</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">fix</span><span class="p">(</span><span class="n">Tamb</span><span class="p">)</span>
+<span class="n">m</span><span class="o">.</span><span class="n">Ts1</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">fix</span><span class="p">(</span><span class="n">Tamb</span><span class="p">)</span>
+                           
+<span class="c1"># Define the objective function</span>
+<span class="nd">@m</span><span class="o">.</span><span class="n">Objective</span><span class="p">(</span><span class="n">sense</span><span class="o">=</span><span class="n">pyo</span><span class="o">.</span><span class="n">minimize</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">objective</span><span class="p">(</span><span class="n">m</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">m</span><span class="o">.</span><span class="n">ise</span>
+
+<span class="c1"># Apply a collocation method to numerically integrate the differential equations</span>
+<span class="n">pyo</span><span class="o">.</span><span class="n">TransformationFactory</span><span class="p">(</span><span class="s1">&#39;dae.collocation&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">apply_to</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">nfe</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span> <span class="n">wrt</span><span class="o">=</span><span class="n">m</span><span class="o">.</span><span class="n">t</span><span class="p">)</span>
+
+<span class="c1"># Call our nonlinear optimization/equation solver, Ipopt</span>
+<span class="n">pyo</span><span class="o">.</span><span class="n">SolverFactory</span><span class="p">(</span><span class="s1">&#39;ipopt&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
+
+<span class="c1"># Plot the results</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">t</span><span class="p">,</span> <span class="p">[</span><span class="n">m</span><span class="o">.</span><span class="n">Th1</span><span class="p">[</span><span class="n">t</span><span class="p">]()</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">m</span><span class="o">.</span><span class="n">t</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Th1&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">t</span><span class="p">,</span> <span class="p">[</span><span class="n">m</span><span class="o">.</span><span class="n">Ts1</span><span class="p">[</span><span class="n">t</span><span class="p">]()</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">m</span><span class="o">.</span><span class="n">t</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Ts1&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;Time&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;Temperature&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">grid</span><span class="p">()</span>
+
+<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">t</span><span class="p">,</span> <span class="p">[</span><span class="n">m</span><span class="o">.</span><span class="n">u1</span><span class="p">[</span><span class="n">t</span><span class="p">]()</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">m</span><span class="o">.</span><span class="n">t</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;U1&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">grid</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/1d4bc4103475d04cb1c54d212f74862a91041208efeeba9f57793848fc243088.png" src="../_images/1d4bc4103475d04cb1c54d212f74862a91041208efeeba9f57793848fc243088.png" />
+</div>
+</div>
+</section>
+<section id="take-away-messages">
+<h2>Take Away Messages<a class="headerlink" href="#take-away-messages" title="Link to this heading">#</a></h2>
+<p>This example shows two things:</p>
+<ol class="arabic simple">
+<li><p>Pyomo is a great environment to formulate and solve optimization problems.</p></li>
+<li><p>Predictive models are critical for intelligent decision making.</p></li>
+</ol>
+<p>For the result of the workshop, we will use Pyomo to:</p>
+<ol class="arabic simple">
+<li><p>Estimate the model parameters in the TCLab model from experimental data.</p></li>
+<li><p>Determine the most informative next experiment to reduce uncertainty in the model parameters.</p></li>
+</ol>
+<p>To simplify the code, we have prepared some helper functions to assemble Pyomo models and manipulate data. Please spend the next 10 minutes studying <a class="reference external" href="https://github.com/dowlinglab/pyomo-doe/blob/main/notebooks/tclab_pyomo.py">tcklab_pyomo.py</a></p>
+</section>
 </section>
 
     <script type="text/x-thebe-config">
@@ -466,15 +811,15 @@ document.write(`
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Numpy Simulation</p>
+        <p class="prev-next-title">Prototyping the Model in Numpy</p>
       </div>
     </a>
     <a class="right-next"
-       href="experimental_data.html"
+       href="../regression.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Experimental Data</p>
+        <p class="prev-next-title">Parameter Estimation</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -485,7 +830,24 @@ document.write(`
             
             
               
-                <div class="bd-sidebar-secondary bd-toc"></div>
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#simulate-a-step-test-ramp">Simulate a Step Test (ramp)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#activity">Activity</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#feedforward-optimal-control">Feedforward Optimal Control</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#controlling-to-a-reference-tractory">Controlling to a Reference Tractory</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#take-away-messages">Take Away Messages</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
               
             
           </div>

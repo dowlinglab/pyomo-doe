@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Numpy Simulation &#8212; Pyomo.DoE Workshop and Tutorials</title>
+    <title>Prototyping the Model in Numpy &#8212; Pyomo.DoE Workshop and Tutorials</title>
   
   
   
@@ -60,7 +60,7 @@
     <script>DOCUMENTATION_OPTIONS.pagename = 'notebooks/numpy_simulation';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Pyomo Simulation" href="pyomo_simulation.html" />
+    <link rel="next" title="Modeling with Pyomo" href="pyomo_simulation.html" />
     <link rel="prev" title="TCLab Mathematical Model" href="tclab_model.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
@@ -179,14 +179,11 @@
         <ul class="current nav bd-sidenav">
 <li class="toctree-l1 current active has-children"><a class="reference internal" href="../tclab.html">Modeling Example: TCLab</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="tclab_model.html">TCLab Mathematical Model</a></li>
-<li class="toctree-l2 current active"><a class="current reference internal" href="#">Numpy Simulation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="pyomo_simulation.html">Pyomo Simulation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="experimental_data.html">Experimental Data</a></li>
-<li class="toctree-l2"><a class="reference internal" href="pyomo_helper_functions.html">Pyomo Helper Functions</a></li>
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">Prototyping the Model in Numpy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyomo_simulation.html">Modeling with Pyomo</a></li>
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../regression.html">Parameter Estimation</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-2"><i class="fa-solid fa-chevron-down"></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="numpy_regression.html">Regression with Numpy</a></li>
 <li class="toctree-l2"><a class="reference internal" href="parmest.html">Regression with ParmEst</a></li>
 <li class="toctree-l2"><a class="reference internal" href="parmest_exercise.html">Exercise: ParmEst</a></li>
 </ul>
@@ -194,7 +191,6 @@
 <li class="toctree-l1 has-children"><a class="reference internal" href="../mbdoe.html">Optimal Experiment Design</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-3"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="doe_exploratory_analysis.html">Pyomo.DoE: Exploratory Analysis</a></li>
 <li class="toctree-l2"><a class="reference internal" href="doe_optimize.html">Pyomo.DoE: Optimization</a></li>
-<li class="toctree-l2"><a class="reference internal" href="doe_extras.html">Pyomo.DoE: Extra Features</a></li>
 <li class="toctree-l2"><a class="reference internal" href="doe_exercise.html">Exercise: Pyomo.DoE</a></li>
 </ul>
 </li>
@@ -401,7 +397,9 @@ document.write(`
   </button>
 `);
 </script>
-
+<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</label>
 </div></div>
       
     </div>
@@ -412,11 +410,26 @@ document.write(`
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>Numpy Simulation</h1>
+    <h1>Prototyping the Model in Numpy</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
             
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#numpy-simulation">Numpy Simulation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#parameter-estimation-step-test">Parameter Estimation: Step Test</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#load-data-step-test">Load data (step test)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#nonlinear-regression-and-uncertainty-analysis">Nonlinear regression and uncertainty analysis</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#parameter-estimation-sine-test">Parameter Estimation: Sine Test</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#take-away-messasge">Take Away Messasge</a></li>
+</ul>
+            </nav>
         </div>
     </div>
 </div>
@@ -426,8 +439,617 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section class="tex2jax_ignore mathjax_ignore" id="numpy-simulation">
-<h1>Numpy Simulation<a class="headerlink" href="#numpy-simulation" title="Link to this heading">#</a></h1>
+  <section class="tex2jax_ignore mathjax_ignore" id="prototyping-the-model-in-numpy">
+<h1>Prototyping the Model in Numpy<a class="headerlink" href="#prototyping-the-model-in-numpy" title="Link to this heading">#</a></h1>
+<p>Now let’s simulate our <a class="reference internal" href="tclab_model.html"><span class="std std-doc">mathematical model</span></a> using numpy.</p>
+<section id="numpy-simulation">
+<h2>Numpy Simulation<a class="headerlink" href="#numpy-simulation" title="Link to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">scipy.integrate</span> <span class="kn">import</span> <span class="n">solve_ivp</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+<span class="c1"># known parameters</span>
+<span class="n">T_amb</span> <span class="o">=</span> <span class="mi">21</span>             <span class="c1"># deg C</span>
+<span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.00016</span>        <span class="c1"># watts / (units P1 * percent U1)</span>
+<span class="n">P1</span> <span class="o">=</span> <span class="mi">200</span>               <span class="c1"># P1 units</span>
+
+<span class="c1"># adjustable parameters</span>
+<span class="n">CpH</span> <span class="o">=</span> <span class="mi">7</span>                <span class="c1"># joules/deg C</span>
+<span class="n">CpS</span> <span class="o">=</span> <span class="mf">0.01</span>              <span class="c1"># joules/deg C</span>
+<span class="n">Ua</span> <span class="o">=</span> <span class="mf">0.05</span>              <span class="c1"># watts/deg C</span>
+<span class="n">Ub</span> <span class="o">=</span> <span class="mf">0.001</span>              <span class="c1"># watts/deg C</span>
+
+<span class="c1"># initial conditions</span>
+<span class="n">TH1</span> <span class="o">=</span> <span class="n">T_amb</span>
+<span class="n">TS1</span> <span class="o">=</span> <span class="n">T_amb</span>
+<span class="n">IC</span> <span class="o">=</span> <span class="p">[</span><span class="n">TH1</span><span class="p">,</span> <span class="n">TS1</span><span class="p">]</span>
+
+<span class="c1"># input values</span>
+<span class="n">U1</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">t</span><span class="p">:</span> <span class="mi">50</span>                <span class="c1"># steady state value of u1 (percent)</span>
+
+<span class="c1"># extract data from experiment</span>
+<span class="n">t_expt</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">600</span><span class="p">,</span> <span class="mi">601</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">tclab_ode</span><span class="p">(</span><span class="n">theta</span><span class="p">,</span> <span class="n">U1</span><span class="p">,</span> <span class="n">T_amb</span><span class="p">,</span> <span class="n">t_expt</span><span class="p">,</span> <span class="n">return_data_frame</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39; ODE system for TCLab</span>
+
+<span class="sd">    Arguments:</span>
+<span class="sd">        theta: list fitted parameters CpH, CpS, Ua, Ub</span>
+<span class="sd">        U1: function that returns the value of U1 at time t</span>
+<span class="sd">        T_amb: ambient temperature</span>
+<span class="sd">        t_expt: time values for the experiment</span>
+
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="c1"># unpack the adjustable parameters</span>
+    <span class="n">Ua</span><span class="p">,</span> <span class="n">Ub</span><span class="p">,</span> <span class="n">inv_CpH</span><span class="p">,</span> <span class="n">inv_CpS</span> <span class="o">=</span> <span class="n">theta</span>
+
+    <span class="c1"># right hand side of the ODEs</span>
+    <span class="k">def</span> <span class="nf">deriv</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="n">TH1</span><span class="p">,</span> <span class="n">TS1</span> <span class="o">=</span> <span class="n">y</span>
+        <span class="n">dTH1</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="n">Ua</span><span class="o">*</span><span class="p">(</span><span class="n">TH1</span> <span class="o">-</span> <span class="n">T_amb</span><span class="p">)</span> <span class="o">+</span> <span class="n">Ub</span><span class="o">*</span><span class="p">(</span><span class="n">TS1</span> <span class="o">-</span> <span class="n">TH1</span><span class="p">)</span> <span class="o">+</span> <span class="n">alpha</span><span class="o">*</span><span class="n">P1</span><span class="o">*</span><span class="n">U1</span><span class="p">(</span><span class="n">t</span><span class="p">))</span><span class="o">*</span><span class="n">inv_CpH</span>
+        <span class="n">dTS1</span> <span class="o">=</span> <span class="n">Ub</span><span class="o">*</span><span class="p">(</span><span class="n">TH1</span> <span class="o">-</span> <span class="n">TS1</span><span class="p">)</span><span class="o">*</span><span class="n">inv_CpS</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">dTH1</span><span class="p">,</span> <span class="n">dTS1</span><span class="p">]</span>
+
+    <span class="c1"># define the initial conditions</span>
+    <span class="n">IC</span> <span class="o">=</span> <span class="p">[</span><span class="n">T_amb</span><span class="p">,</span> <span class="n">T_amb</span><span class="p">]</span>
+
+    <span class="c1"># numerically integrate the ODEs</span>
+    <span class="n">soln</span> <span class="o">=</span> <span class="n">solve_ivp</span><span class="p">(</span><span class="n">deriv</span><span class="p">,</span> <span class="p">[</span><span class="nb">min</span><span class="p">(</span><span class="n">t_expt</span><span class="p">),</span> <span class="nb">max</span><span class="p">(</span><span class="n">t_expt</span><span class="p">)],</span> <span class="n">IC</span><span class="p">,</span> <span class="n">t_eval</span><span class="o">=</span><span class="n">t_expt</span><span class="p">)</span> 
+
+    <span class="k">if</span> <span class="n">return_data_frame</span><span class="p">:</span>
+        <span class="c1"># create dataframe with predictions</span>
+        <span class="n">pred</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Time&quot;</span><span class="p">])</span>
+        <span class="n">pred</span><span class="p">[</span><span class="s2">&quot;Time&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">t_expt</span>
+        <span class="n">pred</span> <span class="o">=</span> <span class="n">pred</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s2">&quot;Time&quot;</span><span class="p">)</span>
+        
+        <span class="c1"># report the model temperatures</span>
+        <span class="n">pred</span><span class="p">[</span><span class="s2">&quot;TH1&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">soln</span><span class="o">.</span><span class="n">y</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">pred</span><span class="p">[</span><span class="s2">&quot;TS1&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">soln</span><span class="o">.</span><span class="n">y</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        
+        <span class="c1"># create dataframe with predictions</span>
+        <span class="n">pred</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Time&quot;</span><span class="p">])</span>
+        <span class="n">pred</span><span class="p">[</span><span class="s2">&quot;Time&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">t_expt</span>
+        <span class="n">pred</span><span class="p">[</span><span class="s2">&quot;TH1&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">soln</span><span class="o">.</span><span class="n">y</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">pred</span><span class="p">[</span><span class="s2">&quot;TS1&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">soln</span><span class="o">.</span><span class="n">y</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">pred</span><span class="p">[</span><span class="s2">&quot;Q1&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">U1</span><span class="p">(</span><span class="n">t_expt</span><span class="p">)</span>
+            
+        <span class="k">return</span> <span class="n">pred</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">soln</span><span class="o">.</span><span class="n">y</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    
+<span class="n">pred</span> <span class="o">=</span> <span class="n">tclab_ode</span><span class="p">(</span><span class="n">theta</span><span class="o">=</span><span class="p">[</span><span class="n">Ua</span><span class="p">,</span> <span class="n">Ub</span><span class="p">,</span> <span class="mi">1</span><span class="o">/</span><span class="n">CpH</span><span class="p">,</span> <span class="mi">1</span><span class="o">/</span><span class="n">CpS</span><span class="p">],</span> 
+                 <span class="n">U1</span><span class="o">=</span><span class="n">U1</span><span class="p">,</span>
+                 <span class="n">T_amb</span><span class="o">=</span><span class="n">T_amb</span><span class="p">,</span>
+                 <span class="n">t_expt</span><span class="o">=</span><span class="n">t_expt</span><span class="p">,</span>
+                 <span class="n">return_data_frame</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">pred</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Time</th>
+      <th>TH1</th>
+      <th>TS1</th>
+      <th>Q1</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>0.0</td>
+      <td>21.000000</td>
+      <td>21.000000</td>
+      <td>50</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>1.0</td>
+      <td>21.227741</td>
+      <td>21.011029</td>
+      <td>50</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>2.0</td>
+      <td>21.453832</td>
+      <td>21.042602</td>
+      <td>50</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>3.0</td>
+      <td>21.678288</td>
+      <td>21.092596</td>
+      <td>50</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>4.0</td>
+      <td>21.901125</td>
+      <td>21.157645</td>
+      <td>50</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>596</th>
+      <td>596.0</td>
+      <td>52.543808</td>
+      <td>52.551269</td>
+      <td>50</td>
+    </tr>
+    <tr>
+      <th>597</th>
+      <td>597.0</td>
+      <td>52.547056</td>
+      <td>52.550723</td>
+      <td>50</td>
+    </tr>
+    <tr>
+      <th>598</th>
+      <td>598.0</td>
+      <td>52.550280</td>
+      <td>52.550540</td>
+      <td>50</td>
+    </tr>
+    <tr>
+      <th>599</th>
+      <td>599.0</td>
+      <td>52.553480</td>
+      <td>52.550681</td>
+      <td>50</td>
+    </tr>
+    <tr>
+      <th>600</th>
+      <td>600.0</td>
+      <td>52.556658</td>
+      <td>52.551106</td>
+      <td>50</td>
+    </tr>
+  </tbody>
+</table>
+<p>601 rows × 4 columns</p>
+</div></div></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pred</span><span class="p">[[</span><span class="s2">&quot;TS1&quot;</span><span class="p">,</span> <span class="s2">&quot;TH1&quot;</span><span class="p">]]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s2">&quot;Time / seconds&quot;</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s2">&quot;Temperature / deg C&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;Axes: xlabel=&#39;Time / seconds&#39;, ylabel=&#39;Temperature / deg C&#39;&gt;
+</pre></div>
+</div>
+<img alt="../_images/2e566f3cafc22a6ff6fe3abc30cc9fd66ee9d4d4ba28cb8d17b532ddbefe3603.png" src="../_images/2e566f3cafc22a6ff6fe3abc30cc9fd66ee9d4d4ba28cb8d17b532ddbefe3603.png" />
+</div>
+</div>
+</section>
+<section id="parameter-estimation-step-test">
+<h2>Parameter Estimation: Step Test<a class="headerlink" href="#parameter-estimation-step-test" title="Link to this heading">#</a></h2>
+<section id="load-data-step-test">
+<h3>Load data (step test)<a class="headerlink" href="#load-data-step-test" title="Link to this heading">#</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">sys</span>
+<span class="c1"># If running on Google Colab, install Pyomo and Ipopt via IDAES</span>
+<span class="n">on_colab</span> <span class="o">=</span> <span class="s2">&quot;google.colab&quot;</span> <span class="ow">in</span> <span class="n">sys</span><span class="o">.</span><span class="n">modules</span>
+<span class="k">if</span> <span class="n">on_colab</span><span class="p">:</span>
+    <span class="n">file</span> <span class="o">=</span> <span class="s2">&quot;https://raw.githubusercontent.com/dowlinglab/pyomo-doe/main/data/tclab_step_test.csv&#39;&quot;</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="n">file</span> <span class="o">=</span> <span class="s1">&#39;../data/tclab_step_test.csv&#39;</span>
+
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+<span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Time</th>
+      <th>T1</th>
+      <th>T2</th>
+      <th>Q1</th>
+      <th>Q2</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>0.00</td>
+      <td>22.84</td>
+      <td>22.52</td>
+      <td>50.0</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>1.01</td>
+      <td>22.84</td>
+      <td>22.52</td>
+      <td>50.0</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>2.01</td>
+      <td>22.84</td>
+      <td>22.52</td>
+      <td>50.0</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>3.00</td>
+      <td>22.84</td>
+      <td>22.52</td>
+      <td>50.0</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>4.00</td>
+      <td>22.84</td>
+      <td>22.20</td>
+      <td>50.0</td>
+      <td>0.0</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+</section>
+<section id="nonlinear-regression-and-uncertainty-analysis">
+<h3>Nonlinear regression and uncertainty analysis<a class="headerlink" href="#nonlinear-regression-and-uncertainty-analysis" title="Link to this heading">#</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">scipy.optimize</span> <span class="kn">import</span> <span class="n">least_squares</span>
+
+<span class="k">def</span> <span class="nf">covariance_to_correlation</span><span class="p">(</span><span class="n">cov</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39; Convert covariance matrix into correlation matrix</span>
+
+<span class="sd">    Argument:</span>
+<span class="sd">        cov: covariance matrix</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        cor: correlation matrix</span>
+
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="c1"># Copy matrix</span>
+    <span class="n">cor</span> <span class="o">=</span> <span class="n">cov</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+    <span class="c1"># Get number of rows</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="n">cor</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="c1"># Loop over rows</span>
+    <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+        <span class="c1"># Loop over columns</span>
+        <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+            <span class="c1"># Scale element</span>
+            <span class="n">cor</span><span class="p">[</span><span class="n">r</span><span class="p">,</span><span class="n">c</span><span class="p">]</span> <span class="o">=</span> <span class="n">cor</span><span class="p">[</span><span class="n">r</span><span class="p">,</span><span class="n">c</span><span class="p">]</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">cov</span><span class="p">[</span><span class="n">r</span><span class="p">,</span><span class="n">r</span><span class="p">]</span><span class="o">*</span><span class="n">cov</span><span class="p">[</span><span class="n">c</span><span class="p">,</span><span class="n">c</span><span class="p">])</span>
+
+    <span class="k">return</span> <span class="n">cor</span>
+
+<span class="k">def</span> <span class="nf">perform_regression</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">theta_initial</span><span class="o">=</span><span class="p">[</span><span class="n">Ua</span><span class="p">,</span> <span class="n">Ub</span><span class="p">,</span> <span class="mi">1</span><span class="o">/</span><span class="n">CpH</span><span class="p">,</span> <span class="mi">1</span><span class="o">/</span><span class="n">CpS</span><span class="p">]):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39; Regress the data to find the parameters Ua, Ub, inv_CpH, inv_CpS</span>
+
+<span class="sd">    Arguments:</span>
+<span class="sd">        data: pandas DataFrame with columns &quot;Time&quot;, &quot;Q1&quot;, &quot;T1&quot;, &quot;T2&quot;</span>
+<span class="sd">        theta_initial: initial guess for the parameters</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="c1"># Interpolate the constrol signal</span>
+    <span class="n">U1</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">t</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">interp</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;Time&quot;</span><span class="p">],</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;Q1&quot;</span><span class="p">])</span>
+
+    <span class="c1"># Calculate the initial conditions</span>
+    <span class="n">T_amb</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">T1</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="c1"># Assemble y data</span>
+    <span class="n">y_data</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;T1&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+
+    <span class="c1"># Define residual function</span>
+    <span class="k">def</span> <span class="nf">residuals</span><span class="p">(</span><span class="n">p</span><span class="p">):</span>
+        <span class="n">pred</span> <span class="o">=</span> <span class="n">tclab_ode</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> 
+                            <span class="n">U1</span><span class="p">,</span>
+                            <span class="n">T_amb</span><span class="p">,</span> 
+                            <span class="n">data</span><span class="p">[</span><span class="s2">&quot;Time&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(),</span>
+                            <span class="n">return_data_frame</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">pred</span> <span class="o">-</span> <span class="n">y_data</span>
+    
+    <span class="c1"># Set bounds for Ua, Ub, inv_CpH, inv_CpS</span>
+    <span class="c1"># These are based on physical intuition</span>
+    <span class="n">bnds</span> <span class="o">=</span> <span class="p">([</span><span class="mf">1E-5</span><span class="p">,</span> <span class="mf">1E-5</span><span class="p">,</span> <span class="mf">1E-2</span><span class="p">,</span> <span class="mf">1E-2</span><span class="p">],</span> <span class="p">[</span><span class="mf">2.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">])</span>
+    
+    <span class="c1"># Perform least squares nonlinear regression</span>
+    <span class="n">nl_results</span> <span class="o">=</span> <span class="n">least_squares</span><span class="p">(</span><span class="n">residuals</span><span class="p">,</span> 
+                               <span class="n">theta_initial</span><span class="p">,</span> 
+                               <span class="n">bounds</span><span class="o">=</span><span class="n">bnds</span><span class="p">,</span> 
+                               <span class="n">method</span><span class="o">=</span><span class="s1">&#39;trf&#39;</span><span class="p">,</span> 
+                               <span class="n">verbose</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> 
+                               <span class="n">loss</span><span class="o">=</span><span class="s2">&quot;arctan&quot;</span><span class="p">)</span>
+    <span class="n">theta_hat</span> <span class="o">=</span> <span class="n">nl_results</span><span class="o">.</span><span class="n">x</span>
+
+    <span class="c1"># extract and print values</span>
+    <span class="n">Ua</span><span class="p">,</span> <span class="n">Ub</span><span class="p">,</span> <span class="n">inv_CpH</span><span class="p">,</span> <span class="n">inv_CpS</span> <span class="o">=</span> <span class="n">nl_results</span><span class="o">.</span><span class="n">x</span>
+    <span class="n">CpH</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="n">inv_CpH</span>
+    <span class="n">CpS</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="n">inv_CpS</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;CpH = &#39;</span><span class="p">,</span> <span class="nb">round</span><span class="p">(</span><span class="n">CpH</span><span class="p">,</span><span class="mi">3</span><span class="p">),</span> <span class="s2">&quot;J/degC&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;CpS =&#39;</span><span class="p">,</span> <span class="nb">round</span><span class="p">(</span><span class="n">CpS</span><span class="p">,</span><span class="mi">3</span><span class="p">),</span> <span class="s2">&quot;J/degC&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Ua = &#39;</span><span class="p">,</span> <span class="nb">round</span><span class="p">(</span><span class="n">Ua</span><span class="p">,</span><span class="mi">3</span><span class="p">),</span> <span class="s2">&quot;W/degC&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Ub = &#39;</span><span class="p">,</span> <span class="nb">round</span><span class="p">(</span><span class="n">Ub</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="s2">&quot;W/degC&quot;</span><span class="p">)</span>
+
+    <span class="c1"># plot the results</span>
+    <span class="n">pred</span> <span class="o">=</span> <span class="n">tclab_ode</span><span class="p">([</span><span class="n">Ua</span><span class="p">,</span> <span class="n">Ub</span><span class="p">,</span> <span class="n">inv_CpH</span><span class="p">,</span> <span class="n">inv_CpS</span><span class="p">],</span>
+                        <span class="n">U1</span><span class="p">,</span>
+                        <span class="n">T_amb</span><span class="p">,</span>
+                        <span class="n">data</span><span class="p">[</span><span class="s2">&quot;Time&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(),</span>
+                        <span class="n">return_data_frame</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">ax</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;T1&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">marker</span><span class="o">=</span><span class="s1">&#39;o&#39;</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
+    <span class="n">pred</span><span class="p">[[</span><span class="s2">&quot;TS1&quot;</span><span class="p">,</span> <span class="s2">&quot;TH1&quot;</span><span class="p">]]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">xlabel</span><span class="o">=</span><span class="s2">&quot;Time / seconds&quot;</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s2">&quot;Temperature / deg C&quot;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+    <span class="c1"># plot the residuals</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="n">residuals</span><span class="p">(</span><span class="n">nl_results</span><span class="o">.</span><span class="n">x</span><span class="p">)</span>
+
+    <span class="c1"># define font size</span>
+    <span class="n">fs</span> <span class="o">=</span> <span class="mi">20</span>
+
+    <span class="c1"># plot data</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;$T_1$ residuals [$^\circ</span><span class="si">{}</span><span class="s2">$C]&quot;</span><span class="p">,</span><span class="n">fontsize</span><span class="o">=</span><span class="n">fs</span><span class="p">,</span><span class="n">fontweight</span> <span class="o">=</span> <span class="s1">&#39;bold&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;Count&quot;</span><span class="p">,</span><span class="n">fontsize</span><span class="o">=</span><span class="n">fs</span><span class="p">,</span><span class="n">fontweight</span> <span class="o">=</span> <span class="s1">&#39;bold&#39;</span><span class="p">)</span>
+
+    <span class="c1"># define tick size</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">xticks</span><span class="p">(</span><span class="n">fontsize</span><span class="o">=</span><span class="n">fs</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">yticks</span><span class="p">(</span><span class="n">fontsize</span><span class="o">=</span><span class="n">fs</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">direction</span><span class="o">=</span><span class="s2">&quot;in&quot;</span><span class="p">,</span><span class="n">top</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">right</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="c1"># finish plot</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+    <span class="c1"># Estimate covariance and correlation of fitted parameters</span>
+
+    <span class="c1">#Estimate covariance of residuals</span>
+    <span class="n">var_residuals</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">T</span><span class="nd">@r</span> <span class="o">/</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">r</span><span class="p">)</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">nl_results</span><span class="o">.</span><span class="n">x</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Estimated standard deviation of residuals:&quot;</span><span class="p">,</span><span class="nb">round</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">var_residuals</span><span class="p">),</span><span class="mi">3</span><span class="p">),</span><span class="s2">&quot;deg C&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Estimate covariance of fitted parameters</span>
+    <span class="n">cov_p</span> <span class="o">=</span> <span class="n">var_residuals</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">nl_results</span><span class="o">.</span><span class="n">jac</span><span class="o">.</span><span class="n">T</span> <span class="o">@</span> <span class="n">nl_results</span><span class="o">.</span><span class="n">jac</span><span class="p">)</span>
+
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Covariance of p = [Ua, Ub, inv_CpH, inv_CpS]&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">cov_p</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Correlation matrix&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">covariance_to_correlation</span><span class="p">(</span><span class="n">cov_p</span><span class="p">))</span>
+
+    
+<span class="n">perform_regression</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">df</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   Iteration     Total nfev        Cost      Cost reduction    Step norm     Optimality   
+       0              1         1.8913e+02                                    6.09e+04    
+       1              2         1.1271e+02      7.64e+01       2.66e+00       9.10e+04    
+       2              3         1.0271e+02      9.99e+00       7.29e-01       2.04e+04    
+       3              4         1.0193e+02      7.87e-01       6.89e-01       6.67e+02    
+       4              5         9.9597e+01      2.33e+00       1.04e+00       3.76e+02    
+       5              6         9.8132e+01      1.46e+00       9.89e-01       2.33e+02    
+       6              7         9.8109e+01      2.30e-02       1.32e-01       1.07e+00    
+       7              8         9.8109e+01      5.94e-05       4.05e-01       8.96e-02    
+       8             11         9.8109e+01      2.36e-07       6.73e-01       3.48e+02    
+       9             12         9.8109e+01      4.17e-06       4.71e-02       9.89e+01    
+      10             13         9.8109e+01      5.51e-07       4.72e-02       1.76e+01    
+`ftol` termination condition is satisfied.
+Function evaluations 13, initial cost 1.8913e+02, final cost 9.8109e+01, first-order optimality 1.76e+01.
+CpH =  7.356 J/degC
+CpS = 0.011 J/degC
+Ua =  0.049 W/degC
+Ub =  0.001 W/degC
+</pre></div>
+</div>
+<img alt="../_images/168d0ea9d0e80a8ac951d91d08cfde47dfc983e38e9e9529ad78c58a11d923ba.png" src="../_images/168d0ea9d0e80a8ac951d91d08cfde47dfc983e38e9e9529ad78c58a11d923ba.png" />
+<img alt="../_images/b0b40073c5c98545c68d24d4a67b122a436b2258d50408751bb8fd4aa20c12a6.png" src="../_images/b0b40073c5c98545c68d24d4a67b122a436b2258d50408751bb8fd4aa20c12a6.png" />
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Estimated standard deviation of residuals: 0.504 deg C
+
+Covariance of p = [Ua, Ub, inv_CpH, inv_CpS]
+[[ 2.21729357e-09  1.92706741e-08  1.77970810e-08 -1.87455062e-03]
+ [ 1.92706741e-08  6.65565947e-05  1.52380571e-05 -6.47154014e+00]
+ [ 1.77970810e-08  1.52380571e-05  3.73900020e-06 -1.48171439e+00]
+ [-1.87455062e-03 -6.47154014e+00 -1.48171439e+00  6.29251945e+05]]
+
+Correlation matrix
+[[ 1.          0.05016372  0.19546069 -0.05018493]
+ [ 0.05016372  1.          0.96595369 -0.99999958]
+ [ 0.19546069  0.96595369  1.         -0.96599409]
+ [-0.05018493 -0.99999958 -0.96599409  1.        ]]
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="parameter-estimation-sine-test">
+<h2>Parameter Estimation: Sine Test<a class="headerlink" href="#parameter-estimation-sine-test" title="Link to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">sys</span>
+<span class="c1"># If running on Google Colab, install Pyomo and Ipopt via IDAES</span>
+<span class="n">on_colab</span> <span class="o">=</span> <span class="s2">&quot;google.colab&quot;</span> <span class="ow">in</span> <span class="n">sys</span><span class="o">.</span><span class="n">modules</span>
+<span class="k">if</span> <span class="n">on_colab</span><span class="p">:</span>
+    <span class="n">file</span> <span class="o">=</span> <span class="s2">&quot;https://raw.githubusercontent.com/dowlinglab/pyomo-doe/main/data/tclab_sine_test.csv&#39;&quot;</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="n">file</span> <span class="o">=</span> <span class="s1">&#39;../data/tclab_sine_test.csv&#39;</span>
+
+<span class="n">df2</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+<span class="n">df2</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Time</th>
+      <th>T1</th>
+      <th>T2</th>
+      <th>Q1</th>
+      <th>Q2</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>0.00</td>
+      <td>24.45</td>
+      <td>24.13</td>
+      <td>50.0</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>1.00</td>
+      <td>24.45</td>
+      <td>24.13</td>
+      <td>55.0</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>2.01</td>
+      <td>24.45</td>
+      <td>24.13</td>
+      <td>60.0</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>3.01</td>
+      <td>24.45</td>
+      <td>24.13</td>
+      <td>65.0</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>4.01</td>
+      <td>24.77</td>
+      <td>23.81</td>
+      <td>70.0</td>
+      <td>0.0</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">perform_regression</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">df2</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   Iteration     Total nfev        Cost      Cost reduction    Step norm     Optimality   
+       0              1         2.8146e+02                                    1.05e+09    
+       1              2         2.4374e+02      3.77e+01       4.55e-02       2.21e+07    
+       2              3         1.9187e+02      5.19e+01       1.29e-03       5.45e+07    
+       3              4         1.8962e+02      2.26e+00       7.43e-03       9.90e+08    
+       4              5         1.8835e+02      1.27e+00       2.24e-03       4.14e+06    
+       5             12         1.8835e+02      0.00e+00       0.00e+00       4.14e+06    
+`xtol` termination condition is satisfied.
+Function evaluations 12, initial cost 2.8146e+02, final cost 1.8835e+02, first-order optimality 4.14e+06.
+CpH =  7.006 J/degC
+CpS = 0.01 J/degC
+Ua =  0.051 W/degC
+Ub =  0.001 W/degC
+</pre></div>
+</div>
+<img alt="../_images/4ad8d3bcb68db85549ad4593c33ad1803c17bfc22b9ae86fc93c271a8da2917d.png" src="../_images/4ad8d3bcb68db85549ad4593c33ad1803c17bfc22b9ae86fc93c271a8da2917d.png" />
+<img alt="../_images/d2cc63d27cf1ba6b52df330953259f8e9a51c94c394c5bd00c7f5a4d58ac3048.png" src="../_images/d2cc63d27cf1ba6b52df330953259f8e9a51c94c394c5bd00c7f5a4d58ac3048.png" />
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Estimated standard deviation of residuals: 0.761 deg C
+
+Covariance of p = [Ua, Ub, inv_CpH, inv_CpS]
+[[ 7.59496466e-10  2.93108955e-14  3.84202866e-13 -7.66852845e-08]
+ [ 2.93108955e-14  5.81408881e-16 -1.19782393e-15 -3.13400818e-12]
+ [ 3.84202866e-13 -1.19782393e-15  2.00276708e-14 -3.63302486e-11]
+ [-7.66852845e-08 -3.13400818e-12 -3.63302486e-11  7.74619517e-06]]
+
+Correlation matrix
+[[ 1.          0.04410881  0.09851049 -0.99978113]
+ [ 0.04410881  1.         -0.3510241  -0.04669981]
+ [ 0.09851049 -0.3510241   1.         -0.0922378 ]
+ [-0.99978113 -0.04669981 -0.0922378   1.        ]]
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="take-away-messasge">
+<h2>Take Away Messasge<a class="headerlink" href="#take-away-messasge" title="Link to this heading">#</a></h2>
+<p>Numpy is an excellent tool for rapidly protoyping models and performing basic parameter estimation. However, as we saw in this example, numpy was a little slow. Moreover, for the sine wave test, the least squares algorithm got stuck in local solutions. We will see soon how Pyomo is faster for optimization and often leads to more reliable parameter estimation solution.</p>
+</section>
 </section>
 
     <script type="text/x-thebe-config">
@@ -474,7 +1096,7 @@ document.write(`
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Pyomo Simulation</p>
+        <p class="prev-next-title">Modeling with Pyomo</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -485,7 +1107,27 @@ document.write(`
             
             
               
-                <div class="bd-sidebar-secondary bd-toc"></div>
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#numpy-simulation">Numpy Simulation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#parameter-estimation-step-test">Parameter Estimation: Step Test</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#load-data-step-test">Load data (step test)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#nonlinear-regression-and-uncertainty-analysis">Nonlinear regression and uncertainty analysis</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#parameter-estimation-sine-test">Parameter Estimation: Sine Test</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#take-away-messasge">Take Away Messasge</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
               
             
           </div>

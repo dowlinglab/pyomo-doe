@@ -60,7 +60,7 @@
     <script>DOCUMENTATION_OPTIONS.pagename = 'notebooks/doe_optimize';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Pyomo.DoE: Extra Features" href="doe_extras.html" />
+    <link rel="next" title="Exercise: Pyomo.DoE" href="doe_exercise.html" />
     <link rel="prev" title="Pyomo.DoE: Exploratory Analysis" href="doe_exploratory_analysis.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
@@ -179,14 +179,11 @@
         <ul class="current nav bd-sidenav">
 <li class="toctree-l1 has-children"><a class="reference internal" href="../tclab.html">Modeling Example: TCLab</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="tclab_model.html">TCLab Mathematical Model</a></li>
-<li class="toctree-l2"><a class="reference internal" href="numpy_simulation.html">Numpy Simulation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="pyomo_simulation.html">Pyomo Simulation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="experimental_data.html">Experimental Data</a></li>
-<li class="toctree-l2"><a class="reference internal" href="pyomo_helper_functions.html">Pyomo Helper Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="numpy_simulation.html">Prototyping the Model in Numpy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyomo_simulation.html">Modeling with Pyomo</a></li>
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../regression.html">Parameter Estimation</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-2"><i class="fa-solid fa-chevron-down"></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="numpy_regression.html">Regression with Numpy</a></li>
 <li class="toctree-l2"><a class="reference internal" href="parmest.html">Regression with ParmEst</a></li>
 <li class="toctree-l2"><a class="reference internal" href="parmest_exercise.html">Exercise: ParmEst</a></li>
 </ul>
@@ -194,7 +191,6 @@
 <li class="toctree-l1 current active has-children"><a class="reference internal" href="../mbdoe.html">Optimal Experiment Design</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-3"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="doe_exploratory_analysis.html">Pyomo.DoE: Exploratory Analysis</a></li>
 <li class="toctree-l2 current active"><a class="current reference internal" href="#">Pyomo.DoE: Optimization</a></li>
-<li class="toctree-l2"><a class="reference internal" href="doe_extras.html">Pyomo.DoE: Extra Features</a></li>
 <li class="toctree-l2"><a class="reference internal" href="doe_exercise.html">Exercise: Pyomo.DoE</a></li>
 </ul>
 </li>
@@ -717,11 +713,11 @@ Number of inequality constraint evaluations          = 0
 Number of equality constraint Jacobian evaluations   = 4
 Number of inequality constraint Jacobian evaluations = 0
 Number of Lagrangian Hessian evaluations             = 3
-Total CPU secs in IPOPT (w/o function evaluations)   =      0.121
-Total CPU secs in NLP function evaluations           =      0.002
+Total CPU secs in IPOPT (w/o function evaluations)   =      0.130
+Total CPU secs in NLP function evaluations           =      0.003
 
 EXIT: Optimal Solution Found.
-INFO: elapsed time: 3.9 seconds
+INFO: elapsed time: 4.0 seconds
 </pre></div>
 </div>
 </div>
@@ -866,7 +862,7 @@ Number of inequality constraint evaluations          = 0
 Number of equality constraint Jacobian evaluations   = 4
 Number of inequality constraint Jacobian evaluations = 0
 Number of Lagrangian Hessian evaluations             = 3
-Total CPU secs in IPOPT (w/o function evaluations)   =      0.746
+Total CPU secs in IPOPT (w/o function evaluations)   =      0.765
 Total CPU secs in NLP function evaluations           =      0.007
 
 EXIT: Optimal Solution Found.
@@ -1234,11 +1230,11 @@ Number of inequality constraint evaluations          = 0
 Number of equality constraint Jacobian evaluations   = 274
 Number of inequality constraint Jacobian evaluations = 0
 Number of Lagrangian Hessian evaluations             = 273
-Total CPU secs in IPOPT (w/o function evaluations)   =    124.173
+Total CPU secs in IPOPT (w/o function evaluations)   =    126.390
 Total CPU secs in NLP function evaluations           =      0.748
 
 EXIT: Optimal Solution Found.
-INFO: elapsed time: 132.2 seconds
+INFO: elapsed time: 135.1 seconds
 </pre></div>
 </div>
 </div>
@@ -1388,7 +1384,7 @@ Number of inequality constraint evaluations          = 0
 Number of equality constraint Jacobian evaluations   = 4
 Number of inequality constraint Jacobian evaluations = 0
 Number of Lagrangian Hessian evaluations             = 3
-Total CPU secs in IPOPT (w/o function evaluations)   =      0.760
+Total CPU secs in IPOPT (w/o function evaluations)   =      0.768
 Total CPU secs in NLP function evaluations           =      0.007
 
 EXIT: Optimal Solution Found.
@@ -1465,11 +1461,11 @@ Number of inequality constraint evaluations          = 0
 Number of equality constraint Jacobian evaluations   = 10
 Number of inequality constraint Jacobian evaluations = 0
 Number of Lagrangian Hessian evaluations             = 9
-Total CPU secs in IPOPT (w/o function evaluations)   =      3.441
-Total CPU secs in NLP function evaluations           =      0.021
+Total CPU secs in IPOPT (w/o function evaluations)   =      3.466
+Total CPU secs in NLP function evaluations           =      0.022
 
 EXIT: Optimal Solution Found.
-INFO: elapsed time: 9.5 seconds
+INFO: elapsed time: 9.8 seconds
 </pre></div>
 </div>
 </div>
@@ -1568,11 +1564,11 @@ eigenvectors:
       </div>
     </a>
     <a class="right-next"
-       href="doe_extras.html"
+       href="doe_exercise.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Pyomo.DoE: Extra Features</p>
+        <p class="prev-next-title">Exercise: Pyomo.DoE</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>

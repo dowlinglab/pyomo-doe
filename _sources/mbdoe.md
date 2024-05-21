@@ -1,1 +1,4 @@
 # Optimal Experiment Design
+
+```{tableofcontents}
+```
