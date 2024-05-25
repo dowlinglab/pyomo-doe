@@ -148,22 +148,13 @@ class TCLabExperiment:
     time: np.array # Time stamp for measurements, [seconds]
     T1: np.array # Temperature of heater 1, [degC]
     u1: np.array # Heater 1 power setting, [0-100]
-    d1: np.array # Disturbance data (optional), [W]
     P1: float # Power setting for heater 1, [W]
     TS1_data: np.array # Setpoint data for temperature of sensor 1, [degC]
     T2: np.array # Temperature of heater 2, [degC]
     u2: np.array # Heater 2 power setting, [0-100]
-    d2: np.array # Disturbance data (optional), [W]
     P2: float # Power setting for heater 2, [W]
     TS2_data: np.array # Setpoint data for temperature of sensor 1, [degC]
     Tamb: float # Ambient temperature, [degC]
-
-    def __post_init__(self):
-        """ In the future, we can extend the model to consider non-zero disturbances.
-        Right now, create_model treats None as a zero vector of disturbances.
-        """
-
-        self.d1 = None # Disturbance data (optional)
 
     def to_data_frame(self):
         """Convert instance of this class to a pandas DataFrame."""
@@ -174,12 +165,10 @@ class TCLabExperiment:
             "u1": self.u1,
             "P1": self.P1,
             "TS1_data": self.TS1_data,
-            "d1": self.d1,
             "T2": self.T2,
             "u2": self.u2,
             "P2": self.P2,
             "TS2_data": self.TS2_data,
-            "d2": self.d2,
             "Tamb": self.Tamb
         })
 
@@ -221,24 +210,12 @@ def create_model(
         P1 = data.P1.values[0]
         P2 = data.P2.values[0]
         time = data.time.values
+
         u1 = data.u1.values
-        d1 = data.d1.values
-        '''
-        if not any(u1):
-            # Check if all elements are None
-            u1 = None
-
-        if not any(d1):
-            d1 = None
-
-        print(d1)
-        '''
-        
         T1 = data.T1.values
         TS1_data = data.TS1_data.values
-
+        
         u2 = data.u2.values
-        d2 = data.d2.values
         T2 = data.T2.values
         TS2_data = data.TS2_data.values
 
@@ -247,22 +224,20 @@ def create_model(
         P1 = data.P1
         P2 = data.P2
         time = data.time
+
         u1 = data.u1
-        d1 = data.d1
         T1 = data.T1
         TS1_data = data.TS1_data
 
         u2 = data.u2
-        d2 = data.d2
         T2 = data.T2
         TS2_data = data.TS2_data
 
-    valid_modes = ['simulate', 'optimize', 'estimate', 'observe', 'parmest', 'doe']
+    valid_modes = ['optimize', 'parmest', 'doe']
 
     if mode not in valid_modes:
         raise ValueError("mode needs to be one of"+valid_modes+".")
     
-
     if mode == 'doe' and sine_amplitude is not None and sine_period is not None:
 
         sine_period_max = 10 # minutes
@@ -312,7 +287,7 @@ def create_model(
         return data2
 
     # for the simulate and observe modes
-    if mode in ['simulate', 'observe', 'estimate', 'parmest']:
+    if mode in ['parmest']:
         # control decision is a parameter initialized with the input control data dict
         m.U1 = Param(m.t, initialize=helper(u1), default = 0)
 
@@ -326,27 +301,6 @@ def create_model(
         if m.four_states:
             m.U2 = Var(m.t, bounds=(0, 100), initialize=helper(u2))
 
-
-    # for the simulate and optimize modes
-    if mode in ['simulate', 'optimize', 'estimate', 'parmest', 'doe']:
-        # if no distrubance data exists, initialize parameter at 0
-        if d1 is None:
-                m.D1 = Param(m.t, default = 0)
-        # otherwise initialize parameter with disturbance data dict
-        else:
-            m.D1 = Param(m.t, initialize=helper(d1))
-
-
-        if m.four_states:
-            if d2 is None:
-                m.D2 = Param(m.t, default = 0)
-            else:
-                m.D2 = Param(m.t, initialize=helper(d2))
-
-    # otherwise (observe) the disturbance is a variable
-    else:
-        m.D1 = Var(m.t)
-
     # define parameters that do not depend on mode
     m.Tamb = Param(initialize=Tamb)
     m.P1 = Param(initialize=P1)
@@ -354,7 +308,7 @@ def create_model(
     m.P2 = Param(initialize=P2)
 
     # for the simulate, optimize, observe modes
-    if mode in ['simulate', 'optimize', 'observe']:
+    if mode in ['optimize']:
         # Ua, Ub, CpH, and CpS are parameters
         m.Ua = Param(initialize=theta["Ua"])
         m.Ub = Param(initialize=theta["Ub"])
@@ -392,20 +346,20 @@ def create_model(
     # moved Cps to the right hand side to diagnose integrator
     if not m.four_states:
         m.Th_ode = Constraint(m.t, rule = lambda m, t: 
-                            m.Th1dot[t] == (m.Ua*(m.Tamb - m.Th1[t]) + m.Ub*(m.Ts1[t] - m.Th1[t]) + m.alpha*m.P1*m.U1[t] + m.D1[t])*m.inv_CpH)
+                            m.Th1dot[t] == (m.Ua*(m.Tamb - m.Th1[t]) + m.Ub*(m.Ts1[t] - m.Th1[t]) + m.alpha*m.P1*m.U1[t])*m.inv_CpH)
         
         m.Ts_ode = Constraint(m.t, rule = lambda m, t: 
                             m.Ts1dot[t] == (m.Ub*(m.Th1[t] - m.Ts1[t]) )*m.inv_CpS)
         
     else:
         m.Th1_ode = Constraint(m.t, rule = lambda m, t: 
-                            m.Th1dot[t] == (m.Ua*(m.Tamb - m.Th1[t]) + m.Ub*(m.Ts1[t] - m.Th1[t]) + m.Uc*(m.Ts2[t] - m.Th1[t]) + m.alpha*m.P1*m.U1[t] + m.D1[t])*m.inv_CpH)
+                            m.Th1dot[t] == (m.Ua*(m.Tamb - m.Th1[t]) + m.Ub*(m.Ts1[t] - m.Th1[t]) + m.Uc*(m.Ts2[t] - m.Th1[t]) + m.alpha*m.P1*m.U1[t])*m.inv_CpH)
         
         m.Ts1_ode = Constraint(m.t, rule = lambda m, t: 
                             m.Ts1dot[t] == (m.Ub*(m.Th1[t] - m.Ts1[t]) )*m.inv_CpS)
         
         m.Th2_ode = Constraint(m.t, rule = lambda m, t: 
-                            m.Th2dot[t] == (m.Ua*(m.Tamb - m.Th2[t]) + m.Uc*(m.Th1[t] - m.Th2[t]) + m.alpha*m.P2*m.U2[t] + m.D2[t])*m.inv_CpH)
+                            m.Th2dot[t] == (m.Ua*(m.Tamb - m.Th2[t]) + m.Ub*(m.Ts2[t] - m.Th2[t]) + m.Uc*(m.Th1[t] - m.Th2[t]) + m.alpha*m.P2*m.U2[t])*m.inv_CpH)
         
         m.Ts2_ode = Constraint(m.t, rule = lambda m, t: 
                             m.Ts2dot[t] == (m.Ub*(m.Th2[t] - m.Ts2[t]) )*m.inv_CpS)
@@ -421,14 +375,6 @@ def create_model(
                 # otherwise initialize control decision of 0
                 m.var_input[m.U1] = {0:0}
 
-            if d1 is not None:
-                # initialize with data
-                m.var_input[m.D1] = helper(d1)
-            else:
-                # otherwise initialize disturbance of 0
-                m.var_input[m.D1] = {0:0}
-
-
             if m.four_states:
                 if u2 is not None:
                     # initialize with data
@@ -436,15 +382,7 @@ def create_model(
                 else:
                     # otherwise initialize control decision of 0
                     m.var_input[m.U2] = {0:0}
-
-                if d2 is not None:
-                    # initialize with data
-                    m.var_input[m.D2] = helper(d2)
-                else:
-                    # otherwise initialize disturbance of 0
-                    m.var_input[m.D2] = {0:0}
             
-
             # Simulate to initiialize
             # Makes the solver more efficient
             sim = Simulator(m, package='scipy') 
@@ -462,8 +400,8 @@ def create_model(
 
         # otherwise, we are not using it
 
-        # for the estimate and observe modes, experimental data is a parameter
-    if mode in ['estimate', 'observe', 'parmest']:
+    # for the estimate mode, experimental data is a parameter
+    if mode == 'parmest':
         m.Ts1_measure = Param(m.t, initialize=helper(T1))
 
         if m.four_states:
@@ -484,24 +422,6 @@ def create_model(
         else:
             m.obj = Objective(expr=sum( (m.Ts1[t] - m.Tset1[t])**2 + obj_weight_optimize*(m.Th1[t] - m.Tset1[t])**2 
                                        + (m.Ts2[t] - m.Tset2[t])**2 + obj_weight_optimize*(m.Th2[t] - m.Tset2[t])**2 for t in m.t), sense=minimize)
-
-    if mode == 'observe':
-        # define observation (state estimation)
-        if not m.four_states:
-            m.obj = Objective(expr=sum((m.Ts1[t] - m.Ts1_measure[t])**2 + obj_weight_observe*m.D1[t]**2 for t in m.t), sense=minimize)
-
-        else:
-            m.obj = Objective(expr=sum((m.Ts1[t] - m.Ts1_measure[t])**2 + obj_weight_observe*m.D1[t]**2
-                                       + (m.Ts2[t] - m.Ts2_measure[t])**2 + obj_weight_observe*m.D2[t]**2 for t in m.t), sense=minimize)
-
-
-    if mode == 'estimate':
-        # define parameter estimation objective
-        if not m.four_states:
-            m.obj = Objective(expr=sum((m.Ts1[t] - m.Ts1_measure[t])**2 + obj_weight_estimate*(m.Th1[t] - m.Ts1_measure[t])**2 for t in m.t), sense=minimize)
-        else:
-            m.obj = Objective(expr=sum((m.Ts1[t] - m.Ts1_measure[t])**2 + obj_weight_estimate*(m.Th1[t] - m.Ts1_measure[t])**2
-                                       + (m.Ts2[t] - m.Ts2_measure[t])**2 + obj_weight_estimate*(m.Th2[t] - m.Ts2_measure[t])**2 for t in m.t), sense=minimize)
 
     if mode == 'parmest':
         m.FirstStageCost = Expression(expr=0)
@@ -554,15 +474,6 @@ def create_model(
 
         if time_finite_difference == 'FORWARD':
             m.last_u = Constraint(expr=m.U[m.t.at(-1)] == m.U[m.t.at(-2)])
-            
-    # same idea also applies to disturbance estimates in 'observe' mode
-    if mode == 'observe':
-
-        if time_finite_difference == 'BACKWARD':
-            m.first_d = Constraint(expr=m.D[m.t.at(1)] == m.D[m.t.at(2)])
-
-        if time_finite_difference == 'FORWARD':
-            m.last_d = Constraint(expr=m.D[m.t.at(-1)] == m.D[m.t.at(-2)])
 
     return m
 
@@ -576,18 +487,15 @@ def extract_results(model, name = "Pyomo results"):
     Th1 = np.array([value(model.Th1[t]) for t in model.t])
     Ts1 = np.array([value(model.Ts1[t]) for t in model.t])
     U1 = np.array([value(model.U1[t]) for t in model.t])
-    D1 = np.array([value(model.D1[t]) for t in model.t])
     P1 = value(model.P1)
     if not model.four_states:
         Th2 = None
         Ts2 = None
         U2 = None
-        D2 = None
     else:
         Th2 = np.array([value(model.Th2[t]) for t in model.t])
         Ts2 = np.array([value(model.Ts2[t]) for t in model.t])
         U2 = np.array([value(model.U2[t]) for t in model.t])
-        D2 = np.array([value(model.D2[t]) for t in model.t])
     P2 = model.P2
     Tamb = model.Tamb
 
@@ -616,7 +524,6 @@ def extract_plot_results(tc_exp_data, model):
     Th1 = np.array([value(model.Th1[t]) for t in model.t])
     Ts1 = np.array([value(model.Ts1[t]) for t in model.t])
     U1 = np.array([value(model.U1[t]) for t in model.t])
-    D1 = np.array([value(model.D1[t]) for t in model.t])
     P1 = value(model.P1)
     if not model.four_states:
         Th2 = None
@@ -627,7 +534,6 @@ def extract_plot_results(tc_exp_data, model):
         Th2 = np.array([value(model.Th2[t]) for t in model.t])
         Ts2 = np.array([value(model.Ts2[t]) for t in model.t])
         U2 = np.array([value(model.U2[t]) for t in model.t])
-        D2 = np.array([value(model.D2[t]) for t in model.t])
     P2 = model.P2
     Tamb = model.Tamb
 
@@ -635,12 +541,10 @@ def extract_plot_results(tc_exp_data, model):
                                     time, 
                                     Th1, 
                                     U1,
-                                    None, # disturbance heater 1  
                                     P1,
                                     Ts1,
                                     Th2, 
                                     U2,
-                                    None, # disturbance heater 2
                                     P2, 
                                     Ts2, # data or setpoint for sensor 2
                                     Tamb)
@@ -649,7 +553,7 @@ def extract_plot_results(tc_exp_data, model):
     plt.figure(figsize=(10,6))
 
     # subplot 1: temperatures
-    plt.subplot(3, 1, 1)
+    plt.subplot(2, 1, 1)
 
     # colors
     # green: sensor 1
@@ -676,7 +580,7 @@ def extract_plot_results(tc_exp_data, model):
     plt.grid(True)
 
     # subplot 2: control decision
-    plt.subplot(3, 1, 2)
+    plt.subplot(2, 1, 2)
     if exp.u1 is not None:
         plt.scatter(exp.time, exp.u1, marker='.', label="measured 1", color='red', alpha=0.5)
     if U1 is not None:
@@ -688,22 +592,6 @@ def extract_plot_results(tc_exp_data, model):
 
     plt.title('heater power')
     plt.ylabel('percent of max')
-    plt.legend()
-    plt.grid(True)
-
-    # subplot 3: disturbance
-    plt.subplot(3, 1, 3)
-    if exp.d1 is not None:
-        plt.scatter(exp.time, exp.d1, marker='.', label="measured 1", color='red', alpha=0.5)
-    if D1 is not None:
-        plt.plot(time, D1, label="predicted 1", color='red')
-    if exp.d2 is not None:
-        plt.scatter(exp.time, exp.d2, marker='.', label="measured 2", color='blue', alpha=0.5)
-    if D2 is not None:
-        plt.plot(time, D2, label="predicted 2", color='blue')
-    plt.title('disturbance')
-    plt.ylabel('watts')
-    plt.xlabel('time (s)')
     plt.legend()
     plt.grid(True)
 
