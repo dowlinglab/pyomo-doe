@@ -191,8 +191,8 @@ class TCLabExperiment:
 ### -------------- Part 4: Construct Pyomo Model -------------- ###
 
 def create_model(
-        m=None, # Pyomo mdoel
-        model_option="stage2", # Model mode
+#        m=None, # Pyomo mdoel
+#        model_option="stage2", # Model mode
         data=None, # TCLabExperiment instance
         alpha = 0.00016, # Conversion factor for TCLab (fixed parameter)
         theta = {"Ua":0.0535, "Ub":0.0148, "inv_CpH":1/6.911, "inv_CpS":1/0.318, "Uc":0.001}, # initial guess
@@ -212,6 +212,7 @@ def create_model(
 
     # Using this example: https://github.com/Pyomo/pyomo/blob/main/pyomo/contrib/doe/examples/fim_doe_tutorial.ipynb
 
+    '''
     # Model option
     model_option = ModelOptionLib(model_option)
 
@@ -228,6 +229,8 @@ def create_model(
         raise ValueError(
             "model_option needs to be defined as parmest, stage1, or stage2."
         )
+    '''
+    m = ConcreteModel()
 
     if number_of_states == 2:
         m.four_states = False
@@ -596,8 +599,9 @@ def create_model(
         if time_finite_difference == 'FORWARD':
             m.last_d = Constraint(expr=m.D[m.t.at(-1)] == m.D[m.t.at(-2)])
 
-    if return_m:
-        return m
+    #if return_m:
+    #    return m
+    return m
 
 ### -------------- Part 5: Extract and visualize results -------------- ###
 
