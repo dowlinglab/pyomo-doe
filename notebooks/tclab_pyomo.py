@@ -118,6 +118,8 @@ if "google.colab" in sys.modules:
             print(v.stdout)
             print(v.stderr)
         _check_pyomo_installed()
+
+    import idaes
     print("Finished installing software")
 
 ###### End note
@@ -125,7 +127,7 @@ if "google.colab" in sys.modules:
 ### -------------- Part 2: Load libraries -------------- ###
 
 # Need to import IDAES for Ipopt
-import idaes
+# import idaes
 
 from pyomo.contrib.doe import (
     ModelOptionLib,
