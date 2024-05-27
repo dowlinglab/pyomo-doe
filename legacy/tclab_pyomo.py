@@ -222,7 +222,7 @@ class TCLabExperiment:
 
 
 def create_model(
-    #        m=None, # Pyomo mdoel
+    #        m=None, # Pyomo model
     #        model_option="stage2", # Model mode
     data=None,  # TCLabExperiment instance
     alpha=0.00016,  # Conversion factor for TCLab (fixed parameter)
@@ -401,7 +401,7 @@ def create_model(
 
     # for the simulate and optimize modes
     if mode in ['simulate', 'optimize', 'estimate', 'parmest', 'doe']:
-        # if no distrubance data exists, initialize parameter at 0
+        # if no disturbance data exists, initialize parameter at 0
         if d1 is None:
             m.D1 = Param(m.t, default=0)
         # otherwise initialize parameter with disturbance data dict
@@ -465,7 +465,7 @@ def create_model(
         m.Th2dot = DerivativeVar(m.Th2, wrt=m.t)
         m.Ts2dot = DerivativeVar(m.Ts2, wrt=m.t)
 
-    # define differential equations (model) as contraints
+    # define differential equations (model) as constraints
     # moved Cps to the right hand side to diagnose integrator
     if not m.four_states:
         m.Th_ode = Constraint(
@@ -554,7 +554,7 @@ def create_model(
                 # otherwise initialize disturbance of 0
                 m.var_input[m.D2] = {0: 0}
 
-        # Simulate to initiialize
+        # Simulate to initialize
         # Makes the solver more efficient
         sim = Simulator(m, package='scipy')
         tsim, profiles = sim.simulate(
@@ -688,7 +688,7 @@ def create_model(
     # For moving horizion we check if t=0 is in the horizon t data and fix initial conditions
     if time[0] == 0:
         if TS1_data is not None and TS1_data[0] is not None:
-            # Initilize with first temperature measurement
+            # Initialize with first temperature measurement
             m.Th1[0].fix(TS1_data[0])
             m.Ts1[0].fix(TS1_data[0])
         else:
@@ -698,7 +698,7 @@ def create_model(
 
         if m.four_states:
             if TS2_data is not None and TS2_data[0] is not None:
-                # Initilize with first temperature measurement
+                # Initialize with first temperature measurement
                 m.Th2[0].fix(TS2_data[0])
                 m.Ts2[0].fix(TS2_data[0])
             else:
@@ -776,7 +776,7 @@ def extract_plot_results(tc_exp_data, model):
 
     """
 
-    # For convienence, save in a shorter variable name
+    # For convenience, save in a shorter variable name
     exp = tc_exp_data
 
     # Extract results from Pyomo model

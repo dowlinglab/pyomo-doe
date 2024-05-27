@@ -28,7 +28,7 @@ Thank you for joining the workshop at the ESCAPE/PSE meeting in Florence, Italy 
 
 ## What will I learn in this workshop?
 
-Digital twins refer to a new perspective on predictive modeling, where a mathematical model (often grounded in engineering science fundamentals) is continously updated with as new data from the corresponding physical system become available. Thus a digital twin mimics the behaviors of its corresponding physical system. Often digital twins are developed and deployed for a specific purpose, e.g., optimizing maintain schedules, process monitoring for improved safety, optimal control of complex systems.
+Digital twins refer to a new perspective on predictive modeling, where a mathematical model (often grounded in engineering science fundamentals) is continuously updated with as new data from the corresponding physical system become available. Thus a digital twin mimics the behaviors of its corresponding physical system. Often digital twins are developed and deployed for a specific purpose, e.g., optimizing maintain schedules, process monitoring for improved safety, optimal control of complex systems.
 
 In this workshop, we will learn how to develop digital twin models in the open-source Pyomo ecosystem. Specifically, we will learn how to use two Pyomo-based toolkits:
 * `ParmEst` for parameter estimation and uncertainty quantification
@@ -38,7 +38,7 @@ In this workshop, we will learn how to develop digital twin models in the open-s
 
 ## What do I need to complete the tutorial?
 
-This tutorial assumes the audience is familar with basic Python programming. (New to Python? Check out [this](https://lectures.scientific-python.org/index.html) and similar online resources.) The tutorial is designed to run in Google Colab. The `tclab_pyomo.py` file contains the Pyomo model for our motivating system as well as utilities to install software on Colab.
+This tutorial assumes the audience is familiar with basic Python programming. (New to Python? Check out [this](https://lectures.scientific-python.org/index.html) and similar online resources.) The tutorial is designed to run in Google Colab. The `tclab_pyomo.py` file contains the Pyomo model for our motivating system as well as utilities to install software on Colab.
 
 Alternatively, pariticipants can run the tutorial locally on their computer. Use the following commands to create a new conda environment:
 
