@@ -565,16 +565,16 @@ def extract_plot_results(tc_exp_data, model):
     plt.subplot(2, 1, 1)
 
     colors = {
-        'T1': 'orange',
-        'T2': 'green',
-        'Th1': 'red',
-        'Ts1': 'blue',
-        'Th2': 'purple',
-        'Ts2': 'brown',
-        'u1_data': 'orange',
-        'u2_data': 'green',
-        'u1_mod': 'red',
-        'u2_mod': 'purple'
+        'T1': 'orange', # data
+        'T2': 'green', # data
+        'Th1': 'red', # model
+        'Ts1': 'blue', # model
+        'Th2': 'purple', # model
+        'Ts2': 'brown', # model
+        'u1_data': 'orange', # data
+        'u2_data': 'green', # data
+        'u1_mod': 'red', # model
+        'u2_mod': 'purple' # model
     }
 
     LW = 3.0 # line width
