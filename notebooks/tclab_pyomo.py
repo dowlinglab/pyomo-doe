@@ -139,6 +139,19 @@ from pyomo.contrib.doe import (
 from pyomo.environ import ConcreteModel, Var, Param, Constraint, TransformationFactory, SolverFactory, Objective, minimize, value, Suffix, Expression, sin
 from pyomo.dae import DerivativeVar, ContinuousSet, Simulator
 
+# https://stackoverflow.com/questions/3899980/how-to-change-the-font-size-on-a-matplotlib-plot
+SMALL_SIZE = 14
+MEDIUM_SIZE = 16
+BIGGER_SIZE = 18
+
+plt.rc('font', size=SMALL_SIZE)          # controls default text sizes
+plt.rc('axes', titlesize=SMALL_SIZE)     # fontsize of the axes title
+plt.rc('axes', labelsize=MEDIUM_SIZE)    # fontsize of the x and y labels
+plt.rc('xtick', labelsize=SMALL_SIZE)    # fontsize of the tick labels
+plt.rc('ytick', labelsize=SMALL_SIZE)    # fontsize of the tick labels
+plt.rc('legend', fontsize=SMALL_SIZE)    # legend fontsize
+plt.rc('figure', titlesize=BIGGER_SIZE)  # fontsize of the figure title
+
 from dataclasses import dataclass
 
 ### -------------- Part 3: Handling experimental data -------------- ###
@@ -183,12 +196,12 @@ def create_model(
         alpha = 0.00016, # Conversion factor for TCLab (fixed parameter)
         theta = {"Ua":0.0535, "Ub":0.0148, "inv_CpH":1/6.911, "inv_CpS":1/0.318, "Uc":0.001}, # initial guess
         mode = 'simulate', # Mode of operation,
+        number_of_states = 2, # Number of states in the model
         obj_weight_optimize = 0.1, # Weight in the tracking objective function
         obj_weight_observe = 1.0, # Weight in the observation objective function
         obj_weight_estimate = 0.01, # Weight in the estimation objective function
         time_finite_difference = 'BACKWARD', # Finite difference scheme
-        integrate_to_initialize = False, # Integrate to initialize
-        number_of_states = 4, # Number of states in the model
+        integrate_to_initialize = True, # Integrate to initialize
         sine_period = None, # Optional argument for sensitivity analysis of sine ID test
         sine_amplitude = None, # Optional argument for sensitivity analysis of sine ID test
 ):
@@ -203,7 +216,7 @@ def create_model(
     elif number_of_states == 4:
         m.four_states = True
     else:
-        raise ValueError("number_of_states needs to be 2 or 4.")
+        raise ValueError("number_of_states must be 2 or 4.")
 
     # Support data as either TCLabExperiment or DataFrame instance
     if isinstance(data, pd.DataFrame):
@@ -472,10 +485,10 @@ def create_model(
         
         if time_finite_difference == 'BACKWARD':
             # Remember that Pyomo is 1-indexed, which means '1' is the first element of the time set
-            m.first_u = Constraint(expr=m.U[m.t.at(1)] == m.U[m.t.at(2)])
+            m.first_u = Constraint(expr=m.U1[m.t.at(1)] == m.U1[m.t.at(2)])
 
         if time_finite_difference == 'FORWARD':
-            m.last_u = Constraint(expr=m.U[m.t.at(-1)] == m.U[m.t.at(-2)])
+            m.last_u = Constraint(expr=m.U1[m.t.at(-1)] == m.U1[m.t.at(-2)])
 
     return m
 
@@ -501,7 +514,17 @@ def extract_results(model, name = "Pyomo results"):
     P2 = model.P2
     Tamb = model.Tamb
 
-    return TCLabExperiment(name, time, Th1, U1, P1, Ts1, Th2, U2, P2, Tamb)
+    return TCLabExperiment(name, 
+                           time, 
+                           Th1, 
+                           U1, 
+                           P1, 
+                           Ts1, 
+                           Th2, 
+                           U2, 
+                           P2,
+                           Ts2, 
+                           Tamb)
 
 def extract_plot_results(tc_exp_data, model):
     """ Extract and plot the results of the Pyomo model
@@ -518,38 +541,22 @@ def extract_plot_results(tc_exp_data, model):
     """
 
     # For convienence, save in a shorter variable name
-    exp = tc_exp_data
-
-
-    # Extract results from Pyomo model
-    time = np.array([value(t) for t in model.t])
-    Th1 = np.array([value(model.Th1[t]) for t in model.t])
-    Ts1 = np.array([value(model.Ts1[t]) for t in model.t])
-    U1 = np.array([value(model.U1[t]) for t in model.t])
-    P1 = value(model.P1)
-    if not model.four_states:
-        Th2 = None
-        Ts2 = None
-        U2 = None
-        D2 = None
+    if tc_exp_data is not None:
+        exp = tc_exp_data
     else:
-        Th2 = np.array([value(model.Th2[t]) for t in model.t])
-        Ts2 = np.array([value(model.Ts2[t]) for t in model.t])
-        U2 = np.array([value(model.U2[t]) for t in model.t])
-    P2 = model.P2
-    Tamb = model.Tamb
+        exp = TCLabExperiment(None, 
+                              None, 
+                              None, 
+                              None, 
+                              None, 
+                              None, 
+                              None, 
+                              None, 
+                              None, 
+                              None, 
+                              None)
 
-    pyomo_results = TCLabExperiment("Pyomo results",
-                                    time, 
-                                    Th1, 
-                                    U1,
-                                    P1,
-                                    Ts1,
-                                    Th2, 
-                                    U2,
-                                    P2, 
-                                    Ts2, # data or setpoint for sensor 2
-                                    Tamb)
+    mod = extract_results(model)
 
     # create figure
     plt.figure(figsize=(10,6))
@@ -557,43 +564,51 @@ def extract_plot_results(tc_exp_data, model):
     # subplot 1: temperatures
     plt.subplot(2, 1, 1)
 
-    # colors
-    # green: sensor 1
-    # red: heater 1
-    # orange: sensor 2
-    # blue: heater 2
+    colors = {
+        'T1': 'orange',
+        'T2': 'green',
+        'Th1': 'red',
+        'Ts1': 'blue',
+        'Th2': 'purple',
+        'Ts2': 'brown',
+        'u1_data': 'orange',
+        'u2_data': 'green',
+        'u1_mod': 'red',
+        'u2_mod': 'purple'
+    }
+
+    LW = 3.0 # line width
 
     if exp.T1 is not None:
-        plt.scatter(exp.time, exp.T1, marker='.', label="$T_{S,1}$ measured", alpha=0.5,color='green')
-    if Ts1 is not None:
-        plt.plot(time, Ts1, label="$T_{S,1}$ predicted",color='green')
-    if Th1 is not None:
-        plt.plot(time, Th1, label="$T_{H,1}$ predicted", color='red')
+        plt.scatter(exp.time, exp.T1, marker='o', label="$T_{S,1}$ measured", alpha=0.5, color=colors["T1"])
+    if mod.TS1_data is not None:
+        plt.plot(mod.time, mod.TS1_data, label="$T_{S,1}$ predicted", color=colors["Ts1"], linewidth=LW)
+    if mod.T1 is not None:
+        plt.plot(mod.time, mod.T1, label="$T_{H,1}$ predicted", color=colors["Th1"], linewidth=LW, linestyle='--')
     if exp.T2 is not None:
-        plt.scatter(exp.time, exp.T2, marker='s', label="$T_{S,2}$ measured", alpha=0.5,color='orange')
-    if Ts2 is not None:
-        plt.plot(time, Ts2, label="$T_{S,2}$ predicted",color='orange')
-    if Th2 is not None:
-        plt.plot(time, Th2, label="$T_{H,2}$ predicted", color='blue')
+        plt.scatter(exp.time, exp.T2, marker='s', label="$T_{S,2}$ measured", alpha=0.5, color=colors["T2"], linewidth=LW)
+    if mod.TS2_data is not None:
+        plt.plot(mod.time, mod.TS2_data, label="$T_{S,2}$ predicted",color=colors["Ts2"], linewidth=LW)
+    if mod.T2 is not None:
+        plt.plot(mod.time, mod.T2, label="$T_{H,2}$ predicted", color=colors["Th2"], linewidth=LW, linestyle='--')
     
-    plt.title('temperatures')
-    plt.ylabel('deg C')
+    plt.ylabel('Temperature (°C)')
     plt.legend()
     plt.grid(True)
 
     # subplot 2: control decision
     plt.subplot(2, 1, 2)
     if exp.u1 is not None:
-        plt.scatter(exp.time, exp.u1, marker='.', label="measured 1", color='red', alpha=0.5)
-    if U1 is not None:
-        plt.plot(time, U1, label="predicted 1", color='red')
+        plt.scatter(exp.time, exp.u1, marker='o', label="$u_1$ measured", color=colors['u1_data'], alpha=0.5)
+    if mod.u1 is not None:
+        plt.plot(mod.time, mod.u1, label="$u_1$ predicted", color=colors["u1_mod"], linewidth=LW)
     if exp.u2 is not None:
-        plt.scatter(exp.time, exp.u2, marker='.', label="measured 2", color='blue', alpha=0.5)
-    if U2 is not None:
-        plt.plot(time, U2, label="predicted 2", color='blue')
+        plt.scatter(exp.time, exp.u2, marker='s', label="$u_2$ measured", color=colors["u2_data"], alpha=0.5)
+    if mod.u2 is not None:
+        plt.plot(mod.time, mod.u2, label="$u_2$ predicted", color=colors["u2_mod"], linewidth=LW)
 
-    plt.title('heater power')
-    plt.ylabel('percent of max')
+    plt.ylabel('Heater Power (%)')
+    plt.xlabel('Time (s)')
     plt.legend()
     plt.grid(True)
 
@@ -615,7 +630,7 @@ def extract_plot_results(tc_exp_data, model):
 
     print(" ") # New line
 
-    return pyomo_results
+    return mod
 
 def results_summary(result):
     print("======Results Summary======")
