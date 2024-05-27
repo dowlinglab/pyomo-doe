@@ -4,31 +4,31 @@ Welcome to the interaction tutorial workshop for parameter estimation and model-
 
 ![Pyomo workflow](./images/pyomo_workflow.png)
 
-These materials were created by Prof. Alexander Dowling at the University of Notre Dame. Special thanks to [Prof. Jeff Kantor](https://engineering.nd.edu/news/in-memoriam-jeffrey-kantor-former-vice-president-associate-provost-and-dean/), [Maddie Watson](https://dowlinglab.nd.edu/people/madelynn-watson/), [Molly Dougher](https://dowlinglab.nd.edu/people/molly-dougher/), and [Hailey Lynch](https://dowlinglab.nd.edu/people/hailey-lynch/) for assistance with the TCLab models and activities. Pyomo.DoE was developed by [Jialu Wang](https://dowlinglab.nd.edu/people/jialu-wang/) and Alexander Dowling with assistance from [John Siirola](https://www.sandia.gov/ccr/staff/john-daniel-siirola/), [Bethany Nicholson](https://scholar.google.com/citations?user=WxqNQ6IAAAAJ&hl=en), [Miranda Mundt](https://ieeexplore.ieee.org/author/37089520396), [Hailey Lynch](https://dowlinglab.nd.edu/people/hailey-lynch/), and [Dan Laky](https://dowlinglab.nd.edu/people/daniel-laky/).
+These materials were created by [Prof. Alexander Dowling](https://dowlinglab.nd.edu/people/professor-alexander-w-dowling/) at the University of Notre Dame. Special thanks to [Prof. Jeff Kantor](https://engineering.nd.edu/news/in-memoriam-jeffrey-kantor-former-vice-president-associate-provost-and-dean/), [Maddie Watson](https://dowlinglab.nd.edu/people/madelynn-watson/), [Molly Dougher](https://dowlinglab.nd.edu/people/molly-dougher/), and [Hailey Lynch](https://dowlinglab.nd.edu/people/hailey-lynch/) for assistance with the TCLab models and activities. Pyomo.DoE was developed by [Jialu Wang](https://dowlinglab.nd.edu/people/jialu-wang/) and Alexander Dowling with assistance from [John Siirola](https://www.sandia.gov/ccr/staff/john-daniel-siirola/), [Bethany Nicholson](https://scholar.google.com/citations?user=WxqNQ6IAAAAJ&hl=en), [Miranda Mundt](https://ieeexplore.ieee.org/author/37089520396), [Hailey Lynch](https://dowlinglab.nd.edu/people/hailey-lynch/), and [Dan Laky](https://dowlinglab.nd.edu/people/daniel-laky/).
 
 ## ESCAPE/PSE 2024 Workshop Schedule
 
 Thank you for joining the workshop at the ESCAPE/PSE meeting in Florence, Italy on June 2, 2024.
 
-| Time | Activity |
+| Time | Topic |
 | ---- | -------- |
 | 1:00 pm  | *Welcome and Overview* |
-| 1:05 pm | *Modeling and Optimization in Pyomo* |
+| 1:05 pm | **Modeling and Optimization in Pyomo** |
 | | [](./notebooks/tclab_model.ipynb)
 | | [](./notebooks/pyomo_simulation.ipynb) |
-| 1:30 pm | *Parameter Estimation* |
+| 1:30 pm | **Parameter Estimation** |
 | | [](./notebooks/parmest.ipynb) |
 | | [](./notebooks/parmest_exercise.ipynb) |
 | 2:10 pm | *Break* |
-| 2:20 pm | *Optimal Experiment Design* |
+| 2:20 pm | **Optimal Experiment Design** |
 | | [](./notebooks/doe_exploratory_analysis.ipynb)
 | | [](./notebooks/doe_optimize.ipynb)
 | | [](./notebooks/doe_exercise.ipynb)
-| 3:00 pm | Adjourn |
+| 3:00 pm | *Adjourn* |
 
 ## What will I learn in this workshop?
 
-Digital twins refer to a new perspective on predictive modeling, where a mathematical model (often grounded in engineering science fundamentals) is continously updated with as new data from the corresponding physical system become available. Thus a digital twin mimics the behaviors of its corresponding physical system. Often digital twins are developed and deployed for a specific purpose, e.g., optimizing maintain schedules, process monitoring for improved safety, optimal control of complex systems.
+Digital twins refer to a new perspective on predictive modeling, where a mathematical model (often grounded in engineering science fundamentals) is continuously updated with as new data from the corresponding physical system become available. Thus a digital twin mimics the behaviors of its corresponding physical system. Often digital twins are developed and deployed for a specific purpose, e.g., optimizing maintain schedules, process monitoring for improved safety, optimal control of complex systems.
 
 In this workshop, we will learn how to develop digital twin models in the open-source Pyomo ecosystem. Specifically, we will learn how to use two Pyomo-based toolkits:
 * `ParmEst` for parameter estimation and uncertainty quantification
@@ -38,7 +38,7 @@ In this workshop, we will learn how to develop digital twin models in the open-s
 
 ## What do I need to complete the tutorial?
 
-This tutorial assumes the audience is familar with basic Python programming. (New to Python? Check out [this](https://lectures.scientific-python.org/index.html) and similar online resources.) The tutorial is designed to run in Google Colab. The `tclab_pyomo.py` file contains the Pyomo model for our motivating system as well as utilities to install software on Colab.
+This tutorial assumes the audience is familiar with basic Python programming. (New to Python? Check out [this](https://lectures.scientific-python.org/index.html) and similar online resources.) The tutorial is designed to run in Google Colab. The `tclab_pyomo.py` file contains the Pyomo model for our motivating system as well as utilities to install software on Colab.
 
 Alternatively, pariticipants can run the tutorial locally on their computer. Use the following commands to create a new conda environment:
 
