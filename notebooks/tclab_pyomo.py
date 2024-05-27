@@ -151,6 +151,7 @@ plt.rc('xtick', labelsize=SMALL_SIZE)    # fontsize of the tick labels
 plt.rc('ytick', labelsize=SMALL_SIZE)    # fontsize of the tick labels
 plt.rc('legend', fontsize=SMALL_SIZE)    # legend fontsize
 plt.rc('figure', titlesize=BIGGER_SIZE)  # fontsize of the figure title
+plt.rc('lines', linewidth=3)
 
 from dataclasses import dataclass
 
@@ -582,15 +583,15 @@ def extract_plot_results(tc_exp_data, model):
     if exp.T1 is not None:
         plt.scatter(exp.time, exp.T1, marker='o', label="$T_{S,1}$ measured", alpha=0.5, color=colors["T1"])
     if mod.TS1_data is not None:
-        plt.plot(mod.time, mod.TS1_data, label="$T_{S,1}$ predicted", color=colors["Ts1"], linewidth=LW)
+        plt.plot(mod.time, mod.TS1_data, label="$T_{S,1}$ predicted", color=colors["Ts1"])
     if mod.T1 is not None:
-        plt.plot(mod.time, mod.T1, label="$T_{H,1}$ predicted", color=colors["Th1"], linewidth=LW, linestyle='--')
+        plt.plot(mod.time, mod.T1, label="$T_{H,1}$ predicted", color=colors["Th1"], linestyle='--')
     if exp.T2 is not None:
-        plt.scatter(exp.time, exp.T2, marker='s', label="$T_{S,2}$ measured", alpha=0.5, color=colors["T2"], linewidth=LW)
+        plt.scatter(exp.time, exp.T2, marker='s', label="$T_{S,2}$ measured", alpha=0.5, color=colors["T2"])
     if mod.TS2_data is not None:
-        plt.plot(mod.time, mod.TS2_data, label="$T_{S,2}$ predicted",color=colors["Ts2"], linewidth=LW)
+        plt.plot(mod.time, mod.TS2_data, label="$T_{S,2}$ predicted",color=colors["Ts2"])
     if mod.T2 is not None:
-        plt.plot(mod.time, mod.T2, label="$T_{H,2}$ predicted", color=colors["Th2"], linewidth=LW, linestyle='--')
+        plt.plot(mod.time, mod.T2, label="$T_{H,2}$ predicted", color=colors["Th2"], linestyle='--')
     
     plt.ylabel('Temperature (°C)')
     plt.legend()
@@ -601,11 +602,11 @@ def extract_plot_results(tc_exp_data, model):
     if exp.u1 is not None:
         plt.scatter(exp.time, exp.u1, marker='o', label="$u_1$ measured", color=colors['u1_data'], alpha=0.5)
     if mod.u1 is not None:
-        plt.plot(mod.time, mod.u1, label="$u_1$ predicted", color=colors["u1_mod"], linewidth=LW)
+        plt.plot(mod.time, mod.u1, label="$u_1$ predicted", color=colors["u1_mod"])
     if exp.u2 is not None:
         plt.scatter(exp.time, exp.u2, marker='s', label="$u_2$ measured", color=colors["u2_data"], alpha=0.5)
     if mod.u2 is not None:
-        plt.plot(mod.time, mod.u2, label="$u_2$ predicted", color=colors["u2_mod"], linewidth=LW)
+        plt.plot(mod.time, mod.u2, label="$u_2$ predicted", color=colors["u2_mod"])
 
     plt.ylabel('Heater Power (%)')
     plt.xlabel('Time (s)')
