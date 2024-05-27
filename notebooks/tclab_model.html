@@ -67,7 +67,7 @@ const thebe_selector_output = ".output, .cell_output"
     <script>DOCUMENTATION_OPTIONS.pagename = 'notebooks/tclab_model';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Prototyping the Model in Numpy" href="numpy_simulation.html" />
+    <link rel="next" title="Modeling with Numpy" href="numpy_simulation.html" />
     <link rel="prev" title="Modeling Example: TCLab" href="../tclab.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
@@ -166,19 +166,19 @@ const thebe_selector_output = ".output, .cell_output"
         <ul class="nav bd-sidenav bd-sidenav__home-link">
             <li class="toctree-l1">
                 <a class="reference internal" href="../Readme.html">
-                    ParmEst and Pyomo.DoE: Model-Based Data Analytics and Optimal Experiment Design in Pyomo
+                    Optimizing Experiments with Pyomo.DoE
                 </a>
             </li>
         </ul>
         <ul class="current nav bd-sidenav">
 <li class="toctree-l1 current active has-children"><a class="reference internal" href="../tclab.html">Modeling Example: TCLab</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
 <li class="toctree-l2 current active"><a class="current reference internal" href="#">TCLab Mathematical Model</a></li>
-<li class="toctree-l2"><a class="reference internal" href="numpy_simulation.html">Prototyping the Model in Numpy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="numpy_simulation.html">Modeling with Numpy</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pyomo_simulation.html">Modeling with Pyomo</a></li>
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../regression.html">Parameter Estimation</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-2"><i class="fa-solid fa-chevron-down"></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="parmest.html">Regression with ParmEst</a></li>
+<li class="toctree-l2"><a class="reference internal" href="parmest.html">Nonlinear Regression with ParmEst</a></li>
 <li class="toctree-l2"><a class="reference internal" href="parmest_exercise.html">Exercise: ParmEst</a></li>
 </ul>
 </li>
@@ -186,6 +186,11 @@ const thebe_selector_output = ".output, .cell_output"
 <li class="toctree-l2"><a class="reference internal" href="doe_exploratory_analysis.html">Pyomo.DoE: Exploratory Analysis</a></li>
 <li class="toctree-l2"><a class="reference internal" href="doe_optimize.html">Pyomo.DoE: Optimization</a></li>
 <li class="toctree-l2"><a class="reference internal" href="doe_exercise.html">Exercise: Pyomo.DoE</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../exercises.html">Exercise Solutions</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-4"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../exercise_solutions/parmest_exercise.html">Exercise: ParmEst</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../exercise_solutions/doe_exercise.html">Exercise: Pyomo.DoE</a></li>
 </ul>
 </li>
 </ul>
@@ -436,24 +441,46 @@ document.write(`
   <section class="tex2jax_ignore mathjax_ignore" id="tclab-mathematical-model">
 <h1>TCLab Mathematical Model<a class="headerlink" href="#tclab-mathematical-model" title="Permalink to this heading">#</a></h1>
 <p>We will use the TCLab as a motivating example for this workshop.</p>
+<p>The code below sets default font sizes.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+<span class="n">SMALL_SIZE</span> <span class="o">=</span> <span class="mi">14</span>
+<span class="n">MEDIUM_SIZE</span> <span class="o">=</span> <span class="mi">16</span>
+<span class="n">BIGGER_SIZE</span> <span class="o">=</span> <span class="mi">18</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">rc</span><span class="p">(</span><span class="s1">&#39;font&#39;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">SMALL_SIZE</span><span class="p">)</span>  <span class="c1"># controls default text sizes</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">rc</span><span class="p">(</span><span class="s1">&#39;axes&#39;</span><span class="p">,</span> <span class="n">titlesize</span><span class="o">=</span><span class="n">SMALL_SIZE</span><span class="p">)</span>  <span class="c1"># fontsize of the axes title</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">rc</span><span class="p">(</span><span class="s1">&#39;axes&#39;</span><span class="p">,</span> <span class="n">labelsize</span><span class="o">=</span><span class="n">MEDIUM_SIZE</span><span class="p">)</span>  <span class="c1"># fontsize of the x and y labels</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">rc</span><span class="p">(</span><span class="s1">&#39;xtick&#39;</span><span class="p">,</span> <span class="n">labelsize</span><span class="o">=</span><span class="n">SMALL_SIZE</span><span class="p">)</span>  <span class="c1"># fontsize of the tick labels</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">rc</span><span class="p">(</span><span class="s1">&#39;ytick&#39;</span><span class="p">,</span> <span class="n">labelsize</span><span class="o">=</span><span class="n">SMALL_SIZE</span><span class="p">)</span>  <span class="c1"># fontsize of the tick labels</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">rc</span><span class="p">(</span><span class="s1">&#39;legend&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="n">SMALL_SIZE</span><span class="p">)</span>  <span class="c1"># legend fontsize</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">rc</span><span class="p">(</span><span class="s1">&#39;figure&#39;</span><span class="p">,</span> <span class="n">titlesize</span><span class="o">=</span><span class="n">BIGGER_SIZE</span><span class="p">)</span>  <span class="c1"># fontsize of the figure title</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">rc</span><span class="p">(</span><span class="s1">&#39;lines&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
 <section id="temperature-control-lab">
 <h2>Temperature control lab<a class="headerlink" href="#temperature-control-lab" title="Permalink to this heading">#</a></h2>
-<p>The <a class="reference external" href="http://apmonitor.com/pdc/index.php/Main/ArduinoTemperatureControl">temperature control lab</a> is an Arduino-based hands-on experiment for teaching dynamic modeling and process control developed by Prof. John Hedengren. At Notre Dame, we restructured our core <a class="reference external" href="https://ndcbe.github.io/controls/Readme.html">undergraduate process control class</a> around hands-on labratory assignments with the TCLab.</p>
-<p>The TCLab board contains two heater plus temperature sensor assemblies. Using Python (or MATLAB), students can independently maninputate the electrical power to each heater and sense the temperatures.</p>
+<p>The <a class="reference external" href="http://apmonitor.com/pdc/index.php/Main/ArduinoTemperatureControl">temperature control lab</a> is an Arduino-based hands-on experiment for teaching dynamic modeling and process control developed by Prof. John Hedengren. At Notre Dame, we restructured our core <a class="reference external" href="https://ndcbe.github.io/controls/Readme.html">undergraduate process control class</a> around six hands-on labratory assignments with the TCLab.</p>
+<p>The TCLab board contains two heater plus temperature sensor assemblies. Using Python (or MATLAB), students can independently maninputate the electrical power to the heaters and measure the temperatures.</p>
 <p><img alt="TC Lab hardware" src="https://ndcbe.github.io/controls/_images/TCLab_labelled.jpg" /></p>
 </section>
 <section id="system-identification-data">
 <h2>System identification data<a class="headerlink" href="#system-identification-data" title="Permalink to this heading">#</a></h2>
-<p>Using the TCLab, we performed two system identification tests: step test and sine wave test. Below are the resulting data.</p>
+<p>Using the TCLab, we performed two system identification tests: step test and sine wave test.</p>
 <section id="step-test">
 <h3>Step test<a class="headerlink" href="#step-test" title="Permalink to this heading">#</a></h3>
+<p>We will start by loading the data using <code class="docutils literal notranslate"><span class="pre">Pandas</span></code>.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">sys</span>
-<span class="c1"># If running on Google Colab, install Pyomo and Ipopt via IDAES</span>
+
 <span class="n">on_colab</span> <span class="o">=</span> <span class="s2">&quot;google.colab&quot;</span> <span class="ow">in</span> <span class="n">sys</span><span class="o">.</span><span class="n">modules</span>
 <span class="k">if</span> <span class="n">on_colab</span><span class="p">:</span>
-    <span class="n">file</span> <span class="o">=</span> <span class="s2">&quot;https://raw.githubusercontent.com/dowlinglab/pyomo-doe/main/data/tclab_step_test.csv&#39;&quot;</span>
+    <span class="n">file</span> <span class="o">=</span> <span class="s2">&quot;https://raw.githubusercontent.com/dowlinglab/pyomo-doe/main/data/tclab_step_test.csv&quot;</span>
 <span class="k">else</span><span class="p">:</span>
     <span class="n">file</span> <span class="o">=</span> <span class="s1">&#39;../data/tclab_step_test.csv&#39;</span>
 
@@ -535,17 +562,7 @@ document.write(`
 </table>
 </div></div></div>
 </div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
-<span class="n">ax</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s1">&#39;Time&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;T1&#39;</span><span class="p">,</span> <span class="s1">&#39;T2&#39;</span><span class="p">],</span> <span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Time (s)&#39;</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;Temperature (°C)&#39;</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<img alt="../_images/65894bb3a2e9bb69da0ad501219160fda303b805434d0f15da72f823e251015e.png" src="../_images/65894bb3a2e9bb69da0ad501219160fda303b805434d0f15da72f823e251015e.png" />
-</div>
-</div>
+<p>Let’s start by plotting the heater data.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ax</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s1">&#39;Time&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Q1&#39;</span><span class="p">,</span> <span class="s1">&#39;Q2&#39;</span><span class="p">],</span> <span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Time (s)&#39;</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;Heater Power (%)&#39;</span><span class="p">)</span>
@@ -553,9 +570,23 @@ document.write(`
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/dae77b1cbd963e609b926e2afcbc1bbec8ba6f33b17bdcec52cf940b4a865e5d.png" src="../_images/dae77b1cbd963e609b926e2afcbc1bbec8ba6f33b17bdcec52cf940b4a865e5d.png" />
+<img alt="../_images/48caad3e7815ebae388dd6f44fba32f69e19110f39800969690bdd2dcc088c2a.png" src="../_images/48caad3e7815ebae388dd6f44fba32f69e19110f39800969690bdd2dcc088c2a.png" />
 </div>
 </div>
+<p>In this step test, heater 1 was set to 50% power and heater 2 was off. Let’s see the resulting temperature profiles.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+<span class="n">ax</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s1">&#39;Time&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;T1&#39;</span><span class="p">,</span> <span class="s1">&#39;T2&#39;</span><span class="p">],</span> <span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Time (s)&#39;</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;Temperature (°C)&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/ace0e87f3c987743b111efe8c4c6f1ceb33ddd3e24210166d57716455993ce5e.png" src="../_images/ace0e87f3c987743b111efe8c4c6f1ceb33ddd3e24210166d57716455993ce5e.png" />
+</div>
+</div>
+<p>As expected, temperature 1 rises as expected for a (near) linear system. The experimentation noise is noticable once the device approaches steady-state after 600 seconds. As expected, temperature 2 gradually rises in response to heater assembly 1 heating up. On the device, the two heater assembles are seperates by ~1 cm.</p>
 </section>
 <section id="sine-test">
 <h3>Sine test<a class="headerlink" href="#sine-test" title="Permalink to this heading">#</a></h3>
@@ -649,25 +680,15 @@ document.write(`
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/ed28e8a5a9ea11264f93bdb923dbe152e4814abb40e959ef793ea13c7c28ad79.png" src="../_images/ed28e8a5a9ea11264f93bdb923dbe152e4814abb40e959ef793ea13c7c28ad79.png" />
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ax</span> <span class="o">=</span> <span class="n">df2</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s1">&#39;Time&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Q1&#39;</span><span class="p">,</span> <span class="s1">&#39;Q2&#39;</span><span class="p">],</span> <span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Time (s)&#39;</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;Heater Power (%)&#39;</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<img alt="../_images/feb8ea355110cf535f3970475d4d14c075924479a9d18b66c755bb878b518fba.png" src="../_images/feb8ea355110cf535f3970475d4d14c075924479a9d18b66c755bb878b518fba.png" />
+<img alt="../_images/b724d863e93f2fad889b9ce9294890583295b6978279f7f13f29e5070cbad786.png" src="../_images/b724d863e93f2fad889b9ce9294890583295b6978279f7f13f29e5070cbad786.png" />
 </div>
 </div>
 </section>
 </section>
 <section id="two-state-mathematical-model">
 <h2>Two-state mathematical model<a class="headerlink" href="#two-state-mathematical-model" title="Permalink to this heading">#</a></h2>
-<p>Using these data, we want to develop a science-based mathematical model for the TCLab. For simplicity, we will focus on a single heater and temperature sensor assembly.</p>
-<p><img alt="TCLab schematic" src="../_images/tclab_schematic.jpg" /></p>
+<p>Using these data, we want to develop a science-based mathematical model for the TCLab. For simplicity, we will develop a mathemical single heater and temperature sensor assembly. However, this workshop example also supports modeling both assemblies.</p>
+<p><img alt="TCLab schematic" src="../_images/tclab_schematic2.jpg" /></p>
 <p>We will define two <strong>states</strong>:</p>
 <ul class="simple">
 <li><p><span class="math notranslate nohighlight">\(T_{H,1}\)</span> is the temperature of the heater/fin assembly (°C)</p></li>
@@ -676,8 +697,9 @@ document.write(`
 <p>Assumptions:</p>
 <ul class="simple">
 <li><p>The two bodies are uniform temperature, i.e., we are neglecting any temperature gradients in the fin.</p></li>
-<li><p>The sensor exchanges heat only with the heater, and heat transfer to the surroundings is dominated by the heat sink attached to the heater.</p></li>
-<li><p>We can neglect radiative heat transfer.</p></li>
+<li><p>The sensor exchanges heat only with the heater, and heat transfer to the surroundings is dominated by the heat sink attached to the heater.]</p></li>
+<li><p>Heat capacities <span class="math notranslate nohighlight">\(C_p\)</span> are constant.</p></li>
+<li><p>Radiative heat transfer is negligable.</p></li>
 </ul>
 <p>We define the <strong>manipulated variable</strong>:</p>
 <ul class="simple">
@@ -694,7 +716,7 @@ C^S_p\frac{dT_{S,1}}{dt} &amp; = U_b(T_{H,1} - T_{S,1})
 <p>The model has the following <strong>unknown parameters</strong>:</p>
 <ul class="simple">
 <li><p><span class="math notranslate nohighlight">\(C^H_p\)</span> is the heat capacity of the heater/fin assembly (J / °C)</p></li>
-<li><p><span class="math notranslate nohighlight">\(C^H_p\)</span> is the heat capacity of the sensor (J / °C)</p></li>
+<li><p><span class="math notranslate nohighlight">\(C^S_p\)</span> is the heat capacity of the sensor (J / °C)</p></li>
 <li><p><span class="math notranslate nohighlight">\(U_a\)</span> is the heat transfer coefficient from the heater/fin to ambient (W / °C)</p></li>
 <li><p><span class="math notranslate nohighlight">\(U_b\)</span> is the heat transfer coefficient from the heater/fin to the sensor (W / °C)</p></li>
 </ul>
@@ -727,45 +749,45 @@ C^S_p\frac{d(T_{S,1} - T_{amb})}{dt} &amp; = U_b(T_{H,1} - T_{amb}) - (T_{S,1} -
 <div class="math notranslate nohighlight">
 \[\begin{split}
 \begin{align}
-\frac{d}{dt}\underbrace{\begin{bmatrix} T_{H,1} - T_{amb} \\ T_{S,1} - T_{amb} \end{bmatrix}}_x &amp; = 
-\underbrace{\begin{bmatrix} -\frac{U_a+U_b}{C^H_p} &amp; \frac{U_b}{C^H_p} \\ \frac{U_b}{C^S_p} &amp; - \frac{U_b}{C^S_p}\end{bmatrix}}_A 
-\underbrace{\begin{bmatrix} T_{H,1} - T_{amb} \\ T_{S,1} - T_{amb} \end{bmatrix}}_x + 
-\underbrace{\begin{bmatrix} \frac{\alpha P_1}{C^H_p} \\ 0 \end{bmatrix}}_B 
-\underbrace{\begin{bmatrix} u_1 \end{bmatrix}}_u \\
+\frac{d}{dt}\underbrace{\begin{bmatrix} T_{H,1} - T_{amb} \\ T_{S,1} - T_{amb} \end{bmatrix}}_\mathbf{x} &amp; = 
+\underbrace{\begin{bmatrix} -\frac{U_a+U_b}{C^H_p} &amp; \frac{U_b}{C^H_p} \\ \frac{U_b}{C^S_p} &amp; - \frac{U_b}{C^S_p}\end{bmatrix}}_\mathbf{A} 
+\underbrace{\begin{bmatrix} T_{H,1} - T_{amb} \\ T_{S,1} - T_{amb} \end{bmatrix}}_\mathbf{x} + 
+\underbrace{\begin{bmatrix} \frac{\alpha P_1}{C^H_p} \\ 0 \end{bmatrix}}_\mathbf{B} 
+\underbrace{\begin{bmatrix} u_1 \end{bmatrix}}_\mathbf{u} \\
 \\
-\underbrace{\begin{bmatrix} T_{S,1} - T_{amb} \end{bmatrix}}_y &amp; = 
-\underbrace{\begin{bmatrix}0 &amp; 1 \end{bmatrix}}_C 
-\underbrace{\begin{bmatrix} T_{H,1} - T_{amb} \\ T_{S,1} - T_{amb} \end{bmatrix}}_x
+\underbrace{\begin{bmatrix} T_{S,1} - T_{amb} \end{bmatrix}}_\mathbf{y} &amp; = 
+\underbrace{\begin{bmatrix}0 &amp; 1 \end{bmatrix}}_\mathbf{C} 
+\underbrace{\begin{bmatrix} T_{H,1} - T_{amb} \\ T_{S,1} - T_{amb} \end{bmatrix}}_\mathbf{x}
 \end{align}
 \end{split}\]</div>
 <p>In other words, we can write the temperature control lab model as a <strong>state-space model</strong></p>
 <div class="math notranslate nohighlight">
 \[\begin{split}
 \begin{align}
-\frac{dx}{dt} &amp; = A x + B u \\
-y &amp; = C x
+\frac{d\mathbf{x}}{dt} &amp; = \mathbf{A} \mathbf{x} + \mathbf{B} \mathbf{u} \\
+\mathbf{y} &amp; = \mathbf{C} \mathbf{x}
 \end{align}
 \end{split}\]</div>
-<p>where the state space variables are the deviations of temperature from the ambient <span class="math notranslate nohighlight">\(T_{amb}\)</span></p>
+<p>where the state space variables are the deviations of temperature from the ambient <span class="math notranslate nohighlight">\(T_{amb}\)</span>:</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}
 \begin{align}
-u &amp; = \begin{bmatrix} u_1 \end{bmatrix} &amp;&amp; \text{inputs} \\
+\mathbf{u} &amp; = \begin{bmatrix} u_1 \end{bmatrix} &amp;&amp; \text{inputs} \\
 \\
-x &amp; = \begin{bmatrix} T_{H,1} - T_{amb} \\ T_{S,1} - T_{amb} \end{bmatrix} &amp;&amp; \text{states} \\
+\mathbf{x} &amp; = \begin{bmatrix} T_{H,1} - T_{amb} \\ T_{S,1} - T_{amb} \end{bmatrix} &amp;&amp; \text{states} \\
 \\
-y &amp; = \begin{bmatrix} T_{S,1} - T_{amb} \end{bmatrix} &amp;&amp; \text{measurements} \\
+\mathbf{y} &amp; = \begin{bmatrix} T_{S,1} - T_{amb} \end{bmatrix} &amp;&amp; \text{measurements} \\
 \end{align}
 \end{split}\]</div>
-<p>and parameters are embedded in the arrays</p>
+<p>and the parameters are embedded in the matrices:</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}
 \begin{align}
-A = \begin{bmatrix} -\frac{U_a+U_b}{C^H_p} &amp; \frac{U|_b}{C^H_p} \\ \frac{U_b}{C^S_p} &amp; - \frac{U_b}{C^S_p}\end{bmatrix}
+\mathbf{A} = \begin{bmatrix} -\frac{U_a+U_b}{C^H_p} &amp; \frac{U_b}{C^H_p} \\ \frac{U_b}{C^S_p} &amp; - \frac{U_b}{C^S_p}\end{bmatrix}
 \quad
-B = \begin{bmatrix} \frac{\alpha P_1}{C^H_p} \\ 0 \end{bmatrix} 
+\mathbf{B} = \begin{bmatrix} \frac{\alpha P_1}{C^H_p} \\ 0 \end{bmatrix} 
 \quad
-C = \begin{bmatrix}0 &amp; 1 \end{bmatrix} \\
+\mathbf{C} = \begin{bmatrix}0 &amp; 1 \end{bmatrix} \\
 \end{align}
 \end{split}\]</div>
 </section>
@@ -815,7 +837,7 @@ C = \begin{bmatrix}0 &amp; 1 \end{bmatrix} \\
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Prototyping the Model in Numpy</p>
+        <p class="prev-next-title">Modeling with Numpy</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>

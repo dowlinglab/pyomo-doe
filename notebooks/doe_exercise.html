@@ -65,6 +65,7 @@ const thebe_selector_output = ".output, .cell_output"
     <script>DOCUMENTATION_OPTIONS.pagename = 'notebooks/doe_exercise';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Exercise Solutions" href="../exercises.html" />
     <link rel="prev" title="Pyomo.DoE: Optimization" href="doe_optimize.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
@@ -170,12 +171,12 @@ const thebe_selector_output = ".output, .cell_output"
         <ul class="current nav bd-sidenav">
 <li class="toctree-l1 has-children"><a class="reference internal" href="../tclab.html">Modeling Example: TCLab</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="tclab_model.html">TCLab Mathematical Model</a></li>
-<li class="toctree-l2"><a class="reference internal" href="numpy_simulation.html">Prototyping the Model in Numpy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="numpy_simulation.html">Modeling with Numpy</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pyomo_simulation.html">Modeling with Pyomo</a></li>
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../regression.html">Parameter Estimation</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-2"><i class="fa-solid fa-chevron-down"></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="parmest.html">Regression with ParmEst</a></li>
+<li class="toctree-l2"><a class="reference internal" href="parmest.html">Nonlinear Regression with ParmEst</a></li>
 <li class="toctree-l2"><a class="reference internal" href="parmest_exercise.html">Exercise: ParmEst</a></li>
 </ul>
 </li>
@@ -183,6 +184,11 @@ const thebe_selector_output = ".output, .cell_output"
 <li class="toctree-l2"><a class="reference internal" href="doe_exploratory_analysis.html">Pyomo.DoE: Exploratory Analysis</a></li>
 <li class="toctree-l2"><a class="reference internal" href="doe_optimize.html">Pyomo.DoE: Optimization</a></li>
 <li class="toctree-l2 current active"><a class="current reference internal" href="#">Exercise: Pyomo.DoE</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../exercises.html">Exercise Solutions</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-4"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../exercise_solutions/parmest_exercise.html">Exercise: ParmEst</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../exercise_solutions/doe_exercise.html">Exercise: Pyomo.DoE</a></li>
 </ul>
 </li>
 </ul>
@@ -413,8 +419,8 @@ document.write(`
                 <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#load-and-explore-experimental-data-step-test">Load and explore experimental data (step test)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#analyze-fim-with-pyomo-doe-at-initial-point-step-test">Analyze FIM with Pyomo.DoE at initial point (step test)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#optimize-the-next-experiment-d-optimality">Optimize the next experiment (D-optimality)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#optimize-the-next-experiment-a-optimality">Optimize the next experiment (A-optimality)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#optimize-the-next-experiment-d-optimality">Optimize the next experiment (D-optimality)</a></li>
 </ul>
             </nav>
         </div>
@@ -428,9 +434,12 @@ document.write(`
                   
   <section class="tex2jax_ignore mathjax_ignore" id="exercise-pyomo-doe">
 <h1>Exercise: Pyomo.DoE<a class="headerlink" href="#exercise-pyomo-doe" title="Permalink to this heading">#</a></h1>
+<p>In this notebook, you will use Pyomo.DoE to compute the A- and D-optimal experiments from the TCLab. In our <a class="reference internal" href="doe_optimize.html"><span class="doc std std-doc">previous notebook</span></a>, we used the sine test as a starting point. In this notebook, we will use the step test as the starting point.</p>
+<p>Recall, we can computing the next best experiment assuming we already completed one prior experiment. Thus it is important to confirm our optimal experiment design does not change if we change the prior experiment of optimization initial point.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">sys</span>
+
 <span class="c1"># If running on Google Colab, install Pyomo and Ipopt via IDAES</span>
 <span class="n">on_colab</span> <span class="o">=</span> <span class="s2">&quot;google.colab&quot;</span> <span class="ow">in</span> <span class="n">sys</span><span class="o">.</span><span class="n">modules</span>
 <span class="k">if</span> <span class="n">on_colab</span><span class="p">:</span>
@@ -445,7 +454,13 @@ document.write(`
         <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;../notebooks&#39;</span><span class="p">)</span>
 
 <span class="c1"># import TCLab model, simulation, and data analysis functions</span>
-<span class="kn">from</span> <span class="nn">tclab_pyomo</span> <span class="kn">import</span> <span class="n">TCLabExperiment</span><span class="p">,</span> <span class="n">create_model</span><span class="p">,</span> <span class="n">extract_results</span><span class="p">,</span> <span class="n">extract_plot_results</span><span class="p">,</span> <span class="n">results_summary</span>
+<span class="kn">from</span> <span class="nn">tclab_pyomo</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">TCLabExperiment</span><span class="p">,</span>
+    <span class="n">create_model</span><span class="p">,</span>
+    <span class="n">extract_results</span><span class="p">,</span>
+    <span class="n">extract_plot_results</span><span class="p">,</span>
+    <span class="n">results_summary</span><span class="p">,</span>
+<span class="p">)</span>
 
 <span class="c1"># set default number of states in the TCLab model</span>
 <span class="n">number_tclab_states</span> <span class="o">=</span> <span class="mi">2</span>
@@ -455,9 +470,11 @@ document.write(`
 </div>
 <section id="load-and-explore-experimental-data-step-test">
 <h2>Load and explore experimental data (step test)<a class="headerlink" href="#load-and-explore-experimental-data-step-test" title="Permalink to this heading">#</a></h2>
+<p>We will load the step test experimental data, similar to our previous notebooks.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+
 <span class="k">if</span> <span class="n">on_colab</span><span class="p">:</span>
     <span class="n">file</span> <span class="o">=</span> <span class="s2">&quot;https://raw.githubusercontent.com/dowlinglab/pyomo-doe/main/data/tclab_step_test.csv&quot;</span>
 <span class="k">else</span><span class="p">:</span>
@@ -471,6 +488,7 @@ document.write(`
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ax</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s1">&#39;Time&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;T1&#39;</span><span class="p">,</span> <span class="s1">&#39;T2&#39;</span><span class="p">],</span> <span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Time (s)&#39;</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;Temperature (°C)&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -478,23 +496,26 @@ document.write(`
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ax</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s1">&#39;Time&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Q1&#39;</span><span class="p">,</span> <span class="s1">&#39;Q2&#39;</span><span class="p">],</span> <span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Time (s)&#39;</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;Heater Power (%)&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">tc_data</span> <span class="o">=</span> <span class="n">TCLabExperiment</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;Sine Wave Test for Heater 1&quot;</span><span class="p">,</span>
-                            <span class="n">time</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
-                            <span class="n">T1</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;T1&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
-                            <span class="n">u1</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Q1&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
-                            <span class="n">P1</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span>
-                            <span class="n">TS1_data</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                            <span class="n">T2</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;T2&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
-                            <span class="n">u2</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Q2&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
-                            <span class="n">P2</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span>
-                            <span class="n">TS2_data</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                            <span class="n">Tamb</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;T1&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">tc_data</span> <span class="o">=</span> <span class="n">TCLabExperiment</span><span class="p">(</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Sine Wave Test for Heater 1&quot;</span><span class="p">,</span>
+    <span class="n">time</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
+    <span class="n">T1</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;T1&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
+    <span class="n">u1</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Q1&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
+    <span class="n">P1</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span>
+    <span class="n">TS1_data</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">T2</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;T2&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
+    <span class="n">u2</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Q2&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
+    <span class="n">P2</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span>
+    <span class="n">TS2_data</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">Tamb</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;T1&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+<span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -502,13 +523,19 @@ document.write(`
 </section>
 <section id="analyze-fim-with-pyomo-doe-at-initial-point-step-test">
 <h2>Analyze FIM with Pyomo.DoE at initial point (step test)<a class="headerlink" href="#analyze-fim-with-pyomo-doe-at-initial-point-step-test" title="Permalink to this heading">#</a></h2>
+<p>To get started, compute and analyze the FIM of the step test experiment.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Load Pyomo.DoE functions</span>
 <span class="c1"># Add your solution here</span>
 
 <span class="c1"># Copied from previous notebook</span>
-<span class="n">theta_values</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Ua&#39;</span><span class="p">:</span> <span class="mf">0.05147278733764012</span><span class="p">,</span> <span class="s1">&#39;Ub&#39;</span><span class="p">:</span> <span class="mf">0.0005342082856927798</span><span class="p">,</span> <span class="s1">&#39;inv_CpH&#39;</span><span class="p">:</span> <span class="mf">0.14622879403418604</span><span class="p">,</span> <span class="s1">&#39;inv_CpS&#39;</span><span class="p">:</span> <span class="mf">99.99999754623846</span><span class="p">}</span>
+<span class="n">theta_values</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;Ua&#39;</span><span class="p">:</span> <span class="mf">0.05147278733764012</span><span class="p">,</span>
+    <span class="s1">&#39;Ub&#39;</span><span class="p">:</span> <span class="mf">0.0005342082856927798</span><span class="p">,</span>
+    <span class="s1">&#39;inv_CpH&#39;</span><span class="p">:</span> <span class="mf">0.14622879403418604</span><span class="p">,</span>
+    <span class="s1">&#39;inv_CpS&#39;</span><span class="p">:</span> <span class="mf">99.99999754623846</span><span class="p">,</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 </div>
@@ -542,6 +569,7 @@ document.write(`
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Define create_model function for Pyomo.DoE</span>
 
+
 <span class="c1"># Add your solution here</span>
 </pre></div>
 </div>
@@ -569,52 +597,11 @@ document.write(`
 </div>
 </div>
 </div>
-</section>
-<section id="optimize-the-next-experiment-d-optimality">
-<h2>Optimize the next experiment (D-optimality)<a class="headerlink" href="#optimize-the-next-experiment-d-optimality" title="Permalink to this heading">#</a></h2>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Extract the prior FIM and Jacobian information from the previous</span>
-<span class="c1"># result to use for initialization.</span>
-<span class="c1"># Add your solution here</span>
-
-<span class="c1"># Set Ipopt options</span>
-<span class="n">solver</span> <span class="o">=</span> <span class="n">SolverFactory</span><span class="p">(</span><span class="s1">&#39;ipopt&#39;</span><span class="p">)</span>
-<span class="c1">#solver.options[&#39;bound_push&#39;] = 1E-10</span>
-<span class="n">solver</span><span class="o">.</span><span class="n">options</span><span class="p">[</span><span class="s1">&#39;halt_on_ampl_error&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;yes&#39;</span>
-<span class="c1">#solver.options[&#39;tol&#39;] = 1E-5</span>
-<span class="c1">#solver.options[&#39;acceptable_tol&#39;] = 1E-4</span>
-<span class="c1">#solver.options[&#39;max_iter&#39;] = 100</span>
-<span class="n">solver</span><span class="o">.</span><span class="n">options</span><span class="p">[</span><span class="s1">&#39;linear_solver&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;ma57&#39;</span>
-
-<span class="c1"># Create a new DoE object</span>
-<span class="c1"># Add your solution here</span>
-
-<span class="c1"># Solve the DoE problem</span>
-<span class="c1"># Add your solution here</span>
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Extract and plot the results using our custom function</span>
-<span class="c1"># Add your solution here</span>
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Compute the FIM at the optimal solution</span>
-<span class="c1"># Add your solution here</span>
-</pre></div>
-</div>
-</div>
-</div>
+<p><strong>Discussion:</strong> How does this FIM compare to the sine test experiment we <a class="reference internal" href="doe_exploratory_analysis.html"><span class="doc std std-doc">previously analyzed</span></a>?</p>
 </section>
 <section id="optimize-the-next-experiment-a-optimality">
 <h2>Optimize the next experiment (A-optimality)<a class="headerlink" href="#optimize-the-next-experiment-a-optimality" title="Permalink to this heading">#</a></h2>
+<p>Now we are ready to compute the A-optimal next best experiment. Why are we starting with A-optimality? It runs faster so it is better for debugging syntax.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create a new DoE object</span>
@@ -642,6 +629,52 @@ document.write(`
 </div>
 </div>
 </div>
+<p><strong>Discussion:</strong> How do these compare to our <a class="reference internal" href="doe_optimize.html"><span class="doc std std-doc">previous A-optimal results</span></a> considering the sine test as the prior experiment?</p>
+</section>
+<section id="optimize-the-next-experiment-d-optimality">
+<h2>Optimize the next experiment (D-optimality)<a class="headerlink" href="#optimize-the-next-experiment-d-optimality" title="Permalink to this heading">#</a></h2>
+<p>Finally, we are ready to solve the D-optimality problem. This may take 2 minutes to run.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Extract the prior FIM and Jacobian information from the previous</span>
+<span class="c1"># result to use for initialization.</span>
+<span class="c1"># Add your solution here</span>
+
+<span class="c1"># Set Ipopt options</span>
+<span class="n">solver</span> <span class="o">=</span> <span class="n">SolverFactory</span><span class="p">(</span><span class="s1">&#39;ipopt&#39;</span><span class="p">)</span>
+<span class="c1"># solver.options[&#39;bound_push&#39;] = 1E-10</span>
+<span class="n">solver</span><span class="o">.</span><span class="n">options</span><span class="p">[</span><span class="s1">&#39;halt_on_ampl_error&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;yes&#39;</span>
+<span class="c1"># solver.options[&#39;tol&#39;] = 1E-5</span>
+<span class="c1"># solver.options[&#39;acceptable_tol&#39;] = 1E-4</span>
+<span class="c1"># solver.options[&#39;max_iter&#39;] = 100</span>
+<span class="n">solver</span><span class="o">.</span><span class="n">options</span><span class="p">[</span><span class="s1">&#39;linear_solver&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;ma57&#39;</span>
+
+<span class="c1"># Create a new DoE object</span>
+<span class="c1"># Add your solution here</span>
+
+<span class="c1"># Solve the DoE problem</span>
+<span class="c1"># Add your solution here</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Extract and plot the results using our custom function</span>
+<span class="c1"># Add your solution here</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Compute the FIM at the optimal solution</span>
+<span class="c1"># Add your solution here</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p><strong>Discussion:</strong> How do these results compare to <a class="reference internal" href="#"><span class="doc std std-doc">our previous analysis</span></a>?</p>
 </section>
 </section>
 
@@ -684,6 +717,15 @@ document.write(`
         <p class="prev-next-title">Pyomo.DoE: Optimization</p>
       </div>
     </a>
+    <a class="right-next"
+       href="../exercises.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Exercise Solutions</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
 </div>
                 </footer>
               
@@ -701,8 +743,8 @@ document.write(`
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#load-and-explore-experimental-data-step-test">Load and explore experimental data (step test)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#analyze-fim-with-pyomo-doe-at-initial-point-step-test">Analyze FIM with Pyomo.DoE at initial point (step test)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#optimize-the-next-experiment-d-optimality">Optimize the next experiment (D-optimality)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#optimize-the-next-experiment-a-optimality">Optimize the next experiment (A-optimality)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#optimize-the-next-experiment-d-optimality">Optimize the next experiment (D-optimality)</a></li>
 </ul>
   </nav></div>
 

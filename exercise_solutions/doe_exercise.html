@@ -1,0 +1,1742 @@
+
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>Exercise: Pyomo.DoE &#8212; Pyomo.DoE Workshop and Tutorials</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=5b4479735964841361fd" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=5b4479735964841361fd" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=5b4479735964841361fd" rel="stylesheet" />
+
+  
+  <link href="../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=5b4479735964841361fd" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" href="../_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=5b4479735964841361fd" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=5b4479735964841361fd" />
+  <script src="../_static/vendor/fontawesome/6.1.2/js/all.min.js?digest=5b4479735964841361fd"></script>
+
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/clipboard.min.js"></script>
+    <script src="../_static/copybutton.js"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../_static/design-tabs.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
+    <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'exercise_solutions/doe_exercise';</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="prev" title="Exercise: ParmEst" href="parmest_exercise.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>
+    Back to top
+  </button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
+    </nav>
+  
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+
+<a class="navbar-brand logo" href="../Readme.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/PyomoDoE-sm.png" class="logo__image only-light" alt="Pyomo.DoE Workshop and Tutorials - Home"/>
+    <script>document.write(`<img src="../_static/PyomoDoE-sm.png" class="logo__image only-dark" alt="Pyomo.DoE Workshop and Tutorials - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../Readme.html">
+                    Optimizing Experiments with Pyomo.DoE
+                </a>
+            </li>
+        </ul>
+        <ul class="current nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../tclab.html">Modeling Example: TCLab</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/tclab_model.html">TCLab Mathematical Model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/numpy_simulation.html">Modeling with Numpy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/pyomo_simulation.html">Modeling with Pyomo</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../regression.html">Parameter Estimation</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-2"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/parmest.html">Nonlinear Regression with ParmEst</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/parmest_exercise.html">Exercise: ParmEst</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../mbdoe.html">Optimal Experiment Design</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-3"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/doe_exploratory_analysis.html">Pyomo.DoE: Exploratory Analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/doe_optimize.html">Pyomo.DoE: Optimization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/doe_exercise.html">Exercise: Pyomo.DoE</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../exercises.html">Exercise Solutions</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-4"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="parmest_exercise.html">Exercise: ParmEst</a></li>
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">Exercise: Pyomo.DoE</a></li>
+</ul>
+</li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</label></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-launch-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Launch interactive content">
+    <i class="fas fa-rocket"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://colab.research.google.com/github/dowlinglab/pyomo-doe/blob/main/exercise_solutions/doe_exercise.ipynb" target="_blank"
+   class="btn btn-sm dropdown-item"
+   title="Launch onColab"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  
+    <img src="../_static/images/logo_colab.png">
+  </span>
+<span class="btn__text-container">Colab</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/dowlinglab/pyomo-doe" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/dowlinglab/pyomo-doe/issues/new?title=Issue%20on%20page%20%2Fexercise_solutions/doe_exercise.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../_sources/exercise_solutions/doe_exercise.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</label>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Exercise: Pyomo.DoE</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#load-and-explore-experimental-data-step-test">Load and explore experimental data (step test)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#analyze-fim-with-pyomo-doe-at-initial-point-step-test">Analyze FIM with Pyomo.DoE at initial point (step test)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#optimize-the-next-experiment-a-optimality">Optimize the next experiment (A-optimality)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#optimize-the-next-experiment-d-optimality">Optimize the next experiment (D-optimality)</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article" role="main">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="exercise-pyomo-doe">
+<h1>Exercise: Pyomo.DoE<a class="headerlink" href="#exercise-pyomo-doe" title="Permalink to this heading">#</a></h1>
+<p>In this notebook, you will use Pyomo.DoE to compute the A- and D-optimal experiments from the TCLab. In our <a class="reference internal" href="../notebooks/doe_optimize.html"><span class="doc std std-doc">previous notebook</span></a>, we used the sine test as a starting point. In this notebook, we will use the step test as the starting point.</p>
+<p>Recall, we can computing the next best experiment assuming we already completed one prior experiment. Thus it is important to confirm our optimal experiment design does not change if we change the prior experiment of optimization initial point.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">sys</span>
+
+<span class="c1"># If running on Google Colab, install Pyomo and Ipopt via IDAES</span>
+<span class="n">on_colab</span> <span class="o">=</span> <span class="s2">&quot;google.colab&quot;</span> <span class="ow">in</span> <span class="n">sys</span><span class="o">.</span><span class="n">modules</span>
+<span class="k">if</span> <span class="n">on_colab</span><span class="p">:</span>
+    <span class="o">!</span>wget<span class="w"> </span><span class="s2">&quot;https://raw.githubusercontent.com/dowlinglab/pyomo-doe/main/notebooks/tclab_pyomo.py&quot;</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">os</span>
+
+    <span class="k">if</span> <span class="s2">&quot;exercise_solutions&quot;</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">():</span>
+        <span class="c1"># Add the &quot;notebooks&quot; folder to the path</span>
+        <span class="c1"># This is needed for running the solutions from a separate folder</span>
+        <span class="c1"># You only need this if you run locally</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;../notebooks&#39;</span><span class="p">)</span>
+
+<span class="c1"># import TCLab model, simulation, and data analysis functions</span>
+<span class="kn">from</span> <span class="nn">tclab_pyomo</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">TCLabExperiment</span><span class="p">,</span>
+    <span class="n">create_model</span><span class="p">,</span>
+    <span class="n">extract_results</span><span class="p">,</span>
+    <span class="n">extract_plot_results</span><span class="p">,</span>
+    <span class="n">results_summary</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="c1"># set default number of states in the TCLab model</span>
+<span class="n">number_tclab_states</span> <span class="o">=</span> <span class="mi">2</span>
+</pre></div>
+</div>
+</div>
+</div>
+<section id="load-and-explore-experimental-data-step-test">
+<h2>Load and explore experimental data (step test)<a class="headerlink" href="#load-and-explore-experimental-data-step-test" title="Permalink to this heading">#</a></h2>
+<p>We will load the step test experimental data, similar to our previous notebooks.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+
+<span class="k">if</span> <span class="n">on_colab</span><span class="p">:</span>
+    <span class="n">file</span> <span class="o">=</span> <span class="s2">&quot;https://raw.githubusercontent.com/dowlinglab/pyomo-doe/main/data/tclab_step_test.csv&quot;</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="n">file</span> <span class="o">=</span> <span class="s1">&#39;../data/tclab_step_test.csv&#39;</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+<span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Time</th>
+      <th>T1</th>
+      <th>T2</th>
+      <th>Q1</th>
+      <th>Q2</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>0.00</td>
+      <td>22.84</td>
+      <td>22.52</td>
+      <td>50.0</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>1.01</td>
+      <td>22.84</td>
+      <td>22.52</td>
+      <td>50.0</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>2.01</td>
+      <td>22.84</td>
+      <td>22.52</td>
+      <td>50.0</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>3.00</td>
+      <td>22.84</td>
+      <td>22.52</td>
+      <td>50.0</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>4.00</td>
+      <td>22.84</td>
+      <td>22.20</td>
+      <td>50.0</td>
+      <td>0.0</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ax</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s1">&#39;Time&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;T1&#39;</span><span class="p">,</span> <span class="s1">&#39;T2&#39;</span><span class="p">],</span> <span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Time (s)&#39;</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;Temperature (°C)&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/663624025578c9bc8fe4a8c289ea9a426fbee76450068372da9c3972d06e97e9.png" src="../_images/663624025578c9bc8fe4a8c289ea9a426fbee76450068372da9c3972d06e97e9.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ax</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s1">&#39;Time&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Q1&#39;</span><span class="p">,</span> <span class="s1">&#39;Q2&#39;</span><span class="p">],</span> <span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Time (s)&#39;</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;Heater Power (%)&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/c78b6e4827981f1620a9d16dc20852bd2037f36befd35f9ca4d4151cf49cdc82.png" src="../_images/c78b6e4827981f1620a9d16dc20852bd2037f36befd35f9ca4d4151cf49cdc82.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">tc_data</span> <span class="o">=</span> <span class="n">TCLabExperiment</span><span class="p">(</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Sine Wave Test for Heater 1&quot;</span><span class="p">,</span>
+    <span class="n">time</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
+    <span class="n">T1</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;T1&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
+    <span class="n">u1</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Q1&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
+    <span class="n">P1</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span>
+    <span class="n">TS1_data</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">T2</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;T2&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
+    <span class="n">u2</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Q2&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
+    <span class="n">P2</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span>
+    <span class="n">TS2_data</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">Tamb</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;T1&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="analyze-fim-with-pyomo-doe-at-initial-point-step-test">
+<h2>Analyze FIM with Pyomo.DoE at initial point (step test)<a class="headerlink" href="#analyze-fim-with-pyomo-doe-at-initial-point-step-test" title="Permalink to this heading">#</a></h2>
+<p>To get started, compute and analyze the FIM of the step test experiment.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Load Pyomo.DoE functions</span>
+<span class="c1">### BEGIN SOLUTION</span>
+<span class="kn">from</span> <span class="nn">pyomo.contrib.doe</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">ModelOptionLib</span><span class="p">,</span>
+    <span class="n">DesignOfExperiments</span><span class="p">,</span>
+    <span class="n">MeasurementVariables</span><span class="p">,</span>
+    <span class="n">DesignVariables</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="kn">from</span> <span class="nn">pyomo.environ</span> <span class="kn">import</span> <span class="n">SolverFactory</span>
+
+<span class="c1">### END SOLUTION</span>
+
+<span class="c1"># Copied from previous notebook</span>
+<span class="n">theta_values</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;Ua&#39;</span><span class="p">:</span> <span class="mf">0.05147278733764012</span><span class="p">,</span>
+    <span class="s1">&#39;Ub&#39;</span><span class="p">:</span> <span class="mf">0.0005342082856927798</span><span class="p">,</span>
+    <span class="s1">&#39;inv_CpH&#39;</span><span class="p">:</span> <span class="mf">0.14622879403418604</span><span class="p">,</span>
+    <span class="s1">&#39;inv_CpS&#39;</span><span class="p">:</span> <span class="mf">99.99999754623846</span><span class="p">,</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Get time points for control decisions</span>
+<span class="c1">### BEGIN SOLUTION</span>
+<span class="n">t_control</span> <span class="o">=</span> <span class="n">tc_data</span><span class="o">.</span><span class="n">time</span>
+<span class="c1">### END SOLUTION</span>
+
+<span class="c1"># Define the measurement variables</span>
+<span class="n">measurements</span> <span class="o">=</span> <span class="n">MeasurementVariables</span><span class="p">()</span>
+<span class="c1">### BEGIN SOLUTION</span>
+<span class="n">measurements</span><span class="o">.</span><span class="n">add_variables</span><span class="p">(</span><span class="s1">&#39;Ts1&#39;</span><span class="p">,</span> <span class="n">indices</span><span class="o">=</span><span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="n">t_control</span><span class="p">},</span> <span class="n">time_index_position</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+<span class="c1">### END SOLUTION</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">measurements</span><span class="o">.</span><span class="n">variable_names</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[&#39;Ts1[0.0]&#39;, &#39;Ts1[1.01]&#39;, &#39;Ts1[2.01]&#39;, &#39;Ts1[3.0]&#39;, &#39;Ts1[4.0]&#39;, &#39;Ts1[5.01]&#39;, &#39;Ts1[6.01]&#39;, &#39;Ts1[7.01]&#39;, &#39;Ts1[8.01]&#39;, &#39;Ts1[9.01]&#39;, &#39;Ts1[10.01]&#39;, &#39;Ts1[11.01]&#39;, &#39;Ts1[12.01]&#39;, &#39;Ts1[13.01]&#39;, &#39;Ts1[14.01]&#39;, &#39;Ts1[15.01]&#39;, &#39;Ts1[16.01]&#39;, &#39;Ts1[17.0]&#39;, &#39;Ts1[18.01]&#39;, &#39;Ts1[19.01]&#39;, &#39;Ts1[20.0]&#39;, &#39;Ts1[21.01]&#39;, &#39;Ts1[22.0]&#39;, &#39;Ts1[23.01]&#39;, &#39;Ts1[24.01]&#39;, &#39;Ts1[25.01]&#39;, &#39;Ts1[26.01]&#39;, &#39;Ts1[27.01]&#39;, &#39;Ts1[28.01]&#39;, &#39;Ts1[29.01]&#39;, &#39;Ts1[30.01]&#39;, &#39;Ts1[31.01]&#39;, &#39;Ts1[32.01]&#39;, &#39;Ts1[33.01]&#39;, &#39;Ts1[34.01]&#39;, &#39;Ts1[35.01]&#39;, &#39;Ts1[36.01]&#39;, &#39;Ts1[37.01]&#39;, &#39;Ts1[38.01]&#39;, &#39;Ts1[39.01]&#39;, &#39;Ts1[40.01]&#39;, &#39;Ts1[41.01]&#39;, &#39;Ts1[42.01]&#39;, &#39;Ts1[43.01]&#39;, &#39;Ts1[44.01]&#39;, &#39;Ts1[45.01]&#39;, &#39;Ts1[46.01]&#39;, &#39;Ts1[47.01]&#39;, &#39;Ts1[48.01]&#39;, &#39;Ts1[49.01]&#39;, &#39;Ts1[50.01]&#39;, &#39;Ts1[51.0]&#39;, &#39;Ts1[52.01]&#39;, &#39;Ts1[53.01]&#39;, &#39;Ts1[54.0]&#39;, &#39;Ts1[55.01]&#39;, &#39;Ts1[56.01]&#39;, &#39;Ts1[57.01]&#39;, &#39;Ts1[58.01]&#39;, &#39;Ts1[59.01]&#39;, &#39;Ts1[60.01]&#39;, &#39;Ts1[61.01]&#39;, &#39;Ts1[62.01]&#39;, &#39;Ts1[63.01]&#39;, &#39;Ts1[64.01]&#39;, &#39;Ts1[65.0]&#39;, &#39;Ts1[66.0]&#39;, &#39;Ts1[67.01]&#39;, &#39;Ts1[68.01]&#39;, &#39;Ts1[69.01]&#39;, &#39;Ts1[70.01]&#39;, &#39;Ts1[71.01]&#39;, &#39;Ts1[72.01]&#39;, &#39;Ts1[73.01]&#39;, &#39;Ts1[74.0]&#39;, &#39;Ts1[75.01]&#39;, &#39;Ts1[76.01]&#39;, &#39;Ts1[77.01]&#39;, &#39;Ts1[78.01]&#39;, &#39;Ts1[79.01]&#39;, &#39;Ts1[80.01]&#39;, &#39;Ts1[81.01]&#39;, &#39;Ts1[82.01]&#39;, &#39;Ts1[83.01]&#39;, &#39;Ts1[84.01]&#39;, &#39;Ts1[85.01]&#39;, &#39;Ts1[86.0]&#39;, &#39;Ts1[87.01]&#39;, &#39;Ts1[88.01]&#39;, &#39;Ts1[89.01]&#39;, &#39;Ts1[90.01]&#39;, &#39;Ts1[91.01]&#39;, &#39;Ts1[92.01]&#39;, &#39;Ts1[93.01]&#39;, &#39;Ts1[94.01]&#39;, &#39;Ts1[95.0]&#39;, &#39;Ts1[96.01]&#39;, &#39;Ts1[97.01]&#39;, &#39;Ts1[98.01]&#39;, &#39;Ts1[99.01]&#39;, &#39;Ts1[100.01]&#39;, &#39;Ts1[101.01]&#39;, &#39;Ts1[102.01]&#39;, &#39;Ts1[103.01]&#39;, &#39;Ts1[104.01]&#39;, &#39;Ts1[105.01]&#39;, &#39;Ts1[106.01]&#39;, &#39;Ts1[107.01]&#39;, &#39;Ts1[108.01]&#39;, &#39;Ts1[109.01]&#39;, &#39;Ts1[110.01]&#39;, &#39;Ts1[111.01]&#39;, &#39;Ts1[112.01]&#39;, &#39;Ts1[113.01]&#39;, &#39;Ts1[114.01]&#39;, &#39;Ts1[115.01]&#39;, &#39;Ts1[116.01]&#39;, &#39;Ts1[117.01]&#39;, &#39;Ts1[118.01]&#39;, &#39;Ts1[119.01]&#39;, &#39;Ts1[120.01]&#39;, &#39;Ts1[121.01]&#39;, &#39;Ts1[122.01]&#39;, &#39;Ts1[123.01]&#39;, &#39;Ts1[124.01]&#39;, &#39;Ts1[125.01]&#39;, &#39;Ts1[126.01]&#39;, &#39;Ts1[127.01]&#39;, &#39;Ts1[128.0]&#39;, &#39;Ts1[129.01]&#39;, &#39;Ts1[130.01]&#39;, &#39;Ts1[131.0]&#39;, &#39;Ts1[132.01]&#39;, &#39;Ts1[133.01]&#39;, &#39;Ts1[134.01]&#39;, &#39;Ts1[135.01]&#39;, &#39;Ts1[136.0]&#39;, &#39;Ts1[137.01]&#39;, &#39;Ts1[138.01]&#39;, &#39;Ts1[139.01]&#39;, &#39;Ts1[140.01]&#39;, &#39;Ts1[141.01]&#39;, &#39;Ts1[142.01]&#39;, &#39;Ts1[143.01]&#39;, &#39;Ts1[144.0]&#39;, &#39;Ts1[145.01]&#39;, &#39;Ts1[146.01]&#39;, &#39;Ts1[147.01]&#39;, &#39;Ts1[148.01]&#39;, &#39;Ts1[149.01]&#39;, &#39;Ts1[150.01]&#39;, &#39;Ts1[151.01]&#39;, &#39;Ts1[152.01]&#39;, &#39;Ts1[153.01]&#39;, &#39;Ts1[154.01]&#39;, &#39;Ts1[155.01]&#39;, &#39;Ts1[156.0]&#39;, &#39;Ts1[157.01]&#39;, &#39;Ts1[158.01]&#39;, &#39;Ts1[159.01]&#39;, &#39;Ts1[160.01]&#39;, &#39;Ts1[161.01]&#39;, &#39;Ts1[162.0]&#39;, &#39;Ts1[163.01]&#39;, &#39;Ts1[164.01]&#39;, &#39;Ts1[165.0]&#39;, &#39;Ts1[166.01]&#39;, &#39;Ts1[167.01]&#39;, &#39;Ts1[168.01]&#39;, &#39;Ts1[169.01]&#39;, &#39;Ts1[170.01]&#39;, &#39;Ts1[171.0]&#39;, &#39;Ts1[172.01]&#39;, &#39;Ts1[173.01]&#39;, &#39;Ts1[174.01]&#39;, &#39;Ts1[175.01]&#39;, &#39;Ts1[176.01]&#39;, &#39;Ts1[177.0]&#39;, &#39;Ts1[178.0]&#39;, &#39;Ts1[179.0]&#39;, &#39;Ts1[180.01]&#39;, &#39;Ts1[181.01]&#39;, &#39;Ts1[182.01]&#39;, &#39;Ts1[183.01]&#39;, &#39;Ts1[184.01]&#39;, &#39;Ts1[185.01]&#39;, &#39;Ts1[186.01]&#39;, &#39;Ts1[187.01]&#39;, &#39;Ts1[188.01]&#39;, &#39;Ts1[189.01]&#39;, &#39;Ts1[190.01]&#39;, &#39;Ts1[191.0]&#39;, &#39;Ts1[192.01]&#39;, &#39;Ts1[193.01]&#39;, &#39;Ts1[194.01]&#39;, &#39;Ts1[195.01]&#39;, &#39;Ts1[196.01]&#39;, &#39;Ts1[197.01]&#39;, &#39;Ts1[198.01]&#39;, &#39;Ts1[199.01]&#39;, &#39;Ts1[200.01]&#39;, &#39;Ts1[201.01]&#39;, &#39;Ts1[202.01]&#39;, &#39;Ts1[203.01]&#39;, &#39;Ts1[204.01]&#39;, &#39;Ts1[205.0]&#39;, &#39;Ts1[206.01]&#39;, &#39;Ts1[207.01]&#39;, &#39;Ts1[208.01]&#39;, &#39;Ts1[209.01]&#39;, &#39;Ts1[210.01]&#39;, &#39;Ts1[211.01]&#39;, &#39;Ts1[212.01]&#39;, &#39;Ts1[213.01]&#39;, &#39;Ts1[214.01]&#39;, &#39;Ts1[215.01]&#39;, &#39;Ts1[216.01]&#39;, &#39;Ts1[217.01]&#39;, &#39;Ts1[218.01]&#39;, &#39;Ts1[219.01]&#39;, &#39;Ts1[220.01]&#39;, &#39;Ts1[221.0]&#39;, &#39;Ts1[222.01]&#39;, &#39;Ts1[223.01]&#39;, &#39;Ts1[224.01]&#39;, &#39;Ts1[225.01]&#39;, &#39;Ts1[226.01]&#39;, &#39;Ts1[227.01]&#39;, &#39;Ts1[228.01]&#39;, &#39;Ts1[229.01]&#39;, &#39;Ts1[230.01]&#39;, &#39;Ts1[231.01]&#39;, &#39;Ts1[232.01]&#39;, &#39;Ts1[233.01]&#39;, &#39;Ts1[234.01]&#39;, &#39;Ts1[235.01]&#39;, &#39;Ts1[236.01]&#39;, &#39;Ts1[237.01]&#39;, &#39;Ts1[238.01]&#39;, &#39;Ts1[239.01]&#39;, &#39;Ts1[240.01]&#39;, &#39;Ts1[241.01]&#39;, &#39;Ts1[242.0]&#39;, &#39;Ts1[243.01]&#39;, &#39;Ts1[244.01]&#39;, &#39;Ts1[245.01]&#39;, &#39;Ts1[246.01]&#39;, &#39;Ts1[247.01]&#39;, &#39;Ts1[248.01]&#39;, &#39;Ts1[249.01]&#39;, &#39;Ts1[250.0]&#39;, &#39;Ts1[251.0]&#39;, &#39;Ts1[252.01]&#39;, &#39;Ts1[253.01]&#39;, &#39;Ts1[254.01]&#39;, &#39;Ts1[255.01]&#39;, &#39;Ts1[256.01]&#39;, &#39;Ts1[257.01]&#39;, &#39;Ts1[258.01]&#39;, &#39;Ts1[259.01]&#39;, &#39;Ts1[260.0]&#39;, &#39;Ts1[261.01]&#39;, &#39;Ts1[262.01]&#39;, &#39;Ts1[263.01]&#39;, &#39;Ts1[264.01]&#39;, &#39;Ts1[265.01]&#39;, &#39;Ts1[266.01]&#39;, &#39;Ts1[267.01]&#39;, &#39;Ts1[268.0]&#39;, &#39;Ts1[269.01]&#39;, &#39;Ts1[270.0]&#39;, &#39;Ts1[271.01]&#39;, &#39;Ts1[272.01]&#39;, &#39;Ts1[273.01]&#39;, &#39;Ts1[274.01]&#39;, &#39;Ts1[275.01]&#39;, &#39;Ts1[276.01]&#39;, &#39;Ts1[277.01]&#39;, &#39;Ts1[278.01]&#39;, &#39;Ts1[279.01]&#39;, &#39;Ts1[280.01]&#39;, &#39;Ts1[281.0]&#39;, &#39;Ts1[282.01]&#39;, &#39;Ts1[283.01]&#39;, &#39;Ts1[284.01]&#39;, &#39;Ts1[285.01]&#39;, &#39;Ts1[286.01]&#39;, &#39;Ts1[287.01]&#39;, &#39;Ts1[288.01]&#39;, &#39;Ts1[289.01]&#39;, &#39;Ts1[290.0]&#39;, &#39;Ts1[291.01]&#39;, &#39;Ts1[292.0]&#39;, &#39;Ts1[293.01]&#39;, &#39;Ts1[294.01]&#39;, &#39;Ts1[295.01]&#39;, &#39;Ts1[296.01]&#39;, &#39;Ts1[297.01]&#39;, &#39;Ts1[298.01]&#39;, &#39;Ts1[299.01]&#39;, &#39;Ts1[300.01]&#39;, &#39;Ts1[301.01]&#39;, &#39;Ts1[302.01]&#39;, &#39;Ts1[303.01]&#39;, &#39;Ts1[304.01]&#39;, &#39;Ts1[305.0]&#39;, &#39;Ts1[306.01]&#39;, &#39;Ts1[307.0]&#39;, &#39;Ts1[308.01]&#39;, &#39;Ts1[309.01]&#39;, &#39;Ts1[310.01]&#39;, &#39;Ts1[311.01]&#39;, &#39;Ts1[312.0]&#39;, &#39;Ts1[313.0]&#39;, &#39;Ts1[314.0]&#39;, &#39;Ts1[315.0]&#39;, &#39;Ts1[316.01]&#39;, &#39;Ts1[317.01]&#39;, &#39;Ts1[318.01]&#39;, &#39;Ts1[319.01]&#39;, &#39;Ts1[320.01]&#39;, &#39;Ts1[321.01]&#39;, &#39;Ts1[322.01]&#39;, &#39;Ts1[323.01]&#39;, &#39;Ts1[324.01]&#39;, &#39;Ts1[325.0]&#39;, &#39;Ts1[326.01]&#39;, &#39;Ts1[327.01]&#39;, &#39;Ts1[328.01]&#39;, &#39;Ts1[329.0]&#39;, &#39;Ts1[330.01]&#39;, &#39;Ts1[331.0]&#39;, &#39;Ts1[332.01]&#39;, &#39;Ts1[333.01]&#39;, &#39;Ts1[334.01]&#39;, &#39;Ts1[335.0]&#39;, &#39;Ts1[336.01]&#39;, &#39;Ts1[337.01]&#39;, &#39;Ts1[338.01]&#39;, &#39;Ts1[339.01]&#39;, &#39;Ts1[340.01]&#39;, &#39;Ts1[341.0]&#39;, &#39;Ts1[342.01]&#39;, &#39;Ts1[343.01]&#39;, &#39;Ts1[344.01]&#39;, &#39;Ts1[345.01]&#39;, &#39;Ts1[346.01]&#39;, &#39;Ts1[347.01]&#39;, &#39;Ts1[348.01]&#39;, &#39;Ts1[349.01]&#39;, &#39;Ts1[350.01]&#39;, &#39;Ts1[351.01]&#39;, &#39;Ts1[352.01]&#39;, &#39;Ts1[353.01]&#39;, &#39;Ts1[354.01]&#39;, &#39;Ts1[355.01]&#39;, &#39;Ts1[356.01]&#39;, &#39;Ts1[357.0]&#39;, &#39;Ts1[358.0]&#39;, &#39;Ts1[359.0]&#39;, &#39;Ts1[360.01]&#39;, &#39;Ts1[361.0]&#39;, &#39;Ts1[362.01]&#39;, &#39;Ts1[363.01]&#39;, &#39;Ts1[364.01]&#39;, &#39;Ts1[365.01]&#39;, &#39;Ts1[366.01]&#39;, &#39;Ts1[367.01]&#39;, &#39;Ts1[368.01]&#39;, &#39;Ts1[369.0]&#39;, &#39;Ts1[370.01]&#39;, &#39;Ts1[371.01]&#39;, &#39;Ts1[372.01]&#39;, &#39;Ts1[373.01]&#39;, &#39;Ts1[374.0]&#39;, &#39;Ts1[375.0]&#39;, &#39;Ts1[376.01]&#39;, &#39;Ts1[377.0]&#39;, &#39;Ts1[378.01]&#39;, &#39;Ts1[379.01]&#39;, &#39;Ts1[380.01]&#39;, &#39;Ts1[381.01]&#39;, &#39;Ts1[382.01]&#39;, &#39;Ts1[383.0]&#39;, &#39;Ts1[384.01]&#39;, &#39;Ts1[385.0]&#39;, &#39;Ts1[386.0]&#39;, &#39;Ts1[387.01]&#39;, &#39;Ts1[388.0]&#39;, &#39;Ts1[389.01]&#39;, &#39;Ts1[390.01]&#39;, &#39;Ts1[391.0]&#39;, &#39;Ts1[392.01]&#39;, &#39;Ts1[393.01]&#39;, &#39;Ts1[394.01]&#39;, &#39;Ts1[395.01]&#39;, &#39;Ts1[396.01]&#39;, &#39;Ts1[397.01]&#39;, &#39;Ts1[398.01]&#39;, &#39;Ts1[399.01]&#39;, &#39;Ts1[400.01]&#39;, &#39;Ts1[401.01]&#39;, &#39;Ts1[402.01]&#39;, &#39;Ts1[403.01]&#39;, &#39;Ts1[404.01]&#39;, &#39;Ts1[405.01]&#39;, &#39;Ts1[406.01]&#39;, &#39;Ts1[407.01]&#39;, &#39;Ts1[408.01]&#39;, &#39;Ts1[409.01]&#39;, &#39;Ts1[410.01]&#39;, &#39;Ts1[411.01]&#39;, &#39;Ts1[412.01]&#39;, &#39;Ts1[413.01]&#39;, &#39;Ts1[414.01]&#39;, &#39;Ts1[415.01]&#39;, &#39;Ts1[416.01]&#39;, &#39;Ts1[417.01]&#39;, &#39;Ts1[418.01]&#39;, &#39;Ts1[419.01]&#39;, &#39;Ts1[420.01]&#39;, &#39;Ts1[421.01]&#39;, &#39;Ts1[422.01]&#39;, &#39;Ts1[423.01]&#39;, &#39;Ts1[424.01]&#39;, &#39;Ts1[425.01]&#39;, &#39;Ts1[426.01]&#39;, &#39;Ts1[427.01]&#39;, &#39;Ts1[428.01]&#39;, &#39;Ts1[429.01]&#39;, &#39;Ts1[430.01]&#39;, &#39;Ts1[431.01]&#39;, &#39;Ts1[432.01]&#39;, &#39;Ts1[433.01]&#39;, &#39;Ts1[434.01]&#39;, &#39;Ts1[435.01]&#39;, &#39;Ts1[436.01]&#39;, &#39;Ts1[437.01]&#39;, &#39;Ts1[438.01]&#39;, &#39;Ts1[439.01]&#39;, &#39;Ts1[440.01]&#39;, &#39;Ts1[441.01]&#39;, &#39;Ts1[442.01]&#39;, &#39;Ts1[443.01]&#39;, &#39;Ts1[444.01]&#39;, &#39;Ts1[445.01]&#39;, &#39;Ts1[446.01]&#39;, &#39;Ts1[447.01]&#39;, &#39;Ts1[448.01]&#39;, &#39;Ts1[449.01]&#39;, &#39;Ts1[450.01]&#39;, &#39;Ts1[451.01]&#39;, &#39;Ts1[452.01]&#39;, &#39;Ts1[453.01]&#39;, &#39;Ts1[454.01]&#39;, &#39;Ts1[455.01]&#39;, &#39;Ts1[456.01]&#39;, &#39;Ts1[457.01]&#39;, &#39;Ts1[458.01]&#39;, &#39;Ts1[459.01]&#39;, &#39;Ts1[460.01]&#39;, &#39;Ts1[461.01]&#39;, &#39;Ts1[462.01]&#39;, &#39;Ts1[463.01]&#39;, &#39;Ts1[464.01]&#39;, &#39;Ts1[465.01]&#39;, &#39;Ts1[466.01]&#39;, &#39;Ts1[467.01]&#39;, &#39;Ts1[468.01]&#39;, &#39;Ts1[469.01]&#39;, &#39;Ts1[470.01]&#39;, &#39;Ts1[471.01]&#39;, &#39;Ts1[472.01]&#39;, &#39;Ts1[473.01]&#39;, &#39;Ts1[474.01]&#39;, &#39;Ts1[475.01]&#39;, &#39;Ts1[476.01]&#39;, &#39;Ts1[477.01]&#39;, &#39;Ts1[478.01]&#39;, &#39;Ts1[479.01]&#39;, &#39;Ts1[480.01]&#39;, &#39;Ts1[481.01]&#39;, &#39;Ts1[482.01]&#39;, &#39;Ts1[483.01]&#39;, &#39;Ts1[484.01]&#39;, &#39;Ts1[485.01]&#39;, &#39;Ts1[486.01]&#39;, &#39;Ts1[487.01]&#39;, &#39;Ts1[488.01]&#39;, &#39;Ts1[489.01]&#39;, &#39;Ts1[490.01]&#39;, &#39;Ts1[491.01]&#39;, &#39;Ts1[492.01]&#39;, &#39;Ts1[493.01]&#39;, &#39;Ts1[494.01]&#39;, &#39;Ts1[495.01]&#39;, &#39;Ts1[496.01]&#39;, &#39;Ts1[497.01]&#39;, &#39;Ts1[498.01]&#39;, &#39;Ts1[499.01]&#39;, &#39;Ts1[500.01]&#39;, &#39;Ts1[501.01]&#39;, &#39;Ts1[502.01]&#39;, &#39;Ts1[503.01]&#39;, &#39;Ts1[504.01]&#39;, &#39;Ts1[505.01]&#39;, &#39;Ts1[506.01]&#39;, &#39;Ts1[507.01]&#39;, &#39;Ts1[508.01]&#39;, &#39;Ts1[509.01]&#39;, &#39;Ts1[510.01]&#39;, &#39;Ts1[511.01]&#39;, &#39;Ts1[512.01]&#39;, &#39;Ts1[513.01]&#39;, &#39;Ts1[514.01]&#39;, &#39;Ts1[515.01]&#39;, &#39;Ts1[516.01]&#39;, &#39;Ts1[517.01]&#39;, &#39;Ts1[518.01]&#39;, &#39;Ts1[519.01]&#39;, &#39;Ts1[520.01]&#39;, &#39;Ts1[521.01]&#39;, &#39;Ts1[522.01]&#39;, &#39;Ts1[523.01]&#39;, &#39;Ts1[524.01]&#39;, &#39;Ts1[525.01]&#39;, &#39;Ts1[526.01]&#39;, &#39;Ts1[527.01]&#39;, &#39;Ts1[528.01]&#39;, &#39;Ts1[529.01]&#39;, &#39;Ts1[530.01]&#39;, &#39;Ts1[531.01]&#39;, &#39;Ts1[532.01]&#39;, &#39;Ts1[533.01]&#39;, &#39;Ts1[534.01]&#39;, &#39;Ts1[535.01]&#39;, &#39;Ts1[536.01]&#39;, &#39;Ts1[537.01]&#39;, &#39;Ts1[538.01]&#39;, &#39;Ts1[539.01]&#39;, &#39;Ts1[540.01]&#39;, &#39;Ts1[541.01]&#39;, &#39;Ts1[542.01]&#39;, &#39;Ts1[543.01]&#39;, &#39;Ts1[544.01]&#39;, &#39;Ts1[545.01]&#39;, &#39;Ts1[546.01]&#39;, &#39;Ts1[547.01]&#39;, &#39;Ts1[548.01]&#39;, &#39;Ts1[549.01]&#39;, &#39;Ts1[550.01]&#39;, &#39;Ts1[551.01]&#39;, &#39;Ts1[552.01]&#39;, &#39;Ts1[553.01]&#39;, &#39;Ts1[554.01]&#39;, &#39;Ts1[555.01]&#39;, &#39;Ts1[556.01]&#39;, &#39;Ts1[557.01]&#39;, &#39;Ts1[558.01]&#39;, &#39;Ts1[559.01]&#39;, &#39;Ts1[560.01]&#39;, &#39;Ts1[561.01]&#39;, &#39;Ts1[562.01]&#39;, &#39;Ts1[563.01]&#39;, &#39;Ts1[564.01]&#39;, &#39;Ts1[565.01]&#39;, &#39;Ts1[566.01]&#39;, &#39;Ts1[567.01]&#39;, &#39;Ts1[568.01]&#39;, &#39;Ts1[569.01]&#39;, &#39;Ts1[570.01]&#39;, &#39;Ts1[571.01]&#39;, &#39;Ts1[572.01]&#39;, &#39;Ts1[573.01]&#39;, &#39;Ts1[574.01]&#39;, &#39;Ts1[575.01]&#39;, &#39;Ts1[576.01]&#39;, &#39;Ts1[577.01]&#39;, &#39;Ts1[578.01]&#39;, &#39;Ts1[579.01]&#39;, &#39;Ts1[580.01]&#39;, &#39;Ts1[581.01]&#39;, &#39;Ts1[582.01]&#39;, &#39;Ts1[583.01]&#39;, &#39;Ts1[584.01]&#39;, &#39;Ts1[585.01]&#39;, &#39;Ts1[586.01]&#39;, &#39;Ts1[587.01]&#39;, &#39;Ts1[588.01]&#39;, &#39;Ts1[589.01]&#39;, &#39;Ts1[590.01]&#39;, &#39;Ts1[591.01]&#39;, &#39;Ts1[592.01]&#39;, &#39;Ts1[593.01]&#39;, &#39;Ts1[594.01]&#39;, &#39;Ts1[595.01]&#39;, &#39;Ts1[596.01]&#39;, &#39;Ts1[597.01]&#39;, &#39;Ts1[598.01]&#39;, &#39;Ts1[599.01]&#39;, &#39;Ts1[600.01]&#39;, &#39;Ts1[601.01]&#39;, &#39;Ts1[602.01]&#39;, &#39;Ts1[603.01]&#39;, &#39;Ts1[604.01]&#39;, &#39;Ts1[605.01]&#39;, &#39;Ts1[606.01]&#39;, &#39;Ts1[607.01]&#39;, &#39;Ts1[608.01]&#39;, &#39;Ts1[609.01]&#39;, &#39;Ts1[610.01]&#39;, &#39;Ts1[611.01]&#39;, &#39;Ts1[612.01]&#39;, &#39;Ts1[613.01]&#39;, &#39;Ts1[614.01]&#39;, &#39;Ts1[615.01]&#39;, &#39;Ts1[616.01]&#39;, &#39;Ts1[617.01]&#39;, &#39;Ts1[618.01]&#39;, &#39;Ts1[619.01]&#39;, &#39;Ts1[620.01]&#39;, &#39;Ts1[621.01]&#39;, &#39;Ts1[622.01]&#39;, &#39;Ts1[623.01]&#39;, &#39;Ts1[624.01]&#39;, &#39;Ts1[625.01]&#39;, &#39;Ts1[626.01]&#39;, &#39;Ts1[627.01]&#39;, &#39;Ts1[628.01]&#39;, &#39;Ts1[629.01]&#39;, &#39;Ts1[630.01]&#39;, &#39;Ts1[631.01]&#39;, &#39;Ts1[632.01]&#39;, &#39;Ts1[633.01]&#39;, &#39;Ts1[634.0]&#39;, &#39;Ts1[635.0]&#39;, &#39;Ts1[636.01]&#39;, &#39;Ts1[637.01]&#39;, &#39;Ts1[638.01]&#39;, &#39;Ts1[639.01]&#39;, &#39;Ts1[640.01]&#39;, &#39;Ts1[641.01]&#39;, &#39;Ts1[642.01]&#39;, &#39;Ts1[643.01]&#39;, &#39;Ts1[644.01]&#39;, &#39;Ts1[645.01]&#39;, &#39;Ts1[646.01]&#39;, &#39;Ts1[647.01]&#39;, &#39;Ts1[648.01]&#39;, &#39;Ts1[649.01]&#39;, &#39;Ts1[650.01]&#39;, &#39;Ts1[651.01]&#39;, &#39;Ts1[652.01]&#39;, &#39;Ts1[653.01]&#39;, &#39;Ts1[654.0]&#39;, &#39;Ts1[655.01]&#39;, &#39;Ts1[656.01]&#39;, &#39;Ts1[657.01]&#39;, &#39;Ts1[658.01]&#39;, &#39;Ts1[659.01]&#39;, &#39;Ts1[660.01]&#39;, &#39;Ts1[661.01]&#39;, &#39;Ts1[662.01]&#39;, &#39;Ts1[663.01]&#39;, &#39;Ts1[664.01]&#39;, &#39;Ts1[665.01]&#39;, &#39;Ts1[666.01]&#39;, &#39;Ts1[667.01]&#39;, &#39;Ts1[668.0]&#39;, &#39;Ts1[669.01]&#39;, &#39;Ts1[670.01]&#39;, &#39;Ts1[671.01]&#39;, &#39;Ts1[672.01]&#39;, &#39;Ts1[673.01]&#39;, &#39;Ts1[674.01]&#39;, &#39;Ts1[675.01]&#39;, &#39;Ts1[676.01]&#39;, &#39;Ts1[677.01]&#39;, &#39;Ts1[678.01]&#39;, &#39;Ts1[679.01]&#39;, &#39;Ts1[680.01]&#39;, &#39;Ts1[681.01]&#39;, &#39;Ts1[682.01]&#39;, &#39;Ts1[683.01]&#39;, &#39;Ts1[684.01]&#39;, &#39;Ts1[685.01]&#39;, &#39;Ts1[686.01]&#39;, &#39;Ts1[687.01]&#39;, &#39;Ts1[688.01]&#39;, &#39;Ts1[689.01]&#39;, &#39;Ts1[690.01]&#39;, &#39;Ts1[691.01]&#39;, &#39;Ts1[692.0]&#39;, &#39;Ts1[693.01]&#39;, &#39;Ts1[694.01]&#39;, &#39;Ts1[695.01]&#39;, &#39;Ts1[696.01]&#39;, &#39;Ts1[697.01]&#39;, &#39;Ts1[698.01]&#39;, &#39;Ts1[699.01]&#39;, &#39;Ts1[700.01]&#39;, &#39;Ts1[701.01]&#39;, &#39;Ts1[702.01]&#39;, &#39;Ts1[703.01]&#39;, &#39;Ts1[704.01]&#39;, &#39;Ts1[705.01]&#39;, &#39;Ts1[706.01]&#39;, &#39;Ts1[707.01]&#39;, &#39;Ts1[708.01]&#39;, &#39;Ts1[709.01]&#39;, &#39;Ts1[710.01]&#39;, &#39;Ts1[711.01]&#39;, &#39;Ts1[712.01]&#39;, &#39;Ts1[713.01]&#39;, &#39;Ts1[714.01]&#39;, &#39;Ts1[715.01]&#39;, &#39;Ts1[716.01]&#39;, &#39;Ts1[717.01]&#39;, &#39;Ts1[718.01]&#39;, &#39;Ts1[719.01]&#39;, &#39;Ts1[720.01]&#39;, &#39;Ts1[721.01]&#39;, &#39;Ts1[722.01]&#39;, &#39;Ts1[723.01]&#39;, &#39;Ts1[724.01]&#39;, &#39;Ts1[725.01]&#39;, &#39;Ts1[726.01]&#39;, &#39;Ts1[727.0]&#39;, &#39;Ts1[728.01]&#39;, &#39;Ts1[729.01]&#39;, &#39;Ts1[730.01]&#39;, &#39;Ts1[731.01]&#39;, &#39;Ts1[732.01]&#39;, &#39;Ts1[733.01]&#39;, &#39;Ts1[734.01]&#39;, &#39;Ts1[735.01]&#39;, &#39;Ts1[736.01]&#39;, &#39;Ts1[737.01]&#39;, &#39;Ts1[738.01]&#39;, &#39;Ts1[739.01]&#39;, &#39;Ts1[740.01]&#39;, &#39;Ts1[741.01]&#39;, &#39;Ts1[742.01]&#39;, &#39;Ts1[743.01]&#39;, &#39;Ts1[744.01]&#39;, &#39;Ts1[745.01]&#39;, &#39;Ts1[746.01]&#39;, &#39;Ts1[747.01]&#39;, &#39;Ts1[748.01]&#39;, &#39;Ts1[749.01]&#39;, &#39;Ts1[750.01]&#39;, &#39;Ts1[751.01]&#39;, &#39;Ts1[752.01]&#39;, &#39;Ts1[753.01]&#39;, &#39;Ts1[754.01]&#39;, &#39;Ts1[755.01]&#39;, &#39;Ts1[756.01]&#39;, &#39;Ts1[757.01]&#39;, &#39;Ts1[758.0]&#39;, &#39;Ts1[759.01]&#39;, &#39;Ts1[760.01]&#39;, &#39;Ts1[761.01]&#39;, &#39;Ts1[762.01]&#39;, &#39;Ts1[763.01]&#39;, &#39;Ts1[764.01]&#39;, &#39;Ts1[765.01]&#39;, &#39;Ts1[766.01]&#39;, &#39;Ts1[767.01]&#39;, &#39;Ts1[768.01]&#39;, &#39;Ts1[769.01]&#39;, &#39;Ts1[770.01]&#39;, &#39;Ts1[771.01]&#39;, &#39;Ts1[772.01]&#39;, &#39;Ts1[773.01]&#39;, &#39;Ts1[774.0]&#39;, &#39;Ts1[775.0]&#39;, &#39;Ts1[776.01]&#39;, &#39;Ts1[777.01]&#39;, &#39;Ts1[778.01]&#39;, &#39;Ts1[779.01]&#39;, &#39;Ts1[780.01]&#39;, &#39;Ts1[781.01]&#39;, &#39;Ts1[782.01]&#39;, &#39;Ts1[783.01]&#39;, &#39;Ts1[784.01]&#39;, &#39;Ts1[785.0]&#39;, &#39;Ts1[786.01]&#39;, &#39;Ts1[787.01]&#39;, &#39;Ts1[788.0]&#39;, &#39;Ts1[789.01]&#39;, &#39;Ts1[790.01]&#39;, &#39;Ts1[791.01]&#39;, &#39;Ts1[792.01]&#39;, &#39;Ts1[793.01]&#39;, &#39;Ts1[794.01]&#39;, &#39;Ts1[795.0]&#39;, &#39;Ts1[796.01]&#39;, &#39;Ts1[797.01]&#39;, &#39;Ts1[798.0]&#39;, &#39;Ts1[799.01]&#39;, &#39;Ts1[800.01]&#39;, &#39;Ts1[801.01]&#39;, &#39;Ts1[802.01]&#39;, &#39;Ts1[803.01]&#39;, &#39;Ts1[804.0]&#39;, &#39;Ts1[805.0]&#39;, &#39;Ts1[806.0]&#39;, &#39;Ts1[807.01]&#39;, &#39;Ts1[808.01]&#39;, &#39;Ts1[809.0]&#39;, &#39;Ts1[810.01]&#39;, &#39;Ts1[811.01]&#39;, &#39;Ts1[812.01]&#39;, &#39;Ts1[813.0]&#39;, &#39;Ts1[814.01]&#39;, &#39;Ts1[815.0]&#39;, &#39;Ts1[816.01]&#39;, &#39;Ts1[817.01]&#39;, &#39;Ts1[818.01]&#39;, &#39;Ts1[819.01]&#39;, &#39;Ts1[820.0]&#39;, &#39;Ts1[821.01]&#39;, &#39;Ts1[822.01]&#39;, &#39;Ts1[823.01]&#39;, &#39;Ts1[824.01]&#39;, &#39;Ts1[825.01]&#39;, &#39;Ts1[826.01]&#39;, &#39;Ts1[827.01]&#39;, &#39;Ts1[828.01]&#39;, &#39;Ts1[829.0]&#39;, &#39;Ts1[830.01]&#39;, &#39;Ts1[831.01]&#39;, &#39;Ts1[832.01]&#39;, &#39;Ts1[833.01]&#39;, &#39;Ts1[834.0]&#39;, &#39;Ts1[835.01]&#39;, &#39;Ts1[836.01]&#39;, &#39;Ts1[837.01]&#39;, &#39;Ts1[838.01]&#39;, &#39;Ts1[839.01]&#39;, &#39;Ts1[840.01]&#39;, &#39;Ts1[841.01]&#39;, &#39;Ts1[842.01]&#39;, &#39;Ts1[843.0]&#39;, &#39;Ts1[844.01]&#39;, &#39;Ts1[845.01]&#39;, &#39;Ts1[846.01]&#39;, &#39;Ts1[847.01]&#39;, &#39;Ts1[848.01]&#39;, &#39;Ts1[849.01]&#39;, &#39;Ts1[850.0]&#39;, &#39;Ts1[851.0]&#39;, &#39;Ts1[852.01]&#39;, &#39;Ts1[853.0]&#39;, &#39;Ts1[854.01]&#39;, &#39;Ts1[855.01]&#39;, &#39;Ts1[856.01]&#39;, &#39;Ts1[857.01]&#39;, &#39;Ts1[858.01]&#39;, &#39;Ts1[859.01]&#39;, &#39;Ts1[860.01]&#39;, &#39;Ts1[861.01]&#39;, &#39;Ts1[862.01]&#39;, &#39;Ts1[863.01]&#39;, &#39;Ts1[864.01]&#39;, &#39;Ts1[865.01]&#39;, &#39;Ts1[866.01]&#39;, &#39;Ts1[867.01]&#39;, &#39;Ts1[868.01]&#39;, &#39;Ts1[869.01]&#39;, &#39;Ts1[870.01]&#39;, &#39;Ts1[871.01]&#39;, &#39;Ts1[872.0]&#39;, &#39;Ts1[873.0]&#39;, &#39;Ts1[874.01]&#39;, &#39;Ts1[875.01]&#39;, &#39;Ts1[876.01]&#39;, &#39;Ts1[877.01]&#39;, &#39;Ts1[878.0]&#39;, &#39;Ts1[879.01]&#39;, &#39;Ts1[880.01]&#39;, &#39;Ts1[881.0]&#39;, &#39;Ts1[882.01]&#39;, &#39;Ts1[883.0]&#39;, &#39;Ts1[884.0]&#39;, &#39;Ts1[885.0]&#39;, &#39;Ts1[886.01]&#39;, &#39;Ts1[887.0]&#39;, &#39;Ts1[888.01]&#39;, &#39;Ts1[889.0]&#39;, &#39;Ts1[890.01]&#39;, &#39;Ts1[891.0]&#39;, &#39;Ts1[892.01]&#39;, &#39;Ts1[893.0]&#39;, &#39;Ts1[894.01]&#39;, &#39;Ts1[895.01]&#39;, &#39;Ts1[896.01]&#39;, &#39;Ts1[897.01]&#39;, &#39;Ts1[898.01]&#39;, &#39;Ts1[899.01]&#39;, &#39;Ts1[900.01]&#39;]
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Define the design variables</span>
+<span class="n">decisions</span> <span class="o">=</span> <span class="n">DesignVariables</span><span class="p">()</span>
+
+<span class="c1">### BEGIN SOLUTION</span>
+<span class="n">decisions</span><span class="o">.</span><span class="n">add_variables</span><span class="p">(</span>
+    <span class="s1">&#39;U1&#39;</span><span class="p">,</span>
+    <span class="n">indices</span><span class="o">=</span><span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="n">t_control</span><span class="p">},</span>
+    <span class="n">time_index_position</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+    <span class="n">lower_bounds</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+    <span class="n">upper_bounds</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+    <span class="n">values</span><span class="o">=</span><span class="n">tc_data</span><span class="o">.</span><span class="n">u1</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="c1">### END SOLUTION</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">decisions</span><span class="o">.</span><span class="n">variable_names</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[&#39;U1[0.0]&#39;, &#39;U1[1.01]&#39;, &#39;U1[2.01]&#39;, &#39;U1[3.0]&#39;, &#39;U1[4.0]&#39;, &#39;U1[5.01]&#39;, &#39;U1[6.01]&#39;, &#39;U1[7.01]&#39;, &#39;U1[8.01]&#39;, &#39;U1[9.01]&#39;, &#39;U1[10.01]&#39;, &#39;U1[11.01]&#39;, &#39;U1[12.01]&#39;, &#39;U1[13.01]&#39;, &#39;U1[14.01]&#39;, &#39;U1[15.01]&#39;, &#39;U1[16.01]&#39;, &#39;U1[17.0]&#39;, &#39;U1[18.01]&#39;, &#39;U1[19.01]&#39;, &#39;U1[20.0]&#39;, &#39;U1[21.01]&#39;, &#39;U1[22.0]&#39;, &#39;U1[23.01]&#39;, &#39;U1[24.01]&#39;, &#39;U1[25.01]&#39;, &#39;U1[26.01]&#39;, &#39;U1[27.01]&#39;, &#39;U1[28.01]&#39;, &#39;U1[29.01]&#39;, &#39;U1[30.01]&#39;, &#39;U1[31.01]&#39;, &#39;U1[32.01]&#39;, &#39;U1[33.01]&#39;, &#39;U1[34.01]&#39;, &#39;U1[35.01]&#39;, &#39;U1[36.01]&#39;, &#39;U1[37.01]&#39;, &#39;U1[38.01]&#39;, &#39;U1[39.01]&#39;, &#39;U1[40.01]&#39;, &#39;U1[41.01]&#39;, &#39;U1[42.01]&#39;, &#39;U1[43.01]&#39;, &#39;U1[44.01]&#39;, &#39;U1[45.01]&#39;, &#39;U1[46.01]&#39;, &#39;U1[47.01]&#39;, &#39;U1[48.01]&#39;, &#39;U1[49.01]&#39;, &#39;U1[50.01]&#39;, &#39;U1[51.0]&#39;, &#39;U1[52.01]&#39;, &#39;U1[53.01]&#39;, &#39;U1[54.0]&#39;, &#39;U1[55.01]&#39;, &#39;U1[56.01]&#39;, &#39;U1[57.01]&#39;, &#39;U1[58.01]&#39;, &#39;U1[59.01]&#39;, &#39;U1[60.01]&#39;, &#39;U1[61.01]&#39;, &#39;U1[62.01]&#39;, &#39;U1[63.01]&#39;, &#39;U1[64.01]&#39;, &#39;U1[65.0]&#39;, &#39;U1[66.0]&#39;, &#39;U1[67.01]&#39;, &#39;U1[68.01]&#39;, &#39;U1[69.01]&#39;, &#39;U1[70.01]&#39;, &#39;U1[71.01]&#39;, &#39;U1[72.01]&#39;, &#39;U1[73.01]&#39;, &#39;U1[74.0]&#39;, &#39;U1[75.01]&#39;, &#39;U1[76.01]&#39;, &#39;U1[77.01]&#39;, &#39;U1[78.01]&#39;, &#39;U1[79.01]&#39;, &#39;U1[80.01]&#39;, &#39;U1[81.01]&#39;, &#39;U1[82.01]&#39;, &#39;U1[83.01]&#39;, &#39;U1[84.01]&#39;, &#39;U1[85.01]&#39;, &#39;U1[86.0]&#39;, &#39;U1[87.01]&#39;, &#39;U1[88.01]&#39;, &#39;U1[89.01]&#39;, &#39;U1[90.01]&#39;, &#39;U1[91.01]&#39;, &#39;U1[92.01]&#39;, &#39;U1[93.01]&#39;, &#39;U1[94.01]&#39;, &#39;U1[95.0]&#39;, &#39;U1[96.01]&#39;, &#39;U1[97.01]&#39;, &#39;U1[98.01]&#39;, &#39;U1[99.01]&#39;, &#39;U1[100.01]&#39;, &#39;U1[101.01]&#39;, &#39;U1[102.01]&#39;, &#39;U1[103.01]&#39;, &#39;U1[104.01]&#39;, &#39;U1[105.01]&#39;, &#39;U1[106.01]&#39;, &#39;U1[107.01]&#39;, &#39;U1[108.01]&#39;, &#39;U1[109.01]&#39;, &#39;U1[110.01]&#39;, &#39;U1[111.01]&#39;, &#39;U1[112.01]&#39;, &#39;U1[113.01]&#39;, &#39;U1[114.01]&#39;, &#39;U1[115.01]&#39;, &#39;U1[116.01]&#39;, &#39;U1[117.01]&#39;, &#39;U1[118.01]&#39;, &#39;U1[119.01]&#39;, &#39;U1[120.01]&#39;, &#39;U1[121.01]&#39;, &#39;U1[122.01]&#39;, &#39;U1[123.01]&#39;, &#39;U1[124.01]&#39;, &#39;U1[125.01]&#39;, &#39;U1[126.01]&#39;, &#39;U1[127.01]&#39;, &#39;U1[128.0]&#39;, &#39;U1[129.01]&#39;, &#39;U1[130.01]&#39;, &#39;U1[131.0]&#39;, &#39;U1[132.01]&#39;, &#39;U1[133.01]&#39;, &#39;U1[134.01]&#39;, &#39;U1[135.01]&#39;, &#39;U1[136.0]&#39;, &#39;U1[137.01]&#39;, &#39;U1[138.01]&#39;, &#39;U1[139.01]&#39;, &#39;U1[140.01]&#39;, &#39;U1[141.01]&#39;, &#39;U1[142.01]&#39;, &#39;U1[143.01]&#39;, &#39;U1[144.0]&#39;, &#39;U1[145.01]&#39;, &#39;U1[146.01]&#39;, &#39;U1[147.01]&#39;, &#39;U1[148.01]&#39;, &#39;U1[149.01]&#39;, &#39;U1[150.01]&#39;, &#39;U1[151.01]&#39;, &#39;U1[152.01]&#39;, &#39;U1[153.01]&#39;, &#39;U1[154.01]&#39;, &#39;U1[155.01]&#39;, &#39;U1[156.0]&#39;, &#39;U1[157.01]&#39;, &#39;U1[158.01]&#39;, &#39;U1[159.01]&#39;, &#39;U1[160.01]&#39;, &#39;U1[161.01]&#39;, &#39;U1[162.0]&#39;, &#39;U1[163.01]&#39;, &#39;U1[164.01]&#39;, &#39;U1[165.0]&#39;, &#39;U1[166.01]&#39;, &#39;U1[167.01]&#39;, &#39;U1[168.01]&#39;, &#39;U1[169.01]&#39;, &#39;U1[170.01]&#39;, &#39;U1[171.0]&#39;, &#39;U1[172.01]&#39;, &#39;U1[173.01]&#39;, &#39;U1[174.01]&#39;, &#39;U1[175.01]&#39;, &#39;U1[176.01]&#39;, &#39;U1[177.0]&#39;, &#39;U1[178.0]&#39;, &#39;U1[179.0]&#39;, &#39;U1[180.01]&#39;, &#39;U1[181.01]&#39;, &#39;U1[182.01]&#39;, &#39;U1[183.01]&#39;, &#39;U1[184.01]&#39;, &#39;U1[185.01]&#39;, &#39;U1[186.01]&#39;, &#39;U1[187.01]&#39;, &#39;U1[188.01]&#39;, &#39;U1[189.01]&#39;, &#39;U1[190.01]&#39;, &#39;U1[191.0]&#39;, &#39;U1[192.01]&#39;, &#39;U1[193.01]&#39;, &#39;U1[194.01]&#39;, &#39;U1[195.01]&#39;, &#39;U1[196.01]&#39;, &#39;U1[197.01]&#39;, &#39;U1[198.01]&#39;, &#39;U1[199.01]&#39;, &#39;U1[200.01]&#39;, &#39;U1[201.01]&#39;, &#39;U1[202.01]&#39;, &#39;U1[203.01]&#39;, &#39;U1[204.01]&#39;, &#39;U1[205.0]&#39;, &#39;U1[206.01]&#39;, &#39;U1[207.01]&#39;, &#39;U1[208.01]&#39;, &#39;U1[209.01]&#39;, &#39;U1[210.01]&#39;, &#39;U1[211.01]&#39;, &#39;U1[212.01]&#39;, &#39;U1[213.01]&#39;, &#39;U1[214.01]&#39;, &#39;U1[215.01]&#39;, &#39;U1[216.01]&#39;, &#39;U1[217.01]&#39;, &#39;U1[218.01]&#39;, &#39;U1[219.01]&#39;, &#39;U1[220.01]&#39;, &#39;U1[221.0]&#39;, &#39;U1[222.01]&#39;, &#39;U1[223.01]&#39;, &#39;U1[224.01]&#39;, &#39;U1[225.01]&#39;, &#39;U1[226.01]&#39;, &#39;U1[227.01]&#39;, &#39;U1[228.01]&#39;, &#39;U1[229.01]&#39;, &#39;U1[230.01]&#39;, &#39;U1[231.01]&#39;, &#39;U1[232.01]&#39;, &#39;U1[233.01]&#39;, &#39;U1[234.01]&#39;, &#39;U1[235.01]&#39;, &#39;U1[236.01]&#39;, &#39;U1[237.01]&#39;, &#39;U1[238.01]&#39;, &#39;U1[239.01]&#39;, &#39;U1[240.01]&#39;, &#39;U1[241.01]&#39;, &#39;U1[242.0]&#39;, &#39;U1[243.01]&#39;, &#39;U1[244.01]&#39;, &#39;U1[245.01]&#39;, &#39;U1[246.01]&#39;, &#39;U1[247.01]&#39;, &#39;U1[248.01]&#39;, &#39;U1[249.01]&#39;, &#39;U1[250.0]&#39;, &#39;U1[251.0]&#39;, &#39;U1[252.01]&#39;, &#39;U1[253.01]&#39;, &#39;U1[254.01]&#39;, &#39;U1[255.01]&#39;, &#39;U1[256.01]&#39;, &#39;U1[257.01]&#39;, &#39;U1[258.01]&#39;, &#39;U1[259.01]&#39;, &#39;U1[260.0]&#39;, &#39;U1[261.01]&#39;, &#39;U1[262.01]&#39;, &#39;U1[263.01]&#39;, &#39;U1[264.01]&#39;, &#39;U1[265.01]&#39;, &#39;U1[266.01]&#39;, &#39;U1[267.01]&#39;, &#39;U1[268.0]&#39;, &#39;U1[269.01]&#39;, &#39;U1[270.0]&#39;, &#39;U1[271.01]&#39;, &#39;U1[272.01]&#39;, &#39;U1[273.01]&#39;, &#39;U1[274.01]&#39;, &#39;U1[275.01]&#39;, &#39;U1[276.01]&#39;, &#39;U1[277.01]&#39;, &#39;U1[278.01]&#39;, &#39;U1[279.01]&#39;, &#39;U1[280.01]&#39;, &#39;U1[281.0]&#39;, &#39;U1[282.01]&#39;, &#39;U1[283.01]&#39;, &#39;U1[284.01]&#39;, &#39;U1[285.01]&#39;, &#39;U1[286.01]&#39;, &#39;U1[287.01]&#39;, &#39;U1[288.01]&#39;, &#39;U1[289.01]&#39;, &#39;U1[290.0]&#39;, &#39;U1[291.01]&#39;, &#39;U1[292.0]&#39;, &#39;U1[293.01]&#39;, &#39;U1[294.01]&#39;, &#39;U1[295.01]&#39;, &#39;U1[296.01]&#39;, &#39;U1[297.01]&#39;, &#39;U1[298.01]&#39;, &#39;U1[299.01]&#39;, &#39;U1[300.01]&#39;, &#39;U1[301.01]&#39;, &#39;U1[302.01]&#39;, &#39;U1[303.01]&#39;, &#39;U1[304.01]&#39;, &#39;U1[305.0]&#39;, &#39;U1[306.01]&#39;, &#39;U1[307.0]&#39;, &#39;U1[308.01]&#39;, &#39;U1[309.01]&#39;, &#39;U1[310.01]&#39;, &#39;U1[311.01]&#39;, &#39;U1[312.0]&#39;, &#39;U1[313.0]&#39;, &#39;U1[314.0]&#39;, &#39;U1[315.0]&#39;, &#39;U1[316.01]&#39;, &#39;U1[317.01]&#39;, &#39;U1[318.01]&#39;, &#39;U1[319.01]&#39;, &#39;U1[320.01]&#39;, &#39;U1[321.01]&#39;, &#39;U1[322.01]&#39;, &#39;U1[323.01]&#39;, &#39;U1[324.01]&#39;, &#39;U1[325.0]&#39;, &#39;U1[326.01]&#39;, &#39;U1[327.01]&#39;, &#39;U1[328.01]&#39;, &#39;U1[329.0]&#39;, &#39;U1[330.01]&#39;, &#39;U1[331.0]&#39;, &#39;U1[332.01]&#39;, &#39;U1[333.01]&#39;, &#39;U1[334.01]&#39;, &#39;U1[335.0]&#39;, &#39;U1[336.01]&#39;, &#39;U1[337.01]&#39;, &#39;U1[338.01]&#39;, &#39;U1[339.01]&#39;, &#39;U1[340.01]&#39;, &#39;U1[341.0]&#39;, &#39;U1[342.01]&#39;, &#39;U1[343.01]&#39;, &#39;U1[344.01]&#39;, &#39;U1[345.01]&#39;, &#39;U1[346.01]&#39;, &#39;U1[347.01]&#39;, &#39;U1[348.01]&#39;, &#39;U1[349.01]&#39;, &#39;U1[350.01]&#39;, &#39;U1[351.01]&#39;, &#39;U1[352.01]&#39;, &#39;U1[353.01]&#39;, &#39;U1[354.01]&#39;, &#39;U1[355.01]&#39;, &#39;U1[356.01]&#39;, &#39;U1[357.0]&#39;, &#39;U1[358.0]&#39;, &#39;U1[359.0]&#39;, &#39;U1[360.01]&#39;, &#39;U1[361.0]&#39;, &#39;U1[362.01]&#39;, &#39;U1[363.01]&#39;, &#39;U1[364.01]&#39;, &#39;U1[365.01]&#39;, &#39;U1[366.01]&#39;, &#39;U1[367.01]&#39;, &#39;U1[368.01]&#39;, &#39;U1[369.0]&#39;, &#39;U1[370.01]&#39;, &#39;U1[371.01]&#39;, &#39;U1[372.01]&#39;, &#39;U1[373.01]&#39;, &#39;U1[374.0]&#39;, &#39;U1[375.0]&#39;, &#39;U1[376.01]&#39;, &#39;U1[377.0]&#39;, &#39;U1[378.01]&#39;, &#39;U1[379.01]&#39;, &#39;U1[380.01]&#39;, &#39;U1[381.01]&#39;, &#39;U1[382.01]&#39;, &#39;U1[383.0]&#39;, &#39;U1[384.01]&#39;, &#39;U1[385.0]&#39;, &#39;U1[386.0]&#39;, &#39;U1[387.01]&#39;, &#39;U1[388.0]&#39;, &#39;U1[389.01]&#39;, &#39;U1[390.01]&#39;, &#39;U1[391.0]&#39;, &#39;U1[392.01]&#39;, &#39;U1[393.01]&#39;, &#39;U1[394.01]&#39;, &#39;U1[395.01]&#39;, &#39;U1[396.01]&#39;, &#39;U1[397.01]&#39;, &#39;U1[398.01]&#39;, &#39;U1[399.01]&#39;, &#39;U1[400.01]&#39;, &#39;U1[401.01]&#39;, &#39;U1[402.01]&#39;, &#39;U1[403.01]&#39;, &#39;U1[404.01]&#39;, &#39;U1[405.01]&#39;, &#39;U1[406.01]&#39;, &#39;U1[407.01]&#39;, &#39;U1[408.01]&#39;, &#39;U1[409.01]&#39;, &#39;U1[410.01]&#39;, &#39;U1[411.01]&#39;, &#39;U1[412.01]&#39;, &#39;U1[413.01]&#39;, &#39;U1[414.01]&#39;, &#39;U1[415.01]&#39;, &#39;U1[416.01]&#39;, &#39;U1[417.01]&#39;, &#39;U1[418.01]&#39;, &#39;U1[419.01]&#39;, &#39;U1[420.01]&#39;, &#39;U1[421.01]&#39;, &#39;U1[422.01]&#39;, &#39;U1[423.01]&#39;, &#39;U1[424.01]&#39;, &#39;U1[425.01]&#39;, &#39;U1[426.01]&#39;, &#39;U1[427.01]&#39;, &#39;U1[428.01]&#39;, &#39;U1[429.01]&#39;, &#39;U1[430.01]&#39;, &#39;U1[431.01]&#39;, &#39;U1[432.01]&#39;, &#39;U1[433.01]&#39;, &#39;U1[434.01]&#39;, &#39;U1[435.01]&#39;, &#39;U1[436.01]&#39;, &#39;U1[437.01]&#39;, &#39;U1[438.01]&#39;, &#39;U1[439.01]&#39;, &#39;U1[440.01]&#39;, &#39;U1[441.01]&#39;, &#39;U1[442.01]&#39;, &#39;U1[443.01]&#39;, &#39;U1[444.01]&#39;, &#39;U1[445.01]&#39;, &#39;U1[446.01]&#39;, &#39;U1[447.01]&#39;, &#39;U1[448.01]&#39;, &#39;U1[449.01]&#39;, &#39;U1[450.01]&#39;, &#39;U1[451.01]&#39;, &#39;U1[452.01]&#39;, &#39;U1[453.01]&#39;, &#39;U1[454.01]&#39;, &#39;U1[455.01]&#39;, &#39;U1[456.01]&#39;, &#39;U1[457.01]&#39;, &#39;U1[458.01]&#39;, &#39;U1[459.01]&#39;, &#39;U1[460.01]&#39;, &#39;U1[461.01]&#39;, &#39;U1[462.01]&#39;, &#39;U1[463.01]&#39;, &#39;U1[464.01]&#39;, &#39;U1[465.01]&#39;, &#39;U1[466.01]&#39;, &#39;U1[467.01]&#39;, &#39;U1[468.01]&#39;, &#39;U1[469.01]&#39;, &#39;U1[470.01]&#39;, &#39;U1[471.01]&#39;, &#39;U1[472.01]&#39;, &#39;U1[473.01]&#39;, &#39;U1[474.01]&#39;, &#39;U1[475.01]&#39;, &#39;U1[476.01]&#39;, &#39;U1[477.01]&#39;, &#39;U1[478.01]&#39;, &#39;U1[479.01]&#39;, &#39;U1[480.01]&#39;, &#39;U1[481.01]&#39;, &#39;U1[482.01]&#39;, &#39;U1[483.01]&#39;, &#39;U1[484.01]&#39;, &#39;U1[485.01]&#39;, &#39;U1[486.01]&#39;, &#39;U1[487.01]&#39;, &#39;U1[488.01]&#39;, &#39;U1[489.01]&#39;, &#39;U1[490.01]&#39;, &#39;U1[491.01]&#39;, &#39;U1[492.01]&#39;, &#39;U1[493.01]&#39;, &#39;U1[494.01]&#39;, &#39;U1[495.01]&#39;, &#39;U1[496.01]&#39;, &#39;U1[497.01]&#39;, &#39;U1[498.01]&#39;, &#39;U1[499.01]&#39;, &#39;U1[500.01]&#39;, &#39;U1[501.01]&#39;, &#39;U1[502.01]&#39;, &#39;U1[503.01]&#39;, &#39;U1[504.01]&#39;, &#39;U1[505.01]&#39;, &#39;U1[506.01]&#39;, &#39;U1[507.01]&#39;, &#39;U1[508.01]&#39;, &#39;U1[509.01]&#39;, &#39;U1[510.01]&#39;, &#39;U1[511.01]&#39;, &#39;U1[512.01]&#39;, &#39;U1[513.01]&#39;, &#39;U1[514.01]&#39;, &#39;U1[515.01]&#39;, &#39;U1[516.01]&#39;, &#39;U1[517.01]&#39;, &#39;U1[518.01]&#39;, &#39;U1[519.01]&#39;, &#39;U1[520.01]&#39;, &#39;U1[521.01]&#39;, &#39;U1[522.01]&#39;, &#39;U1[523.01]&#39;, &#39;U1[524.01]&#39;, &#39;U1[525.01]&#39;, &#39;U1[526.01]&#39;, &#39;U1[527.01]&#39;, &#39;U1[528.01]&#39;, &#39;U1[529.01]&#39;, &#39;U1[530.01]&#39;, &#39;U1[531.01]&#39;, &#39;U1[532.01]&#39;, &#39;U1[533.01]&#39;, &#39;U1[534.01]&#39;, &#39;U1[535.01]&#39;, &#39;U1[536.01]&#39;, &#39;U1[537.01]&#39;, &#39;U1[538.01]&#39;, &#39;U1[539.01]&#39;, &#39;U1[540.01]&#39;, &#39;U1[541.01]&#39;, &#39;U1[542.01]&#39;, &#39;U1[543.01]&#39;, &#39;U1[544.01]&#39;, &#39;U1[545.01]&#39;, &#39;U1[546.01]&#39;, &#39;U1[547.01]&#39;, &#39;U1[548.01]&#39;, &#39;U1[549.01]&#39;, &#39;U1[550.01]&#39;, &#39;U1[551.01]&#39;, &#39;U1[552.01]&#39;, &#39;U1[553.01]&#39;, &#39;U1[554.01]&#39;, &#39;U1[555.01]&#39;, &#39;U1[556.01]&#39;, &#39;U1[557.01]&#39;, &#39;U1[558.01]&#39;, &#39;U1[559.01]&#39;, &#39;U1[560.01]&#39;, &#39;U1[561.01]&#39;, &#39;U1[562.01]&#39;, &#39;U1[563.01]&#39;, &#39;U1[564.01]&#39;, &#39;U1[565.01]&#39;, &#39;U1[566.01]&#39;, &#39;U1[567.01]&#39;, &#39;U1[568.01]&#39;, &#39;U1[569.01]&#39;, &#39;U1[570.01]&#39;, &#39;U1[571.01]&#39;, &#39;U1[572.01]&#39;, &#39;U1[573.01]&#39;, &#39;U1[574.01]&#39;, &#39;U1[575.01]&#39;, &#39;U1[576.01]&#39;, &#39;U1[577.01]&#39;, &#39;U1[578.01]&#39;, &#39;U1[579.01]&#39;, &#39;U1[580.01]&#39;, &#39;U1[581.01]&#39;, &#39;U1[582.01]&#39;, &#39;U1[583.01]&#39;, &#39;U1[584.01]&#39;, &#39;U1[585.01]&#39;, &#39;U1[586.01]&#39;, &#39;U1[587.01]&#39;, &#39;U1[588.01]&#39;, &#39;U1[589.01]&#39;, &#39;U1[590.01]&#39;, &#39;U1[591.01]&#39;, &#39;U1[592.01]&#39;, &#39;U1[593.01]&#39;, &#39;U1[594.01]&#39;, &#39;U1[595.01]&#39;, &#39;U1[596.01]&#39;, &#39;U1[597.01]&#39;, &#39;U1[598.01]&#39;, &#39;U1[599.01]&#39;, &#39;U1[600.01]&#39;, &#39;U1[601.01]&#39;, &#39;U1[602.01]&#39;, &#39;U1[603.01]&#39;, &#39;U1[604.01]&#39;, &#39;U1[605.01]&#39;, &#39;U1[606.01]&#39;, &#39;U1[607.01]&#39;, &#39;U1[608.01]&#39;, &#39;U1[609.01]&#39;, &#39;U1[610.01]&#39;, &#39;U1[611.01]&#39;, &#39;U1[612.01]&#39;, &#39;U1[613.01]&#39;, &#39;U1[614.01]&#39;, &#39;U1[615.01]&#39;, &#39;U1[616.01]&#39;, &#39;U1[617.01]&#39;, &#39;U1[618.01]&#39;, &#39;U1[619.01]&#39;, &#39;U1[620.01]&#39;, &#39;U1[621.01]&#39;, &#39;U1[622.01]&#39;, &#39;U1[623.01]&#39;, &#39;U1[624.01]&#39;, &#39;U1[625.01]&#39;, &#39;U1[626.01]&#39;, &#39;U1[627.01]&#39;, &#39;U1[628.01]&#39;, &#39;U1[629.01]&#39;, &#39;U1[630.01]&#39;, &#39;U1[631.01]&#39;, &#39;U1[632.01]&#39;, &#39;U1[633.01]&#39;, &#39;U1[634.0]&#39;, &#39;U1[635.0]&#39;, &#39;U1[636.01]&#39;, &#39;U1[637.01]&#39;, &#39;U1[638.01]&#39;, &#39;U1[639.01]&#39;, &#39;U1[640.01]&#39;, &#39;U1[641.01]&#39;, &#39;U1[642.01]&#39;, &#39;U1[643.01]&#39;, &#39;U1[644.01]&#39;, &#39;U1[645.01]&#39;, &#39;U1[646.01]&#39;, &#39;U1[647.01]&#39;, &#39;U1[648.01]&#39;, &#39;U1[649.01]&#39;, &#39;U1[650.01]&#39;, &#39;U1[651.01]&#39;, &#39;U1[652.01]&#39;, &#39;U1[653.01]&#39;, &#39;U1[654.0]&#39;, &#39;U1[655.01]&#39;, &#39;U1[656.01]&#39;, &#39;U1[657.01]&#39;, &#39;U1[658.01]&#39;, &#39;U1[659.01]&#39;, &#39;U1[660.01]&#39;, &#39;U1[661.01]&#39;, &#39;U1[662.01]&#39;, &#39;U1[663.01]&#39;, &#39;U1[664.01]&#39;, &#39;U1[665.01]&#39;, &#39;U1[666.01]&#39;, &#39;U1[667.01]&#39;, &#39;U1[668.0]&#39;, &#39;U1[669.01]&#39;, &#39;U1[670.01]&#39;, &#39;U1[671.01]&#39;, &#39;U1[672.01]&#39;, &#39;U1[673.01]&#39;, &#39;U1[674.01]&#39;, &#39;U1[675.01]&#39;, &#39;U1[676.01]&#39;, &#39;U1[677.01]&#39;, &#39;U1[678.01]&#39;, &#39;U1[679.01]&#39;, &#39;U1[680.01]&#39;, &#39;U1[681.01]&#39;, &#39;U1[682.01]&#39;, &#39;U1[683.01]&#39;, &#39;U1[684.01]&#39;, &#39;U1[685.01]&#39;, &#39;U1[686.01]&#39;, &#39;U1[687.01]&#39;, &#39;U1[688.01]&#39;, &#39;U1[689.01]&#39;, &#39;U1[690.01]&#39;, &#39;U1[691.01]&#39;, &#39;U1[692.0]&#39;, &#39;U1[693.01]&#39;, &#39;U1[694.01]&#39;, &#39;U1[695.01]&#39;, &#39;U1[696.01]&#39;, &#39;U1[697.01]&#39;, &#39;U1[698.01]&#39;, &#39;U1[699.01]&#39;, &#39;U1[700.01]&#39;, &#39;U1[701.01]&#39;, &#39;U1[702.01]&#39;, &#39;U1[703.01]&#39;, &#39;U1[704.01]&#39;, &#39;U1[705.01]&#39;, &#39;U1[706.01]&#39;, &#39;U1[707.01]&#39;, &#39;U1[708.01]&#39;, &#39;U1[709.01]&#39;, &#39;U1[710.01]&#39;, &#39;U1[711.01]&#39;, &#39;U1[712.01]&#39;, &#39;U1[713.01]&#39;, &#39;U1[714.01]&#39;, &#39;U1[715.01]&#39;, &#39;U1[716.01]&#39;, &#39;U1[717.01]&#39;, &#39;U1[718.01]&#39;, &#39;U1[719.01]&#39;, &#39;U1[720.01]&#39;, &#39;U1[721.01]&#39;, &#39;U1[722.01]&#39;, &#39;U1[723.01]&#39;, &#39;U1[724.01]&#39;, &#39;U1[725.01]&#39;, &#39;U1[726.01]&#39;, &#39;U1[727.0]&#39;, &#39;U1[728.01]&#39;, &#39;U1[729.01]&#39;, &#39;U1[730.01]&#39;, &#39;U1[731.01]&#39;, &#39;U1[732.01]&#39;, &#39;U1[733.01]&#39;, &#39;U1[734.01]&#39;, &#39;U1[735.01]&#39;, &#39;U1[736.01]&#39;, &#39;U1[737.01]&#39;, &#39;U1[738.01]&#39;, &#39;U1[739.01]&#39;, &#39;U1[740.01]&#39;, &#39;U1[741.01]&#39;, &#39;U1[742.01]&#39;, &#39;U1[743.01]&#39;, &#39;U1[744.01]&#39;, &#39;U1[745.01]&#39;, &#39;U1[746.01]&#39;, &#39;U1[747.01]&#39;, &#39;U1[748.01]&#39;, &#39;U1[749.01]&#39;, &#39;U1[750.01]&#39;, &#39;U1[751.01]&#39;, &#39;U1[752.01]&#39;, &#39;U1[753.01]&#39;, &#39;U1[754.01]&#39;, &#39;U1[755.01]&#39;, &#39;U1[756.01]&#39;, &#39;U1[757.01]&#39;, &#39;U1[758.0]&#39;, &#39;U1[759.01]&#39;, &#39;U1[760.01]&#39;, &#39;U1[761.01]&#39;, &#39;U1[762.01]&#39;, &#39;U1[763.01]&#39;, &#39;U1[764.01]&#39;, &#39;U1[765.01]&#39;, &#39;U1[766.01]&#39;, &#39;U1[767.01]&#39;, &#39;U1[768.01]&#39;, &#39;U1[769.01]&#39;, &#39;U1[770.01]&#39;, &#39;U1[771.01]&#39;, &#39;U1[772.01]&#39;, &#39;U1[773.01]&#39;, &#39;U1[774.0]&#39;, &#39;U1[775.0]&#39;, &#39;U1[776.01]&#39;, &#39;U1[777.01]&#39;, &#39;U1[778.01]&#39;, &#39;U1[779.01]&#39;, &#39;U1[780.01]&#39;, &#39;U1[781.01]&#39;, &#39;U1[782.01]&#39;, &#39;U1[783.01]&#39;, &#39;U1[784.01]&#39;, &#39;U1[785.0]&#39;, &#39;U1[786.01]&#39;, &#39;U1[787.01]&#39;, &#39;U1[788.0]&#39;, &#39;U1[789.01]&#39;, &#39;U1[790.01]&#39;, &#39;U1[791.01]&#39;, &#39;U1[792.01]&#39;, &#39;U1[793.01]&#39;, &#39;U1[794.01]&#39;, &#39;U1[795.0]&#39;, &#39;U1[796.01]&#39;, &#39;U1[797.01]&#39;, &#39;U1[798.0]&#39;, &#39;U1[799.01]&#39;, &#39;U1[800.01]&#39;, &#39;U1[801.01]&#39;, &#39;U1[802.01]&#39;, &#39;U1[803.01]&#39;, &#39;U1[804.0]&#39;, &#39;U1[805.0]&#39;, &#39;U1[806.0]&#39;, &#39;U1[807.01]&#39;, &#39;U1[808.01]&#39;, &#39;U1[809.0]&#39;, &#39;U1[810.01]&#39;, &#39;U1[811.01]&#39;, &#39;U1[812.01]&#39;, &#39;U1[813.0]&#39;, &#39;U1[814.01]&#39;, &#39;U1[815.0]&#39;, &#39;U1[816.01]&#39;, &#39;U1[817.01]&#39;, &#39;U1[818.01]&#39;, &#39;U1[819.01]&#39;, &#39;U1[820.0]&#39;, &#39;U1[821.01]&#39;, &#39;U1[822.01]&#39;, &#39;U1[823.01]&#39;, &#39;U1[824.01]&#39;, &#39;U1[825.01]&#39;, &#39;U1[826.01]&#39;, &#39;U1[827.01]&#39;, &#39;U1[828.01]&#39;, &#39;U1[829.0]&#39;, &#39;U1[830.01]&#39;, &#39;U1[831.01]&#39;, &#39;U1[832.01]&#39;, &#39;U1[833.01]&#39;, &#39;U1[834.0]&#39;, &#39;U1[835.01]&#39;, &#39;U1[836.01]&#39;, &#39;U1[837.01]&#39;, &#39;U1[838.01]&#39;, &#39;U1[839.01]&#39;, &#39;U1[840.01]&#39;, &#39;U1[841.01]&#39;, &#39;U1[842.01]&#39;, &#39;U1[843.0]&#39;, &#39;U1[844.01]&#39;, &#39;U1[845.01]&#39;, &#39;U1[846.01]&#39;, &#39;U1[847.01]&#39;, &#39;U1[848.01]&#39;, &#39;U1[849.01]&#39;, &#39;U1[850.0]&#39;, &#39;U1[851.0]&#39;, &#39;U1[852.01]&#39;, &#39;U1[853.0]&#39;, &#39;U1[854.01]&#39;, &#39;U1[855.01]&#39;, &#39;U1[856.01]&#39;, &#39;U1[857.01]&#39;, &#39;U1[858.01]&#39;, &#39;U1[859.01]&#39;, &#39;U1[860.01]&#39;, &#39;U1[861.01]&#39;, &#39;U1[862.01]&#39;, &#39;U1[863.01]&#39;, &#39;U1[864.01]&#39;, &#39;U1[865.01]&#39;, &#39;U1[866.01]&#39;, &#39;U1[867.01]&#39;, &#39;U1[868.01]&#39;, &#39;U1[869.01]&#39;, &#39;U1[870.01]&#39;, &#39;U1[871.01]&#39;, &#39;U1[872.0]&#39;, &#39;U1[873.0]&#39;, &#39;U1[874.01]&#39;, &#39;U1[875.01]&#39;, &#39;U1[876.01]&#39;, &#39;U1[877.01]&#39;, &#39;U1[878.0]&#39;, &#39;U1[879.01]&#39;, &#39;U1[880.01]&#39;, &#39;U1[881.0]&#39;, &#39;U1[882.01]&#39;, &#39;U1[883.0]&#39;, &#39;U1[884.0]&#39;, &#39;U1[885.0]&#39;, &#39;U1[886.01]&#39;, &#39;U1[887.0]&#39;, &#39;U1[888.01]&#39;, &#39;U1[889.0]&#39;, &#39;U1[890.01]&#39;, &#39;U1[891.0]&#39;, &#39;U1[892.01]&#39;, &#39;U1[893.0]&#39;, &#39;U1[894.01]&#39;, &#39;U1[895.01]&#39;, &#39;U1[896.01]&#39;, &#39;U1[897.01]&#39;, &#39;U1[898.01]&#39;, &#39;U1[899.01]&#39;, &#39;U1[900.01]&#39;]
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Define create_model function for Pyomo.DoE</span>
+
+
+<span class="c1">### BEGIN SOLUTION</span>
+<span class="k">def</span> <span class="nf">create_model_doe</span><span class="p">(</span><span class="n">theta</span><span class="o">=</span><span class="n">theta_values</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">create_model</span><span class="p">(</span>
+        <span class="n">data</span><span class="o">=</span><span class="n">tc_data</span><span class="p">,</span>
+        <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;doe&#39;</span><span class="p">,</span>
+        <span class="n">theta</span><span class="o">=</span><span class="n">theta</span><span class="p">,</span>
+        <span class="n">integrate_to_initialize</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">number_of_states</span><span class="o">=</span><span class="n">number_tclab_states</span><span class="p">,</span>
+    <span class="p">)</span>
+
+
+<span class="c1">### END SOLUTION</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create doe_object using DesignOfExperiments</span>
+
+<span class="c1">### BEGIN SOLUTION</span>
+<span class="n">doe_object1</span> <span class="o">=</span> <span class="n">DesignOfExperiments</span><span class="p">(</span>
+    <span class="n">theta_values</span><span class="p">,</span>  <span class="c1"># dictionary of parameters</span>
+    <span class="n">decisions</span><span class="p">,</span>  <span class="c1"># design variable</span>
+    <span class="n">measurements</span><span class="p">,</span>  <span class="c1"># measurement variable</span>
+    <span class="n">create_model_doe</span><span class="p">,</span>  <span class="c1"># model</span>
+    <span class="n">solver</span><span class="o">=</span><span class="n">SolverFactory</span><span class="p">(</span><span class="s1">&#39;ipopt&#39;</span><span class="p">),</span>
+<span class="p">)</span>
+<span class="c1">### END SOLUTION</span>
+
+<span class="c1"># Compute and print the FIM at this point</span>
+<span class="c1">### BEGIN SOLUTION</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">doe_object1</span><span class="o">.</span><span class="n">compute_FIM</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s1">&#39;sequential_finite&#39;</span><span class="p">,</span> <span class="n">formula</span><span class="o">=</span><span class="s1">&#39;central&#39;</span><span class="p">)</span>
+<span class="n">result</span><span class="o">.</span><span class="n">result_analysis</span><span class="p">()</span>
+<span class="c1">### END SOLUTION</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Ipopt 3.13.2: 
+
+******************************************************************************
+This program contains Ipopt, a library for large-scale nonlinear optimization.
+ Ipopt is released as open source code under the Eclipse Public License (EPL).
+         For more information visit http://projects.coin-or.org/Ipopt
+******************************************************************************
+
+This is Ipopt version 3.13.2, running with linear solver ma27.
+
+Number of nonzeros in equality constraint Jacobian...:   111616
+Number of nonzeros in inequality constraint Jacobian.:        0
+Number of nonzeros in Lagrangian Hessian.............:        0
+
+Total number of variables............................:    39626
+                     variables with only lower bounds:        0
+                variables with lower and upper bounds:    23408
+                     variables with only upper bounds:        0
+Total number of equality constraints.................:    39626
+Total number of inequality constraints...............:        0
+        inequality constraints with only lower bounds:        0
+   inequality constraints with lower and upper bounds:        0
+        inequality constraints with only upper bounds:        0
+
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+   0  0.0000000e+00 2.34e-01 0.00e+00  -1.0 0.00e+00    -  0.00e+00 0.00e+00   0
+   1  0.0000000e+00 1.76e-14 2.47e-05  -1.0 2.34e-01    -  9.91e-01 1.00e+00h  1
+
+Number of Iterations....: 1
+
+                                   (scaled)                 (unscaled)
+Objective...............:   0.0000000000000000e+00    0.0000000000000000e+00
+Dual infeasibility......:   0.0000000000000000e+00    0.0000000000000000e+00
+Constraint violation....:   1.7566460439044640e-14    1.7566460439044640e-14
+Complementarity.........:   0.0000000000000000e+00    0.0000000000000000e+00
+Overall NLP error.......:   1.7566460439044640e-14    1.7566460439044640e-14
+
+
+Number of objective function evaluations             = 2
+Number of objective gradient evaluations             = 2
+Number of equality constraint evaluations            = 2
+Number of inequality constraint evaluations          = 0
+Number of equality constraint Jacobian evaluations   = 2
+Number of inequality constraint Jacobian evaluations = 0
+Number of Lagrangian Hessian evaluations             = 1
+Total CPU secs in IPOPT (w/o function evaluations)   =      0.079
+Total CPU secs in NLP function evaluations           =      0.009
+
+EXIT: Optimal Solution Found.
+INFO: elapsed time: 6.8 seconds
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Call out custome function to summarize the results</span>
+<span class="c1"># and compute the eigendecomposition of the FIM</span>
+
+<span class="n">results_summary</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>======Results Summary======
+Four design criteria log10() value:
+A-optimality: 9.582591203781318
+D-optimality: -inf
+E-optimality: nan
+Modified E-optimality: nan
+
+FIM:
+ [[ 1.88711723e+08 -1.92132341e+08 -8.36680971e+06 -1.04546465e+03]
+ [-1.92132341e+08  3.63446492e+09  6.13974556e+07  1.95353824e+04]
+ [-8.36680971e+06  6.13974556e+07  1.46900265e+06  3.31088338e+02]
+ [-1.04546465e+03  1.95353824e+04  3.31088338e+02  1.05006073e-01]]
+
+eigenvalues:
+ [ 3.64619173e+09  1.78169287e+08  2.84629140e+05 -2.36680716e-18]
+
+eigenvectors:
+ [[ 5.55173608e-02 -9.98044866e-01  2.87100552e-02 -1.06758213e-13]
+ [-9.98313930e-01 -5.59743978e-02 -1.53676369e-02 -5.33299016e-06]
+ [-1.69446191e-02  2.78084774e-02  9.99469644e-01 -2.48897590e-06]
+ [-5.36617311e-06 -2.29296389e-07  2.40570040e-06  1.00000000e+00]]
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/Users/adowling/DowlingLab/pyomo-doe/exercise_solutions/../notebooks/tclab_pyomo.py:639: RuntimeWarning: divide by zero encountered in log10
+  print(&quot;D-optimality:&quot;, np.log10(result.det))
+/Users/adowling/DowlingLab/pyomo-doe/exercise_solutions/../notebooks/tclab_pyomo.py:640: RuntimeWarning: invalid value encountered in log10
+  print(&quot;E-optimality:&quot;, np.log10(result.min_eig))
+/Users/adowling/DowlingLab/pyomo-doe/exercise_solutions/../notebooks/tclab_pyomo.py:641: RuntimeWarning: invalid value encountered in log10
+  print(&quot;Modified E-optimality:&quot;, np.log10(result.cond))
+</pre></div>
+</div>
+</div>
+</div>
+<p><strong>Discussion:</strong> How does this FIM compare to the sine test experiment we <a class="reference internal" href="../notebooks/doe_exploratory_analysis.html"><span class="doc std std-doc">previously analyzed</span></a>?</p>
+</section>
+<section id="optimize-the-next-experiment-a-optimality">
+<h2>Optimize the next experiment (A-optimality)<a class="headerlink" href="#optimize-the-next-experiment-a-optimality" title="Permalink to this heading">#</a></h2>
+<p>Now we are ready to compute the A-optimal next best experiment. Why are we starting with A-optimality? It runs faster so it is better for debugging syntax.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create a new DoE object</span>
+<span class="c1">### BEGIN SOLUTION</span>
+<span class="n">doe_object3</span> <span class="o">=</span> <span class="n">DesignOfExperiments</span><span class="p">(</span>
+    <span class="n">theta_values</span><span class="p">,</span>  <span class="c1"># dictionary of parameters</span>
+    <span class="n">decisions</span><span class="p">,</span>  <span class="c1"># design variable</span>
+    <span class="n">measurements</span><span class="p">,</span>  <span class="c1"># measurement variable</span>
+    <span class="n">create_model_doe</span><span class="p">,</span>  <span class="c1"># model</span>
+    <span class="n">solver</span><span class="o">=</span><span class="n">solver</span><span class="p">,</span>
+    <span class="n">prior_FIM</span><span class="o">=</span><span class="n">prior</span><span class="p">,</span>  <span class="c1"># use previous experiment as prior</span>
+<span class="p">)</span>
+<span class="c1">### END SOLUTION</span>
+
+<span class="c1"># Solve the DoE problem</span>
+<span class="c1">### BEGIN SOLUTION</span>
+<span class="n">square_result3</span><span class="p">,</span> <span class="n">optimize_result3</span> <span class="o">=</span> <span class="n">doe_object3</span><span class="o">.</span><span class="n">stochastic_program</span><span class="p">(</span>
+    <span class="n">if_optimize</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>  <span class="c1"># optimize</span>
+    <span class="n">if_Cholesky</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>  <span class="c1"># use Cholesky decomposition</span>
+    <span class="n">scale_nominal_param_value</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>  <span class="c1"># scale model parameter value</span>
+    <span class="n">objective_option</span><span class="o">=</span><span class="s2">&quot;trace&quot;</span><span class="p">,</span>  <span class="c1"># objective option (need to debug/improve initialization)</span>
+    <span class="n">jac_initial</span><span class="o">=</span><span class="n">jac_for_initialization</span><span class="p">,</span>  <span class="c1"># initialize Jacobian with prior solution</span>
+    <span class="n">step</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span>  <span class="c1"># step size</span>
+<span class="p">)</span>
+<span class="c1">### END SOLUTION</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Ipopt 3.13.2: halt_on_ampl_error=yes
+linear_solver=ma57
+
+
+******************************************************************************
+This program contains Ipopt, a library for large-scale nonlinear optimization.
+ Ipopt is released as open source code under the Eclipse Public License (EPL).
+         For more information visit http://projects.coin-or.org/Ipopt
+******************************************************************************
+
+This is Ipopt version 3.13.2, running with linear solver ma57.
+
+Number of nonzeros in equality constraint Jacobian...:   136846
+Number of nonzeros in inequality constraint Jacobian.:        0
+Number of nonzeros in Lagrangian Hessian.............:     9010
+
+Total number of variables............................:    43240
+                     variables with only lower bounds:        0
+                variables with lower and upper bounds:    23408
+                     variables with only upper bounds:        0
+Total number of equality constraints.................:    43240
+Total number of inequality constraints...............:        0
+        inequality constraints with only lower bounds:        0
+   inequality constraints with lower and upper bounds:        0
+        inequality constraints with only upper bounds:        0
+
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+   0  0.0000000e+00 7.27e+09 0.00e+00  -1.0 0.00e+00    -  0.00e+00 0.00e+00   0
+Reallocating memory for MA57: lfact (1796418)
+   1  0.0000000e+00 3.63e+09 2.48e-05  -1.0 1.94e+07    -  9.91e-01 1.00e+00h  1
+   2  0.0000000e+00 4.68e-06 5.38e-09  -1.0 3.63e+09    -  1.00e+00 1.00e+00h  1
+   3  0.0000000e+00 4.77e-07 4.00e-16  -2.5 6.17e-04    -  1.00e+00 1.00e+00h  1
+
+Number of Iterations....: 3
+
+                                   (scaled)                 (unscaled)
+Objective...............:   0.0000000000000000e+00    0.0000000000000000e+00
+Dual infeasibility......:   0.0000000000000000e+00    0.0000000000000000e+00
+Constraint violation....:   4.4286585193584167e-09    4.7683715820312500e-07
+Complementarity.........:   0.0000000000000000e+00    0.0000000000000000e+00
+Overall NLP error.......:   4.4286585193584167e-09    4.7683715820312500e-07
+
+
+Number of objective function evaluations             = 4
+Number of objective gradient evaluations             = 4
+Number of equality constraint evaluations            = 4
+Number of inequality constraint evaluations          = 0
+Number of equality constraint Jacobian evaluations   = 4
+Number of inequality constraint Jacobian evaluations = 0
+Number of Lagrangian Hessian evaluations             = 3
+Total CPU secs in IPOPT (w/o function evaluations)   =      0.285
+Total CPU secs in NLP function evaluations           =      0.016
+
+EXIT: Optimal Solution Found.
+Ipopt 3.13.2: halt_on_ampl_error=yes
+linear_solver=ma57
+
+
+******************************************************************************
+This program contains Ipopt, a library for large-scale nonlinear optimization.
+ Ipopt is released as open source code under the Eclipse Public License (EPL).
+         For more information visit http://projects.coin-or.org/Ipopt
+******************************************************************************
+
+This is Ipopt version 3.13.2, running with linear solver ma57.
+
+Number of nonzeros in equality constraint Jacobian...:   144960
+Number of nonzeros in inequality constraint Jacobian.:        0
+Number of nonzeros in Lagrangian Hessian.............:     9011
+
+Reallocating memory for MA57: lfact (2308819)
+Total number of variables............................:    44142
+                     variables with only lower bounds:        1
+                variables with lower and upper bounds:    24309
+                     variables with only upper bounds:        0
+Total number of equality constraints.................:    43241
+Total number of inequality constraints...............:        0
+        inequality constraints with only lower bounds:        0
+   inequality constraints with lower and upper bounds:        0
+        inequality constraints with only upper bounds:        0
+
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+   0 -9.5826518e+00 4.77e-07 1.00e+00  -1.0 0.00e+00    -  0.00e+00 0.00e+00   0
+   1 -9.5826517e+00 5.61e-02 1.00e-02  -1.0 3.43e+02    -  9.90e-01 1.00e+00f  1
+   2 -9.5826486e+00 3.74e+02 1.57e-03  -1.0 2.80e+04    -  9.90e-01 1.00e+00f  1
+   3 -9.5826355e+00 6.81e+03 1.41e-05  -1.0 1.15e+05    -  9.90e-01 1.00e+00f  1
+   4 -9.5826359e+00 1.10e+01 1.01e-06  -1.0 3.44e+03    -  9.90e-01 1.00e+00h  1
+   5 -9.5826359e+00 1.49e-07 1.00e-06  -1.0 1.16e+01    -  9.93e-01 1.00e+00h  1
+   6 -9.5826359e+00 4.56e-07 2.00e-07  -1.7 2.80e-02    -  1.00e+00 1.00e+00h  1
+   7 -9.5826359e+00 3.69e-07 1.50e-09  -3.8 1.75e-01    -  1.00e+00 1.00e+00h  1
+   8 -9.5826359e+00 3.27e-04 1.84e-11  -5.7 2.33e+01    -  1.00e+00 1.00e+00h  1
+   9 -9.5826361e+00 2.13e+00 1.84e-11  -5.7 1.88e+03    -  1.00e+00 1.00e+00h  1
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+  10 -9.5826361e+00 4.88e-07 1.84e-11  -5.7 2.36e+00    -  1.00e+00 1.00e+00h  1
+  11 -9.5826363e+00 2.19e+00 7.98e-11  -8.6 1.91e+03    -  9.98e-01 1.00e+00h  1
+  12 -9.5826363e+00 3.99e-06 1.74e-07  -8.6 1.74e-03  -4.0 1.00e+00 1.00e+00h  1
+Reallocating memory for MA57: lfact (2438548)
+  13 -9.5826379e+00 1.25e+02 1.03e-07  -8.6 1.44e+04    -  1.00e+00 1.00e+00h  1
+  14 -9.5826379e+00 1.03e-02 5.68e-06  -8.6 1.70e-01  -4.5 1.00e+00 1.00e+00h  1
+Reallocating memory for MA57: lfact (2611765)
+  15 -9.5826379e+00 8.34e-08 3.81e-10  -8.6 3.43e-05  -5.0 1.00e+00 1.00e+00h  1
+  16 -9.5826494e+00 5.83e+03 3.53e-10  -8.6 1.36e+06    -  4.92e-01 7.42e-02h  4
+  17 -9.5826501e+00 5.83e+03 3.52e-10  -8.6 1.85e+06    -  1.00e+00 3.56e-03h  8
+  18 -9.5827722e+00 4.44e+01 5.38e-09  -8.6 7.83e+05    -  1.00e+00 1.00e+00H  1
+  19 -9.5827904e+00 4.02e+03 3.28e-09  -8.6 4.10e+05    -  1.00e+00 3.90e-01h  2
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+  20 -9.5827960e+00 3.04e+02 2.51e-14  -8.6 5.00e+04    -  1.00e+00 1.00e+00h  1
+  21 -9.5827963e+00 5.53e+00 2.51e-14  -8.6 2.53e+03    -  1.00e+00 1.00e+00h  1
+  22 -9.5827963e+00 5.10e-03 2.51e-14  -8.6 2.49e+01    -  1.00e+00 1.00e+00h  1
+  23 -9.5827963e+00 2.61e-07 2.51e-14  -8.6 5.27e-03    -  1.00e+00 1.00e+00h  1
+  24 -9.5827963e+00 2.59e-07 2.51e-14  -8.6 1.78e-07    -  1.00e+00 1.00e+00h  1
+Reallocating memory for MA57: lfact (3036850)
+  25 -9.5827963e+00 1.69e-07 2.96e-13  -8.6 7.99e-08  -5.4 1.00e+00 1.00e+00h  1
+  26 -9.5827963e+00 1.79e-07 2.51e-14  -8.6 3.21e-07    -  1.00e+00 1.00e+00h  1
+  27 -9.5827963e+00 1.99e-07 2.51e-14  -8.6 1.76e-07    -  1.00e+00 5.00e-01h  2
+  28 -9.5827963e+00 1.30e-07 5.64e-13  -8.6 5.71e-08  -5.0 1.00e+00 1.00e+00h  1
+  29 -9.5827963e+00 8.84e-08 2.51e-14  -8.6 3.49e-07    -  1.00e+00 1.00e+00H  1
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+  30 -9.5827963e+00 1.07e-07 2.51e-14  -8.6 1.79e-05    -  1.00e+00 2.50e-01h  3
+  31 -9.5827963e+00 8.91e-08 2.51e-14  -8.6 1.33e-05    -  1.00e+00 5.00e-01h  2
+  32 -9.5827963e+00 5.07e-08 2.51e-14  -8.6 6.78e-06    -  1.00e+00 1.25e-01h  4
+  33 -9.5827963e+00 2.98e-08 2.51e-14  -8.6 5.85e-06    -  1.00e+00 1.25e-01h  4
+  34 -9.5827963e+00 2.83e-07 2.51e-14  -8.6 5.18e-06    -  1.00e+00 1.00e+00h  1
+  35 -9.5827963e+00 2.00e-07 2.51e-14  -8.6 2.76e-07    -  1.00e+00 1.00e+00h  1
+  36 -9.5827963e+00 1.32e-07 1.85e-13  -8.6 5.63e-08  -5.5 1.00e+00 1.00e+00h  1
+  37 -9.5827963e+00 1.68e-07 9.27e-14  -8.6 2.85e-07    -  1.00e+00 5.00e-01h  2
+
+Number of Iterations....: 37
+
+                                   (scaled)                 (unscaled)
+Objective...............:  -9.5827963232921558e+00   -9.5827963232921558e+00
+Dual infeasibility......:   9.2749434931462897e-14    9.2749434931462897e-14
+Constraint violation....:   1.6786270862212405e-07    1.6786270862212405e-07
+Complementarity.........:   2.5059035597209067e-09    2.5059035597209067e-09
+Overall NLP error.......:   1.6786270862212405e-07    1.6786270862212405e-07
+
+
+Number of objective function evaluations             = 62
+Number of objective gradient evaluations             = 38
+Number of equality constraint evaluations            = 75
+Number of inequality constraint evaluations          = 0
+Number of equality constraint Jacobian evaluations   = 38
+Number of inequality constraint Jacobian evaluations = 0
+Number of Lagrangian Hessian evaluations             = 37
+Total CPU secs in IPOPT (w/o function evaluations)   =      5.156
+Total CPU secs in NLP function evaluations           =      0.229
+
+EXIT: Solved To Acceptable Level.
+INFO: elapsed time: 13.3 seconds
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Extract and plot the results using our custom function</span>
+<span class="c1">### BEGIN SOLUTION</span>
+<span class="n">aopt_pyomo_doe_results</span> <span class="o">=</span> <span class="n">extract_plot_results</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">optimize_result3</span><span class="o">.</span><span class="n">model</span><span class="p">)</span>
+<span class="c1">### END SOLUTION</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/54cbe395f16bfa2438ac2bbe34f017a0296e35278f20c7c8123c030d0e99bc1d.png" src="../_images/54cbe395f16bfa2438ac2bbe34f017a0296e35278f20c7c8123c030d0e99bc1d.png" />
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model parameters:
+Ua = 0.0515 Watts/degC
+Ub = 0.0005 Watts/degC
+CpH = 6.8386 Joules/degC
+CpS = 0.01 Joules/degC
+ 
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Compute the FIM at the optimal solution</span>
+<span class="c1">### BEGIN SOLUTION</span>
+<span class="n">optimize_result3</span><span class="o">.</span><span class="n">result_analysis</span><span class="p">()</span>
+<span class="n">results_summary</span><span class="p">(</span><span class="n">optimize_result3</span><span class="p">)</span>
+<span class="c1">### END SOLUTION</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>======Results Summary======
+Four design criteria log10() value:
+A-optimality: 9.582796323292156
+D-optimality: 26.95067193479609
+E-optimality: 3.537264228287819
+Modified E-optimality: 6.024576525337041
+
+FIM:
+ [[ 1.90391979e+08 -1.92132808e+08 -8.52348771e+06 -1.77840673e+03]
+ [-1.92132808e+08  3.63446924e+09  6.14164214e+07  2.38834153e+04]
+ [-8.52348771e+06  6.14164214e+07  1.58687698e+06  1.94652290e+04]
+ [-1.77840673e+03  2.38834153e+04  1.94652290e+04  4.37330692e+03]]
+
+eigenvalues:
+ [3.64620224e+09 1.79851735e+08 3.95050233e+05 3.44559500e+03]
+
+eigenvectors:
+ [[ 5.55450151e-02  9.98025494e-01  2.92889855e-02 -1.42125503e-03]
+ [-9.98312254e-01  5.60117031e-02 -1.53227001e-02  7.40265391e-04]
+ [-1.69527364e-02 -2.84218653e-02  9.98267898e-01 -4.86416176e-02]
+ [-6.65676344e-06 -5.50679533e-06  4.86680064e-02  9.98815010e-01]]
+</pre></div>
+</div>
+</div>
+</div>
+<p><strong>Discussion:</strong> How do these compare to our <a class="reference internal" href="../notebooks/doe_optimize.html"><span class="doc std std-doc">previous A-optimal results</span></a> considering the sine test as the prior experiment?</p>
+</section>
+<section id="optimize-the-next-experiment-d-optimality">
+<h2>Optimize the next experiment (D-optimality)<a class="headerlink" href="#optimize-the-next-experiment-d-optimality" title="Permalink to this heading">#</a></h2>
+<p>Finally, we are ready to solve the D-optimality problem. This may take 2 minutes to run.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Extract the prior FIM and Jacobian information from the previous</span>
+<span class="c1"># result to use for initialization.</span>
+<span class="c1">### BEGIN SOLUTION</span>
+<span class="n">prior</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">FIM</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="n">jac_for_initialization</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">jaco_information</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="c1">### END SOLUTION</span>
+
+<span class="c1"># Set Ipopt options</span>
+<span class="n">solver</span> <span class="o">=</span> <span class="n">SolverFactory</span><span class="p">(</span><span class="s1">&#39;ipopt&#39;</span><span class="p">)</span>
+<span class="c1"># solver.options[&#39;bound_push&#39;] = 1E-10</span>
+<span class="n">solver</span><span class="o">.</span><span class="n">options</span><span class="p">[</span><span class="s1">&#39;halt_on_ampl_error&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;yes&#39;</span>
+<span class="c1"># solver.options[&#39;tol&#39;] = 1E-5</span>
+<span class="c1"># solver.options[&#39;acceptable_tol&#39;] = 1E-4</span>
+<span class="c1"># solver.options[&#39;max_iter&#39;] = 100</span>
+<span class="n">solver</span><span class="o">.</span><span class="n">options</span><span class="p">[</span><span class="s1">&#39;linear_solver&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;ma57&#39;</span>
+
+<span class="c1"># Create a new DoE object</span>
+<span class="c1">### BEGIN SOLUTION</span>
+<span class="n">doe_object2</span> <span class="o">=</span> <span class="n">DesignOfExperiments</span><span class="p">(</span>
+    <span class="n">theta_values</span><span class="p">,</span>  <span class="c1"># dictionary of parameters</span>
+    <span class="n">decisions</span><span class="p">,</span>  <span class="c1"># design variable</span>
+    <span class="n">measurements</span><span class="p">,</span>  <span class="c1"># measurement variable</span>
+    <span class="n">create_model_doe</span><span class="p">,</span>  <span class="c1"># model</span>
+    <span class="n">solver</span><span class="o">=</span><span class="n">solver</span><span class="p">,</span>
+    <span class="n">prior_FIM</span><span class="o">=</span><span class="n">prior</span><span class="p">,</span>  <span class="c1"># use previous experiment as prior</span>
+<span class="p">)</span>
+<span class="c1">### END SOLUTION</span>
+
+<span class="c1"># Solve the DoE problem</span>
+<span class="c1">### BEGIN SOLUTION</span>
+<span class="n">square_result2</span><span class="p">,</span> <span class="n">optimize_result2</span> <span class="o">=</span> <span class="n">doe_object2</span><span class="o">.</span><span class="n">stochastic_program</span><span class="p">(</span>
+    <span class="n">if_optimize</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>  <span class="c1"># optimize</span>
+    <span class="n">if_Cholesky</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>  <span class="c1"># use Cholesky decomposition</span>
+    <span class="n">scale_nominal_param_value</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>  <span class="c1"># scale model parameter value</span>
+    <span class="n">objective_option</span><span class="o">=</span><span class="s2">&quot;det&quot;</span><span class="p">,</span>  <span class="c1"># objective option (need to debug/improve initialization)</span>
+    <span class="n">jac_initial</span><span class="o">=</span><span class="n">jac_for_initialization</span><span class="p">,</span>  <span class="c1"># initialize Jacobian with prior solution</span>
+    <span class="n">step</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span>  <span class="c1"># step size</span>
+<span class="p">)</span>
+<span class="c1">### END SOLUTION</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Ipopt 3.13.2: halt_on_ampl_error=yes
+linear_solver=ma57
+
+
+******************************************************************************
+This program contains Ipopt, a library for large-scale nonlinear optimization.
+ Ipopt is released as open source code under the Eclipse Public License (EPL).
+         For more information visit http://projects.coin-or.org/Ipopt
+******************************************************************************
+
+This is Ipopt version 3.13.2, running with linear solver ma57.
+
+Number of nonzeros in equality constraint Jacobian...:   136846
+Number of nonzeros in inequality constraint Jacobian.:        0
+Number of nonzeros in Lagrangian Hessian.............:     9010
+
+Total number of variables............................:    43240
+                     variables with only lower bounds:        0
+                variables with lower and upper bounds:    23408
+                     variables with only upper bounds:        0
+Total number of equality constraints.................:    43240
+Total number of inequality constraints...............:        0
+        inequality constraints with only lower bounds:        0
+   inequality constraints with lower and upper bounds:        0
+        inequality constraints with only upper bounds:        0
+
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+   0  0.0000000e+00 7.27e+09 0.00e+00  -1.0 0.00e+00    -  0.00e+00 0.00e+00   0
+Reallocating memory for MA57: lfact (1796418)
+   1  0.0000000e+00 3.63e+09 2.48e-05  -1.0 1.94e+07    -  9.91e-01 1.00e+00h  1
+   2  0.0000000e+00 4.68e-06 5.38e-09  -1.0 3.63e+09    -  1.00e+00 1.00e+00h  1
+   3  0.0000000e+00 4.77e-07 4.00e-16  -2.5 6.17e-04    -  1.00e+00 1.00e+00h  1
+
+Number of Iterations....: 3
+
+                                   (scaled)                 (unscaled)
+Objective...............:   0.0000000000000000e+00    0.0000000000000000e+00
+Dual infeasibility......:   0.0000000000000000e+00    0.0000000000000000e+00
+Constraint violation....:   4.4286585193584167e-09    4.7683715820312500e-07
+Complementarity.........:   0.0000000000000000e+00    0.0000000000000000e+00
+Overall NLP error.......:   4.4286585193584167e-09    4.7683715820312500e-07
+
+
+Number of objective function evaluations             = 4
+Number of objective gradient evaluations             = 4
+Number of equality constraint evaluations            = 4
+Number of inequality constraint evaluations          = 0
+Number of equality constraint Jacobian evaluations   = 4
+Number of inequality constraint Jacobian evaluations = 0
+Number of Lagrangian Hessian evaluations             = 3
+Total CPU secs in IPOPT (w/o function evaluations)   =      0.297
+Total CPU secs in NLP function evaluations           =      0.017
+
+EXIT: Optimal Solution Found.
+Ipopt 3.13.2: halt_on_ampl_error=yes
+linear_solver=ma57
+
+
+******************************************************************************
+This program contains Ipopt, a library for large-scale nonlinear optimization.
+ Ipopt is released as open source code under the Eclipse Public License (EPL).
+         For more information visit http://projects.coin-or.org/Ipopt
+******************************************************************************
+
+This is Ipopt version 3.13.2, running with linear solver ma57.
+
+Number of nonzeros in equality constraint Jacobian...:   144989
+Number of nonzeros in inequality constraint Jacobian.:        0
+Number of nonzeros in Lagrangian Hessian.............:     9030
+
+Reallocating memory for MA57: lfact (2309029)
+Total number of variables............................:    44151
+                     variables with only lower bounds:        4
+                variables with lower and upper bounds:    24309
+                     variables with only upper bounds:        0
+Total number of equality constraints.................:    43250
+Total number of inequality constraints...............:        0
+        inequality constraints with only lower bounds:        0
+   inequality constraints with lower and upper bounds:        0
+        inequality constraints with only upper bounds:        0
+
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+   0 -2.7034935e+01 4.77e-07 1.17e-03  -1.0 0.00e+00    -  0.00e+00 0.00e+00   0
+   1 -2.7034778e+01 5.56e-02 1.00e-02  -1.0 3.22e+02    -  9.90e-01 1.00e+00f  1
+   2 -2.7021918e+01 3.71e+02 1.13e-04  -1.0 2.63e+04    -  9.90e-01 1.00e+00f  1
+   3 -2.6970479e+01 6.76e+03 2.69e-04  -1.0 1.09e+05    -  1.00e+00 1.00e+00f  1
+   4 -2.6979799e+01 1.07e+01 8.61e-06  -1.0 2.94e+03    -  1.00e+00 1.00e+00h  1
+   5 -2.6979769e+01 1.22e-06 1.00e-06  -1.0 1.19e+01    -  1.00e+00 1.00e+00h  1
+   6 -2.6981002e+01 1.22e-01 4.69e-06  -2.5 2.85e+02    -  1.00e+00 1.00e+00h  1
+   7 -2.7022620e+01 1.37e+02 1.98e-04  -2.5 9.17e+03    -  1.00e+00 1.00e+00h  1
+   8 -2.7023324e+01 9.90e-03 7.75e-08  -2.5 1.30e+02    -  1.00e+00 1.00e+00h  1
+   9 -2.7064490e+01 1.28e+02 1.91e-04  -3.8 8.85e+03    -  9.79e-01 1.00e+00h  1
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+  10 -2.7063812e+01 2.73e-01 6.20e-05  -3.8 6.20e-01  -4.0 1.00e+00 1.00e+00h  1
+  11 -2.7064176e+01 2.47e-02 3.15e-05  -3.8 9.46e-01  -4.5 1.00e+00 1.00e+00h  1
+  12 -2.7065279e+01 2.25e-01 3.18e-05  -3.8 2.86e+00  -5.0 1.00e+00 1.00e+00h  1
+  13 -2.7068533e+01 1.95e+00 3.14e-05  -3.8 8.49e+00  -5.4 1.00e+00 1.00e+00h  1
+  14 -2.7077846e+01 1.56e+01 3.03e-05  -3.8 2.46e+01  -5.9 1.00e+00 1.00e+00h  1
+  15 -2.7102189e+01 9.97e+01 6.13e-05  -3.8 6.63e+01  -6.4 1.00e+00 1.00e+00h  1
+  16 -2.7152041e+01 3.67e+02 2.51e-04  -3.8 1.46e+02  -6.9 1.00e+00 1.00e+00h  1
+  17 -2.7211916e+01 4.45e+02 3.29e-04  -3.8 2.85e+02  -7.3 1.00e+00 1.00e+00h  1
+  18 -2.7260992e+01 5.38e+02 1.95e-04  -3.8 9.63e+02  -7.8 1.00e+00 1.00e+00h  1
+  19 -2.7353869e+01 2.07e+03 7.28e-04  -3.8 2.23e+03  -8.3 1.00e+00 1.00e+00H  1
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+  20 -2.7439099e+01 5.04e+02 4.50e-04  -3.8 5.80e+04    -  1.00e+00 1.00e+00H  1
+  21 -2.7436698e+01 1.38e+02 7.04e-06  -3.8 1.81e+01  -7.0 1.00e+00 1.00e+00h  1
+  22 -2.7437852e+01 1.19e+02 3.75e-06  -3.8 6.98e+01  -7.4 1.00e+00 1.00e+00h  1
+  23 -2.7439682e+01 4.34e+01 2.63e-06  -3.8 2.18e+02  -7.9 1.00e+00 1.00e+00h  1
+  24 -2.7441713e+01 1.90e+01 2.64e-06  -3.8 6.44e+02  -8.4 1.00e+00 1.00e+00H  1
+  25 -2.7441156e+01 8.84e+00 5.21e-06  -3.8 4.94e+03  -8.9 3.74e-01 1.32e-02h  6
+  26 -2.7438746e+01 4.15e+00 3.12e-06  -3.8 1.07e+02  -7.5 1.00e+00 1.00e+00H  1
+  27 -2.7440099e+01 4.54e+01 5.67e-06  -3.8 5.95e+04    -  2.30e-01 1.34e-02h  5
+  28 -2.7439552e+01 2.36e+00 3.10e-06  -3.8 4.07e+01  -7.1 1.00e+00 1.00e+00h  1
+  29 -2.7439365e+01 9.44e+00 3.04e-06  -3.8 1.20e+02  -7.6 1.00e+00 1.00e+00h  1
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+  30 -2.7440909e+01 5.54e+01 2.97e-06  -3.8 3.51e+02  -8.1 1.00e+00 1.00e+00h  1
+  31 -2.7442917e+01 8.75e+01 5.20e-06  -3.8 1.28e+04    -  3.26e-01 2.20e-02h  5
+  32 -2.7442361e+01 4.52e+01 2.99e-06  -3.8 1.32e+02  -7.6 1.00e+00 1.00e+00H  1
+  33 -2.7511142e+01 3.85e+02 3.18e-04  -3.8 5.66e+03    -  1.00e+00 1.00e+00H  1
+  34 -2.7506272e+01 8.17e+01 3.36e-06  -3.8 3.74e+03    -  1.00e+00 1.00e+00h  1
+  35 -2.7506070e+01 2.46e+00 9.66e-09  -3.8 8.67e+01    -  1.00e+00 1.00e+00h  1
+  36 -2.7506069e+01 6.93e-03 1.50e-09  -3.8 3.39e+00    -  1.00e+00 1.00e+00h  1
+  37 -2.7506069e+01 4.77e-07 1.50e-09  -3.8 7.50e-04    -  1.00e+00 1.00e+00h  1
+  38 -2.7794829e+01 3.00e+03 6.26e-03  -5.7 3.79e+04    -  7.04e-01 1.00e+00F  1
+  39 -2.7992815e+01 3.57e+02 3.74e-05  -5.7 6.08e+04    -  6.91e-01 1.00e+00H  1
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+  40 -2.7999501e+01 5.97e+02 2.09e-05  -5.7 3.72e+02  -8.1 3.37e-01 4.27e-01h  1
+  41 -2.8003497e+01 1.46e+02 5.18e-06  -5.7 1.39e+02  -7.7 8.20e-01 1.00e+00h  1
+  42 -2.8010274e+01 2.60e+02 2.88e-06  -5.7 4.41e+02  -8.2 1.00e+00 6.13e-01h  1
+  43 -2.8014760e+01 6.21e+01 2.84e-06  -5.7 1.59e+02  -7.7 1.00e+00 1.00e+00h  1
+  44 -2.8018585e+01 1.31e+02 3.00e-06  -5.7 5.36e+02  -8.2 7.68e-01 4.74e-01h  1
+  45 -2.8021372e+01 2.93e+01 3.23e-06  -5.7 2.04e+02  -7.8 1.00e+00 1.00e+00h  1
+  46 -2.8024302e+01 8.63e+01 3.27e-06  -5.7 6.28e+02  -8.3 8.44e-01 4.90e-01h  1
+  47 -2.8026489e+01 1.86e+01 3.32e-06  -5.7 2.35e+02  -7.9 1.00e+00 1.00e+00h  1
+  48 -2.8029591e+01 5.95e+01 3.29e-06  -5.7 6.97e+02  -8.3 8.93e-01 5.77e-01h  1
+  49 -2.8031403e+01 1.45e+02 3.22e-06  -5.7 1.63e+03  -8.8 9.28e-02 9.82e-02h  1
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+  50 -2.8035946e+01 3.64e+01 3.14e-06  -5.7 7.51e+02  -8.4 1.00e+00 9.09e-01h  1
+  51 -2.8046374e+01 4.41e+01 3.38e-06  -5.7 2.05e+03  -8.9 1.00e+00 1.00e+00h  1
+  52 -2.8048976e+01 7.01e+01 3.11e-06  -5.7 4.63e+03  -9.3 1.41e-01 1.39e-01h  1
+  53 -2.8051806e+01 6.03e+01 2.60e-06  -5.7 1.88e+03  -8.9 4.58e-01 3.47e-01h  1
+  54 -2.8052130e+01 8.69e+01 2.62e-06  -5.7 8.95e+03  -9.4 1.52e-02 1.85e-02h  1
+  55 -2.8054176e+01 7.73e+01 2.52e-06  -5.7 2.01e+03  -9.0 3.47e-01 2.51e-01h  1
+  56 -2.8056998e+01 2.85e+01 2.34e-06  -5.7 7.89e+02  -8.5 1.00e+00 8.62e-01h  1
+  57 -2.8058447e+01 4.56e+01 2.29e-06  -5.7 2.15e+03  -9.0 2.16e-01 2.03e-01h  1
+  58 -2.8060018e+01 3.86e+01 2.23e-06  -5.7 8.34e+02  -8.6 1.00e+00 5.35e-01h  1
+  59 -2.8060169e+01 8.97e+01 2.29e-06  -5.7 4.08e+03  -9.1 2.93e-02 4.75e-02h  1
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+  60 -2.8061984e+01 5.63e+01 2.20e-06  -5.7 9.14e+02  -8.6 1.00e+00 5.36e-01h  1
+  61 -2.8062456e+01 1.00e+02 2.23e-06  -5.7 3.42e+03  -9.1 4.44e-02 7.75e-02h  1
+  62 -2.8064646e+01 5.39e+01 2.09e-06  -5.7 9.62e+02  -8.7 1.00e+00 5.67e-01h  1
+  63 -2.8064965e+01 8.90e+01 2.13e-06  -5.7 4.31e+03  -9.2 3.16e-02 5.32e-02h  1
+  64 -2.8067282e+01 4.72e+01 1.97e-06  -5.7 1.00e+03  -8.7 9.98e-01 5.57e-01h  1
+  65 -2.8068104e+01 5.97e+01 1.95e-06  -5.7 2.94e+03  -9.2 1.73e-01 1.03e-01h  1
+  66 -2.8072515e+01 1.50e+01 1.51e-06  -5.7 9.28e+02  -8.8 1.00e+00 1.00e+00h  1
+  67 -2.8074329e+01 2.27e+01 1.30e-06  -5.7 1.53e+03  -9.3 3.95e-01 3.09e-01h  1
+  68 -2.8076002e+01 1.87e+01 1.05e-06  -5.7 6.43e+02  -8.8 1.00e+00 6.82e-01h  1
+  69 -2.8076077e+01 3.62e+01 1.06e-06  -5.7 2.83e+03  -9.3 2.77e-02 3.46e-02h  1
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+  70 -2.8077218e+01 2.53e+01 8.62e-07  -5.7 5.55e+02  -8.9 1.00e+00 5.69e-01h  1
+  71 -2.8078000e+01 2.62e+00 7.06e-07  -5.7 2.06e+02  -8.5 1.00e+00 1.00e+00h  1
+  72 -2.8078338e+01 5.48e+00 6.53e-07  -5.7 4.42e+02  -8.9 6.03e-01 2.65e-01h  2
+  73 -2.8078832e+01 1.21e+01 5.79e-07  -5.7 1.90e+02  -8.5 1.00e+00 1.00e+00h  1
+  74 -2.8079077e+01 1.30e+01 5.40e-07  -5.7 4.14e+02  -9.0 5.28e-01 2.44e-01h  2
+  75 -2.8079440e+01 1.69e+01 4.91e-07  -5.7 1.81e+02  -8.6 1.00e+00 1.00e+00h  1
+  76 -2.8079797e+01 1.52e+01 4.32e-07  -5.7 3.78e+02  -9.0 4.94e-01 4.01e-01H  1
+  77 -2.8080106e+01 8.86e+00 3.74e-07  -5.7 1.54e+02  -8.6 1.00e+00 9.21e-01f  1
+  78 -2.8080277e+01 1.52e+01 3.50e-07  -5.7 3.72e+02  -9.1 3.64e-01 3.14e-01h  1
+  79 -2.8080532e+01 8.03e+00 3.03e-07  -5.7 1.40e+02  -8.7 1.00e+00 9.07e-01h  1
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+  80 -2.8080687e+01 1.41e+01 2.80e-07  -5.7 3.31e+02  -9.1 3.88e-01 3.48e-01h  1
+  81 -2.8080900e+01 7.46e+00 2.43e-07  -5.7 1.27e+02  -8.7 1.00e+00 9.54e-01h  1
+  82 -2.8081022e+01 1.35e+01 2.25e-07  -5.7 3.06e+02  -9.2 4.02e-01 3.56e-01h  1
+  83 -2.8081218e+01 5.65e+00 1.87e-07  -5.7 1.10e+02  -8.8 1.00e+00 1.00e+00h  1
+  84 -2.8081294e+01 6.97e+00 1.74e-07  -5.7 2.41e+02  -9.2 4.75e-01 2.50e-01h  2
+  85 -2.8081330e+01 5.32e+00 2.00e-07  -5.7 1.35e+02  -8.8 1.00e+00 7.43e-01H  1
+  86 -2.8081326e+01 7.34e+00 2.04e-07  -5.7 5.22e+02  -9.3 1.11e-01 6.78e-02h  2
+  87 -2.8081338e+01 8.23e+00 2.04e-07  -5.7 1.53e+02  -8.9 1.00e+00 3.09e-01h  2
+  88 -2.8081445e+01 1.09e+00 1.76e-07  -5.7 4.94e+01  -8.4 1.00e+00 1.00e+00h  1
+  89 -2.8081645e+01 7.39e+00 1.35e-07  -5.7 1.14e+02  -8.9 1.00e+00 1.00e+00h  1
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+  90 -2.8081724e+01 5.52e-01 1.18e-07  -5.7 3.72e+01  -8.5 1.00e+00 1.00e+00h  1
+  91 -2.8081859e+01 1.94e-01 1.08e-07  -5.7 9.87e+01  -9.0 1.00e+00 1.00e+00H  1
+  92 -2.8081912e+01 1.65e-01 8.12e-08  -5.7 2.89e+01  -8.6 1.00e+00 1.00e+00h  1
+  93 -2.8081922e+01 2.41e+00 8.32e-08  -5.7 9.47e+01  -9.0 1.00e+00 4.49e-01h  2
+  94 -2.8081915e+01 2.34e+00 9.38e-08  -5.7 3.75e+01  -8.6 1.00e+00 1.00e+00h  1
+  95 -2.8081958e+01 3.61e+00 8.83e-08  -5.7 9.86e+01  -9.1 1.00e+00 4.71e-01h  2
+  96 -2.8081969e+01 2.57e+00 9.15e-08  -5.7 4.12e+01  -8.7 1.00e+00 1.00e+00h  1
+  97 -2.8082016e+01 3.93e+00 8.50e-08  -5.7 1.09e+02  -9.1 9.54e-01 4.49e-01h  2
+  98 -2.8082028e+01 3.32e+00 8.83e-08  -5.7 4.47e+01  -8.7 1.00e+00 1.00e+00h  1
+  99 -2.8082080e+01 4.15e+00 8.00e-08  -5.7 1.23e+02  -9.2 9.78e-01 4.50e-01h  2
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+ 100 -2.8082086e+01 4.30e+00 8.53e-08  -5.7 4.85e+01  -8.8 1.00e+00 1.00e+00h  1
+ 101 -2.8082208e+01 8.11e+00 8.46e-08  -5.7 1.49e+05    -  1.22e-02 7.47e-03h  2
+ 102 -2.8082206e+01 1.00e+01 8.66e-08  -5.7 2.40e+02  -9.2 1.47e-01 8.61e-02h  2
+ 103 -2.8082252e+01 4.93e+00 8.36e-08  -5.7 5.35e+01  -8.8 1.00e+00 1.00e+00h  1
+ 104 -2.8082536e+01 1.36e+01 8.18e-08  -5.7 1.37e+05    -  1.98e-02 2.07e-02h  1
+ 105 -2.8082643e+01 1.34e+01 7.75e-08  -5.7 1.49e+02  -9.3 8.56e-01 7.02e-01h  1
+ 106 -2.8082696e+01 5.17e-01 8.06e-08  -5.7 5.81e+01  -8.9 1.00e+00 1.00e+00h  1
+ 107 -2.8082811e+01 2.36e+00 7.96e-08  -5.7 9.45e+04    -  3.18e-02 1.24e-02h  2
+ 108 -2.8082819e+01 3.12e-01 7.88e-08  -5.7 2.13e+01  -8.4 1.00e+00 1.00e+00h  1
+ 109 -2.8083419e+01 2.27e+01 7.28e-08  -5.7 8.51e+04    -  5.45e-02 7.64e-02h  1
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+ 110 -2.8083469e+01 2.31e+01 7.26e-08  -5.7 2.63e+05    -  5.47e-03 1.77e-03h  2
+ 111 -2.8083525e+01 7.68e+00 7.30e-08  -5.7 5.92e+01  -8.9 1.00e+00 1.00e+00h  1
+ 112 -2.8083789e+01 1.51e+01 7.14e-08  -5.7 1.38e+05    -  1.83e-02 2.22e-02h  1
+ 113 -2.8083853e+01 5.54e+00 6.93e-08  -5.7 1.69e+02  -9.4 1.00e+00 1.00e+00h  1
+ 114 -2.8083854e+01 1.80e+00 7.27e-08  -5.7 6.63e+01  -9.0 1.00e+00 1.00e+00h  1
+ 115 -2.8083855e+01 3.75e+00 7.17e-08  -5.7 1.91e+02  -9.4 7.29e-01 3.18e-01h  2
+ 116 -2.8083811e+01 1.14e+00 8.34e-08  -5.7 8.28e+01  -9.0 1.00e+00 9.23e-01H  1
+ 117 -2.8083967e+01 3.85e-01 7.39e-08  -5.7 2.29e+02  -9.5 1.00e+00 9.31e-01F  1
+ 118 -2.8083939e+01 1.91e+00 7.12e-08  -5.7 8.22e+01  -9.1 1.00e+00 1.00e+00f  1
+ 119 -2.8084082e+01 1.33e-01 7.35e-08  -5.7 2.55e+02  -9.5 1.00e+00 1.00e+00H  1
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+ 120 -2.8084028e+01 1.82e+00 7.18e-08  -5.7 9.33e+01  -9.1 1.00e+00 1.00e+00h  1
+ 121 -2.8084059e+01 3.58e+00 7.31e-08  -5.7 2.91e+02  -9.6 9.43e-01 4.42e-01h  2
+ 122 -2.8084040e+01 3.84e+00 1.02e-07  -5.7 1.01e+02  -9.2 9.08e-01 1.41e-01h  3
+ 123 -2.8084022e+01 9.70e-01 7.18e-08  -5.7 3.93e+01  -8.7 1.00e+00 1.00e+00h  1
+ 124 -2.8084342e+01 1.05e+01 6.89e-08  -5.7 9.25e+04    -  4.02e-02 4.01e-02h  1
+ 125 -2.8084382e+01 1.06e+00 7.02e-08  -5.7 1.15e+02  -9.2 1.00e+00 1.00e+00h  1
+ 126 -2.8084385e+01 1.65e+00 7.90e-08  -5.7 3.35e+02  -9.7 4.35e-01 8.23e-02h  3
+ 127 -2.8084390e+01 5.96e-02 6.99e-08  -5.7 1.62e+01  -8.4 1.00e+00 1.00e+00h  1
+ 128 -2.8084921e+01 2.16e+01 6.33e-08  -5.7 6.77e+04    -  8.58e-02 9.46e-02h  1
+ 129 -2.8084923e+01 2.45e-01 6.44e-08  -5.7 4.47e+01  -8.8 1.00e+00 1.00e+00h  1
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+ 130 -2.8085048e+01 1.69e+00 6.50e-08  -5.7 7.57e+04    -  5.48e-02 2.13e-02h  2
+ 131 -2.8085045e+01 6.31e-02 6.35e-08  -5.7 1.65e+01  -8.4 1.00e+00 1.00e+00h  1
+ 132 -2.8085441e+01 1.49e+01 5.94e-08  -5.7 8.26e+04    -  5.29e-02 6.41e-02h  1
+ 133 -2.8085502e+01 9.28e-01 5.78e-08  -5.7 4.51e+01  -8.9 1.00e+00 1.00e+00h  1
+ 134 -2.8085486e+01 8.70e-02 5.97e-08  -5.7 1.40e+02  -9.4 1.00e+00 1.00e+00H  1
+ 135 -2.8085487e+01 3.06e-01 5.97e-08  -5.7 4.23e+02  -9.8 4.20e-01 8.22e-02h  3
+ 136 -2.8085467e+01 1.38e-01 5.96e-08  -5.7 1.96e+01  -8.5 1.00e+00 1.00e+00h  1
+ 137 -2.8085754e+01 8.08e+00 5.66e-08  -5.7 7.83e+04    -  5.60e-02 5.00e-02H  1
+ 138 -2.8085759e+01 2.84e-01 5.74e-08  -5.7 5.66e+01  -9.0 1.00e+00 1.00e+00h  1
+ 139 -2.8085800e+01 2.14e-01 5.67e-08  -5.7 1.68e+02  -9.5 1.00e+00 1.00e+00H  1
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+ 140 -2.8086179e+01 1.53e+01 5.18e-08  -5.7 6.45e+04    -  7.01e-02 8.58e-02h  1
+ 141 -2.8086183e+01 1.98e-01 5.29e-08  -5.7 5.88e+01  -9.0 1.00e+00 1.00e+00f  1
+ 142 -2.8086541e+01 1.54e+01 4.81e-08  -5.7 6.02e+04    -  7.27e-02 9.18e-02h  1
+ 143 -2.8086547e+01 5.21e+00 4.94e-08  -5.7 1.65e+02  -9.5 1.00e+00 8.61e-01f  1
+ 144 -2.8086654e+01 9.34e+00 4.81e-08  -5.7 6.76e+04    -  3.36e-02 2.77e-02h  2
+ 145 -2.8086617e+01 2.28e+00 4.71e-08  -5.7 5.89e+01  -9.1 1.00e+00 1.00e+00h  1
+ 146 -2.8086985e+01 1.87e+01 4.15e-08  -5.7 5.08e+04    -  9.51e-02 1.19e-01h  1
+ 147 -2.8087018e+01 8.18e+00 4.31e-08  -5.7 1.64e+02  -9.6 1.00e+00 7.31e-01h  1
+ 148 -2.8087014e+01 7.19e-01 4.35e-08  -5.7 6.12e+01  -9.1 1.00e+00 1.00e+00h  1
+ 149 -2.8087084e+01 4.46e+00 4.31e-08  -5.7 1.12e+05    -  1.88e-02 1.10e-02h  2
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+ 150 -2.8087070e+01 4.77e+00 6.99e-08  -5.7 5.55e+02  -9.6 1.31e-01 3.18e-02h  3
+ 151 -2.8087081e+01 1.18e-02 4.26e-08  -5.7 8.43e+00  -8.3 1.00e+00 1.00e+00h  1
+ 152 -2.8087456e+01 2.22e+01 3.61e-08  -5.7 4.37e+04    -  1.27e-01 1.53e-01h  1
+ 153 -2.8087460e+01 1.31e-01 3.69e-08  -5.7 2.19e+01  -8.8 1.00e+00 1.00e+00h  1
+ 154 -2.8087811e+01 2.49e+01 3.10e-08  -5.7 4.47e+04    -  1.29e-01 1.59e-01h  1
+ 155 -2.8087786e+01 1.77e+00 3.27e-08  -5.7 5.81e+01  -9.3 1.00e+00 1.00e+00h  1
+ 156 -2.8087843e+01 3.83e+00 4.23e-08  -5.7 9.31e+04    -  3.08e-02 1.32e-02h  2
+ 157 -2.8087823e+01 5.48e-01 3.22e-08  -5.7 2.15e+01  -8.8 1.00e+00 1.00e+00h  1
+ 158 -2.8087984e+01 6.29e+00 4.90e-08  -5.7 4.30e+04    -  1.70e-01 8.16e-02h  2
+ 159 -2.8087962e+01 4.03e+00 3.19e-08  -5.7 8.17e+01  -9.3 8.06e-01 4.54e-01h  2
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+ 160 -2.8087961e+01 7.05e-01 3.42e-08  -5.7 2.56e+01  -8.9 1.00e+00 1.00e+00h  1
+ 161 -2.8088054e+01 2.25e+00 4.79e-08  -5.7 4.31e+04    -  1.18e-01 4.82e-02h  2
+ 162 -2.8088043e+01 2.05e+00 6.55e-08  -5.7 9.72e+01  -9.4 9.07e-01 1.98e-01h  3
+ 163 -2.8088050e+01 8.00e-01 3.32e-08  -5.7 2.80e+01  -8.9 1.00e+00 1.00e+00h  1
+ 164 -2.8088118e+01 1.89e-02 2.90e-08  -5.7 7.36e+01  -9.4 1.00e+00 1.00e+00H  1
+ 165 -2.8088117e+01 9.30e-02 7.84e-08  -5.7 2.24e+02  -9.9 5.33e-01 4.65e-02h  4
+ 166 -2.8088108e+01 8.38e-02 2.87e-08  -5.7 1.02e+01  -8.6 1.00e+00 1.00e+00h  1
+ 167 -2.8088195e+01 2.07e+00 5.22e-08  -5.7 4.07e+04    -  1.29e-01 5.03e-02h  2
+ 168 -2.8088189e+01 5.41e-01 2.83e-08  -5.7 3.02e+01  -9.0 1.00e+00 1.00e+00h  1
+ 169 -2.8088233e+01 2.82e-02 2.81e-08  -5.7 9.00e+01  -9.5 1.00e+00 1.00e+00H  1
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+ 170 -2.8088233e+01 1.74e-01 5.55e-08  -5.7 2.65e+02 -10.0 5.22e-01 7.90e-02h  4
+ 171 -2.8088224e+01 7.87e-02 2.79e-08  -5.7 1.26e+01  -8.7 1.00e+00 1.00e+00h  1
+ 172 -2.8088269e+01 2.32e+00 3.47e-08  -5.7 6.23e+04    -  3.52e-02 1.82e-02h  2
+ 173 -2.8088273e+01 3.67e-01 2.76e-08  -5.7 3.73e+01  -9.1 1.00e+00 1.00e+00h  1
+ 174 -2.8088292e+01 2.43e+00 3.49e-08  -5.7 7.14e+05    -  1.21e-03 6.18e-04h  2
+ 175 -2.8088300e+01 4.29e-02 2.73e-08  -5.7 1.39e+01  -8.7 1.00e+00 1.00e+00h  1
+ 176 -2.8088403e+01 3.51e+00 5.83e-08  -5.7 3.74e+04    -  1.79e-01 6.98e-02h  2
+ 177 -2.8088410e+01 1.29e-01 2.60e-08  -5.7 3.96e+01  -9.2 1.00e+00 1.00e+00h  1
+ 178 -2.8088496e+01 3.26e+00 3.46e-08  -5.7 4.99e+04    -  8.65e-02 4.67e-02h  2
+ 179 -2.8088490e+01 9.48e-02 2.43e-08  -5.7 1.38e+01  -8.8 1.00e+00 1.00e+00h  1
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+ 180 -2.8088585e+01 3.00e+00 5.34e-08  -5.7 2.93e+04    -  2.14e-01 8.40e-02h  2
+ 181 -2.8088586e+01 4.97e-03 2.23e-08  -5.7 4.76e+00  -8.3 1.00e+00 1.00e+00h  1
+ 182 -2.8088695e+01 4.74e+00 2.20e-08  -5.7 2.89e+04    -  1.48e-01 1.10e-01h  2
+ 183 -2.8088688e+01 8.34e-02 2.03e-08  -5.7 1.30e+01  -8.8 1.00e+00 1.00e+00h  1
+ 184 -2.8088720e+01 1.70e+00 4.54e-08  -5.7 4.06e+04    -  5.20e-02 2.30e-02h  2
+ 185 -2.8088701e+01 5.09e-01 2.90e-08  -5.7 5.71e+01  -9.3 1.00e+00 1.00e+00H  1
+ 186 -2.8088749e+01 1.03e-01 1.89e-08  -5.7 1.09e+02  -9.8 1.00e+00 1.00e+00H  1
+ 187 -2.8088750e+01 1.14e+00 2.84e-08  -5.7 3.88e+02 -10.2 1.00e+00 4.95e-01h  2
+ 188 -2.8088745e+01 8.18e-02 2.00e-08  -5.7 1.62e+01  -8.9 1.00e+00 1.00e+00h  1
+ 189 -2.8088862e+01 6.13e+00 2.45e-08  -5.7 2.51e+04    -  2.26e-01 1.41e-01h  2
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+ 190 -2.8088849e+01 5.24e+00 6.43e-08  -5.7 7.76e+01  -9.4 9.29e-01 1.66e-01h  3
+ 191 -2.8088828e+01 4.58e-01 1.68e-08  -5.7 1.54e+01  -9.0 1.00e+00 1.00e+00h  1
+ 192 -2.8088874e+01 1.95e+00 4.67e-08  -5.7 3.77e+04    -  9.09e-02 3.96e-02h  2
+ 193 -2.8088877e+01 1.28e+00 1.81e-08  -5.7 4.96e+01  -9.4 1.00e+00 1.00e+00h  1
+ 194 -2.8088918e+01 1.85e+00 1.73e-08  -5.7 1.42e+02  -9.9 1.00e+00 1.00e+00h  1
+ 195 -2.8088918e+01 7.91e-01 1.71e-08  -5.7 5.27e+01  -9.5 1.00e+00 1.00e+00h  1
+ 196 -2.8088960e+01 3.37e+00 2.57e-08  -5.7 3.43e+04    -  6.76e-02 4.22e-02h  2
+ 197 -2.8088990e+01 5.83e+00 4.60e-08  -5.7 5.90e+04    -  3.95e-02 2.32e-02h  2
+ 198 -2.8088996e+01 2.30e-01 1.57e-08  -5.7 1.81e+01  -9.1 1.00e+00 1.00e+00h  1
+ 199 -2.8089115e+01 8.07e+00 2.47e-08  -5.7 2.20e+04    -  2.71e-01 1.89e-01h  2
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+ 200 -2.8089136e+01 8.74e+00 4.89e-08  -5.7 8.11e+04    -  2.49e-02 1.30e-02h  2
+ 201 -2.8089150e+01 1.36e-02 1.23e-08  -5.7 5.34e+00  -8.6 1.00e+00 1.00e+00h  1
+ 202 -2.8089224e+01 4.68e+00 2.17e-08  -5.7 1.68e+04    -  2.55e-01 1.86e-01h  2
+ 203 -2.8089215e+01 1.34e-01 1.06e-08  -5.7 1.38e+01  -9.1 1.00e+00 1.00e+00h  1
+ 204 -2.8089267e+01 2.22e+00 5.40e-08  -5.7 1.50e+04    -  3.78e-01 1.45e-01h  2
+ 205 -2.8089264e+01 8.35e-03 9.20e-09  -5.7 4.49e+00  -8.7 1.00e+00 1.00e+00h  1
+ 206 -2.8089324e+01 3.65e+00 1.93e-08  -5.7 1.22e+04    -  3.05e-01 2.20e-01h  2
+ 207 -2.8089314e+01 1.31e-01 7.43e-09  -5.7 1.09e+01  -9.2 1.00e+00 1.00e+00h  1
+ 208 -2.8089347e+01 1.46e+00 5.24e-08  -5.7 1.45e+04    -  2.86e-01 1.14e-01h  2
+ 209 -2.8089347e+01 8.94e-03 7.21e-09  -5.7 3.96e+00  -8.7 1.00e+00 1.00e+00h  1
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+ 210 -2.8089387e+01 1.73e+00 4.52e-08  -5.7 8.12e+03    -  7.34e-01 2.37e-01h  3
+ 211 -2.8089364e+01 8.74e-01 1.00e-08  -5.7 1.65e+01  -9.2 1.00e+00 1.00e+00h  1
+ 212 -2.8089392e+01 1.53e+00 4.54e-08  -5.7 9.44e+03    -  4.07e-01 1.39e-01h  3
+ 213 -2.8089390e+01 1.45e-01 1.12e-08  -5.7 5.31e+01  -9.7 1.00e+00 1.00e+00H  1
+ 214 -2.8089435e+01 8.16e-02 4.32e-09  -5.7 6.16e+01 -10.2 1.00e+00 1.00e+00H  1
+ 215 -2.8089433e+01 3.52e-02 6.03e-09  -5.7 3.37e+01  -9.7 1.00e+00 1.00e+00H  1
+ 216 -2.8089443e+01 2.82e-01 7.00e-08  -5.7 9.07e+03    -  3.64e-01 7.10e-02h  3
+ 217 -2.8089450e+01 4.04e-01 7.46e-09  -5.7 1.55e+01  -9.3 1.00e+00 1.00e+00h  1
+ 218 -2.8089491e+01 3.55e+00 3.52e-08  -5.7 5.75e+03    -  9.30e-01 4.84e-01h  2
+ 219 -2.8089473e+01 8.30e-02 9.16e-09  -5.7 7.16e+00  -8.9 1.00e+00 1.00e+00h  1
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+ 220 -2.8089487e+01 4.58e-01 5.42e-08  -5.7 4.66e+03    -  7.25e-01 1.87e-01h  3
+ 221 -2.8089474e+01 2.74e-01 4.63e-09  -5.7 1.09e+01  -9.4 1.00e+00 1.00e+00h  1
+ 222 -2.8089563e+01 2.55e-03 1.45e-09  -5.7 3.30e+03    -  1.00e+00 1.00e+00H  1
+ 223 -2.8089543e+01 1.81e-04 5.78e-09  -5.7 3.80e+01  -9.8 1.00e+00 1.00e+00H  1
+ 224 -2.8089543e+01 5.24e-04 6.08e-08  -5.7 6.01e+02 -10.3 1.25e-01 1.26e-03h  8
+ 225 -2.8089522e+01 1.06e-01 1.46e-08  -5.7 1.44e+01  -9.0 1.00e+00 1.00e+00h  1
+ 226 -2.8089523e+01 1.15e-01 7.13e-08  -5.7 2.23e+03    -  6.80e-01 2.01e-02h  6
+ 227 -2.8089531e+01 1.85e-03 3.84e-09  -5.7 1.42e+00  -8.6 1.00e+00 1.00e+00h  1
+ 228 -2.8089530e+01 1.88e-02 2.61e-09  -5.7 2.91e+00  -9.0 1.00e+00 1.00e+00h  1
+ 229 -2.8089529e+01 6.43e-04 3.30e-09  -5.7 1.09e+01  -9.5 1.00e+00 1.00e+00H  1
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+ 230 -2.8089536e+01 2.88e-02 3.84e-09  -5.7 3.76e+01 -10.0 1.00e+00 1.00e+00H  1
+ 231 -2.8089572e+01 1.43e-04 1.04e-09  -5.7 1.28e+03    -  1.00e+00 1.00e+00H  1
+ 232 -2.8089558e+01 5.09e-05 4.57e-11  -5.7 2.33e+02    -  1.00e+00 1.00e+00H  1
+ 233 -2.8089555e+01 5.41e-06 1.85e-11  -5.7 8.60e+01    -  1.00e+00 1.00e+00H  1
+ 234 -2.8095289e+01 1.62e+01 9.28e-07  -8.6 1.64e+04    -  3.89e-01 3.94e-01f  1
+ 235 -2.8095306e+01 1.01e-03 7.56e-06  -8.6 8.66e-01  -5.1 9.77e-01 1.00e+00h  1
+Reallocating memory for MA57: lfact (2459554)
+ 236 -2.8095398e+01 2.89e-02 6.92e-06  -8.6 2.38e+00  -5.5 1.00e+00 1.00e+00h  1
+ 237 -2.8095673e+01 2.61e-01 6.92e-06  -8.6 7.14e+00  -6.0 1.00e+00 1.00e+00h  1
+ 238 -2.8096302e+01 1.41e+00 6.87e-06  -8.6 2.12e+01  -6.5 1.00e+00 7.71e-01h  1
+ 239 -2.8096525e+01 1.42e+00 6.81e-06  -8.6 5.80e+01  -7.0 1.00e+00 1.00e-01h  1
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+ 240 -2.8096935e+01 1.69e+00 6.64e-06  -8.6 1.30e+02  -7.4 8.07e-01 8.18e-02h  1
+ 241 -2.8097384e+01 2.23e+00 6.44e-06  -8.6 2.47e+02  -7.9 1.22e-01 5.08e-02h  1
+ 242 -2.8097757e+01 2.78e+00 6.34e-06  -8.6 5.45e+02  -8.4 8.52e-02 2.18e-02h  1
+ 243 -2.8097965e+01 2.77e+00 6.15e-06  -8.6 2.23e+02  -8.0 1.00e+00 3.89e-02h  1
+ 244 -2.8098269e+01 3.03e+00 5.90e-06  -8.6 7.36e+02  -8.5 8.71e-02 4.52e-02h  1
+ 245 -2.8098383e+01 2.94e+00 5.67e-06  -8.6 2.76e+02  -8.0 8.92e-01 4.37e-02h  1
+ 246 -2.8098702e+01 3.37e+00 5.33e-06  -8.6 8.33e+02  -8.5 1.01e-01 6.36e-02h  1
+ 247 -2.8098863e+01 5.37e+00 5.30e-06  -8.6 2.71e+03  -9.0 2.99e-03 6.94e-03h  1
+ 248 -2.8098978e+01 5.37e+00 5.19e-06  -8.6 9.32e+02  -8.6 1.14e-01 2.13e-02h  1
+ 249 -2.8099168e+01 5.06e+00 4.78e-06  -8.6 3.48e+02  -8.1 3.30e-01 8.66e-02h  1
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+ 250 -2.8099454e+01 6.03e+00 4.57e-06  -8.6 1.05e+03  -8.6 5.82e-02 4.77e-02h  1
+ 251 -2.8099597e+01 5.80e+00 4.32e-06  -8.6 3.89e+02  -8.2 4.24e-01 6.08e-02h  1
+ 252 -2.8100119e+01 1.37e+01 4.05e-06  -8.6 1.19e+03  -8.7 1.99e-02 6.72e-02h  1
+ 253 -2.8100369e+01 1.32e+01 3.74e-06  -8.6 4.36e+02  -8.2 1.82e-01 8.78e-02h  1
+ 254 -2.8100501e+01 1.43e+01 3.72e-06  -8.6 1.33e+03  -8.7 1.33e-02 7.39e-03h  1
+ 255 -2.8100579e+01 1.40e+01 3.64e-06  -8.6 4.67e+02  -8.3 3.47e-01 2.38e-02h  1
+ 256 -2.8100669e+01 1.38e+01 3.58e-06  -8.6 1.09e+03  -8.8 9.03e-02 1.56e-02h  1
+ 257 -2.8101016e+01 1.21e+01 3.12e-06  -8.6 4.23e+02  -8.3 1.00e+00 1.41e-01h  1
+ 258 -2.8101120e+01 1.20e+01 3.06e-06  -8.6 1.14e+03  -8.8 3.50e-02 2.05e-02h  1
+ 259 -2.8101279e+01 1.11e+01 2.83e-06  -8.6 4.22e+02  -8.4 3.93e-01 8.05e-02h  1
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+ 260 -2.8101444e+01 1.46e+01 2.76e-06  -8.6 1.18e+03  -8.9 1.48e-02 2.55e-02h  1
+ 261 -2.8101530e+01 1.41e+01 2.65e-06  -8.6 4.58e+02  -8.4 7.43e-01 4.30e-02h  1
+ 262 -2.8101828e+01 9.74e+00 1.86e-06  -8.6 1.78e+02  -8.0 1.00e+00 3.25e-01h  1
+ 263 -2.8101958e+01 9.44e+00 1.76e-06  -8.6 5.03e+02  -8.5 6.97e-02 6.29e-02h  1
+ 264 -2.8102009e+01 8.85e+00 1.66e-06  -8.6 1.82e+02  -8.1 1.00e+00 6.38e-02h  1
+ 265 -2.8102244e+01 8.66e+00 1.48e-06  -8.6 5.52e+02  -8.5 1.19e-01 1.24e-01h  1
+ 266 -2.8102398e+01 7.17e+00 1.51e-06  -8.6 2.09e+02  -8.1 1.00e+00 1.93e-01h  1
+ 267 -2.8102637e+01 8.45e+00 1.51e-06  -8.6 6.00e+02  -8.6 4.32e-02 1.13e-01h  1
+ 268 -2.8102706e+01 7.77e+00 1.52e-06  -8.6 2.30e+02  -8.2 1.00e+00 8.78e-02h  1
+ 269 -2.8102767e+01 7.81e+00 1.52e-06  -8.6 7.16e+02  -8.6 3.96e-02 2.31e-02h  1
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+ 270 -2.8102866e+01 7.02e+00 1.51e-06  -8.6 2.37e+02  -8.2 1.00e+00 1.22e-01h  1
+ 271 -2.8103068e+01 1.12e+01 1.52e-06  -8.6 7.80e+02  -8.7 1.62e-02 5.41e-02h  1
+ 272 -2.8103123e+01 1.07e+01 1.52e-06  -8.6 2.85e+02  -8.3 1.00e+00 5.65e-02h  1
+ 273 -2.8103176e+01 1.08e+01 1.52e-06  -8.6 8.67e+02  -8.7 1.44e-02 1.38e-02h  1
+ 274 -2.8103349e+01 9.38e+00 1.49e-06  -8.6 2.83e+02  -8.3 1.00e+00 1.90e-01h  1
+ 275 -2.8103453e+01 1.16e+01 1.50e-06  -8.6 1.33e+03  -8.8 2.61e-03 9.56e-03h  1
+ 276 -2.8103474e+01 1.13e+01 1.49e-06  -8.6 3.13e+02  -8.4 4.70e-01 2.14e-02h  1
+ 277 -2.8103641e+01 1.32e+01 1.49e-06  -8.6 1.06e+03  -8.8 9.22e-03 4.09e-02h  1
+ 278 -2.8103763e+01 1.21e+01 1.47e-06  -8.6 3.27e+02  -8.4 6.45e-01 1.14e-01h  1
+ 279 -2.8103788e+01 1.12e+01 1.43e-06  -8.6 9.05e+01  -8.0 1.00e+00 7.03e-02h  1
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+ 280 -2.8103978e+01 9.31e+00 1.29e-06  -8.6 2.50e+02  -8.5 8.69e-01 2.42e-01h  1
+ 281 -2.8103988e+01 9.03e+00 1.32e-06  -8.6 8.94e+01  -8.9 8.91e-01 3.12e-02h  1
+ 282 -2.8104034e+01 6.65e+00 1.02e-06  -8.6 4.02e+01  -8.5 1.00e+00 2.63e-01h  1
+ 283 -2.8104040e+01 7.09e+00 1.00e-06  -8.6 7.08e+02  -9.0 9.54e-03 1.69e-02h  1
+ 284 -2.8104082e+01 4.02e+00 6.40e-07  -8.6 2.08e+01  -8.6 1.00e+00 4.40e-01h  1
+ 285 -2.8104100e+01 3.25e+00 5.39e-07  -8.6 4.20e+01  -9.0 1.00e+00 1.97e-01h  1
+ 286 -2.8104140e+01 8.40e-01 1.24e-07  -8.6 1.58e+01  -8.6 1.00e+00 7.85e-01h  1
+ 287 -2.8104154e+01 1.53e+00 8.48e-07  -8.6 2.11e+02  -9.1 1.96e-02 1.05e-01h  1
+ 288 -2.8104158e+01 1.00e+00 8.17e-08  -8.6 1.75e+01  -8.7 1.47e-01 3.74e-01f  1
+ 289 -2.8104160e+01 1.03e+00 7.27e-08  -8.6 5.96e+02  -9.1 1.22e-01 9.87e-03h  1
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+ 290 -2.8104161e+01 9.99e-01 6.98e-08  -8.6 1.41e+01  -8.7 1.00e+00 2.71e-02h  1
+ 291 -2.8104169e+01 5.39e-01 3.45e-08  -8.6 2.48e+01  -9.2 1.00e+00 5.19e-01f  1
+ 292 -2.8104177e+01 3.80e-01 3.21e-08  -8.6 1.61e+02  -9.7 4.44e-01 8.09e-01h  1
+ 293 -2.8104179e+01 1.75e-03 6.88e-08  -8.6 1.54e+01  -8.3 1.00e+00 1.00e+00f  1
+ 294 -2.8104180e+01 2.82e-02 3.22e-08  -8.6 2.16e+01  -8.8 6.88e-01 9.83e-01h  1
+ 295 -2.8104180e+01 9.09e-03 3.85e-08  -8.6 1.50e+01  -8.4 9.56e-01 7.68e-01h  1
+ 296 -2.8104180e+01 8.44e-03 5.61e-04  -8.6 4.52e+00  -8.9 2.77e-05 8.62e-02f  1
+ 297 -2.8104180e+01 6.05e-03 3.11e-04  -8.6 7.63e+00  -8.5 1.12e-01 4.44e-01h  1
+ 298 -2.8104180e+01 7.89e-03 2.02e-04  -8.6 1.19e+01  -8.9 1.00e+00 3.49e-01f  1
+ 299 -2.8104181e+01 7.43e-03 4.24e-08  -8.6 2.55e+00  -8.5 7.62e-01 1.00e+00f  1
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+ 300 -2.8104183e+01 1.42e-01 1.52e-08  -8.6 1.59e+01  -9.0 7.44e-01 6.95e-01h  1
+ 301 -2.8104185e+01 4.09e-02 2.06e-08  -8.6 7.37e+00  -8.6 1.00e+00 1.00e+00f  1
+ 302 -2.8104190e+01 2.55e-01 3.07e-08  -8.6 6.32e+01  -9.0 4.78e-01 2.63e-01h  1
+ 303 -2.8104190e+01 1.84e-01 3.74e-08  -8.6 2.32e+01  -9.5 1.00e+00 2.89e-01h  1
+ 304 -2.8104192e+01 2.04e-02 7.59e-09  -8.6 7.64e+01 -10.0 1.00e+00 9.40e-01f  1
+ 305 -2.8104194e+01 3.99e-02 9.18e-09  -8.6 2.66e+02 -10.5 1.00e+00 1.00e+00h  1
+ 306 -2.8104207e+01 1.04e+00 1.56e-08  -8.6 1.36e+03 -10.9 5.18e-01 1.00e+00h  1
+ 307 -2.8104212e+01 4.44e-02 1.50e-08  -8.6 7.62e+00  -8.7 1.00e+00 1.00e+00h  1
+ 308 -2.8104213e+01 7.73e-02 1.59e-08  -8.6 3.08e+01  -9.2 2.12e-01 2.40e-01h  1
+ 309 -2.8104213e+01 4.22e-02 1.05e-08  -8.6 4.82e+01  -9.7 1.00e+00 1.00e+00h  1
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+ 310 -2.8104216e+01 1.55e-02 1.07e-08  -8.6 1.47e+02 -10.1 1.00e+00 9.79e-01h  1
+ 311 -2.8104218e+01 4.23e-02 1.18e-08  -8.6 5.48e+02 -10.6 1.00e+00 4.24e-01h  1
+ 312 -2.8104218e+01 2.88e-02 3.29e-08  -8.6 4.78e+01    -  1.00e+00 3.22e-01h  1
+ 313 -2.8104219e+01 6.02e-04 1.96e-09  -8.6 3.51e+01    -  9.84e-01 1.00e+00f  1
+ 314 -2.8104219e+01 4.77e-07 2.51e-14  -8.6 4.30e-01    -  1.00e+00 1.00e+00h  1
+ 315 -2.8104219e+01 4.66e-10 2.51e-14  -8.6 2.75e-04 -11.1 1.00e+00 1.00e+00h  1
+
+Number of Iterations....: 315
+
+                                   (scaled)                 (unscaled)
+Objective...............:  -2.8104218677388836e+01   -2.8104218677388836e+01
+Dual infeasibility......:   2.5060131356317115e-14    2.5060131356317115e-14
+Constraint violation....:   4.6566128730773926e-10    4.6566128730773926e-10
+Complementarity.........:   2.5059036149584936e-09    2.5059036149584936e-09
+Overall NLP error.......:   2.5059036149584936e-09    2.5059036149584936e-09
+
+
+Number of objective function evaluations             = 554
+Number of objective gradient evaluations             = 316
+Number of equality constraint evaluations            = 565
+Number of inequality constraint evaluations          = 0
+Number of equality constraint Jacobian evaluations   = 316
+Number of inequality constraint Jacobian evaluations = 0
+Number of Lagrangian Hessian evaluations             = 315
+Total CPU secs in IPOPT (w/o function evaluations)   =     58.109
+Total CPU secs in NLP function evaluations           =      1.966
+
+EXIT: Optimal Solution Found.
+INFO: elapsed time: 72.2 seconds
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Extract and plot the results using our custom function</span>
+<span class="c1">### BEGIN SOLUTION</span>
+<span class="n">dopt_pyomo_doe_results</span> <span class="o">=</span> <span class="n">extract_plot_results</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">optimize_result2</span><span class="o">.</span><span class="n">model</span><span class="p">)</span>
+<span class="c1">### END SOLUTION</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/2d4fdf287c0ca6159a97ba676e098e9bf0d9f5b8ee38ee8b401c163f04bd2d05.png" src="../_images/2d4fdf287c0ca6159a97ba676e098e9bf0d9f5b8ee38ee8b401c163f04bd2d05.png" />
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model parameters:
+Ua = 0.0515 Watts/degC
+Ub = 0.0005 Watts/degC
+CpH = 6.8386 Joules/degC
+CpS = 0.01 Joules/degC
+ 
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Compute the FIM at the optimal solution</span>
+<span class="c1">### BEGIN SOLUTION</span>
+<span class="n">optimize_result2</span><span class="o">.</span><span class="n">result_analysis</span><span class="p">()</span>
+<span class="n">results_summary</span><span class="p">(</span><span class="n">optimize_result2</span><span class="p">)</span>
+<span class="c1">### END SOLUTION</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>======Results Summary======
+Four design criteria log10() value:
+A-optimality: 9.582686431991858
+D-optimality: 27.421333643942017
+E-optimality: 3.9835045326404006
+Modified E-optimality: 5.578336650278937
+
+FIM:
+ [[ 1.89390215e+08 -1.92128266e+08 -8.42095957e+06  2.93057215e+03]
+ [-1.92128266e+08  3.63447636e+09  6.14249883e+07  3.10048527e+04]
+ [-8.42095957e+06  6.14249883e+07  1.60629717e+06  2.80506246e+04]
+ [ 2.93057215e+03  3.10048527e+04  2.80506246e+04  1.14972347e+04]]
+
+eigenvalues:
+ [3.64620584e+09 1.78848654e+08 4.20244707e+05 9.62730061e+03]
+
+eigenvectors:
+ [[ 5.55271027e-02  9.98038358e-01  2.88493756e-02 -1.97230315e-03]
+ [-9.98313236e-01  5.59875664e-02 -1.53303741e-02  1.02700975e-03]
+ [-1.69535692e-02 -2.80147733e-02  9.97185837e-01 -6.74400151e-02]
+ [-8.57479987e-06  2.16670733e-05  6.74766613e-02  9.97720853e-01]]
+</pre></div>
+</div>
+</div>
+</div>
+<p><strong>Discussion:</strong> How do these results compare to <a class="reference internal" href="../notebooks/doe_exercise.html"><span class="doc std std-doc">our previous analysis</span></a>?</p>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./exercise_solutions"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="parmest_exercise.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Exercise: ParmEst</p>
+      </div>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#load-and-explore-experimental-data-step-test">Load and explore experimental data (step test)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#analyze-fim-with-pyomo-doe-at-initial-point-step-test">Analyze FIM with Pyomo.DoE at initial point (step test)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#optimize-the-next-experiment-a-optimality">Optimize the next experiment (A-optimality)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#optimize-the-next-experiment-d-optimality">Optimize the next experiment (D-optimality)</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Alexander Dowling
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2022.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/bootstrap.js?digest=5b4479735964841361fd"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=5b4479735964841361fd"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

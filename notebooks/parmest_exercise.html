@@ -62,11 +62,13 @@ const thebe_selector_input = "pre"
 const thebe_selector_output = ".output, .cell_output"
 </script>
     <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'notebooks/parmest_exercise';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Optimal Experiment Design" href="../mbdoe.html" />
-    <link rel="prev" title="Regression with ParmEst" href="parmest.html" />
+    <link rel="prev" title="Nonlinear Regression with ParmEst" href="parmest.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -171,12 +173,12 @@ const thebe_selector_output = ".output, .cell_output"
         <ul class="current nav bd-sidenav">
 <li class="toctree-l1 has-children"><a class="reference internal" href="../tclab.html">Modeling Example: TCLab</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="tclab_model.html">TCLab Mathematical Model</a></li>
-<li class="toctree-l2"><a class="reference internal" href="numpy_simulation.html">Prototyping the Model in Numpy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="numpy_simulation.html">Modeling with Numpy</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pyomo_simulation.html">Modeling with Pyomo</a></li>
 </ul>
 </li>
 <li class="toctree-l1 current active has-children"><a class="reference internal" href="../regression.html">Parameter Estimation</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-2"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="parmest.html">Regression with ParmEst</a></li>
+<li class="toctree-l2"><a class="reference internal" href="parmest.html">Nonlinear Regression with ParmEst</a></li>
 <li class="toctree-l2 current active"><a class="current reference internal" href="#">Exercise: ParmEst</a></li>
 </ul>
 </li>
@@ -184,6 +186,11 @@ const thebe_selector_output = ".output, .cell_output"
 <li class="toctree-l2"><a class="reference internal" href="doe_exploratory_analysis.html">Pyomo.DoE: Exploratory Analysis</a></li>
 <li class="toctree-l2"><a class="reference internal" href="doe_optimize.html">Pyomo.DoE: Optimization</a></li>
 <li class="toctree-l2"><a class="reference internal" href="doe_exercise.html">Exercise: Pyomo.DoE</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../exercises.html">Exercise Solutions</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-4"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../exercise_solutions/parmest_exercise.html">Exercise: ParmEst</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../exercise_solutions/doe_exercise.html">Exercise: Pyomo.DoE</a></li>
 </ul>
 </li>
 </ul>
@@ -427,9 +434,11 @@ document.write(`
                   
   <section class="tex2jax_ignore mathjax_ignore" id="exercise-parmest">
 <h1>Exercise: ParmEst<a class="headerlink" href="#exercise-parmest" title="Permalink to this heading">#</a></h1>
+<p>In this exercise, you will practice using ParmEst to estimate four parameters (<span class="math notranslate nohighlight">\(U_a\)</span>, <span class="math notranslate nohighlight">\(U_b\)</span>, <span class="math notranslate nohighlight">\(C_p^H\)</span>, <span class="math notranslate nohighlight">\(C_p^S\)</span>) in the TCLab model using the step test data. We <a class="reference internal" href="parmest.html"><span class="doc std std-doc">previously estimated these parameters using the sine test data</span></a>.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">sys</span>
+
 <span class="c1"># If running on Google Colab, install Pyomo and Ipopt via IDAES</span>
 <span class="n">on_colab</span> <span class="o">=</span> <span class="s2">&quot;google.colab&quot;</span> <span class="ow">in</span> <span class="n">sys</span><span class="o">.</span><span class="n">modules</span>
 <span class="k">if</span> <span class="n">on_colab</span><span class="p">:</span>
@@ -444,10 +453,12 @@ document.write(`
         <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;../notebooks&#39;</span><span class="p">)</span>
 
 <span class="c1"># import TCLab model, simulation, and data analysis functions</span>
-<span class="kn">from</span> <span class="nn">tclab_pyomo</span> <span class="kn">import</span> <span class="n">TCLabExperiment</span><span class="p">,</span> <span class="n">create_model</span><span class="p">,</span> <span class="n">extract_results</span><span class="p">,</span> <span class="n">extract_plot_results</span>
-
-<span class="c1"># set default number of states in the TCLab model</span>
-<span class="n">number_tclab_states</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="kn">from</span> <span class="nn">tclab_pyomo</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">TCLabExperiment</span><span class="p">,</span>
+    <span class="n">create_model</span><span class="p">,</span>
+    <span class="n">extract_results</span><span class="p">,</span>
+    <span class="n">extract_plot_results</span><span class="p">,</span>
+<span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -457,6 +468,7 @@ document.write(`
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+
 <span class="k">if</span> <span class="n">on_colab</span><span class="p">:</span>
     <span class="n">file</span> <span class="o">=</span> <span class="s2">&quot;https://raw.githubusercontent.com/dowlinglab/pyomo-doe/main/data/tclab_step_test.csv&quot;</span>
 <span class="k">else</span><span class="p">:</span>
@@ -485,19 +497,19 @@ document.write(`
 <p>We’ll now store the data in this custom <em>data class</em> objective. This is a nice trick to help keep data organized, but it is NOT required to use ParmEst or Pyomo data. Alternatively, we could just use a pandas DataFrame.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">tc_data</span> <span class="o">=</span> <span class="n">TCLabExperiment</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;Sine Wave Test for Heater 1&quot;</span><span class="p">,</span>
-                            <span class="n">time</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
-                            <span class="n">T1</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;T1&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
-                            <span class="n">u1</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Q1&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
-                            <span class="n">P1</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span>
-                            <span class="n">TS1_data</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                            <span class="n">d1</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-                            <span class="n">T2</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;T2&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
-                            <span class="n">u2</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Q2&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
-                            <span class="n">P2</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span>
-                            <span class="n">TS2_data</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                            <span class="n">d2</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-                            <span class="n">Tamb</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;T1&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">tc_data</span> <span class="o">=</span> <span class="n">TCLabExperiment</span><span class="p">(</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Sine Wave Test for Heater 1&quot;</span><span class="p">,</span>
+    <span class="n">time</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
+    <span class="n">T1</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;T1&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
+    <span class="n">u1</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Q1&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
+    <span class="n">P1</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span>
+    <span class="n">TS1_data</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">T2</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;T2&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
+    <span class="n">u2</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Q2&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
+    <span class="n">P2</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span>
+    <span class="n">TS2_data</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">Tamb</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;T1&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+<span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -513,7 +525,7 @@ document.write(`
 </section>
 <section id="parameter-estimation-with-parmest">
 <h2>Parameter estimation with ParmEst<a class="headerlink" href="#parameter-estimation-with-parmest" title="Permalink to this heading">#</a></h2>
-<p>Now for the main event: performing nonlinear least squares with ParmEst and estimating the covariance matrix.</p>
+<p>Now for the main event: performing nonlinear least squares with <code class="docutils literal notranslate"><span class="pre">ParmEst</span></code>.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Call ParmEst</span>
@@ -522,13 +534,13 @@ document.write(`
 <span class="c1"># Visualize the results using our custom function</span>
 <span class="c1"># Add your solution here</span>
 
-<span class="c1"># Print the covariance matrix</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Covariance matrix:&quot;</span><span class="p">)</span>
+
 <span class="c1"># Add your solution here</span>
 </pre></div>
 </div>
 </div>
 </div>
+<p><strong>Discussion</strong>: How do these results compare to our <a class="reference internal" href="parmest.html"><span class="doc std std-doc">previous analysis</span></a>?</p>
 </section>
 </section>
 
@@ -568,7 +580,7 @@ document.write(`
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Regression with ParmEst</p>
+        <p class="prev-next-title">Nonlinear Regression with ParmEst</p>
       </div>
     </a>
     <a class="right-next"

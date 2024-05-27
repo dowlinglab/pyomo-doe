@@ -1,0 +1,971 @@
+
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>Exercise: ParmEst &#8212; Pyomo.DoE Workshop and Tutorials</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=5b4479735964841361fd" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=5b4479735964841361fd" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=5b4479735964841361fd" rel="stylesheet" />
+
+  
+  <link href="../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=5b4479735964841361fd" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" href="../_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=5b4479735964841361fd" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=5b4479735964841361fd" />
+  <script src="../_static/vendor/fontawesome/6.1.2/js/all.min.js?digest=5b4479735964841361fd"></script>
+
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/clipboard.min.js"></script>
+    <script src="../_static/copybutton.js"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../_static/design-tabs.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
+    <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'exercise_solutions/parmest_exercise';</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Exercise: Pyomo.DoE" href="doe_exercise.html" />
+    <link rel="prev" title="Exercise Solutions" href="../exercises.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>
+    Back to top
+  </button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
+    </nav>
+  
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+
+<a class="navbar-brand logo" href="../Readme.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/PyomoDoE-sm.png" class="logo__image only-light" alt="Pyomo.DoE Workshop and Tutorials - Home"/>
+    <script>document.write(`<img src="../_static/PyomoDoE-sm.png" class="logo__image only-dark" alt="Pyomo.DoE Workshop and Tutorials - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../Readme.html">
+                    Optimizing Experiments with Pyomo.DoE
+                </a>
+            </li>
+        </ul>
+        <ul class="current nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../tclab.html">Modeling Example: TCLab</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/tclab_model.html">TCLab Mathematical Model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/numpy_simulation.html">Modeling with Numpy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/pyomo_simulation.html">Modeling with Pyomo</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../regression.html">Parameter Estimation</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-2"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/parmest.html">Nonlinear Regression with ParmEst</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/parmest_exercise.html">Exercise: ParmEst</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../mbdoe.html">Optimal Experiment Design</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-3"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/doe_exploratory_analysis.html">Pyomo.DoE: Exploratory Analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/doe_optimize.html">Pyomo.DoE: Optimization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/doe_exercise.html">Exercise: Pyomo.DoE</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../exercises.html">Exercise Solutions</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-4"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">Exercise: ParmEst</a></li>
+<li class="toctree-l2"><a class="reference internal" href="doe_exercise.html">Exercise: Pyomo.DoE</a></li>
+</ul>
+</li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</label></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-launch-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Launch interactive content">
+    <i class="fas fa-rocket"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://colab.research.google.com/github/dowlinglab/pyomo-doe/blob/main/exercise_solutions/parmest_exercise.ipynb" target="_blank"
+   class="btn btn-sm dropdown-item"
+   title="Launch onColab"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  
+    <img src="../_static/images/logo_colab.png">
+  </span>
+<span class="btn__text-container">Colab</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/dowlinglab/pyomo-doe" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/dowlinglab/pyomo-doe/issues/new?title=Issue%20on%20page%20%2Fexercise_solutions/parmest_exercise.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../_sources/exercise_solutions/parmest_exercise.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</label>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Exercise: ParmEst</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#load-and-explore-experimental-data-step-test">Load and explore experimental data (step test)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#parameter-estimation-with-parmest">Parameter estimation with ParmEst</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article" role="main">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="exercise-parmest">
+<h1>Exercise: ParmEst<a class="headerlink" href="#exercise-parmest" title="Permalink to this heading">#</a></h1>
+<p>In this exercise, you will practice using ParmEst to estimate four parameters (<span class="math notranslate nohighlight">\(U_a\)</span>, <span class="math notranslate nohighlight">\(U_b\)</span>, <span class="math notranslate nohighlight">\(C_p^H\)</span>, <span class="math notranslate nohighlight">\(C_p^S\)</span>) in the TCLab model using the step test data. We <a class="reference internal" href="../notebooks/parmest.html"><span class="doc std std-doc">previously estimated these parameters using the sine test data</span></a>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">sys</span>
+
+<span class="c1"># If running on Google Colab, install Pyomo and Ipopt via IDAES</span>
+<span class="n">on_colab</span> <span class="o">=</span> <span class="s2">&quot;google.colab&quot;</span> <span class="ow">in</span> <span class="n">sys</span><span class="o">.</span><span class="n">modules</span>
+<span class="k">if</span> <span class="n">on_colab</span><span class="p">:</span>
+    <span class="o">!</span>wget<span class="w"> </span><span class="s2">&quot;https://raw.githubusercontent.com/dowlinglab/pyomo-doe/main/notebooks/tclab_pyomo.py&quot;</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">os</span>
+
+    <span class="k">if</span> <span class="s2">&quot;exercise_solutions&quot;</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">():</span>
+        <span class="c1"># Add the &quot;notebooks&quot; folder to the path</span>
+        <span class="c1"># This is needed for running the solutions from a separate folder</span>
+        <span class="c1"># You only need this if you run locally</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;../notebooks&#39;</span><span class="p">)</span>
+
+<span class="c1"># import TCLab model, simulation, and data analysis functions</span>
+<span class="kn">from</span> <span class="nn">tclab_pyomo</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">TCLabExperiment</span><span class="p">,</span>
+    <span class="n">create_model</span><span class="p">,</span>
+    <span class="n">extract_results</span><span class="p">,</span>
+    <span class="n">extract_plot_results</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<section id="load-and-explore-experimental-data-step-test">
+<h2>Load and explore experimental data (step test)<a class="headerlink" href="#load-and-explore-experimental-data-step-test" title="Permalink to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+
+<span class="k">if</span> <span class="n">on_colab</span><span class="p">:</span>
+    <span class="n">file</span> <span class="o">=</span> <span class="s2">&quot;https://raw.githubusercontent.com/dowlinglab/pyomo-doe/main/data/tclab_step_test.csv&quot;</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="n">file</span> <span class="o">=</span> <span class="s1">&#39;../data/tclab_step_test.csv&#39;</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+<span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Time</th>
+      <th>T1</th>
+      <th>T2</th>
+      <th>Q1</th>
+      <th>Q2</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>0.00</td>
+      <td>22.84</td>
+      <td>22.52</td>
+      <td>50.0</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>1.01</td>
+      <td>22.84</td>
+      <td>22.52</td>
+      <td>50.0</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>2.01</td>
+      <td>22.84</td>
+      <td>22.52</td>
+      <td>50.0</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>3.00</td>
+      <td>22.84</td>
+      <td>22.52</td>
+      <td>50.0</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>4.00</td>
+      <td>22.84</td>
+      <td>22.20</td>
+      <td>50.0</td>
+      <td>0.0</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+<p>Make two plots to visualize the temperature and heat power data as a function of time.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">### BEGIN SOLUTION</span>
+<span class="n">ax</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s1">&#39;Time&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;T1&#39;</span><span class="p">,</span> <span class="s1">&#39;T2&#39;</span><span class="p">],</span> <span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Time (s)&#39;</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;Temperature (°C)&#39;</span><span class="p">)</span>
+<span class="c1">### END SOLUTION</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/ace0e87f3c987743b111efe8c4c6f1ceb33ddd3e24210166d57716455993ce5e.png" src="../_images/ace0e87f3c987743b111efe8c4c6f1ceb33ddd3e24210166d57716455993ce5e.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">### BEGIN SOLUTION</span>
+<span class="n">ax</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s1">&#39;Time&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Q1&#39;</span><span class="p">,</span> <span class="s1">&#39;Q2&#39;</span><span class="p">],</span> <span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Time (s)&#39;</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;Heater Power (%)&#39;</span><span class="p">)</span>
+<span class="c1">### END SOLUTION</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/48caad3e7815ebae388dd6f44fba32f69e19110f39800969690bdd2dcc088c2a.png" src="../_images/48caad3e7815ebae388dd6f44fba32f69e19110f39800969690bdd2dcc088c2a.png" />
+</div>
+</div>
+<p>We’ll now store the data in this custom <em>data class</em> objective. This is a nice trick to help keep data organized, but it is NOT required to use ParmEst or Pyomo data. Alternatively, we could just use a pandas DataFrame.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">tc_data</span> <span class="o">=</span> <span class="n">TCLabExperiment</span><span class="p">(</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Sine Wave Test for Heater 1&quot;</span><span class="p">,</span>
+    <span class="n">time</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
+    <span class="n">T1</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;T1&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
+    <span class="n">u1</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Q1&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
+    <span class="n">P1</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span>
+    <span class="n">TS1_data</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">T2</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;T2&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
+    <span class="n">u2</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Q2&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
+    <span class="n">P2</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span>
+    <span class="n">TS2_data</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">Tamb</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;T1&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Our custom data class has a method to export the data as a Pandas Data Frame.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">tc_data</span><span class="o">.</span><span class="n">to_data_frame</span><span class="p">()</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>time</th>
+      <th>T1</th>
+      <th>u1</th>
+      <th>P1</th>
+      <th>TS1_data</th>
+      <th>T2</th>
+      <th>u2</th>
+      <th>P2</th>
+      <th>TS2_data</th>
+      <th>Tamb</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>0.00</td>
+      <td>22.84</td>
+      <td>50.0</td>
+      <td>200</td>
+      <td>None</td>
+      <td>22.52</td>
+      <td>0.0</td>
+      <td>200</td>
+      <td>None</td>
+      <td>22.84</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>1.01</td>
+      <td>22.84</td>
+      <td>50.0</td>
+      <td>200</td>
+      <td>None</td>
+      <td>22.52</td>
+      <td>0.0</td>
+      <td>200</td>
+      <td>None</td>
+      <td>22.84</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>2.01</td>
+      <td>22.84</td>
+      <td>50.0</td>
+      <td>200</td>
+      <td>None</td>
+      <td>22.52</td>
+      <td>0.0</td>
+      <td>200</td>
+      <td>None</td>
+      <td>22.84</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>3.00</td>
+      <td>22.84</td>
+      <td>50.0</td>
+      <td>200</td>
+      <td>None</td>
+      <td>22.52</td>
+      <td>0.0</td>
+      <td>200</td>
+      <td>None</td>
+      <td>22.84</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>4.00</td>
+      <td>22.84</td>
+      <td>50.0</td>
+      <td>200</td>
+      <td>None</td>
+      <td>22.20</td>
+      <td>0.0</td>
+      <td>200</td>
+      <td>None</td>
+      <td>22.84</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+</section>
+<section id="parameter-estimation-with-parmest">
+<h2>Parameter estimation with ParmEst<a class="headerlink" href="#parameter-estimation-with-parmest" title="Permalink to this heading">#</a></h2>
+<p>Now for the main event: performing nonlinear least squares with <code class="docutils literal notranslate"><span class="pre">ParmEst</span></code>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Call ParmEst</span>
+<span class="c1">### BEGIN SOLUTION</span>
+<span class="kn">import</span> <span class="nn">pyomo.contrib.parmest.parmest</span> <span class="k">as</span> <span class="nn">parmest</span>
+
+<span class="n">parmest_create_model</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">data</span><span class="p">:</span> <span class="n">create_model</span><span class="p">(</span>
+    <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;parmest&#39;</span><span class="p">,</span> <span class="n">number_of_states</span><span class="o">=</span><span class="mi">2</span>
+<span class="p">)</span>
+
+<span class="c1"># define the parameter names as a list</span>
+<span class="c1"># two-state model</span>
+<span class="n">theta_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Ua&#39;</span><span class="p">,</span> <span class="s1">&#39;Ub&#39;</span><span class="p">,</span> <span class="s1">&#39;inv_CpH&#39;</span><span class="p">,</span> <span class="s1">&#39;inv_CpS&#39;</span><span class="p">]</span>
+
+<span class="c1"># four-state model</span>
+<span class="c1"># theta_names = [&#39;Ua&#39;, &#39;Ub&#39;, &#39;Uc&#39;,&#39;inv_CpH&#39;, &#39;inv_CpS&#39;]</span>
+
+<span class="c1"># Create a parameter estimation object</span>
+<span class="n">pest</span> <span class="o">=</span> <span class="n">parmest</span><span class="o">.</span><span class="n">Estimator</span><span class="p">(</span>
+    <span class="n">parmest_create_model</span><span class="p">,</span>
+    <span class="n">data</span><span class="o">=</span><span class="p">[</span>
+        <span class="n">tc_data</span><span class="o">.</span><span class="n">to_data_frame</span><span class="p">()</span>
+    <span class="p">],</span>  <span class="c1"># Needs to be a list of dataframes, otherwise parmest threats each row as a separate model</span>
+    <span class="n">theta_names</span><span class="o">=</span><span class="n">theta_names</span><span class="p">,</span>
+    <span class="n">tee</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">obj</span><span class="p">,</span> <span class="n">theta</span> <span class="o">=</span> <span class="n">pest</span><span class="o">.</span><span class="n">theta_est</span><span class="p">()</span>
+
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">obj, theta, cov = pest.theta_est(calc_cov=True, # boolean to calculate the covariance matrix</span>
+<span class="sd">                                    cov_n = len(tc_data.time) # number of data points in the least squares objective</span>
+<span class="sd">)</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="c1">### END SOLUTION</span>
+
+<span class="c1"># Visualize the results using our custom function</span>
+<span class="c1">### BEGIN SOLUTION</span>
+<span class="n">parmest_regression_results2</span> <span class="o">=</span> <span class="n">extract_plot_results</span><span class="p">(</span>
+    <span class="n">tc_data</span><span class="p">,</span> <span class="n">pest</span><span class="o">.</span><span class="n">pest_deprecated</span><span class="o">.</span><span class="n">parmest_model</span>
+<span class="p">)</span>
+<span class="c1">### END SOLUTION</span>
+
+
+<span class="c1">### BEGIN SOLUTION</span>
+<span class="c1"># Print the covariance matrix</span>
+<span class="c1"># print(&quot;Covariance matrix:&quot;)</span>
+<span class="c1"># print(cov)</span>
+<span class="c1">### END SOLUTION</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>WARNING: DEPRECATED: You&#39;re using the deprecated parmest interface
+(model_function, data, theta_names). This interface will be removed in a
+future release, please update to the new parmest interface using experiment
+lists.  (deprecated in 6.7.2) (called from
+/Users/adowling/opt/anaconda3/envs/summer2024/lib/python3.10/functools.py:926)
+Ipopt 3.13.2: 
+
+******************************************************************************
+This program contains Ipopt, a library for large-scale nonlinear optimization.
+ Ipopt is released as open source code under the Eclipse Public License (EPL).
+         For more information visit http://projects.coin-or.org/Ipopt
+******************************************************************************
+
+This is Ipopt version 3.13.2, running with linear solver ma27.
+
+Number of nonzeros in equality constraint Jacobian...:    15301
+Number of nonzeros in inequality constraint Jacobian.:        0
+Number of nonzeros in Lagrangian Hessian.............:     8103
+
+Total number of variables............................:     3606
+                     variables with only lower bounds:        0
+                variables with lower and upper bounds:     1804
+                     variables with only upper bounds:        0
+Total number of equality constraints.................:     3602
+Total number of inequality constraints...............:        0
+        inequality constraints with only lower bounds:        0
+   inequality constraints with lower and upper bounds:        0
+        inequality constraints with only upper bounds:        0
+
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+   0  4.6924213e+03 2.32e-01 5.21e+00  -1.0 0.00e+00    -  0.00e+00 0.00e+00   0
+   1  1.3667295e+02 7.89e-03 2.40e+03  -1.0 2.57e+00    -  8.38e-01 1.00e+00f  1
+   2  1.3664538e+02 3.87e-05 1.59e+01  -1.0 1.86e-02   2.0 9.96e-01 1.00e+00h  1
+   3  1.2300652e+02 7.90e-03 2.29e+02  -1.0 5.88e-01    -  1.00e+00 1.00e+00f  1
+   4  1.2299246e+02 3.10e-05 6.73e+00  -1.0 1.87e-02   1.5 1.00e+00 1.00e+00h  1
+   5  1.2255521e+02 1.12e-02 7.32e+01  -1.0 1.16e+00    -  1.00e+00 1.00e+00f  1
+   6  1.2165455e+02 9.98e-02 1.74e+01  -1.0 4.80e+00    -  1.00e+00 1.00e+00h  1
+   7  1.2175076e+02 1.76e-02 1.99e+02  -1.0 1.37e+01    -  1.00e+00 1.00e+00h  1
+   8  1.2171720e+02 9.95e-06 2.92e-01  -1.0 1.82e-03   1.0 1.00e+00 1.00e+00h  1
+   9  1.2157278e+02 4.71e-02 1.91e+00  -1.7 1.29e+01    -  7.40e-01 1.00e+00f  1
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+  10  1.2153393e+02 2.69e-02 4.55e+01  -1.7 2.65e+01    -  1.00e+00 1.00e+00h  1
+  11  1.2152492e+02 4.93e-03 7.64e+00  -1.7 1.96e+01    -  1.00e+00 1.00e+00h  1
+  12  1.2153040e+02 5.16e-04 9.33e-03  -1.7 3.61e+00    -  1.00e+00 1.00e+00h  1
+  13  1.2151701e+02 4.71e-03 6.32e+00  -3.8 1.36e+01    -  8.60e-01 1.00e+00h  1
+  14  1.2151462e+02 3.84e-04 3.58e-01  -3.8 6.11e+00    -  1.00e+00 1.00e+00h  1
+  15  1.2151434e+02 4.83e-06 1.51e-03  -3.8 6.64e-01    -  1.00e+00 1.00e+00h  1
+  16  1.2151434e+02 7.12e-12 3.62e-08  -3.8 3.05e-03    -  1.00e+00 1.00e+00h  1
+  17  1.2151419e+02 8.99e-07 1.80e-05  -5.7 2.33e-01    -  1.00e+00 1.00e+00f  1
+  18  1.2151419e+02 2.27e-10 2.75e-08  -8.6 3.99e-03    -  1.00e+00 1.00e+00h  1
+  19  1.2151419e+02 1.36e-14 1.22e-10  -8.6 2.51e-07    -  1.00e+00 1.00e+00h  1
+
+Number of Iterations....: 19
+
+                                   (scaled)                 (unscaled)
+Objective...............:   1.2151419060681862e+02    1.2151419060681862e+02
+Dual infeasibility......:   1.2213144550448856e-10    1.2213144550448856e-10
+Constraint violation....:   1.3635360202046698e-14    1.3635360202046698e-14
+Complementarity.........:   2.5059035598301955e-09    2.5059035598301955e-09
+Overall NLP error.......:   2.5059035598301955e-09    2.5059035598301955e-09
+
+
+Number of objective function evaluations             = 20
+Number of objective gradient evaluations             = 20
+Number of equality constraint evaluations            = 20
+Number of inequality constraint evaluations          = 0
+Number of equality constraint Jacobian evaluations   = 20
+Number of inequality constraint Jacobian evaluations = 0
+Number of Lagrangian Hessian evaluations             = 19
+Total CPU secs in IPOPT (w/o function evaluations)   =      0.079
+Total CPU secs in NLP function evaluations           =      0.046
+
+EXIT: Optimal Solution Found.
+</pre></div>
+</div>
+<img alt="../_images/1b666307da0d9aead1cd0cf7fcd9038a393361600325f571e5430f80bd84d495.png" src="../_images/1b666307da0d9aead1cd0cf7fcd9038a393361600325f571e5430f80bd84d495.png" />
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model parameters:
+Ua = 0.0491 Watts/degC
+Ub = 0.0004 Watts/degC
+CpH = 6.6745 Joules/degC
+CpS = 0.01 Joules/degC
+ 
+</pre></div>
+</div>
+</div>
+</div>
+<p><strong>Discussion</strong>: How do these results compare to our <a class="reference internal" href="../notebooks/parmest.html"><span class="doc std std-doc">previous analysis</span></a>?</p>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./exercise_solutions"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="../exercises.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Exercise Solutions</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="doe_exercise.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Exercise: Pyomo.DoE</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#load-and-explore-experimental-data-step-test">Load and explore experimental data (step test)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#parameter-estimation-with-parmest">Parameter estimation with ParmEst</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Alexander Dowling
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2022.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/bootstrap.js?digest=5b4479735964841361fd"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=5b4479735964841361fd"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

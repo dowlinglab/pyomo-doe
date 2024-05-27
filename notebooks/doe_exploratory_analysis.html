@@ -62,6 +62,8 @@ const thebe_selector_input = "pre"
 const thebe_selector_output = ".output, .cell_output"
 </script>
     <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'notebooks/doe_exploratory_analysis';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -164,19 +166,19 @@ const thebe_selector_output = ".output, .cell_output"
         <ul class="nav bd-sidenav bd-sidenav__home-link">
             <li class="toctree-l1">
                 <a class="reference internal" href="../Readme.html">
-                    ParmEst and Pyomo.DoE: Model-Based Data Analytics and Optimal Experiment Design in Pyomo
+                    Optimizing Experiments with Pyomo.DoE
                 </a>
             </li>
         </ul>
         <ul class="current nav bd-sidenav">
 <li class="toctree-l1 has-children"><a class="reference internal" href="../tclab.html">Modeling Example: TCLab</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="tclab_model.html">TCLab Mathematical Model</a></li>
-<li class="toctree-l2"><a class="reference internal" href="numpy_simulation.html">Prototyping the Model in Numpy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="numpy_simulation.html">Modeling with Numpy</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pyomo_simulation.html">Modeling with Pyomo</a></li>
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../regression.html">Parameter Estimation</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-2"><i class="fa-solid fa-chevron-down"></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="parmest.html">Regression with ParmEst</a></li>
+<li class="toctree-l2"><a class="reference internal" href="parmest.html">Nonlinear Regression with ParmEst</a></li>
 <li class="toctree-l2"><a class="reference internal" href="parmest_exercise.html">Exercise: ParmEst</a></li>
 </ul>
 </li>
@@ -184,6 +186,11 @@ const thebe_selector_output = ".output, .cell_output"
 <li class="toctree-l2 current active"><a class="current reference internal" href="#">Pyomo.DoE: Exploratory Analysis</a></li>
 <li class="toctree-l2"><a class="reference internal" href="doe_optimize.html">Pyomo.DoE: Optimization</a></li>
 <li class="toctree-l2"><a class="reference internal" href="doe_exercise.html">Exercise: Pyomo.DoE</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../exercises.html">Exercise Solutions</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-4"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../exercise_solutions/parmest_exercise.html">Exercise: ParmEst</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../exercise_solutions/doe_exercise.html">Exercise: Pyomo.DoE</a></li>
 </ul>
 </li>
 </ul>
@@ -433,13 +440,20 @@ document.write(`
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">sys</span>
+
 <span class="c1"># If running on Google Colab, install Pyomo and Ipopt via IDAES</span>
 <span class="n">on_colab</span> <span class="o">=</span> <span class="s2">&quot;google.colab&quot;</span> <span class="ow">in</span> <span class="n">sys</span><span class="o">.</span><span class="n">modules</span>
 <span class="k">if</span> <span class="n">on_colab</span><span class="p">:</span>
     <span class="o">!</span>wget<span class="w"> </span><span class="s2">&quot;https://raw.githubusercontent.com/dowlinglab/pyomo-doe/main/notebooks/tclab_pyomo.py&quot;</span>
 
 <span class="c1"># import TCLab model, simulation, and data analysis functions</span>
-<span class="kn">from</span> <span class="nn">tclab_pyomo</span> <span class="kn">import</span> <span class="n">TCLabExperiment</span><span class="p">,</span> <span class="n">create_model</span><span class="p">,</span> <span class="n">extract_results</span><span class="p">,</span> <span class="n">extract_plot_results</span><span class="p">,</span> <span class="n">results_summary</span>
+<span class="kn">from</span> <span class="nn">tclab_pyomo</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">TCLabExperiment</span><span class="p">,</span>
+    <span class="n">create_model</span><span class="p">,</span>
+    <span class="n">extract_results</span><span class="p">,</span>
+    <span class="n">extract_plot_results</span><span class="p">,</span>
+    <span class="n">results_summary</span><span class="p">,</span>
+<span class="p">)</span>
 
 <span class="c1"># set default number of states in the TCLab model</span>
 <span class="n">number_tclab_states</span> <span class="o">=</span> <span class="mi">2</span>
@@ -452,6 +466,7 @@ document.write(`
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+
 <span class="k">if</span> <span class="n">on_colab</span><span class="p">:</span>
     <span class="n">file</span> <span class="o">=</span> <span class="s2">&quot;https://raw.githubusercontent.com/dowlinglab/pyomo-doe/main/data/tclab_sine_test.csv&quot;</span>
 <span class="k">else</span><span class="p">:</span>
@@ -539,7 +554,7 @@ document.write(`
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/ed28e8a5a9ea11264f93bdb923dbe152e4814abb40e959ef793ea13c7c28ad79.png" src="../_images/ed28e8a5a9ea11264f93bdb923dbe152e4814abb40e959ef793ea13c7c28ad79.png" />
+<img alt="../_images/b724d863e93f2fad889b9ce9294890583295b6978279f7f13f29e5070cbad786.png" src="../_images/b724d863e93f2fad889b9ce9294890583295b6978279f7f13f29e5070cbad786.png" />
 </div>
 </div>
 <div class="cell docutils container">
@@ -549,24 +564,24 @@ document.write(`
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/feb8ea355110cf535f3970475d4d14c075924479a9d18b66c755bb878b518fba.png" src="../_images/feb8ea355110cf535f3970475d4d14c075924479a9d18b66c755bb878b518fba.png" />
+<img alt="../_images/29a4ce3fe8920e28b94e4400b1cbc886ddd011db0d4c8b1b89de62826a399ada.png" src="../_images/29a4ce3fe8920e28b94e4400b1cbc886ddd011db0d4c8b1b89de62826a399ada.png" />
 </div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">tc_data</span> <span class="o">=</span> <span class="n">TCLabExperiment</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;Sine Wave Test for Heater 1&quot;</span><span class="p">,</span>
-                            <span class="n">time</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
-                            <span class="n">T1</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;T1&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
-                            <span class="n">u1</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Q1&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
-                            <span class="n">P1</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span>
-                            <span class="n">TS1_data</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                            <span class="n">d1</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-                            <span class="n">T2</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;T2&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
-                            <span class="n">u2</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Q2&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
-                            <span class="n">P2</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span>
-                            <span class="n">TS2_data</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                            <span class="n">d2</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-                            <span class="n">Tamb</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;T1&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">tc_data</span> <span class="o">=</span> <span class="n">TCLabExperiment</span><span class="p">(</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Sine Wave Test for Heater 1&quot;</span><span class="p">,</span>
+    <span class="n">time</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
+    <span class="n">T1</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;T1&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
+    <span class="n">u1</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Q1&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
+    <span class="n">P1</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span>
+    <span class="n">TS1_data</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">T2</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;T2&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
+    <span class="n">u2</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Q2&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
+    <span class="n">P2</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span>
+    <span class="n">TS2_data</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">Tamb</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;T1&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+<span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -587,7 +602,12 @@ document.write(`
 <span class="kn">from</span> <span class="nn">pyomo.environ</span> <span class="kn">import</span> <span class="n">SolverFactory</span>
 
 <span class="c1"># Copied from previous notebook</span>
-<span class="n">theta_values</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Ua&#39;</span><span class="p">:</span> <span class="mf">0.05147278733764012</span><span class="p">,</span> <span class="s1">&#39;Ub&#39;</span><span class="p">:</span> <span class="mf">0.0005342082856927798</span><span class="p">,</span> <span class="s1">&#39;inv_CpH&#39;</span><span class="p">:</span> <span class="mf">0.14622879403418604</span><span class="p">,</span> <span class="s1">&#39;inv_CpS&#39;</span><span class="p">:</span> <span class="mf">99.99999754623846</span><span class="p">}</span>
+<span class="n">theta_values</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;Ua&#39;</span><span class="p">:</span> <span class="mf">0.05147278733764012</span><span class="p">,</span>
+    <span class="s1">&#39;Ub&#39;</span><span class="p">:</span> <span class="mf">0.0005342082856927798</span><span class="p">,</span>
+    <span class="s1">&#39;inv_CpH&#39;</span><span class="p">:</span> <span class="mf">0.14622879403418604</span><span class="p">,</span>
+    <span class="s1">&#39;inv_CpS&#39;</span><span class="p">:</span> <span class="mf">99.99999754623846</span><span class="p">,</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 </div>
@@ -598,9 +618,7 @@ document.write(`
 <span class="n">t_control</span> <span class="o">=</span> <span class="n">tc_data</span><span class="o">.</span><span class="n">time</span>
 
 <span class="n">measurements</span> <span class="o">=</span> <span class="n">MeasurementVariables</span><span class="p">()</span>
-<span class="n">measurements</span><span class="o">.</span><span class="n">add_variables</span><span class="p">(</span><span class="s1">&#39;Ts1&#39;</span><span class="p">,</span> 
-                              <span class="n">indices</span><span class="o">=</span><span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="n">t_control</span><span class="p">},</span>
-                              <span class="n">time_index_position</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span>
+<span class="n">measurements</span><span class="o">.</span><span class="n">add_variables</span><span class="p">(</span><span class="s1">&#39;Ts1&#39;</span><span class="p">,</span> <span class="n">indices</span><span class="o">=</span><span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="n">t_control</span><span class="p">},</span> <span class="n">time_index_position</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="n">measurements</span><span class="o">.</span><span class="n">variable_names</span><span class="p">)</span>
 </pre></div>
@@ -616,12 +634,14 @@ document.write(`
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">decisions</span> <span class="o">=</span> <span class="n">DesignVariables</span><span class="p">()</span>
 
-<span class="n">decisions</span><span class="o">.</span><span class="n">add_variables</span><span class="p">(</span><span class="s1">&#39;U1&#39;</span><span class="p">,</span>
-                        <span class="n">indices</span><span class="o">=</span><span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="n">t_control</span><span class="p">},</span>
-                        <span class="n">time_index_position</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
-                        <span class="n">lower_bounds</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-                        <span class="n">upper_bounds</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
-                        <span class="n">values</span><span class="o">=</span><span class="n">tc_data</span><span class="o">.</span><span class="n">u1</span><span class="p">)</span>
+<span class="n">decisions</span><span class="o">.</span><span class="n">add_variables</span><span class="p">(</span>
+    <span class="s1">&#39;U1&#39;</span><span class="p">,</span>
+    <span class="n">indices</span><span class="o">=</span><span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="n">t_control</span><span class="p">},</span>
+    <span class="n">time_index_position</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+    <span class="n">lower_bounds</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+    <span class="n">upper_bounds</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+    <span class="n">values</span><span class="o">=</span><span class="n">tc_data</span><span class="o">.</span><span class="n">u1</span><span class="p">,</span>
+<span class="p">)</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="n">decisions</span><span class="o">.</span><span class="n">variable_names</span><span class="p">)</span>
 </pre></div>
@@ -635,8 +655,10 @@ document.write(`
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">create_model_doe</span><span class="p">(</span><span class="n">mod</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">model_option</span><span class="o">=</span><span class="s2">&quot;stage2&quot;</span><span class="p">,</span> <span class="n">theta</span><span class="o">=</span><span class="n">theta_values</span><span class="p">):</span>
-    <span class="k">return</span> <span class="n">create_model</span><span class="p">(</span><span class="n">m</span><span class="o">=</span><span class="n">mod</span><span class="p">,</span> <span class="n">model_option</span><span class="o">=</span><span class="n">model_option</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">tc_data</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;doe&#39;</span><span class="p">,</span> <span class="n">theta</span><span class="o">=</span><span class="n">theta</span><span class="p">,</span> <span class="n">integrate_to_initialize</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">number_of_states</span><span class="o">=</span><span class="n">number_tclab_states</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">create_model_doe</span><span class="p">(</span><span class="n">theta</span><span class="o">=</span><span class="n">theta_values</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">create_model</span><span class="p">(</span>
+        <span class="n">data</span><span class="o">=</span><span class="n">tc_data</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;doe&#39;</span><span class="p">,</span> <span class="n">theta</span><span class="o">=</span><span class="n">theta</span><span class="p">,</span> <span class="n">number_of_states</span><span class="o">=</span><span class="n">number_tclab_states</span>
+    <span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -649,13 +671,10 @@ document.write(`
     <span class="n">decisions</span><span class="p">,</span>  <span class="c1"># design variable</span>
     <span class="n">measurements</span><span class="p">,</span>  <span class="c1"># measurement variable</span>
     <span class="n">create_model_doe</span><span class="p">,</span>  <span class="c1"># model</span>
-    <span class="n">solver</span><span class="o">=</span><span class="n">SolverFactory</span><span class="p">(</span><span class="s1">&#39;ipopt&#39;</span><span class="p">)</span>
+    <span class="n">solver</span><span class="o">=</span><span class="n">SolverFactory</span><span class="p">(</span><span class="s1">&#39;ipopt&#39;</span><span class="p">),</span>
 <span class="p">)</span>
 
-<span class="n">result</span> <span class="o">=</span> <span class="n">doe_object1</span><span class="o">.</span><span class="n">compute_FIM</span><span class="p">(</span>
-    <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;sequential_finite&#39;</span><span class="p">,</span>
-    <span class="n">formula</span> <span class="o">=</span> <span class="s1">&#39;central&#39;</span>
-<span class="p">)</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">doe_object1</span><span class="o">.</span><span class="n">compute_FIM</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s1">&#39;sequential_finite&#39;</span><span class="p">,</span> <span class="n">formula</span><span class="o">=</span><span class="s1">&#39;central&#39;</span><span class="p">)</span>
 <span class="n">result</span><span class="o">.</span><span class="n">result_analysis</span><span class="p">()</span>
 </pre></div>
 </div>
@@ -667,18 +686,6 @@ document.write(`
 This program contains Ipopt, a library for large-scale nonlinear optimization.
  Ipopt is released as open source code under the Eclipse Public License (EPL).
          For more information visit http://projects.coin-or.org/Ipopt
-
-This version of Ipopt was compiled from source code available at
-    https://github.com/IDAES/Ipopt as part of the Institute for the Design of
-    Advanced Energy Systems Process Systems Engineering Framework (IDAES PSE
-    Framework) Copyright (c) 2018-2019. See https://github.com/IDAES/idaes-pse.
-
-This version of Ipopt was compiled using HSL, a collection of Fortran codes
-    for large-scale scientific computation.  All technical papers, sales and
-    publicity material resulting from use of the HSL codes within IPOPT must
-    contain the following acknowledgement:
-        HSL, a collection of Fortran codes for large-scale scientific
-        computation. See http://www.hsl.rl.ac.uk.
 ******************************************************************************
 
 This is Ipopt version 3.13.2, running with linear solver ma27.
@@ -701,16 +708,16 @@ iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
    0  0.0000000e+00 1.00e+00 0.00e+00  -1.0 0.00e+00    -  0.00e+00 0.00e+00   0
    1  0.0000000e+00 1.00e-02 1.12e-01  -1.0 1.00e+00    -  9.80e-01 9.90e-01h  1
    2  0.0000000e+00 9.90e-05 9.90e+00  -1.0 1.00e-02    -  1.00e+00 9.90e-01h  1
-   3  0.0000000e+00 1.53e-14 1.26e-05  -1.0 9.90e-05    -  1.00e+00 1.00e+00h  1
+   3  0.0000000e+00 2.13e-14 1.26e-05  -1.0 9.90e-05    -  1.00e+00 1.00e+00h  1
 
 Number of Iterations....: 3
 
                                    (scaled)                 (unscaled)
 Objective...............:   0.0000000000000000e+00    0.0000000000000000e+00
 Dual infeasibility......:   0.0000000000000000e+00    0.0000000000000000e+00
-Constraint violation....:   1.5279139797464566e-14    1.5279139797464566e-14
+Constraint violation....:   2.1316282072803006e-14    2.1316282072803006e-14
 Complementarity.........:   0.0000000000000000e+00    0.0000000000000000e+00
-Overall NLP error.......:   1.5279139797464566e-14    1.5279139797464566e-14
+Overall NLP error.......:   2.1316282072803006e-14    2.1316282072803006e-14
 
 
 Number of objective function evaluations             = 4
@@ -720,11 +727,11 @@ Number of inequality constraint evaluations          = 0
 Number of equality constraint Jacobian evaluations   = 4
 Number of inequality constraint Jacobian evaluations = 0
 Number of Lagrangian Hessian evaluations             = 3
-Total CPU secs in IPOPT (w/o function evaluations)   =      0.118
-Total CPU secs in NLP function evaluations           =      0.003
+Total CPU secs in IPOPT (w/o function evaluations)   =      0.081
+Total CPU secs in NLP function evaluations           =      0.010
 
 EXIT: Optimal Solution Found.
-INFO: elapsed time: 3.9 seconds
+INFO: elapsed time: 7.0 seconds
 </pre></div>
 </div>
 </div>
@@ -738,10 +745,10 @@ INFO: elapsed time: 3.9 seconds
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>======Results Summary======
 Four design criteria log10() value:
-A-optimality: 9.698903678283168
-D-optimality: 8.292425086814568
-E-optimality: -15.256790847776848
-Modified E-optimality: 24.939667881782306
+A-optimality: 9.698903678286175
+D-optimality: nan
+E-optimality: nan
+Modified E-optimality: nan
 
 FIM:
  [[ 1.88459415e+08 -1.91393890e+08 -8.24201918e+06 -1.04121590e+03]
@@ -750,55 +757,89 @@ FIM:
  [-1.04121590e+03  2.58102008e+04  3.51179540e+02  1.38519624e-01]]
 
 eigenvalues:
- [4.81811358e+09 1.80716021e+08 4.06846518e+05 5.53616662e-16]
+ [ 4.81811358e+09  1.80716021e+08  4.06846518e+05 -2.41067013e-16]
 
 eigenvectors:
- [[ 4.13259139e-02 -9.98655750e-01  3.12867703e-02 -1.00385955e-13]
+ [[ 4.13259139e-02 -9.98655750e-01  3.12867703e-02 -1.00570603e-13]
  [-9.99053330e-01 -4.17276557e-02 -1.22982147e-02 -5.33299017e-06]
- [-1.35872064e-02  3.07489171e-02  9.99434786e-01 -2.48897568e-06]
- [-5.36175981e-06 -1.45999971e-07  2.42198262e-06  1.00000000e+00]]
+ [-1.35872064e-02  3.07489171e-02  9.99434786e-01 -2.48897567e-06]
+ [-5.36175981e-06 -1.45999972e-07  2.42198261e-06  1.00000000e+00]]
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/Users/adowling/DowlingLab/pyomo-doe/notebooks/tclab_pyomo.py:640: RuntimeWarning: invalid value encountered in log10
+  print(&quot;D-optimality:&quot;, np.log10(result.det))
+/Users/adowling/DowlingLab/pyomo-doe/notebooks/tclab_pyomo.py:641: RuntimeWarning: invalid value encountered in log10
+  print(&quot;E-optimality:&quot;, np.log10(result.min_eig))
+/Users/adowling/DowlingLab/pyomo-doe/notebooks/tclab_pyomo.py:642: RuntimeWarning: invalid value encountered in log10
+  print(&quot;Modified E-optimality:&quot;, np.log10(result.cond))
 </pre></div>
 </div>
 </div>
 </div>
+<p>We can see the FIM of the sine wave experiment is rank deficient with one eigenvalue that is numerically zero. We wee the corresponding eigenvector points in the direction of the 4th parameter, <code class="docutils literal notranslate"><span class="pre">inv_CpS</span></code>. This means the experiment alone does not contain enough information to uniquely estimate all of the parameters if the model.</p>
+<p>Why does it make sense that <span class="math notranslate nohighlight">\(C_p^S\)</span> is difficult to estimate?</p>
 </section>
 <section id="define-parameterized-sine-wave-experiment">
 <h2>Define parameterized sine wave experiment<a class="headerlink" href="#define-parameterized-sine-wave-experiment" title="Permalink to this heading">#</a></h2>
+<p>Can we further optimize the sine wave test to improve the information content? Let’s define the parameterized sine wave as:</p>
+<div class="math notranslate nohighlight">
+\[
+u(t) = 50 + a \sin(\frac{2 \pi}{60 p} t)
+\]</div>
+<p>where <span class="math notranslate nohighlight">\(a\)</span> is the amplitude (% power), <span class="math notranslate nohighlight">\(p\)</span> is the period (minutes), <span class="math notranslate nohighlight">\(t\)</span> is the time (seconds), and 60 is a conversion factor (seconds/minute).</p>
+<p>Here is code from the <code class="docutils literal notranslate"><span class="pre">create_model</span></code> function defined in <code class="docutils literal notranslate"><span class="pre">tclab_pyomo.py</span></code> to calculate the parameterized control signal from the inputs <code class="docutils literal notranslate"><span class="pre">sine_amplitude</span></code> and <code class="docutils literal notranslate"><span class="pre">sine_period</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Calculate parameterized control signal for u1</span>
+<span class="n">u1</span> <span class="o">=</span> <span class="mi">50</span> <span class="o">+</span> <span class="n">sine_amplitude</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="p">(</span><span class="n">sine_period</span><span class="o">*</span><span class="mi">60</span><span class="p">)</span><span class="o">*</span><span class="n">time</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Here is code from <code class="docutils literal notranslate"><span class="pre">create_model</span></code> in <code class="docutils literal notranslate"><span class="pre">tclab_pyomo.py</span></code> to define the parameterized sine wave in Pyomo.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Add measurement control decision variables</span>
+<span class="n">m</span><span class="o">.</span><span class="n">u1_period</span> <span class="o">=</span> <span class="n">Var</span><span class="p">(</span><span class="n">initialize</span><span class="o">=</span><span class="n">sine_period</span><span class="p">,</span> <span class="n">bounds</span> <span class="o">=</span> <span class="p">(</span><span class="n">sine_period_min</span><span class="p">,</span> <span class="n">sine_period_max</span><span class="p">))</span> <span class="c1"># minutes</span>
+<span class="n">m</span><span class="o">.</span><span class="n">u1_amplitude</span> <span class="o">=</span> <span class="n">Var</span><span class="p">(</span><span class="n">initialize</span><span class="o">=</span><span class="n">sine_amplitude</span><span class="p">)</span> <span class="c1"># % power</span>
+
+<span class="c1"># Add constraint to calculate u1</span>
+<span class="n">m</span><span class="o">.</span><span class="n">u1_constraint</span> <span class="o">=</span> <span class="n">Constraint</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">t</span><span class="p">,</span> <span class="n">rule</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">m</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">m</span><span class="o">.</span><span class="n">U1</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="o">==</span> <span class="mi">50</span> <span class="o">+</span> <span class="n">m</span><span class="o">.</span><span class="n">u1_amplitude</span><span class="o">*</span><span class="n">sin</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">u1_period</span><span class="o">*</span><span class="mi">60</span><span class="p">)</span><span class="o">*</span><span class="n">value</span><span class="p">(</span><span class="n">t</span><span class="p">)))</span>
+</pre></div>
+</div>
+<p>Let’s look at the information content of <span class="math notranslate nohighlight">\(p = 1\)</span> minute and <span class="math notranslate nohighlight">\(a = 50\)</span> %.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">create_model_sens</span><span class="p">(</span><span class="n">mod</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">model_option</span><span class="o">=</span><span class="s2">&quot;stage2&quot;</span><span class="p">,</span> <span class="n">theta</span><span class="o">=</span><span class="n">theta_values</span><span class="p">):</span>
-    <span class="k">return</span> <span class="n">create_model</span><span class="p">(</span><span class="n">m</span><span class="o">=</span><span class="n">mod</span><span class="p">,</span> 
-                        <span class="n">model_option</span><span class="o">=</span><span class="n">model_option</span><span class="p">,</span> 
-                        <span class="n">data</span><span class="o">=</span><span class="n">tc_data</span><span class="p">,</span> 
-                        <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;doe&#39;</span><span class="p">,</span> 
-                        <span class="n">theta</span><span class="o">=</span><span class="n">theta</span><span class="p">,</span> 
-                        <span class="n">integrate_to_initialize</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> 
-                        <span class="n">number_of_states</span><span class="o">=</span><span class="n">number_tclab_states</span><span class="p">,</span>
-                        <span class="n">sine_period</span><span class="o">=</span><span class="mf">1.</span><span class="p">,</span>
-                        <span class="n">sine_amplitude</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">create_model_sens</span><span class="p">(</span><span class="n">theta</span><span class="o">=</span><span class="n">theta_values</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;This function creates a model with the given data and theta values&#39;&#39;&#39;</span>
+    <span class="k">return</span> <span class="n">create_model</span><span class="p">(</span>
+        <span class="n">data</span><span class="o">=</span><span class="n">tc_data</span><span class="p">,</span>
+        <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;doe&#39;</span><span class="p">,</span>
+        <span class="n">theta</span><span class="o">=</span><span class="n">theta</span><span class="p">,</span>
+        <span class="n">number_of_states</span><span class="o">=</span><span class="n">number_tclab_states</span><span class="p">,</span>
+        <span class="n">sine_period</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+        <span class="n">sine_amplitude</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span>
+    <span class="p">)</span>
+
 
 <span class="c1"># Get time points for control decisions</span>
 <span class="n">t_control</span> <span class="o">=</span> <span class="n">tc_data</span><span class="o">.</span><span class="n">time</span>
 
 <span class="n">measurements2</span> <span class="o">=</span> <span class="n">MeasurementVariables</span><span class="p">()</span>
-<span class="n">measurements2</span><span class="o">.</span><span class="n">add_variables</span><span class="p">(</span><span class="s1">&#39;Ts1&#39;</span><span class="p">,</span> 
-                              <span class="n">indices</span><span class="o">=</span><span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="n">t_control</span><span class="p">},</span>
-                              <span class="n">time_index_position</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span>
+<span class="n">measurements2</span><span class="o">.</span><span class="n">add_variables</span><span class="p">(</span><span class="s1">&#39;Ts1&#39;</span><span class="p">,</span> <span class="n">indices</span><span class="o">=</span><span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="n">t_control</span><span class="p">},</span> <span class="n">time_index_position</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 
 <span class="n">decisions2</span> <span class="o">=</span> <span class="n">DesignVariables</span><span class="p">()</span>
-<span class="n">decisions2</span><span class="o">.</span><span class="n">add_variables</span><span class="p">(</span><span class="s1">&#39;u1_period&#39;</span><span class="p">,</span>
-                        <span class="n">indices</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                        <span class="n">time_index_position</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-                        <span class="n">lower_bounds</span><span class="o">=</span><span class="mi">10</span><span class="o">/</span><span class="mi">60</span><span class="p">,</span>
-                        <span class="n">upper_bounds</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
-                        <span class="n">values</span><span class="o">=</span><span class="mf">1.</span><span class="p">)</span>
+<span class="n">decisions2</span><span class="o">.</span><span class="n">add_variables</span><span class="p">(</span>
+    <span class="s1">&#39;u1_period&#39;</span><span class="p">,</span>
+    <span class="n">indices</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">time_index_position</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">lower_bounds</span><span class="o">=</span><span class="mi">10</span> <span class="o">/</span> <span class="mi">60</span><span class="p">,</span>
+    <span class="n">upper_bounds</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+    <span class="n">values</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+<span class="p">)</span>
 
-<span class="n">decisions2</span><span class="o">.</span><span class="n">add_variables</span><span class="p">(</span><span class="s1">&#39;u1_amplitude&#39;</span><span class="p">,</span>
-                        <span class="n">indices</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                        <span class="n">time_index_position</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-                        <span class="n">lower_bounds</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-                        <span class="n">upper_bounds</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span>
-                        <span class="n">values</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
+<span class="n">decisions2</span><span class="o">.</span><span class="n">add_variables</span><span class="p">(</span>
+    <span class="s1">&#39;u1_amplitude&#39;</span><span class="p">,</span>
+    <span class="n">indices</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">time_index_position</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">lower_bounds</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+    <span class="n">upper_bounds</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span>
+    <span class="n">values</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span>
+<span class="p">)</span>
 
 
 <span class="n">solver</span> <span class="o">=</span> <span class="n">SolverFactory</span><span class="p">(</span><span class="s1">&#39;ipopt&#39;</span><span class="p">)</span>
@@ -818,16 +859,14 @@ eigenvectors:
     <span class="n">measurements2</span><span class="p">,</span>  <span class="c1"># measurement variable</span>
     <span class="n">create_model_sens</span><span class="p">,</span>  <span class="c1"># model</span>
     <span class="n">solver</span><span class="o">=</span><span class="n">solver</span><span class="p">,</span>
-    <span class="n">logger_level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span>
+    <span class="n">logger_level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">,</span>
 <span class="p">)</span>
 
 
-<span class="n">result</span> <span class="o">=</span> <span class="n">doe_object2</span><span class="o">.</span><span class="n">compute_FIM</span><span class="p">(</span>
-    <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;sequential_finite&#39;</span><span class="p">,</span>
-    <span class="n">formula</span> <span class="o">=</span> <span class="s1">&#39;central&#39;</span>
-<span class="p">)</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">doe_object2</span><span class="o">.</span><span class="n">compute_FIM</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s1">&#39;sequential_finite&#39;</span><span class="p">,</span> <span class="n">formula</span><span class="o">=</span><span class="s1">&#39;central&#39;</span><span class="p">)</span>
 
 <span class="n">result</span><span class="o">.</span><span class="n">result_analysis</span><span class="p">()</span>
+
 
 <span class="n">pyomo_doe_results</span> <span class="o">=</span> <span class="n">extract_plot_results</span><span class="p">(</span><span class="n">tc_data</span><span class="p">,</span> <span class="n">doe_object2</span><span class="o">.</span><span class="n">model</span><span class="p">)</span>
 </pre></div>
@@ -843,18 +882,6 @@ linear_solver=ma57
 This program contains Ipopt, a library for large-scale nonlinear optimization.
  Ipopt is released as open source code under the Eclipse Public License (EPL).
          For more information visit http://projects.coin-or.org/Ipopt
-
-This version of Ipopt was compiled from source code available at
-    https://github.com/IDAES/Ipopt as part of the Institute for the Design of
-    Advanced Energy Systems Process Systems Engineering Framework (IDAES PSE
-    Framework) Copyright (c) 2018-2019. See https://github.com/IDAES/idaes-pse.
-
-This version of Ipopt was compiled using HSL, a collection of Fortran codes
-    for large-scale scientific computation.  All technical papers, sales and
-    publicity material resulting from use of the HSL codes within IPOPT must
-    contain the following acknowledgement:
-        HSL, a collection of Fortran codes for large-scale scientific
-        computation. See http://www.hsl.rl.ac.uk.
 ******************************************************************************
 
 This is Ipopt version 3.13.2, running with linear solver ma57.
@@ -896,14 +923,14 @@ Number of inequality constraint evaluations          = 0
 Number of equality constraint Jacobian evaluations   = 4
 Number of inequality constraint Jacobian evaluations = 0
 Number of Lagrangian Hessian evaluations             = 3
-Total CPU secs in IPOPT (w/o function evaluations)   =      0.145
-Total CPU secs in NLP function evaluations           =      0.005
+Total CPU secs in IPOPT (w/o function evaluations)   =      0.112
+Total CPU secs in NLP function evaluations           =      0.020
 
 EXIT: Optimal Solution Found.
-INFO: elapsed time: 4.2 seconds
+INFO: elapsed time: 7.9 seconds
 </pre></div>
 </div>
-<img alt="../_images/8396f6fd23a11091d801c20d2e89ea2296b00bd0a18483c87da419751c6cee30.png" src="../_images/8396f6fd23a11091d801c20d2e89ea2296b00bd0a18483c87da419751c6cee30.png" />
+<img alt="../_images/23c3c01c2633b6f7064316b9571a3177fdb6237693623e0c8afb0ec11266a78b.png" src="../_images/23c3c01c2633b6f7064316b9571a3177fdb6237693623e0c8afb0ec11266a78b.png" />
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model parameters:
 Ua = 0.0515 Watts/degC
 Ub = 0.0005 Watts/degC
@@ -916,10 +943,43 @@ u1_amplitude = 50 % power
 </div>
 </div>
 </div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">results_summary</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>======Results Summary======
+Four design criteria log10() value:
+A-optimality: 9.705521668583316
+D-optimality: nan
+E-optimality: nan
+Modified E-optimality: nan
+
+FIM:
+ [[ 1.92187689e+08 -1.95158832e+08 -8.40569881e+06 -1.06170169e+03]
+ [-1.95158832e+08  4.88231745e+09  6.63743245e+07  2.62025550e+04]
+ [-8.40569881e+06  6.63743245e+07  1.49550678e+06  3.57695899e+02]
+ [-1.06170169e+03  2.62025550e+04  3.57695899e+02  1.40628265e-01]]
+
+eigenvalues:
+ [ 4.89133300e+09  1.84254423e+08  4.13222899e+05 -2.71839065e-16]
+
+eigenvectors:
+ [[ 4.15154255e-02 -9.98649054e-01  3.12495844e-02 -1.00933074e-13]
+ [-9.99044858e-01 -4.19179925e-02 -1.23390827e-02 -5.33299017e-06]
+ [-1.36323331e-02  3.07074744e-02  9.99435446e-01 -2.48897568e-06]
+ [-5.36182695e-06 -1.47118186e-07  2.42176631e-06  1.00000000e+00]]
+</pre></div>
+</div>
+</div>
+</div>
+<p>This parameterization reproduced the original sine wave experiment. As expected, the FIM is still rank deficient.</p>
 </section>
 <section id="peform-sensitivity-analysis-to-sine-wave-frequency-and-period">
 <h2>Peform sensitivity analysis to sine wave frequency and period<a class="headerlink" href="#peform-sensitivity-analysis-to-sine-wave-frequency-and-period" title="Permalink to this heading">#</a></h2>
-<p>Specify a 2D sensitivity analysis</p>
+<p>Now let’s perform a sensitivity analysis over <span class="math notranslate nohighlight">\(p\)</span> and <span class="math notranslate nohighlight">\(a\)</span>. <code class="docutils literal notranslate"><span class="pre">Pyomo.DoE</span></code> includes functions to automate this analysis including visualization. In our experience, an exploratory analysis like this is especially helpful to develop intuition about the physical system and model.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Design variable ranges as lists</span>
@@ -935,27 +995,24 @@ u1_amplitude = 50 % power
 
 <span class="k">else</span><span class="p">:</span>
     <span class="c1"># Faster sensitivity analysis, good for debugging</span>
-    <span class="n">design_ranges</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s2">&quot;u1_period&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span>
-        <span class="s2">&quot;u1_amplitude&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">20</span><span class="p">,</span> <span class="mi">50</span><span class="p">],</span>
-    <span class="p">}</span>
+    <span class="n">design_ranges</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;u1_period&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="s2">&quot;u1_amplitude&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">20</span><span class="p">,</span> <span class="mi">50</span><span class="p">]}</span>
 
 <span class="c1"># Choose from &#39;sequential_finite&#39;, &#39;direct_kaug&#39;</span>
-<span class="c1"># sensi_opt = &quot;sequential_finite&quot;</span>
-<span class="n">sensi_opt</span> <span class="o">=</span> <span class="s2">&quot;direct_kaug&quot;</span>
+<span class="n">sensi_opt</span> <span class="o">=</span> <span class="s2">&quot;sequential_finite&quot;</span>
+<span class="c1"># sensi_opt = &quot;direct_kaug&quot;</span>
 </pre></div>
 </div>
 </div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plot_each_iteration</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">mod</span> <span class="p">:</span> <span class="n">extract_plot_results</span><span class="p">(</span><span class="n">tc_data</span><span class="p">,</span> <span class="n">mod</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plot_each_iteration</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">mod</span><span class="p">:</span> <span class="n">extract_plot_results</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">mod</span><span class="p">)</span>
 
 <span class="c1"># Grid search</span>
 <span class="n">all_fim</span> <span class="o">=</span> <span class="n">doe_object2</span><span class="o">.</span><span class="n">run_grid_search</span><span class="p">(</span>
     <span class="n">design_ranges</span><span class="p">,</span>  <span class="c1"># range of design variables</span>
     <span class="n">mode</span><span class="o">=</span><span class="n">sensi_opt</span><span class="p">,</span>  <span class="c1"># solver option for sensitivity</span>
-    <span class="n">post_processing_function</span> <span class="o">=</span> <span class="n">plot_each_iteration</span>
+    <span class="n">post_processing_function</span><span class="o">=</span><span class="n">plot_each_iteration</span><span class="p">,</span>
 <span class="p">)</span>
 </pre></div>
 </div>
@@ -964,14 +1021,13 @@ u1_amplitude = 50 % power
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>INFO: =======Iteration Number: 1 =====
 DEBUG: Design variable values of this iteration: {&#39;u1_period&#39;: 1,
 &#39;u1_amplitude&#39;: 15}
-DEBUG: The variable is fixed:  Ts1[0.0]
-INFO: elapsed time: 1.1 seconds
+INFO: elapsed time: 7.7 seconds
 INFO: This is run 1 out of 32.
-INFO: The code has run  1.11 seconds.
-INFO: Estimated remaining time:  34.53 seconds
+INFO: The code has run  7.7 seconds.
+INFO: Estimated remaining time:  238.68 seconds
 </pre></div>
 </div>
-<img alt="../_images/07c992addc2a8131fe32aa4ee65a5af2db8af3278f7ed7501c66cba033e663b2.png" src="../_images/07c992addc2a8131fe32aa4ee65a5af2db8af3278f7ed7501c66cba033e663b2.png" />
+<img alt="../_images/1c5e492d00d47a70b4c31c360a3f72883275e33cb4ca118cfe9a3a067bf22c91.png" src="../_images/1c5e492d00d47a70b4c31c360a3f72883275e33cb4ca118cfe9a3a067bf22c91.png" />
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model parameters:
 Ua = 0.0515 Watts/degC
 Ub = 0.0005 Watts/degC
@@ -983,14 +1039,13 @@ u1_amplitude = 15 % power
 INFO: =======Iteration Number: 2 =====
 DEBUG: Design variable values of this iteration: {&#39;u1_period&#39;: 1,
 &#39;u1_amplitude&#39;: 25}
-DEBUG: The variable is fixed:  Ts1[0.0]
-INFO: elapsed time: 0.9 seconds
+INFO: elapsed time: 7.6 seconds
 INFO: This is run 2 out of 32.
-INFO: The code has run  2.05 seconds.
-INFO: Estimated remaining time:  30.74 seconds
+INFO: The code has run  15.35 seconds.
+INFO: Estimated remaining time:  230.3 seconds
 </pre></div>
 </div>
-<img alt="../_images/9e0e2536affa50020ed8d6be2b70d9bc6ebc8dde79126ef7abf4951559e174ca.png" src="../_images/9e0e2536affa50020ed8d6be2b70d9bc6ebc8dde79126ef7abf4951559e174ca.png" />
+<img alt="../_images/ac91ecee523fb430496ae1e8e2e16ea4e99437ebeb65bf3032738fb12ca6d302.png" src="../_images/ac91ecee523fb430496ae1e8e2e16ea4e99437ebeb65bf3032738fb12ca6d302.png" />
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model parameters:
 Ua = 0.0515 Watts/degC
 Ub = 0.0005 Watts/degC
@@ -1002,14 +1057,13 @@ u1_amplitude = 25 % power
 INFO: =======Iteration Number: 3 =====
 DEBUG: Design variable values of this iteration: {&#39;u1_period&#39;: 1,
 &#39;u1_amplitude&#39;: 35}
-DEBUG: The variable is fixed:  Ts1[0.0]
-INFO: elapsed time: 0.9 seconds
+INFO: elapsed time: 7.8 seconds
 INFO: This is run 3 out of 32.
-INFO: The code has run  2.97 seconds.
-INFO: Estimated remaining time:  28.71 seconds
+INFO: The code has run  23.18 seconds.
+INFO: Estimated remaining time:  224.03 seconds
 </pre></div>
 </div>
-<img alt="../_images/a46c39536eca63cbccca9c98edfe530f408282ca96293a6c13fdbd2cd5da117c.png" src="../_images/a46c39536eca63cbccca9c98edfe530f408282ca96293a6c13fdbd2cd5da117c.png" />
+<img alt="../_images/0f851f0c423515a25cf35eacd1d82f3436ca0d85b7021b7e0823801d2ce56eb5.png" src="../_images/0f851f0c423515a25cf35eacd1d82f3436ca0d85b7021b7e0823801d2ce56eb5.png" />
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model parameters:
 Ua = 0.0515 Watts/degC
 Ub = 0.0005 Watts/degC
@@ -1021,14 +1075,13 @@ u1_amplitude = 35 % power
 INFO: =======Iteration Number: 4 =====
 DEBUG: Design variable values of this iteration: {&#39;u1_period&#39;: 1,
 &#39;u1_amplitude&#39;: 45}
-DEBUG: The variable is fixed:  Ts1[0.0]
-INFO: elapsed time: 1.2 seconds
+INFO: elapsed time: 7.8 seconds
 INFO: This is run 4 out of 32.
-INFO: The code has run  4.14 seconds.
-INFO: Estimated remaining time:  28.96 seconds
+INFO: The code has run  31.01 seconds.
+INFO: Estimated remaining time:  217.06 seconds
 </pre></div>
 </div>
-<img alt="../_images/6413e1f4cbd743f3fcac7e73a255d6c372cc4ad4e6b18d5ecf034c575d9f7271.png" src="../_images/6413e1f4cbd743f3fcac7e73a255d6c372cc4ad4e6b18d5ecf034c575d9f7271.png" />
+<img alt="../_images/3546c4fff5e28262bd098440a4da7b667f31c520c9614f03558022769f748a0e.png" src="../_images/3546c4fff5e28262bd098440a4da7b667f31c520c9614f03558022769f748a0e.png" />
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model parameters:
 Ua = 0.0515 Watts/degC
 Ub = 0.0005 Watts/degC
@@ -1040,14 +1093,13 @@ u1_amplitude = 45 % power
 INFO: =======Iteration Number: 5 =====
 DEBUG: Design variable values of this iteration: {&#39;u1_period&#39;: 2,
 &#39;u1_amplitude&#39;: 15}
-DEBUG: The variable is fixed:  Ts1[0.0]
-INFO: elapsed time: 0.9 seconds
+INFO: elapsed time: 27.1 seconds
 INFO: This is run 5 out of 32.
-INFO: The code has run  5.08 seconds.
-INFO: Estimated remaining time:  27.45 seconds
+INFO: The code has run  58.1 seconds.
+INFO: Estimated remaining time:  313.74 seconds
 </pre></div>
 </div>
-<img alt="../_images/695dbfc901e30d319a118ae7fab35d75787748ab5be924edbf7e9977721d4e56.png" src="../_images/695dbfc901e30d319a118ae7fab35d75787748ab5be924edbf7e9977721d4e56.png" />
+<img alt="../_images/b87ad8491dfa201db1d161d88fe0e05b44d15145b6a6d524f6ee50d64be700b0.png" src="../_images/b87ad8491dfa201db1d161d88fe0e05b44d15145b6a6d524f6ee50d64be700b0.png" />
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model parameters:
 Ua = 0.0515 Watts/degC
 Ub = 0.0005 Watts/degC
@@ -1059,14 +1111,13 @@ u1_amplitude = 15 % power
 INFO: =======Iteration Number: 6 =====
 DEBUG: Design variable values of this iteration: {&#39;u1_period&#39;: 2,
 &#39;u1_amplitude&#39;: 25}
-DEBUG: The variable is fixed:  Ts1[0.0]
-INFO: elapsed time: 1.2 seconds
+INFO: elapsed time: 18.3 seconds
 INFO: This is run 6 out of 32.
-INFO: The code has run  6.27 seconds.
-INFO: Estimated remaining time:  27.19 seconds
+INFO: The code has run  76.42 seconds.
+INFO: Estimated remaining time:  331.13 seconds
 </pre></div>
 </div>
-<img alt="../_images/b237a9b870c9879dd0b3b688205513fef25da9befb40d49f10716975ea17f0a7.png" src="../_images/b237a9b870c9879dd0b3b688205513fef25da9befb40d49f10716975ea17f0a7.png" />
+<img alt="../_images/033fd7cb3b49a23c45766f96063990598c44cce2b023fb622cc6eb77c2a52f85.png" src="../_images/033fd7cb3b49a23c45766f96063990598c44cce2b023fb622cc6eb77c2a52f85.png" />
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model parameters:
 Ua = 0.0515 Watts/degC
 Ub = 0.0005 Watts/degC
@@ -1078,14 +1129,13 @@ u1_amplitude = 25 % power
 INFO: =======Iteration Number: 7 =====
 DEBUG: Design variable values of this iteration: {&#39;u1_period&#39;: 2,
 &#39;u1_amplitude&#39;: 35}
-DEBUG: The variable is fixed:  Ts1[0.0]
-INFO: elapsed time: 0.9 seconds
+INFO: elapsed time: 13.5 seconds
 INFO: This is run 7 out of 32.
-INFO: The code has run  7.21 seconds.
-INFO: Estimated remaining time:  25.73 seconds
+INFO: The code has run  89.91 seconds.
+INFO: Estimated remaining time:  321.11 seconds
 </pre></div>
 </div>
-<img alt="../_images/06882f2dfbfd15893dc2465bfa85dfe296fb3ab2098cb5dfe9bba58bcee1ec8b.png" src="../_images/06882f2dfbfd15893dc2465bfa85dfe296fb3ab2098cb5dfe9bba58bcee1ec8b.png" />
+<img alt="../_images/e9d63e1982addce09b0e731b40eebc0a9293afdf363f60900cf0287794192f18.png" src="../_images/e9d63e1982addce09b0e731b40eebc0a9293afdf363f60900cf0287794192f18.png" />
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model parameters:
 Ua = 0.0515 Watts/degC
 Ub = 0.0005 Watts/degC
@@ -1097,14 +1147,13 @@ u1_amplitude = 35 % power
 INFO: =======Iteration Number: 8 =====
 DEBUG: Design variable values of this iteration: {&#39;u1_period&#39;: 2,
 &#39;u1_amplitude&#39;: 45}
-DEBUG: The variable is fixed:  Ts1[0.0]
-INFO: elapsed time: 1.2 seconds
+INFO: elapsed time: 22.3 seconds
 INFO: This is run 8 out of 32.
-INFO: The code has run  8.4 seconds.
-INFO: Estimated remaining time:  25.19 seconds
+INFO: The code has run  112.21 seconds.
+INFO: Estimated remaining time:  336.62 seconds
 </pre></div>
 </div>
-<img alt="../_images/f704a26ff599a6d97700a6a18b31b60d9423070d42ad9575f699669d4f2e5e31.png" src="../_images/f704a26ff599a6d97700a6a18b31b60d9423070d42ad9575f699669d4f2e5e31.png" />
+<img alt="../_images/47f39bd692232951bb176bcbf29e4953b614470bd977b6e65bef4461648d6f5f.png" src="../_images/47f39bd692232951bb176bcbf29e4953b614470bd977b6e65bef4461648d6f5f.png" />
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model parameters:
 Ua = 0.0515 Watts/degC
 Ub = 0.0005 Watts/degC
@@ -1116,14 +1165,13 @@ u1_amplitude = 45 % power
 INFO: =======Iteration Number: 9 =====
 DEBUG: Design variable values of this iteration: {&#39;u1_period&#39;: 3,
 &#39;u1_amplitude&#39;: 15}
-DEBUG: The variable is fixed:  Ts1[0.0]
-INFO: elapsed time: 1.0 seconds
+INFO: elapsed time: 29.4 seconds
 INFO: This is run 9 out of 32.
-INFO: The code has run  9.38 seconds.
-INFO: Estimated remaining time:  23.98 seconds
+INFO: The code has run  141.6 seconds.
+INFO: Estimated remaining time:  361.87 seconds
 </pre></div>
 </div>
-<img alt="../_images/cbc525bdf53609ac7cb207075b5fd14d6801a45be493ef9cac3b05d13c0a9360.png" src="../_images/cbc525bdf53609ac7cb207075b5fd14d6801a45be493ef9cac3b05d13c0a9360.png" />
+<img alt="../_images/e6173b94f370a855783f7e4152b40e9c7c66685300819f92f2ebe4e8c077d9cc.png" src="../_images/e6173b94f370a855783f7e4152b40e9c7c66685300819f92f2ebe4e8c077d9cc.png" />
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model parameters:
 Ua = 0.0515 Watts/degC
 Ub = 0.0005 Watts/degC
@@ -1135,14 +1183,13 @@ u1_amplitude = 15 % power
 INFO: =======Iteration Number: 10 =====
 DEBUG: Design variable values of this iteration: {&#39;u1_period&#39;: 3,
 &#39;u1_amplitude&#39;: 25}
-DEBUG: The variable is fixed:  Ts1[0.0]
-INFO: elapsed time: 1.0 seconds
+INFO: elapsed time: 23.3 seconds
 INFO: This is run 10 out of 32.
-INFO: The code has run  10.36 seconds.
-INFO: Estimated remaining time:  22.78 seconds
+INFO: The code has run  164.89 seconds.
+INFO: Estimated remaining time:  362.77 seconds
 </pre></div>
 </div>
-<img alt="../_images/534900c598675b4d60dbfaeeeac5f427a10e51dcdca6f39d32dfa55d10ca9695.png" src="../_images/534900c598675b4d60dbfaeeeac5f427a10e51dcdca6f39d32dfa55d10ca9695.png" />
+<img alt="../_images/650e780c3c324ba85d766eaade1bb6f9c5c6904ef5e58bda50e0d1227e03c729.png" src="../_images/650e780c3c324ba85d766eaade1bb6f9c5c6904ef5e58bda50e0d1227e03c729.png" />
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model parameters:
 Ua = 0.0515 Watts/degC
 Ub = 0.0005 Watts/degC
@@ -1154,14 +1201,13 @@ u1_amplitude = 25 % power
 INFO: =======Iteration Number: 11 =====
 DEBUG: Design variable values of this iteration: {&#39;u1_period&#39;: 3,
 &#39;u1_amplitude&#39;: 35}
-DEBUG: The variable is fixed:  Ts1[0.0]
-INFO: elapsed time: 1.3 seconds
+INFO: elapsed time: 16.0 seconds
 INFO: This is run 11 out of 32.
-INFO: The code has run  11.65 seconds.
-INFO: Estimated remaining time:  22.24 seconds
+INFO: The code has run  180.95 seconds.
+INFO: Estimated remaining time:  345.45 seconds
 </pre></div>
 </div>
-<img alt="../_images/bdf1b02937c120a0355d9260a3333976f2b9162d494f8d6c9340de165042ec04.png" src="../_images/bdf1b02937c120a0355d9260a3333976f2b9162d494f8d6c9340de165042ec04.png" />
+<img alt="../_images/fc93da1e9076563c89adf24b34795d3efbb8f4741882d35c897800d5da4b4c61.png" src="../_images/fc93da1e9076563c89adf24b34795d3efbb8f4741882d35c897800d5da4b4c61.png" />
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model parameters:
 Ua = 0.0515 Watts/degC
 Ub = 0.0005 Watts/degC
@@ -1173,14 +1219,18 @@ u1_amplitude = 35 % power
 INFO: =======Iteration Number: 12 =====
 DEBUG: Design variable values of this iteration: {&#39;u1_period&#39;: 3,
 &#39;u1_amplitude&#39;: 45}
-DEBUG: The variable is fixed:  Ts1[0.0]
-INFO: elapsed time: 1.0 seconds
+WARNING: Loading a SolverResults object with a warning status into
+model.name=&quot;unknown&quot;;
+    - termination condition: infeasible
+    - message from solver: Ipopt 3.13.2\x3a Converged to a locally infeasible
+      point. Problem may be infeasible.
+INFO: elapsed time: 9.3 seconds
 INFO: This is run 12 out of 32.
-INFO: The code has run  12.65 seconds.
-INFO: Estimated remaining time:  21.08 seconds
+INFO: The code has run  190.23 seconds.
+INFO: Estimated remaining time:  317.05 seconds
 </pre></div>
 </div>
-<img alt="../_images/26a46582295b15c37662ad76a170ce21f726f71293977cc63c082f043f174318.png" src="../_images/26a46582295b15c37662ad76a170ce21f726f71293977cc63c082f043f174318.png" />
+<img alt="../_images/d78357b3714f72e9efe1813e3b44fbfc69870f64bdf41a6c3430ce0a33bbb9ba.png" src="../_images/d78357b3714f72e9efe1813e3b44fbfc69870f64bdf41a6c3430ce0a33bbb9ba.png" />
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model parameters:
 Ua = 0.0515 Watts/degC
 Ub = 0.0005 Watts/degC
@@ -1192,14 +1242,13 @@ u1_amplitude = 45 % power
 INFO: =======Iteration Number: 13 =====
 DEBUG: Design variable values of this iteration: {&#39;u1_period&#39;: 4,
 &#39;u1_amplitude&#39;: 15}
-DEBUG: The variable is fixed:  Ts1[0.0]
-INFO: elapsed time: 1.2 seconds
+INFO: elapsed time: 39.9 seconds
 INFO: This is run 13 out of 32.
-INFO: The code has run  13.88 seconds.
-INFO: Estimated remaining time:  20.28 seconds
+INFO: The code has run  230.17 seconds.
+INFO: Estimated remaining time:  336.4 seconds
 </pre></div>
 </div>
-<img alt="../_images/8a168b8b4128a6f120efcf61a70c9423d63c154f109bce941705d766b33ef869.png" src="../_images/8a168b8b4128a6f120efcf61a70c9423d63c154f109bce941705d766b33ef869.png" />
+<img alt="../_images/6791b3a0bbb9493ca1f08a82825ac446104b952abfbfbf75f8d0109071ba32bd.png" src="../_images/6791b3a0bbb9493ca1f08a82825ac446104b952abfbfbf75f8d0109071ba32bd.png" />
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model parameters:
 Ua = 0.0515 Watts/degC
 Ub = 0.0005 Watts/degC
@@ -1211,14 +1260,13 @@ u1_amplitude = 15 % power
 INFO: =======Iteration Number: 14 =====
 DEBUG: Design variable values of this iteration: {&#39;u1_period&#39;: 4,
 &#39;u1_amplitude&#39;: 25}
-DEBUG: The variable is fixed:  Ts1[0.0]
-INFO: elapsed time: 1.0 seconds
+INFO: elapsed time: 34.8 seconds
 INFO: This is run 14 out of 32.
-INFO: The code has run  14.84 seconds.
-INFO: Estimated remaining time:  19.08 seconds
+INFO: The code has run  265.01 seconds.
+INFO: Estimated remaining time:  340.72 seconds
 </pre></div>
 </div>
-<img alt="../_images/592c308229c9acbf6ca46e31227850fe718b83923932363e4fc6c89a5a077fff.png" src="../_images/592c308229c9acbf6ca46e31227850fe718b83923932363e4fc6c89a5a077fff.png" />
+<img alt="../_images/8407fdefe9517f9966959ba1061b0ace1824628a51c35417f8702143a64b1456.png" src="../_images/8407fdefe9517f9966959ba1061b0ace1824628a51c35417f8702143a64b1456.png" />
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model parameters:
 Ua = 0.0515 Watts/degC
 Ub = 0.0005 Watts/degC
@@ -1230,14 +1278,13 @@ u1_amplitude = 25 % power
 INFO: =======Iteration Number: 15 =====
 DEBUG: Design variable values of this iteration: {&#39;u1_period&#39;: 4,
 &#39;u1_amplitude&#39;: 35}
-DEBUG: The variable is fixed:  Ts1[0.0]
-INFO: elapsed time: 1.0 seconds
+INFO: elapsed time: 16.6 seconds
 INFO: This is run 15 out of 32.
-INFO: The code has run  15.8 seconds.
-INFO: Estimated remaining time:  17.9 seconds
+INFO: The code has run  281.56 seconds.
+INFO: Estimated remaining time:  319.1 seconds
 </pre></div>
 </div>
-<img alt="../_images/27c631fff1d24671c22636c5c251f1b3c0fbbf5df4f21c4fe3c7f86679e19e99.png" src="../_images/27c631fff1d24671c22636c5c251f1b3c0fbbf5df4f21c4fe3c7f86679e19e99.png" />
+<img alt="../_images/c0b6b64529f580a7c79cc6f296db317e6774b8515d660aa3e980ab2cbf5fd2e5.png" src="../_images/c0b6b64529f580a7c79cc6f296db317e6774b8515d660aa3e980ab2cbf5fd2e5.png" />
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model parameters:
 Ua = 0.0515 Watts/degC
 Ub = 0.0005 Watts/degC
@@ -1249,14 +1296,18 @@ u1_amplitude = 35 % power
 INFO: =======Iteration Number: 16 =====
 DEBUG: Design variable values of this iteration: {&#39;u1_period&#39;: 4,
 &#39;u1_amplitude&#39;: 45}
-DEBUG: The variable is fixed:  Ts1[0.0]
-INFO: elapsed time: 1.3 seconds
+WARNING: Loading a SolverResults object with a warning status into
+model.name=&quot;unknown&quot;;
+    - termination condition: infeasible
+    - message from solver: Ipopt 3.13.2\x3a Converged to a locally infeasible
+      point. Problem may be infeasible.
+INFO: elapsed time: 9.2 seconds
 INFO: This is run 16 out of 32.
-INFO: The code has run  17.09 seconds.
-INFO: Estimated remaining time:  17.09 seconds
+INFO: The code has run  290.75 seconds.
+INFO: Estimated remaining time:  290.75 seconds
 </pre></div>
 </div>
-<img alt="../_images/d903cf4c0606f171dd0e582c4381deccbd8dc4f1dd718ecc7a5a8e8fca55b16d.png" src="../_images/d903cf4c0606f171dd0e582c4381deccbd8dc4f1dd718ecc7a5a8e8fca55b16d.png" />
+<img alt="../_images/fd840bf2225fa61307554019d93b744069e2766e966455181d7218114d0e00a6.png" src="../_images/fd840bf2225fa61307554019d93b744069e2766e966455181d7218114d0e00a6.png" />
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model parameters:
 Ua = 0.0515 Watts/degC
 Ub = 0.0005 Watts/degC
@@ -1268,14 +1319,13 @@ u1_amplitude = 45 % power
 INFO: =======Iteration Number: 17 =====
 DEBUG: Design variable values of this iteration: {&#39;u1_period&#39;: 5,
 &#39;u1_amplitude&#39;: 15}
-DEBUG: The variable is fixed:  Ts1[0.0]
-INFO: elapsed time: 1.0 seconds
+INFO: elapsed time: 37.8 seconds
 INFO: This is run 17 out of 32.
-INFO: The code has run  18.08 seconds.
-INFO: Estimated remaining time:  15.95 seconds
+INFO: The code has run  328.51 seconds.
+INFO: Estimated remaining time:  289.86 seconds
 </pre></div>
 </div>
-<img alt="../_images/4378ae351826129388be0a3eeaba2bc7a6cf12ae42e7176fcef1e5afd4711336.png" src="../_images/4378ae351826129388be0a3eeaba2bc7a6cf12ae42e7176fcef1e5afd4711336.png" />
+<img alt="../_images/2e54e10048b95558642769b977af2881a85a59ec25350c3c4214b9239764bed8.png" src="../_images/2e54e10048b95558642769b977af2881a85a59ec25350c3c4214b9239764bed8.png" />
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model parameters:
 Ua = 0.0515 Watts/degC
 Ub = 0.0005 Watts/degC
@@ -1287,14 +1337,13 @@ u1_amplitude = 15 % power
 INFO: =======Iteration Number: 18 =====
 DEBUG: Design variable values of this iteration: {&#39;u1_period&#39;: 5,
 &#39;u1_amplitude&#39;: 25}
-DEBUG: The variable is fixed:  Ts1[0.0]
-INFO: elapsed time: 1.2 seconds
+INFO: elapsed time: 23.9 seconds
 INFO: This is run 18 out of 32.
-INFO: The code has run  19.32 seconds.
-INFO: Estimated remaining time:  15.02 seconds
+INFO: The code has run  352.37 seconds.
+INFO: Estimated remaining time:  274.07 seconds
 </pre></div>
 </div>
-<img alt="../_images/8e005b38551a921fe2d1448cee0dde349cd2172976e63f5d39923ba3d01e845a.png" src="../_images/8e005b38551a921fe2d1448cee0dde349cd2172976e63f5d39923ba3d01e845a.png" />
+<img alt="../_images/90d821fe29bad3f28d217788fa7815e03180d69e45448d20a083e48c81a40485.png" src="../_images/90d821fe29bad3f28d217788fa7815e03180d69e45448d20a083e48c81a40485.png" />
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model parameters:
 Ua = 0.0515 Watts/degC
 Ub = 0.0005 Watts/degC
@@ -1306,14 +1355,13 @@ u1_amplitude = 25 % power
 INFO: =======Iteration Number: 19 =====
 DEBUG: Design variable values of this iteration: {&#39;u1_period&#39;: 5,
 &#39;u1_amplitude&#39;: 35}
-DEBUG: The variable is fixed:  Ts1[0.0]
-INFO: elapsed time: 1.0 seconds
+INFO: elapsed time: 17.2 seconds
 INFO: This is run 19 out of 32.
-INFO: The code has run  20.3 seconds.
-INFO: Estimated remaining time:  13.89 seconds
+INFO: The code has run  369.56 seconds.
+INFO: Estimated remaining time:  252.86 seconds
 </pre></div>
 </div>
-<img alt="../_images/4f10c043a85be9dac68d4bc60f41a01f2cadfdc5d00983fb513a0ef1aab00ccd.png" src="../_images/4f10c043a85be9dac68d4bc60f41a01f2cadfdc5d00983fb513a0ef1aab00ccd.png" />
+<img alt="../_images/0b31017f8a17591cc77bf4589d9de84163d530942a6d72265c1f16925449b0db.png" src="../_images/0b31017f8a17591cc77bf4589d9de84163d530942a6d72265c1f16925449b0db.png" />
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model parameters:
 Ua = 0.0515 Watts/degC
 Ub = 0.0005 Watts/degC
@@ -1325,14 +1373,13 @@ u1_amplitude = 35 % power
 INFO: =======Iteration Number: 20 =====
 DEBUG: Design variable values of this iteration: {&#39;u1_period&#39;: 5,
 &#39;u1_amplitude&#39;: 45}
-DEBUG: The variable is fixed:  Ts1[0.0]
-INFO: elapsed time: 1.0 seconds
+INFO: elapsed time: 33.2 seconds
 INFO: This is run 20 out of 32.
-INFO: The code has run  21.27 seconds.
-INFO: Estimated remaining time:  12.76 seconds
+INFO: The code has run  402.81 seconds.
+INFO: Estimated remaining time:  241.69 seconds
 </pre></div>
 </div>
-<img alt="../_images/c3353557c19e9323608740ee61f9b758fd53f6f76ea9c01d1cdf60733aad0ef2.png" src="../_images/c3353557c19e9323608740ee61f9b758fd53f6f76ea9c01d1cdf60733aad0ef2.png" />
+<img alt="../_images/0692dd8a60de073527f10d716ad8a58caeb3434284115f6545b328899ecf2c1b.png" src="../_images/0692dd8a60de073527f10d716ad8a58caeb3434284115f6545b328899ecf2c1b.png" />
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model parameters:
 Ua = 0.0515 Watts/degC
 Ub = 0.0005 Watts/degC
@@ -1344,14 +1391,13 @@ u1_amplitude = 45 % power
 INFO: =======Iteration Number: 21 =====
 DEBUG: Design variable values of this iteration: {&#39;u1_period&#39;: 6,
 &#39;u1_amplitude&#39;: 15}
-DEBUG: The variable is fixed:  Ts1[0.0]
-INFO: elapsed time: 1.3 seconds
+INFO: elapsed time: 47.5 seconds
 INFO: This is run 21 out of 32.
-INFO: The code has run  22.55 seconds.
-INFO: Estimated remaining time:  11.81 seconds
+INFO: The code has run  450.3 seconds.
+INFO: Estimated remaining time:  235.87 seconds
 </pre></div>
 </div>
-<img alt="../_images/11b3c62f84795990d2acaf183f05ac3c5bb9c106760c2d9d05545f1b096b9441.png" src="../_images/11b3c62f84795990d2acaf183f05ac3c5bb9c106760c2d9d05545f1b096b9441.png" />
+<img alt="../_images/54317a0863a120aa99eaf22d2b6845ef8e20fc9f86e853babe7b0b70efd7c7b3.png" src="../_images/54317a0863a120aa99eaf22d2b6845ef8e20fc9f86e853babe7b0b70efd7c7b3.png" />
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model parameters:
 Ua = 0.0515 Watts/degC
 Ub = 0.0005 Watts/degC
@@ -1363,14 +1409,13 @@ u1_amplitude = 15 % power
 INFO: =======Iteration Number: 22 =====
 DEBUG: Design variable values of this iteration: {&#39;u1_period&#39;: 6,
 &#39;u1_amplitude&#39;: 25}
-DEBUG: The variable is fixed:  Ts1[0.0]
-INFO: elapsed time: 1.0 seconds
+INFO: elapsed time: 30.8 seconds
 INFO: This is run 22 out of 32.
-INFO: The code has run  23.54 seconds.
-INFO: Estimated remaining time:  10.7 seconds
+INFO: The code has run  481.15 seconds.
+INFO: Estimated remaining time:  218.7 seconds
 </pre></div>
 </div>
-<img alt="../_images/79329deb58b33e6659521b235a26277f997e9a5457157542df7299cf46661d6f.png" src="../_images/79329deb58b33e6659521b235a26277f997e9a5457157542df7299cf46661d6f.png" />
+<img alt="../_images/42c6cff9050b4229509c30c434252935e2ca8212eb2d9c1ad1bfa5120f205921.png" src="../_images/42c6cff9050b4229509c30c434252935e2ca8212eb2d9c1ad1bfa5120f205921.png" />
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model parameters:
 Ua = 0.0515 Watts/degC
 Ub = 0.0005 Watts/degC
@@ -1382,14 +1427,13 @@ u1_amplitude = 25 % power
 INFO: =======Iteration Number: 23 =====
 DEBUG: Design variable values of this iteration: {&#39;u1_period&#39;: 6,
 &#39;u1_amplitude&#39;: 35}
-DEBUG: The variable is fixed:  Ts1[0.0]
-INFO: elapsed time: 1.3 seconds
+INFO: elapsed time: 18.9 seconds
 INFO: This is run 23 out of 32.
-INFO: The code has run  24.81 seconds.
-INFO: Estimated remaining time:  9.71 seconds
+INFO: The code has run  500.03 seconds.
+INFO: Estimated remaining time:  195.66 seconds
 </pre></div>
 </div>
-<img alt="../_images/5742b2e82b94d0358b08caa85d0fc1a57d90f6c5360c6d6d647023dbc8f0007b.png" src="../_images/5742b2e82b94d0358b08caa85d0fc1a57d90f6c5360c6d6d647023dbc8f0007b.png" />
+<img alt="../_images/98074bb8d46ca387f683bb6da3634ca0908e3cc4a6c55ce895c710219c546919.png" src="../_images/98074bb8d46ca387f683bb6da3634ca0908e3cc4a6c55ce895c710219c546919.png" />
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model parameters:
 Ua = 0.0515 Watts/degC
 Ub = 0.0005 Watts/degC
@@ -1401,14 +1445,18 @@ u1_amplitude = 35 % power
 INFO: =======Iteration Number: 24 =====
 DEBUG: Design variable values of this iteration: {&#39;u1_period&#39;: 6,
 &#39;u1_amplitude&#39;: 45}
-DEBUG: The variable is fixed:  Ts1[0.0]
-INFO: elapsed time: 1.0 seconds
+WARNING: Loading a SolverResults object with a warning status into
+model.name=&quot;unknown&quot;;
+    - termination condition: infeasible
+    - message from solver: Ipopt 3.13.2\x3a Converged to a locally infeasible
+      point. Problem may be infeasible.
+INFO: elapsed time: 9.0 seconds
 INFO: This is run 24 out of 32.
-INFO: The code has run  25.79 seconds.
-INFO: Estimated remaining time:  8.6 seconds
+INFO: The code has run  509.07 seconds.
+INFO: Estimated remaining time:  169.69 seconds
 </pre></div>
 </div>
-<img alt="../_images/bb2f3f1197fd2d5eb429fa258455de12ef202ccbb38f4cf35435a84030a0e0e1.png" src="../_images/bb2f3f1197fd2d5eb429fa258455de12ef202ccbb38f4cf35435a84030a0e0e1.png" />
+<img alt="../_images/baad835c2969b45773f30c976fba9b4f1897c649d5549098b6ae8e0afbc16bd3.png" src="../_images/baad835c2969b45773f30c976fba9b4f1897c649d5549098b6ae8e0afbc16bd3.png" />
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model parameters:
 Ua = 0.0515 Watts/degC
 Ub = 0.0005 Watts/degC
@@ -1420,14 +1468,13 @@ u1_amplitude = 45 % power
 INFO: =======Iteration Number: 25 =====
 DEBUG: Design variable values of this iteration: {&#39;u1_period&#39;: 7,
 &#39;u1_amplitude&#39;: 15}
-DEBUG: The variable is fixed:  Ts1[0.0]
-INFO: elapsed time: 1.0 seconds
+INFO: elapsed time: 37.1 seconds
 INFO: This is run 25 out of 32.
-INFO: The code has run  26.77 seconds.
-INFO: Estimated remaining time:  7.49 seconds
+INFO: The code has run  546.13 seconds.
+INFO: Estimated remaining time:  152.92 seconds
 </pre></div>
 </div>
-<img alt="../_images/746426b4769bb44ba3117a430bc56c6b9a6aa4d8bbe5a06b58790400be479495.png" src="../_images/746426b4769bb44ba3117a430bc56c6b9a6aa4d8bbe5a06b58790400be479495.png" />
+<img alt="../_images/3bcd53bc8d67e1b41dd95dd5aac831a348eb3124b8d5e5cd120c5e6da3c7c1a7.png" src="../_images/3bcd53bc8d67e1b41dd95dd5aac831a348eb3124b8d5e5cd120c5e6da3c7c1a7.png" />
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model parameters:
 Ua = 0.0515 Watts/degC
 Ub = 0.0005 Watts/degC
@@ -1439,14 +1486,13 @@ u1_amplitude = 15 % power
 INFO: =======Iteration Number: 26 =====
 DEBUG: Design variable values of this iteration: {&#39;u1_period&#39;: 7,
 &#39;u1_amplitude&#39;: 25}
-DEBUG: The variable is fixed:  Ts1[0.0]
-INFO: elapsed time: 1.3 seconds
+INFO: elapsed time: 31.6 seconds
 INFO: This is run 26 out of 32.
-INFO: The code has run  28.05 seconds.
-INFO: Estimated remaining time:  6.47 seconds
+INFO: The code has run  577.69 seconds.
+INFO: Estimated remaining time:  133.31 seconds
 </pre></div>
 </div>
-<img alt="../_images/ab3e4b9b6db7fd3037fe7a0e788f8a5f17d6457d071fcded91da857095d35efb.png" src="../_images/ab3e4b9b6db7fd3037fe7a0e788f8a5f17d6457d071fcded91da857095d35efb.png" />
+<img alt="../_images/c42264e0ef3f2cf52f47303265d9d5bee39d06d877d3e2a66e79f43bbe51ef0c.png" src="../_images/c42264e0ef3f2cf52f47303265d9d5bee39d06d877d3e2a66e79f43bbe51ef0c.png" />
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model parameters:
 Ua = 0.0515 Watts/degC
 Ub = 0.0005 Watts/degC
@@ -1458,14 +1504,13 @@ u1_amplitude = 25 % power
 INFO: =======Iteration Number: 27 =====
 DEBUG: Design variable values of this iteration: {&#39;u1_period&#39;: 7,
 &#39;u1_amplitude&#39;: 35}
-DEBUG: The variable is fixed:  Ts1[0.0]
-INFO: elapsed time: 1.0 seconds
+INFO: elapsed time: 19.3 seconds
 INFO: This is run 27 out of 32.
-INFO: The code has run  29.02 seconds.
-INFO: Estimated remaining time:  5.37 seconds
+INFO: The code has run  596.97 seconds.
+INFO: Estimated remaining time:  110.55 seconds
 </pre></div>
 </div>
-<img alt="../_images/1aeffc4c1458a53304df9e3f76f55b1183723c86aac2405f1fd01b4d8d97b0f1.png" src="../_images/1aeffc4c1458a53304df9e3f76f55b1183723c86aac2405f1fd01b4d8d97b0f1.png" />
+<img alt="../_images/bb3465e349652c9a726e622a12b250f6e9521fba64a91785de03b7eda2fca2e0.png" src="../_images/bb3465e349652c9a726e622a12b250f6e9521fba64a91785de03b7eda2fca2e0.png" />
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model parameters:
 Ua = 0.0515 Watts/degC
 Ub = 0.0005 Watts/degC
@@ -1477,14 +1522,13 @@ u1_amplitude = 35 % power
 INFO: =======Iteration Number: 28 =====
 DEBUG: Design variable values of this iteration: {&#39;u1_period&#39;: 7,
 &#39;u1_amplitude&#39;: 45}
-DEBUG: The variable is fixed:  Ts1[0.0]
-INFO: elapsed time: 1.3 seconds
+INFO: elapsed time: 34.3 seconds
 INFO: This is run 28 out of 32.
-INFO: The code has run  30.27 seconds.
-INFO: Estimated remaining time:  4.32 seconds
+INFO: The code has run  631.24 seconds.
+INFO: Estimated remaining time:  90.18 seconds
 </pre></div>
 </div>
-<img alt="../_images/d3e4290d47d58ff17546b3035116149e541be2ca3e63a500f78b4637bceb6ad9.png" src="../_images/d3e4290d47d58ff17546b3035116149e541be2ca3e63a500f78b4637bceb6ad9.png" />
+<img alt="../_images/37a8e8e8a93071e2b3fd31593594c1c64a8991b1c28017717ad3c606fbf5023d.png" src="../_images/37a8e8e8a93071e2b3fd31593594c1c64a8991b1c28017717ad3c606fbf5023d.png" />
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model parameters:
 Ua = 0.0515 Watts/degC
 Ub = 0.0005 Watts/degC
@@ -1496,14 +1540,13 @@ u1_amplitude = 45 % power
 INFO: =======Iteration Number: 29 =====
 DEBUG: Design variable values of this iteration: {&#39;u1_period&#39;: 8,
 &#39;u1_amplitude&#39;: 15}
-DEBUG: The variable is fixed:  Ts1[0.0]
-INFO: elapsed time: 1.0 seconds
+INFO: elapsed time: 47.1 seconds
 INFO: This is run 29 out of 32.
-INFO: The code has run  31.25 seconds.
-INFO: Estimated remaining time:  3.23 seconds
+INFO: The code has run  678.32 seconds.
+INFO: Estimated remaining time:  70.17 seconds
 </pre></div>
 </div>
-<img alt="../_images/b43de388d87eb0f26ca4d81c41263bb7037d7a3ce4f4cebe3292175266f6bdbf.png" src="../_images/b43de388d87eb0f26ca4d81c41263bb7037d7a3ce4f4cebe3292175266f6bdbf.png" />
+<img alt="../_images/a55c63caa738dd4ef33ac450a2c7c75310f3d659916ce525c354bc70cd5d0a4a.png" src="../_images/a55c63caa738dd4ef33ac450a2c7c75310f3d659916ce525c354bc70cd5d0a4a.png" />
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model parameters:
 Ua = 0.0515 Watts/degC
 Ub = 0.0005 Watts/degC
@@ -1515,14 +1558,13 @@ u1_amplitude = 15 % power
 INFO: =======Iteration Number: 30 =====
 DEBUG: Design variable values of this iteration: {&#39;u1_period&#39;: 8,
 &#39;u1_amplitude&#39;: 25}
-DEBUG: The variable is fixed:  Ts1[0.0]
-INFO: elapsed time: 1.0 seconds
+INFO: elapsed time: 28.7 seconds
 INFO: This is run 30 out of 32.
-INFO: The code has run  32.22 seconds.
-INFO: Estimated remaining time:  2.15 seconds
+INFO: The code has run  707.06 seconds.
+INFO: Estimated remaining time:  47.14 seconds
 </pre></div>
 </div>
-<img alt="../_images/d154323e3200df5666d969c509754b25f15404d102e96c26b264675d539996d0.png" src="../_images/d154323e3200df5666d969c509754b25f15404d102e96c26b264675d539996d0.png" />
+<img alt="../_images/2eaba2f70ad1bbccc855ffef7b860a6ef9a146ce2610e3d679573477523cb11b.png" src="../_images/2eaba2f70ad1bbccc855ffef7b860a6ef9a146ce2610e3d679573477523cb11b.png" />
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model parameters:
 Ua = 0.0515 Watts/degC
 Ub = 0.0005 Watts/degC
@@ -1534,14 +1576,13 @@ u1_amplitude = 25 % power
 INFO: =======Iteration Number: 31 =====
 DEBUG: Design variable values of this iteration: {&#39;u1_period&#39;: 8,
 &#39;u1_amplitude&#39;: 35}
-DEBUG: The variable is fixed:  Ts1[0.0]
-INFO: elapsed time: 1.3 seconds
+INFO: elapsed time: 18.9 seconds
 INFO: This is run 31 out of 32.
-INFO: The code has run  33.5 seconds.
-INFO: Estimated remaining time:  1.08 seconds
+INFO: The code has run  725.97 seconds.
+INFO: Estimated remaining time:  23.42 seconds
 </pre></div>
 </div>
-<img alt="../_images/7cf47ca9934d1771c7878c8e819a7002d796c956ff79ef73e1cab0835e4c7654.png" src="../_images/7cf47ca9934d1771c7878c8e819a7002d796c956ff79ef73e1cab0835e4c7654.png" />
+<img alt="../_images/783f3ad79b7bedc6d7ee5cbffb1cbf9e675751d4de447a020829374ae6e3c1d1.png" src="../_images/783f3ad79b7bedc6d7ee5cbffb1cbf9e675751d4de447a020829374ae6e3c1d1.png" />
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model parameters:
 Ua = 0.0515 Watts/degC
 Ub = 0.0005 Watts/degC
@@ -1553,14 +1594,18 @@ u1_amplitude = 35 % power
 INFO: =======Iteration Number: 32 =====
 DEBUG: Design variable values of this iteration: {&#39;u1_period&#39;: 8,
 &#39;u1_amplitude&#39;: 45}
-DEBUG: The variable is fixed:  Ts1[0.0]
-INFO: elapsed time: 1.0 seconds
+WARNING: Loading a SolverResults object with a warning status into
+model.name=&quot;unknown&quot;;
+    - termination condition: infeasible
+    - message from solver: Ipopt 3.13.2\x3a Converged to a locally infeasible
+      point. Problem may be infeasible.
+INFO: elapsed time: 9.1 seconds
 INFO: This is run 32 out of 32.
-INFO: The code has run  34.48 seconds.
+INFO: The code has run  735.09 seconds.
 INFO: Estimated remaining time:  0.0 seconds
 </pre></div>
 </div>
-<img alt="../_images/a8f54a60439ada5a00b7ba0bbdc5af84ed52dd9f44eeb4b867b6c57f3eeea1c0.png" src="../_images/a8f54a60439ada5a00b7ba0bbdc5af84ed52dd9f44eeb4b867b6c57f3eeea1c0.png" />
+<img alt="../_images/2532cddc9899023a443b4291107e5c2c37ad0cca38be5e1de1f65e0a6be19119.png" src="../_images/2532cddc9899023a443b4291107e5c2c37ad0cca38be5e1de1f65e0a6be19119.png" />
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model parameters:
 Ua = 0.0515 Watts/degC
 Ub = 0.0005 Watts/degC
@@ -1569,7 +1614,7 @@ CpS = 0.01 Joules/degC
 u1_period = 8 minutes
 u1_amplitude = 45 % power
  
-INFO: Overall wall clock time [s]:  34.48074299903237
+INFO: Overall wall clock time [s]:  735.0857825791463
 </pre></div>
 </div>
 </div>
@@ -1584,26 +1629,30 @@ INFO: Overall wall clock time [s]:  34.48074299903237
 
 <span class="c1"># Make heat maps</span>
 <span class="n">all_fim</span><span class="o">.</span><span class="n">figure_drawing</span><span class="p">(</span>
-    <span class="p">{</span> <span class="p">},</span> <span class="c1"># Empty dictionary because the sensitivity analysis only included 2 dimensions. </span>
+    <span class="p">{},</span>  <span class="c1"># Empty dictionary because the sensitivity analysis only included 2 dimensions.</span>
     <span class="p">[</span><span class="s2">&quot;u1_period&quot;</span><span class="p">,</span> <span class="s2">&quot;u1_amplitude&quot;</span><span class="p">],</span>
-    <span class="s2">&quot;Sine Wave Test&quot;</span><span class="p">,</span> <span class="s2">&quot;Period [min]&quot;</span><span class="p">,</span> <span class="s2">&quot;Amplitude [% power]&quot;</span>
+    <span class="s2">&quot;Sine Wave Test&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Period [min]&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Amplitude [% power]&quot;</span><span class="p">,</span>
 <span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/Users/adowling/DowlingLab/dev/pyomo/pyomo/contrib/doe/result.py:663: RuntimeWarning: invalid value encountered in log10
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/Users/adowling/DowlingLab/pyomo/pyomo/contrib/doe/result.py:663: RuntimeWarning: invalid value encountered in log10
   hes_e = np.log10(self.cri_e)
-/Users/adowling/DowlingLab/dev/pyomo/pyomo/contrib/doe/result.py:664: RuntimeWarning: invalid value encountered in log10
+/Users/adowling/DowlingLab/pyomo/pyomo/contrib/doe/result.py:664: RuntimeWarning: divide by zero encountered in log10
   hes_d = np.log10(self.cri_d)
-/Users/adowling/DowlingLab/dev/pyomo/pyomo/contrib/doe/result.py:665: RuntimeWarning: invalid value encountered in log10
+/Users/adowling/DowlingLab/pyomo/pyomo/contrib/doe/result.py:664: RuntimeWarning: invalid value encountered in log10
+  hes_d = np.log10(self.cri_d)
+/Users/adowling/DowlingLab/pyomo/pyomo/contrib/doe/result.py:665: RuntimeWarning: invalid value encountered in log10
   hes_e2 = np.log10(self.cri_e_cond)
 </pre></div>
 </div>
-<img alt="../_images/bebc0bb59899db8c7ee2d5a89ed18aec10eadecd9c71d446dbefc46cdc5b3862.png" src="../_images/bebc0bb59899db8c7ee2d5a89ed18aec10eadecd9c71d446dbefc46cdc5b3862.png" />
-<img alt="../_images/7b36e40ee82222537a6ea64de8e6b00b26f3fd883fead5f6d3319b3c62202e12.png" src="../_images/7b36e40ee82222537a6ea64de8e6b00b26f3fd883fead5f6d3319b3c62202e12.png" />
-<img alt="../_images/7107f6e3774cfffcce88393e0cee82a862b11a7d1e1bcbbe0dc8b7895c630b7d.png" src="../_images/7107f6e3774cfffcce88393e0cee82a862b11a7d1e1bcbbe0dc8b7895c630b7d.png" />
-<img alt="../_images/61f8f88ad4da4563f027941aefbbc0b297faf832902115ec824baa1b61bffcdb.png" src="../_images/61f8f88ad4da4563f027941aefbbc0b297faf832902115ec824baa1b61bffcdb.png" />
+<img alt="../_images/4a4f7f528cbd0670e55613df21b24e014fd963de47eb053733b0a5938085e641.png" src="../_images/4a4f7f528cbd0670e55613df21b24e014fd963de47eb053733b0a5938085e641.png" />
+<img alt="../_images/a211bb7338b7b1231c60cb3b047725025bbae03ea11552a613e0863a1778f248.png" src="../_images/a211bb7338b7b1231c60cb3b047725025bbae03ea11552a613e0863a1778f248.png" />
+<img alt="../_images/620134d1e650e43d28d819a73529ad6ca1aef75a23d7b1bac88247c5063bb24a.png" src="../_images/620134d1e650e43d28d819a73529ad6ca1aef75a23d7b1bac88247c5063bb24a.png" />
+<img alt="../_images/b7f355da72272333b09ca521245a3640c4345458825a80685e53eed9ae155238.png" src="../_images/b7f355da72272333b09ca521245a3640c4345458825a80685e53eed9ae155238.png" />
 </div>
 </div>
 </section>
