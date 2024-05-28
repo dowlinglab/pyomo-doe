@@ -19,15 +19,15 @@
   </script>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../_static/styles/theme.css?digest=5b4479735964841361fd" rel="stylesheet" />
-<link href="../_static/styles/bootstrap.css?digest=5b4479735964841361fd" rel="stylesheet" />
-<link href="../_static/styles/pydata-sphinx-theme.css?digest=5b4479735964841361fd" rel="stylesheet" />
+  <link href="../_static/styles/theme.css?digest=bd9e20870c6007c4c509" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=bd9e20870c6007c4c509" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=bd9e20870c6007c4c509" rel="stylesheet" />
 
   
-  <link href="../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=5b4479735964841361fd" rel="stylesheet" />
-  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
-<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
-<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+  <link href="../_static/vendor/fontawesome/6.5.1/css/all.min.css?digest=bd9e20870c6007c4c509" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.1/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.1/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.1/webfonts/fa-regular-400.woff2" />
 
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" href="../_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
@@ -38,9 +38,9 @@
     <link rel="stylesheet" type="text/css" href="../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=5b4479735964841361fd" />
-<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=5b4479735964841361fd" />
-  <script src="../_static/vendor/fontawesome/6.1.2/js/all.min.js?digest=5b4479735964841361fd"></script>
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=bd9e20870c6007c4c509" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=bd9e20870c6007c4c509" />
+  <script src="../_static/vendor/fontawesome/6.5.1/js/all.min.js?digest=bd9e20870c6007c4c509"></script>
 
     <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
     <script src="../_static/jquery.js"></script>
@@ -78,7 +78,7 @@ const thebe_selector_output = ".output, .cell_output"
 
   
   
-  <a class="skip-link" href="#main-content">Skip to main content</a>
+  <a id="pst-skip-link" class="skip-link" href="#main-content">Skip to main content</a>
   
   <div id="pst-scroll-pixel-helper"></div>
 
@@ -121,12 +121,18 @@ const thebe_selector_output = ".output, .cell_output"
   <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
 </form></div>
   </div>
+
+  <header>
   
-    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
-    </nav>
+    <div class="bd-header navbar navbar-expand-lg bd-navbar">
+    </div>
   
+  </header>
+
   <div class="bd-container">
     <div class="bd-container__inner bd-page-width">
+      
+      
       
       <div class="bd-sidebar-primary bd-sidebar">
         
@@ -433,7 +439,7 @@ document.write(`
               
                 
 <div id="searchbox"></div>
-                <article class="bd-article" role="main">
+                <article class="bd-article">
                   
   <section class="tex2jax_ignore mathjax_ignore" id="pyomo-doe-exploratory-analysis">
 <h1>Pyomo.DoE: Exploratory Analysis<a class="headerlink" href="#pyomo-doe-exploratory-analysis" title="Permalink to this heading">#</a></h1>
@@ -686,6 +692,18 @@ document.write(`
 This program contains Ipopt, a library for large-scale nonlinear optimization.
  Ipopt is released as open source code under the Eclipse Public License (EPL).
          For more information visit http://projects.coin-or.org/Ipopt
+
+This version of Ipopt was compiled from source code available at
+    https://github.com/IDAES/Ipopt as part of the Institute for the Design of
+    Advanced Energy Systems Process Systems Engineering Framework (IDAES PSE
+    Framework) Copyright (c) 2018-2019. See https://github.com/IDAES/idaes-pse.
+
+This version of Ipopt was compiled using HSL, a collection of Fortran codes
+    for large-scale scientific computation.  All technical papers, sales and
+    publicity material resulting from use of the HSL codes within IPOPT must
+    contain the following acknowledgement:
+        HSL, a collection of Fortran codes for large-scale scientific
+        computation. See http://www.hsl.rl.ac.uk.
 ******************************************************************************
 
 This is Ipopt version 3.13.2, running with linear solver ma27.
@@ -708,16 +726,16 @@ iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
    0  0.0000000e+00 1.00e+00 0.00e+00  -1.0 0.00e+00    -  0.00e+00 0.00e+00   0
    1  0.0000000e+00 1.00e-02 1.12e-01  -1.0 1.00e+00    -  9.80e-01 9.90e-01h  1
    2  0.0000000e+00 9.90e-05 9.90e+00  -1.0 1.00e-02    -  1.00e+00 9.90e-01h  1
-   3  0.0000000e+00 2.13e-14 1.26e-05  -1.0 9.90e-05    -  1.00e+00 1.00e+00h  1
+   3  0.0000000e+00 1.53e-14 1.26e-05  -1.0 9.90e-05    -  1.00e+00 1.00e+00h  1
 
 Number of Iterations....: 3
 
                                    (scaled)                 (unscaled)
 Objective...............:   0.0000000000000000e+00    0.0000000000000000e+00
 Dual infeasibility......:   0.0000000000000000e+00    0.0000000000000000e+00
-Constraint violation....:   2.1316282072803006e-14    2.1316282072803006e-14
+Constraint violation....:   1.5279139797464566e-14    1.5279139797464566e-14
 Complementarity.........:   0.0000000000000000e+00    0.0000000000000000e+00
-Overall NLP error.......:   2.1316282072803006e-14    2.1316282072803006e-14
+Overall NLP error.......:   1.5279139797464566e-14    1.5279139797464566e-14
 
 
 Number of objective function evaluations             = 4
@@ -727,11 +745,11 @@ Number of inequality constraint evaluations          = 0
 Number of equality constraint Jacobian evaluations   = 4
 Number of inequality constraint Jacobian evaluations = 0
 Number of Lagrangian Hessian evaluations             = 3
-Total CPU secs in IPOPT (w/o function evaluations)   =      0.081
-Total CPU secs in NLP function evaluations           =      0.010
+Total CPU secs in IPOPT (w/o function evaluations)   =      0.122
+Total CPU secs in NLP function evaluations           =      0.003
 
 EXIT: Optimal Solution Found.
-INFO: elapsed time: 7.0 seconds
+INFO: elapsed time: 3.9 seconds
 </pre></div>
 </div>
 </div>
@@ -745,10 +763,10 @@ INFO: elapsed time: 7.0 seconds
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>======Results Summary======
 Four design criteria log10() value:
-A-optimality: 9.698903678286175
-D-optimality: nan
-E-optimality: nan
-Modified E-optimality: nan
+A-optimality: 9.698903678283168
+D-optimality: 8.292425086814568
+E-optimality: -15.256790847776848
+Modified E-optimality: 24.939667881782306
 
 FIM:
  [[ 1.88459415e+08 -1.91393890e+08 -8.24201918e+06 -1.04121590e+03]
@@ -757,21 +775,13 @@ FIM:
  [-1.04121590e+03  2.58102008e+04  3.51179540e+02  1.38519624e-01]]
 
 eigenvalues:
- [ 4.81811358e+09  1.80716021e+08  4.06846518e+05 -2.41067013e-16]
+ [4.81811358e+09 1.80716021e+08 4.06846518e+05 5.53616662e-16]
 
 eigenvectors:
- [[ 4.13259139e-02 -9.98655750e-01  3.12867703e-02 -1.00570603e-13]
+ [[ 4.13259139e-02 -9.98655750e-01  3.12867703e-02 -1.00385955e-13]
  [-9.99053330e-01 -4.17276557e-02 -1.22982147e-02 -5.33299017e-06]
- [-1.35872064e-02  3.07489171e-02  9.99434786e-01 -2.48897567e-06]
- [-5.36175981e-06 -1.45999972e-07  2.42198261e-06  1.00000000e+00]]
-</pre></div>
-</div>
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/Users/adowling/DowlingLab/pyomo-doe/notebooks/tclab_pyomo.py:640: RuntimeWarning: invalid value encountered in log10
-  print(&quot;D-optimality:&quot;, np.log10(result.det))
-/Users/adowling/DowlingLab/pyomo-doe/notebooks/tclab_pyomo.py:641: RuntimeWarning: invalid value encountered in log10
-  print(&quot;E-optimality:&quot;, np.log10(result.min_eig))
-/Users/adowling/DowlingLab/pyomo-doe/notebooks/tclab_pyomo.py:642: RuntimeWarning: invalid value encountered in log10
-  print(&quot;Modified E-optimality:&quot;, np.log10(result.cond))
+ [-1.35872064e-02  3.07489171e-02  9.99434786e-01 -2.48897568e-06]
+ [-5.36175981e-06 -1.45999971e-07  2.42198262e-06  1.00000000e+00]]
 </pre></div>
 </div>
 </div>
@@ -882,6 +892,18 @@ linear_solver=ma57
 This program contains Ipopt, a library for large-scale nonlinear optimization.
  Ipopt is released as open source code under the Eclipse Public License (EPL).
          For more information visit http://projects.coin-or.org/Ipopt
+
+This version of Ipopt was compiled from source code available at
+    https://github.com/IDAES/Ipopt as part of the Institute for the Design of
+    Advanced Energy Systems Process Systems Engineering Framework (IDAES PSE
+    Framework) Copyright (c) 2018-2019. See https://github.com/IDAES/idaes-pse.
+
+This version of Ipopt was compiled using HSL, a collection of Fortran codes
+    for large-scale scientific computation.  All technical papers, sales and
+    publicity material resulting from use of the HSL codes within IPOPT must
+    contain the following acknowledgement:
+        HSL, a collection of Fortran codes for large-scale scientific
+        computation. See http://www.hsl.rl.ac.uk.
 ******************************************************************************
 
 This is Ipopt version 3.13.2, running with linear solver ma57.
@@ -923,11 +945,11 @@ Number of inequality constraint evaluations          = 0
 Number of equality constraint Jacobian evaluations   = 4
 Number of inequality constraint Jacobian evaluations = 0
 Number of Lagrangian Hessian evaluations             = 3
-Total CPU secs in IPOPT (w/o function evaluations)   =      0.112
-Total CPU secs in NLP function evaluations           =      0.020
+Total CPU secs in IPOPT (w/o function evaluations)   =      0.147
+Total CPU secs in NLP function evaluations           =      0.006
 
 EXIT: Optimal Solution Found.
-INFO: elapsed time: 7.9 seconds
+INFO: elapsed time: 4.2 seconds
 </pre></div>
 </div>
 <img alt="../_images/23c3c01c2633b6f7064316b9571a3177fdb6237693623e0c8afb0ec11266a78b.png" src="../_images/23c3c01c2633b6f7064316b9571a3177fdb6237693623e0c8afb0ec11266a78b.png" />
@@ -952,7 +974,7 @@ u1_amplitude = 50 % power
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>======Results Summary======
 Four design criteria log10() value:
-A-optimality: 9.705521668583316
+A-optimality: 9.705521668583394
 D-optimality: nan
 E-optimality: nan
 Modified E-optimality: nan
@@ -964,13 +986,21 @@ FIM:
  [-1.06170169e+03  2.62025550e+04  3.57695899e+02  1.40628265e-01]]
 
 eigenvalues:
- [ 4.89133300e+09  1.84254423e+08  4.13222899e+05 -2.71839065e-16]
+ [ 4.89133300e+09  1.84254423e+08  4.13222899e+05 -3.59981640e-16]
 
 eigenvectors:
- [[ 4.15154255e-02 -9.98649054e-01  3.12495844e-02 -1.00933074e-13]
+ [[ 4.15154255e-02 -9.98649054e-01  3.12495844e-02 -1.00990095e-13]
  [-9.99044858e-01 -4.19179925e-02 -1.23390827e-02 -5.33299017e-06]
  [-1.36323331e-02  3.07074744e-02  9.99435446e-01 -2.48897568e-06]
  [-5.36182695e-06 -1.47118186e-07  2.42176631e-06  1.00000000e+00]]
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/Users/adowling/DowlingLab/Teaching/pyomo-doe/notebooks/tclab_pyomo.py:776: RuntimeWarning: invalid value encountered in log10
+  print(&quot;D-optimality:&quot;, np.log10(result.det))
+/Users/adowling/DowlingLab/Teaching/pyomo-doe/notebooks/tclab_pyomo.py:777: RuntimeWarning: invalid value encountered in log10
+  print(&quot;E-optimality:&quot;, np.log10(result.min_eig))
+/Users/adowling/DowlingLab/Teaching/pyomo-doe/notebooks/tclab_pyomo.py:778: RuntimeWarning: invalid value encountered in log10
+  print(&quot;Modified E-optimality:&quot;, np.log10(result.cond))
 </pre></div>
 </div>
 </div>
@@ -998,8 +1028,8 @@ eigenvectors:
     <span class="n">design_ranges</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;u1_period&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="s2">&quot;u1_amplitude&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">20</span><span class="p">,</span> <span class="mi">50</span><span class="p">]}</span>
 
 <span class="c1"># Choose from &#39;sequential_finite&#39;, &#39;direct_kaug&#39;</span>
-<span class="n">sensi_opt</span> <span class="o">=</span> <span class="s2">&quot;sequential_finite&quot;</span>
-<span class="c1"># sensi_opt = &quot;direct_kaug&quot;</span>
+<span class="c1"># sensi_opt = &quot;sequential_finite&quot;</span>
+<span class="n">sensi_opt</span> <span class="o">=</span> <span class="s2">&quot;direct_kaug&quot;</span>
 </pre></div>
 </div>
 </div>
@@ -1021,10 +1051,11 @@ eigenvectors:
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>INFO: =======Iteration Number: 1 =====
 DEBUG: Design variable values of this iteration: {&#39;u1_period&#39;: 1,
 &#39;u1_amplitude&#39;: 15}
-INFO: elapsed time: 7.7 seconds
+DEBUG: The variable is fixed:  Ts1[0.0]
+INFO: elapsed time: 1.1 seconds
 INFO: This is run 1 out of 32.
-INFO: The code has run  7.7 seconds.
-INFO: Estimated remaining time:  238.68 seconds
+INFO: The code has run  1.12 seconds.
+INFO: Estimated remaining time:  34.63 seconds
 </pre></div>
 </div>
 <img alt="../_images/1c5e492d00d47a70b4c31c360a3f72883275e33cb4ca118cfe9a3a067bf22c91.png" src="../_images/1c5e492d00d47a70b4c31c360a3f72883275e33cb4ca118cfe9a3a067bf22c91.png" />
@@ -1039,10 +1070,11 @@ u1_amplitude = 15 % power
 INFO: =======Iteration Number: 2 =====
 DEBUG: Design variable values of this iteration: {&#39;u1_period&#39;: 1,
 &#39;u1_amplitude&#39;: 25}
-INFO: elapsed time: 7.6 seconds
+DEBUG: The variable is fixed:  Ts1[0.0]
+INFO: elapsed time: 0.9 seconds
 INFO: This is run 2 out of 32.
-INFO: The code has run  15.35 seconds.
-INFO: Estimated remaining time:  230.3 seconds
+INFO: The code has run  2.05 seconds.
+INFO: Estimated remaining time:  30.78 seconds
 </pre></div>
 </div>
 <img alt="../_images/ac91ecee523fb430496ae1e8e2e16ea4e99437ebeb65bf3032738fb12ca6d302.png" src="../_images/ac91ecee523fb430496ae1e8e2e16ea4e99437ebeb65bf3032738fb12ca6d302.png" />
@@ -1057,10 +1089,11 @@ u1_amplitude = 25 % power
 INFO: =======Iteration Number: 3 =====
 DEBUG: Design variable values of this iteration: {&#39;u1_period&#39;: 1,
 &#39;u1_amplitude&#39;: 35}
-INFO: elapsed time: 7.8 seconds
+DEBUG: The variable is fixed:  Ts1[0.0]
+INFO: elapsed time: 0.9 seconds
 INFO: This is run 3 out of 32.
-INFO: The code has run  23.18 seconds.
-INFO: Estimated remaining time:  224.03 seconds
+INFO: The code has run  2.99 seconds.
+INFO: Estimated remaining time:  28.87 seconds
 </pre></div>
 </div>
 <img alt="../_images/0f851f0c423515a25cf35eacd1d82f3436ca0d85b7021b7e0823801d2ce56eb5.png" src="../_images/0f851f0c423515a25cf35eacd1d82f3436ca0d85b7021b7e0823801d2ce56eb5.png" />
@@ -1075,10 +1108,11 @@ u1_amplitude = 35 % power
 INFO: =======Iteration Number: 4 =====
 DEBUG: Design variable values of this iteration: {&#39;u1_period&#39;: 1,
 &#39;u1_amplitude&#39;: 45}
-INFO: elapsed time: 7.8 seconds
+DEBUG: The variable is fixed:  Ts1[0.0]
+INFO: elapsed time: 1.2 seconds
 INFO: This is run 4 out of 32.
-INFO: The code has run  31.01 seconds.
-INFO: Estimated remaining time:  217.06 seconds
+INFO: The code has run  4.21 seconds.
+INFO: Estimated remaining time:  29.48 seconds
 </pre></div>
 </div>
 <img alt="../_images/3546c4fff5e28262bd098440a4da7b667f31c520c9614f03558022769f748a0e.png" src="../_images/3546c4fff5e28262bd098440a4da7b667f31c520c9614f03558022769f748a0e.png" />
@@ -1093,10 +1127,11 @@ u1_amplitude = 45 % power
 INFO: =======Iteration Number: 5 =====
 DEBUG: Design variable values of this iteration: {&#39;u1_period&#39;: 2,
 &#39;u1_amplitude&#39;: 15}
-INFO: elapsed time: 27.1 seconds
+DEBUG: The variable is fixed:  Ts1[0.0]
+INFO: elapsed time: 0.9 seconds
 INFO: This is run 5 out of 32.
-INFO: The code has run  58.1 seconds.
-INFO: Estimated remaining time:  313.74 seconds
+INFO: The code has run  5.15 seconds.
+INFO: Estimated remaining time:  27.81 seconds
 </pre></div>
 </div>
 <img alt="../_images/b87ad8491dfa201db1d161d88fe0e05b44d15145b6a6d524f6ee50d64be700b0.png" src="../_images/b87ad8491dfa201db1d161d88fe0e05b44d15145b6a6d524f6ee50d64be700b0.png" />
@@ -1111,13 +1146,14 @@ u1_amplitude = 15 % power
 INFO: =======Iteration Number: 6 =====
 DEBUG: Design variable values of this iteration: {&#39;u1_period&#39;: 2,
 &#39;u1_amplitude&#39;: 25}
-INFO: elapsed time: 18.3 seconds
+DEBUG: The variable is fixed:  Ts1[0.0]
+INFO: elapsed time: 1.2 seconds
 INFO: This is run 6 out of 32.
-INFO: The code has run  76.42 seconds.
-INFO: Estimated remaining time:  331.13 seconds
+INFO: The code has run  6.36 seconds.
+INFO: Estimated remaining time:  27.57 seconds
 </pre></div>
 </div>
-<img alt="../_images/033fd7cb3b49a23c45766f96063990598c44cce2b023fb622cc6eb77c2a52f85.png" src="../_images/033fd7cb3b49a23c45766f96063990598c44cce2b023fb622cc6eb77c2a52f85.png" />
+<img alt="../_images/56590503659c3e0fc2f63d0eaafb2fea6d6d97bdd88f1c9443e5c53e7bdac8b7.png" src="../_images/56590503659c3e0fc2f63d0eaafb2fea6d6d97bdd88f1c9443e5c53e7bdac8b7.png" />
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model parameters:
 Ua = 0.0515 Watts/degC
 Ub = 0.0005 Watts/degC
@@ -1129,10 +1165,11 @@ u1_amplitude = 25 % power
 INFO: =======Iteration Number: 7 =====
 DEBUG: Design variable values of this iteration: {&#39;u1_period&#39;: 2,
 &#39;u1_amplitude&#39;: 35}
-INFO: elapsed time: 13.5 seconds
+DEBUG: The variable is fixed:  Ts1[0.0]
+INFO: elapsed time: 1.0 seconds
 INFO: This is run 7 out of 32.
-INFO: The code has run  89.91 seconds.
-INFO: Estimated remaining time:  321.11 seconds
+INFO: The code has run  7.32 seconds.
+INFO: Estimated remaining time:  26.13 seconds
 </pre></div>
 </div>
 <img alt="../_images/e9d63e1982addce09b0e731b40eebc0a9293afdf363f60900cf0287794192f18.png" src="../_images/e9d63e1982addce09b0e731b40eebc0a9293afdf363f60900cf0287794192f18.png" />
@@ -1147,10 +1184,11 @@ u1_amplitude = 35 % power
 INFO: =======Iteration Number: 8 =====
 DEBUG: Design variable values of this iteration: {&#39;u1_period&#39;: 2,
 &#39;u1_amplitude&#39;: 45}
-INFO: elapsed time: 22.3 seconds
+DEBUG: The variable is fixed:  Ts1[0.0]
+INFO: elapsed time: 0.9 seconds
 INFO: This is run 8 out of 32.
-INFO: The code has run  112.21 seconds.
-INFO: Estimated remaining time:  336.62 seconds
+INFO: The code has run  8.25 seconds.
+INFO: Estimated remaining time:  24.76 seconds
 </pre></div>
 </div>
 <img alt="../_images/47f39bd692232951bb176bcbf29e4953b614470bd977b6e65bef4461648d6f5f.png" src="../_images/47f39bd692232951bb176bcbf29e4953b614470bd977b6e65bef4461648d6f5f.png" />
@@ -1165,10 +1203,11 @@ u1_amplitude = 45 % power
 INFO: =======Iteration Number: 9 =====
 DEBUG: Design variable values of this iteration: {&#39;u1_period&#39;: 3,
 &#39;u1_amplitude&#39;: 15}
-INFO: elapsed time: 29.4 seconds
+DEBUG: The variable is fixed:  Ts1[0.0]
+INFO: elapsed time: 1.3 seconds
 INFO: This is run 9 out of 32.
-INFO: The code has run  141.6 seconds.
-INFO: Estimated remaining time:  361.87 seconds
+INFO: The code has run  9.52 seconds.
+INFO: Estimated remaining time:  24.33 seconds
 </pre></div>
 </div>
 <img alt="../_images/e6173b94f370a855783f7e4152b40e9c7c66685300819f92f2ebe4e8c077d9cc.png" src="../_images/e6173b94f370a855783f7e4152b40e9c7c66685300819f92f2ebe4e8c077d9cc.png" />
@@ -1183,10 +1222,11 @@ u1_amplitude = 15 % power
 INFO: =======Iteration Number: 10 =====
 DEBUG: Design variable values of this iteration: {&#39;u1_period&#39;: 3,
 &#39;u1_amplitude&#39;: 25}
-INFO: elapsed time: 23.3 seconds
+DEBUG: The variable is fixed:  Ts1[0.0]
+INFO: elapsed time: 0.9 seconds
 INFO: This is run 10 out of 32.
-INFO: The code has run  164.89 seconds.
-INFO: Estimated remaining time:  362.77 seconds
+INFO: The code has run  10.47 seconds.
+INFO: Estimated remaining time:  23.02 seconds
 </pre></div>
 </div>
 <img alt="../_images/650e780c3c324ba85d766eaade1bb6f9c5c6904ef5e58bda50e0d1227e03c729.png" src="../_images/650e780c3c324ba85d766eaade1bb6f9c5c6904ef5e58bda50e0d1227e03c729.png" />
@@ -1201,10 +1241,11 @@ u1_amplitude = 25 % power
 INFO: =======Iteration Number: 11 =====
 DEBUG: Design variable values of this iteration: {&#39;u1_period&#39;: 3,
 &#39;u1_amplitude&#39;: 35}
-INFO: elapsed time: 16.0 seconds
+DEBUG: The variable is fixed:  Ts1[0.0]
+INFO: elapsed time: 1.2 seconds
 INFO: This is run 11 out of 32.
-INFO: The code has run  180.95 seconds.
-INFO: Estimated remaining time:  345.45 seconds
+INFO: The code has run  11.68 seconds.
+INFO: Estimated remaining time:  22.3 seconds
 </pre></div>
 </div>
 <img alt="../_images/fc93da1e9076563c89adf24b34795d3efbb8f4741882d35c897800d5da4b4c61.png" src="../_images/fc93da1e9076563c89adf24b34795d3efbb8f4741882d35c897800d5da4b4c61.png" />
@@ -1219,15 +1260,11 @@ u1_amplitude = 35 % power
 INFO: =======Iteration Number: 12 =====
 DEBUG: Design variable values of this iteration: {&#39;u1_period&#39;: 3,
 &#39;u1_amplitude&#39;: 45}
-WARNING: Loading a SolverResults object with a warning status into
-model.name=&quot;unknown&quot;;
-    - termination condition: infeasible
-    - message from solver: Ipopt 3.13.2\x3a Converged to a locally infeasible
-      point. Problem may be infeasible.
-INFO: elapsed time: 9.3 seconds
+DEBUG: The variable is fixed:  Ts1[0.0]
+INFO: elapsed time: 1.0 seconds
 INFO: This is run 12 out of 32.
-INFO: The code has run  190.23 seconds.
-INFO: Estimated remaining time:  317.05 seconds
+INFO: The code has run  12.64 seconds.
+INFO: Estimated remaining time:  21.07 seconds
 </pre></div>
 </div>
 <img alt="../_images/d78357b3714f72e9efe1813e3b44fbfc69870f64bdf41a6c3430ce0a33bbb9ba.png" src="../_images/d78357b3714f72e9efe1813e3b44fbfc69870f64bdf41a6c3430ce0a33bbb9ba.png" />
@@ -1242,10 +1279,11 @@ u1_amplitude = 45 % power
 INFO: =======Iteration Number: 13 =====
 DEBUG: Design variable values of this iteration: {&#39;u1_period&#39;: 4,
 &#39;u1_amplitude&#39;: 15}
-INFO: elapsed time: 39.9 seconds
+DEBUG: The variable is fixed:  Ts1[0.0]
+INFO: elapsed time: 1.0 seconds
 INFO: This is run 13 out of 32.
-INFO: The code has run  230.17 seconds.
-INFO: Estimated remaining time:  336.4 seconds
+INFO: The code has run  13.6 seconds.
+INFO: Estimated remaining time:  19.88 seconds
 </pre></div>
 </div>
 <img alt="../_images/6791b3a0bbb9493ca1f08a82825ac446104b952abfbfbf75f8d0109071ba32bd.png" src="../_images/6791b3a0bbb9493ca1f08a82825ac446104b952abfbfbf75f8d0109071ba32bd.png" />
@@ -1260,10 +1298,11 @@ u1_amplitude = 15 % power
 INFO: =======Iteration Number: 14 =====
 DEBUG: Design variable values of this iteration: {&#39;u1_period&#39;: 4,
 &#39;u1_amplitude&#39;: 25}
-INFO: elapsed time: 34.8 seconds
+DEBUG: The variable is fixed:  Ts1[0.0]
+INFO: elapsed time: 1.5 seconds
 INFO: This is run 14 out of 32.
-INFO: The code has run  265.01 seconds.
-INFO: Estimated remaining time:  340.72 seconds
+INFO: The code has run  15.06 seconds.
+INFO: Estimated remaining time:  19.36 seconds
 </pre></div>
 </div>
 <img alt="../_images/8407fdefe9517f9966959ba1061b0ace1824628a51c35417f8702143a64b1456.png" src="../_images/8407fdefe9517f9966959ba1061b0ace1824628a51c35417f8702143a64b1456.png" />
@@ -1278,13 +1317,14 @@ u1_amplitude = 25 % power
 INFO: =======Iteration Number: 15 =====
 DEBUG: Design variable values of this iteration: {&#39;u1_period&#39;: 4,
 &#39;u1_amplitude&#39;: 35}
-INFO: elapsed time: 16.6 seconds
+DEBUG: The variable is fixed:  Ts1[0.0]
+INFO: elapsed time: 1.0 seconds
 INFO: This is run 15 out of 32.
-INFO: The code has run  281.56 seconds.
-INFO: Estimated remaining time:  319.1 seconds
+INFO: The code has run  16.02 seconds.
+INFO: Estimated remaining time:  18.16 seconds
 </pre></div>
 </div>
-<img alt="../_images/c0b6b64529f580a7c79cc6f296db317e6774b8515d660aa3e980ab2cbf5fd2e5.png" src="../_images/c0b6b64529f580a7c79cc6f296db317e6774b8515d660aa3e980ab2cbf5fd2e5.png" />
+<img alt="../_images/4f0855d35b05d308c6a3602a79a4b8b36ea7562efea573c8add12014df521798.png" src="../_images/4f0855d35b05d308c6a3602a79a4b8b36ea7562efea573c8add12014df521798.png" />
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model parameters:
 Ua = 0.0515 Watts/degC
 Ub = 0.0005 Watts/degC
@@ -1296,15 +1336,11 @@ u1_amplitude = 35 % power
 INFO: =======Iteration Number: 16 =====
 DEBUG: Design variable values of this iteration: {&#39;u1_period&#39;: 4,
 &#39;u1_amplitude&#39;: 45}
-WARNING: Loading a SolverResults object with a warning status into
-model.name=&quot;unknown&quot;;
-    - termination condition: infeasible
-    - message from solver: Ipopt 3.13.2\x3a Converged to a locally infeasible
-      point. Problem may be infeasible.
-INFO: elapsed time: 9.2 seconds
+DEBUG: The variable is fixed:  Ts1[0.0]
+INFO: elapsed time: 1.2 seconds
 INFO: This is run 16 out of 32.
-INFO: The code has run  290.75 seconds.
-INFO: Estimated remaining time:  290.75 seconds
+INFO: The code has run  17.2 seconds.
+INFO: Estimated remaining time:  17.2 seconds
 </pre></div>
 </div>
 <img alt="../_images/fd840bf2225fa61307554019d93b744069e2766e966455181d7218114d0e00a6.png" src="../_images/fd840bf2225fa61307554019d93b744069e2766e966455181d7218114d0e00a6.png" />
@@ -1319,10 +1355,11 @@ u1_amplitude = 45 % power
 INFO: =======Iteration Number: 17 =====
 DEBUG: Design variable values of this iteration: {&#39;u1_period&#39;: 5,
 &#39;u1_amplitude&#39;: 15}
-INFO: elapsed time: 37.8 seconds
+DEBUG: The variable is fixed:  Ts1[0.0]
+INFO: elapsed time: 0.9 seconds
 INFO: This is run 17 out of 32.
-INFO: The code has run  328.51 seconds.
-INFO: Estimated remaining time:  289.86 seconds
+INFO: The code has run  18.15 seconds.
+INFO: Estimated remaining time:  16.01 seconds
 </pre></div>
 </div>
 <img alt="../_images/2e54e10048b95558642769b977af2881a85a59ec25350c3c4214b9239764bed8.png" src="../_images/2e54e10048b95558642769b977af2881a85a59ec25350c3c4214b9239764bed8.png" />
@@ -1337,10 +1374,11 @@ u1_amplitude = 15 % power
 INFO: =======Iteration Number: 18 =====
 DEBUG: Design variable values of this iteration: {&#39;u1_period&#39;: 5,
 &#39;u1_amplitude&#39;: 25}
-INFO: elapsed time: 23.9 seconds
+DEBUG: The variable is fixed:  Ts1[0.0]
+INFO: elapsed time: 0.9 seconds
 INFO: This is run 18 out of 32.
-INFO: The code has run  352.37 seconds.
-INFO: Estimated remaining time:  274.07 seconds
+INFO: The code has run  19.08 seconds.
+INFO: Estimated remaining time:  14.84 seconds
 </pre></div>
 </div>
 <img alt="../_images/90d821fe29bad3f28d217788fa7815e03180d69e45448d20a083e48c81a40485.png" src="../_images/90d821fe29bad3f28d217788fa7815e03180d69e45448d20a083e48c81a40485.png" />
@@ -1355,13 +1393,14 @@ u1_amplitude = 25 % power
 INFO: =======Iteration Number: 19 =====
 DEBUG: Design variable values of this iteration: {&#39;u1_period&#39;: 5,
 &#39;u1_amplitude&#39;: 35}
-INFO: elapsed time: 17.2 seconds
+DEBUG: The variable is fixed:  Ts1[0.0]
+INFO: elapsed time: 1.2 seconds
 INFO: This is run 19 out of 32.
-INFO: The code has run  369.56 seconds.
-INFO: Estimated remaining time:  252.86 seconds
+INFO: The code has run  20.31 seconds.
+INFO: Estimated remaining time:  13.89 seconds
 </pre></div>
 </div>
-<img alt="../_images/0b31017f8a17591cc77bf4589d9de84163d530942a6d72265c1f16925449b0db.png" src="../_images/0b31017f8a17591cc77bf4589d9de84163d530942a6d72265c1f16925449b0db.png" />
+<img alt="../_images/ea9711f04aa17a024d50ff1329ef8bc325765a375c48c7827d2223b79f6e3de4.png" src="../_images/ea9711f04aa17a024d50ff1329ef8bc325765a375c48c7827d2223b79f6e3de4.png" />
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model parameters:
 Ua = 0.0515 Watts/degC
 Ub = 0.0005 Watts/degC
@@ -1373,10 +1412,11 @@ u1_amplitude = 35 % power
 INFO: =======Iteration Number: 20 =====
 DEBUG: Design variable values of this iteration: {&#39;u1_period&#39;: 5,
 &#39;u1_amplitude&#39;: 45}
-INFO: elapsed time: 33.2 seconds
+DEBUG: The variable is fixed:  Ts1[0.0]
+INFO: elapsed time: 1.0 seconds
 INFO: This is run 20 out of 32.
-INFO: The code has run  402.81 seconds.
-INFO: Estimated remaining time:  241.69 seconds
+INFO: The code has run  21.28 seconds.
+INFO: Estimated remaining time:  12.77 seconds
 </pre></div>
 </div>
 <img alt="../_images/0692dd8a60de073527f10d716ad8a58caeb3434284115f6545b328899ecf2c1b.png" src="../_images/0692dd8a60de073527f10d716ad8a58caeb3434284115f6545b328899ecf2c1b.png" />
@@ -1391,10 +1431,11 @@ u1_amplitude = 45 % power
 INFO: =======Iteration Number: 21 =====
 DEBUG: Design variable values of this iteration: {&#39;u1_period&#39;: 6,
 &#39;u1_amplitude&#39;: 15}
-INFO: elapsed time: 47.5 seconds
+DEBUG: The variable is fixed:  Ts1[0.0]
+INFO: elapsed time: 1.3 seconds
 INFO: This is run 21 out of 32.
-INFO: The code has run  450.3 seconds.
-INFO: Estimated remaining time:  235.87 seconds
+INFO: The code has run  22.58 seconds.
+INFO: Estimated remaining time:  11.83 seconds
 </pre></div>
 </div>
 <img alt="../_images/54317a0863a120aa99eaf22d2b6845ef8e20fc9f86e853babe7b0b70efd7c7b3.png" src="../_images/54317a0863a120aa99eaf22d2b6845ef8e20fc9f86e853babe7b0b70efd7c7b3.png" />
@@ -1409,10 +1450,11 @@ u1_amplitude = 15 % power
 INFO: =======Iteration Number: 22 =====
 DEBUG: Design variable values of this iteration: {&#39;u1_period&#39;: 6,
 &#39;u1_amplitude&#39;: 25}
-INFO: elapsed time: 30.8 seconds
+DEBUG: The variable is fixed:  Ts1[0.0]
+INFO: elapsed time: 1.0 seconds
 INFO: This is run 22 out of 32.
-INFO: The code has run  481.15 seconds.
-INFO: Estimated remaining time:  218.7 seconds
+INFO: The code has run  23.54 seconds.
+INFO: Estimated remaining time:  10.7 seconds
 </pre></div>
 </div>
 <img alt="../_images/42c6cff9050b4229509c30c434252935e2ca8212eb2d9c1ad1bfa5120f205921.png" src="../_images/42c6cff9050b4229509c30c434252935e2ca8212eb2d9c1ad1bfa5120f205921.png" />
@@ -1427,13 +1469,14 @@ u1_amplitude = 25 % power
 INFO: =======Iteration Number: 23 =====
 DEBUG: Design variable values of this iteration: {&#39;u1_period&#39;: 6,
 &#39;u1_amplitude&#39;: 35}
-INFO: elapsed time: 18.9 seconds
+DEBUG: The variable is fixed:  Ts1[0.0]
+INFO: elapsed time: 0.9 seconds
 INFO: This is run 23 out of 32.
-INFO: The code has run  500.03 seconds.
-INFO: Estimated remaining time:  195.66 seconds
+INFO: The code has run  24.5 seconds.
+INFO: Estimated remaining time:  9.59 seconds
 </pre></div>
 </div>
-<img alt="../_images/98074bb8d46ca387f683bb6da3634ca0908e3cc4a6c55ce895c710219c546919.png" src="../_images/98074bb8d46ca387f683bb6da3634ca0908e3cc4a6c55ce895c710219c546919.png" />
+<img alt="../_images/592a9330194dd27a8f0c9e70db1f15b85858c05dfc327d82e029bf3472c20816.png" src="../_images/592a9330194dd27a8f0c9e70db1f15b85858c05dfc327d82e029bf3472c20816.png" />
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model parameters:
 Ua = 0.0515 Watts/degC
 Ub = 0.0005 Watts/degC
@@ -1445,15 +1488,11 @@ u1_amplitude = 35 % power
 INFO: =======Iteration Number: 24 =====
 DEBUG: Design variable values of this iteration: {&#39;u1_period&#39;: 6,
 &#39;u1_amplitude&#39;: 45}
-WARNING: Loading a SolverResults object with a warning status into
-model.name=&quot;unknown&quot;;
-    - termination condition: infeasible
-    - message from solver: Ipopt 3.13.2\x3a Converged to a locally infeasible
-      point. Problem may be infeasible.
-INFO: elapsed time: 9.0 seconds
+DEBUG: The variable is fixed:  Ts1[0.0]
+INFO: elapsed time: 1.3 seconds
 INFO: This is run 24 out of 32.
-INFO: The code has run  509.07 seconds.
-INFO: Estimated remaining time:  169.69 seconds
+INFO: The code has run  25.76 seconds.
+INFO: Estimated remaining time:  8.59 seconds
 </pre></div>
 </div>
 <img alt="../_images/baad835c2969b45773f30c976fba9b4f1897c649d5549098b6ae8e0afbc16bd3.png" src="../_images/baad835c2969b45773f30c976fba9b4f1897c649d5549098b6ae8e0afbc16bd3.png" />
@@ -1468,10 +1507,11 @@ u1_amplitude = 45 % power
 INFO: =======Iteration Number: 25 =====
 DEBUG: Design variable values of this iteration: {&#39;u1_period&#39;: 7,
 &#39;u1_amplitude&#39;: 15}
-INFO: elapsed time: 37.1 seconds
+DEBUG: The variable is fixed:  Ts1[0.0]
+INFO: elapsed time: 1.0 seconds
 INFO: This is run 25 out of 32.
-INFO: The code has run  546.13 seconds.
-INFO: Estimated remaining time:  152.92 seconds
+INFO: The code has run  26.73 seconds.
+INFO: Estimated remaining time:  7.49 seconds
 </pre></div>
 </div>
 <img alt="../_images/3bcd53bc8d67e1b41dd95dd5aac831a348eb3124b8d5e5cd120c5e6da3c7c1a7.png" src="../_images/3bcd53bc8d67e1b41dd95dd5aac831a348eb3124b8d5e5cd120c5e6da3c7c1a7.png" />
@@ -1486,10 +1526,11 @@ u1_amplitude = 15 % power
 INFO: =======Iteration Number: 26 =====
 DEBUG: Design variable values of this iteration: {&#39;u1_period&#39;: 7,
 &#39;u1_amplitude&#39;: 25}
-INFO: elapsed time: 31.6 seconds
+DEBUG: The variable is fixed:  Ts1[0.0]
+INFO: elapsed time: 1.2 seconds
 INFO: This is run 26 out of 32.
-INFO: The code has run  577.69 seconds.
-INFO: Estimated remaining time:  133.31 seconds
+INFO: The code has run  27.97 seconds.
+INFO: Estimated remaining time:  6.45 seconds
 </pre></div>
 </div>
 <img alt="../_images/c42264e0ef3f2cf52f47303265d9d5bee39d06d877d3e2a66e79f43bbe51ef0c.png" src="../_images/c42264e0ef3f2cf52f47303265d9d5bee39d06d877d3e2a66e79f43bbe51ef0c.png" />
@@ -1504,10 +1545,11 @@ u1_amplitude = 25 % power
 INFO: =======Iteration Number: 27 =====
 DEBUG: Design variable values of this iteration: {&#39;u1_period&#39;: 7,
 &#39;u1_amplitude&#39;: 35}
-INFO: elapsed time: 19.3 seconds
+DEBUG: The variable is fixed:  Ts1[0.0]
+INFO: elapsed time: 1.0 seconds
 INFO: This is run 27 out of 32.
-INFO: The code has run  596.97 seconds.
-INFO: Estimated remaining time:  110.55 seconds
+INFO: The code has run  28.93 seconds.
+INFO: Estimated remaining time:  5.36 seconds
 </pre></div>
 </div>
 <img alt="../_images/bb3465e349652c9a726e622a12b250f6e9521fba64a91785de03b7eda2fca2e0.png" src="../_images/bb3465e349652c9a726e622a12b250f6e9521fba64a91785de03b7eda2fca2e0.png" />
@@ -1522,13 +1564,14 @@ u1_amplitude = 35 % power
 INFO: =======Iteration Number: 28 =====
 DEBUG: Design variable values of this iteration: {&#39;u1_period&#39;: 7,
 &#39;u1_amplitude&#39;: 45}
-INFO: elapsed time: 34.3 seconds
+DEBUG: The variable is fixed:  Ts1[0.0]
+INFO: elapsed time: 1.0 seconds
 INFO: This is run 28 out of 32.
-INFO: The code has run  631.24 seconds.
-INFO: Estimated remaining time:  90.18 seconds
+INFO: The code has run  29.92 seconds.
+INFO: Estimated remaining time:  4.27 seconds
 </pre></div>
 </div>
-<img alt="../_images/37a8e8e8a93071e2b3fd31593594c1c64a8991b1c28017717ad3c606fbf5023d.png" src="../_images/37a8e8e8a93071e2b3fd31593594c1c64a8991b1c28017717ad3c606fbf5023d.png" />
+<img alt="../_images/5308fb11eeee11f05d5127d60520312c03316e6c69d962d111a3178f5a2064c5.png" src="../_images/5308fb11eeee11f05d5127d60520312c03316e6c69d962d111a3178f5a2064c5.png" />
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model parameters:
 Ua = 0.0515 Watts/degC
 Ub = 0.0005 Watts/degC
@@ -1540,10 +1583,11 @@ u1_amplitude = 45 % power
 INFO: =======Iteration Number: 29 =====
 DEBUG: Design variable values of this iteration: {&#39;u1_period&#39;: 8,
 &#39;u1_amplitude&#39;: 15}
-INFO: elapsed time: 47.1 seconds
+DEBUG: The variable is fixed:  Ts1[0.0]
+INFO: elapsed time: 1.3 seconds
 INFO: This is run 29 out of 32.
-INFO: The code has run  678.32 seconds.
-INFO: Estimated remaining time:  70.17 seconds
+INFO: The code has run  31.2 seconds.
+INFO: Estimated remaining time:  3.23 seconds
 </pre></div>
 </div>
 <img alt="../_images/a55c63caa738dd4ef33ac450a2c7c75310f3d659916ce525c354bc70cd5d0a4a.png" src="../_images/a55c63caa738dd4ef33ac450a2c7c75310f3d659916ce525c354bc70cd5d0a4a.png" />
@@ -1558,10 +1602,11 @@ u1_amplitude = 15 % power
 INFO: =======Iteration Number: 30 =====
 DEBUG: Design variable values of this iteration: {&#39;u1_period&#39;: 8,
 &#39;u1_amplitude&#39;: 25}
-INFO: elapsed time: 28.7 seconds
+DEBUG: The variable is fixed:  Ts1[0.0]
+INFO: elapsed time: 1.0 seconds
 INFO: This is run 30 out of 32.
-INFO: The code has run  707.06 seconds.
-INFO: Estimated remaining time:  47.14 seconds
+INFO: The code has run  32.17 seconds.
+INFO: Estimated remaining time:  2.14 seconds
 </pre></div>
 </div>
 <img alt="../_images/2eaba2f70ad1bbccc855ffef7b860a6ef9a146ce2610e3d679573477523cb11b.png" src="../_images/2eaba2f70ad1bbccc855ffef7b860a6ef9a146ce2610e3d679573477523cb11b.png" />
@@ -1576,10 +1621,11 @@ u1_amplitude = 25 % power
 INFO: =======Iteration Number: 31 =====
 DEBUG: Design variable values of this iteration: {&#39;u1_period&#39;: 8,
 &#39;u1_amplitude&#39;: 35}
-INFO: elapsed time: 18.9 seconds
+DEBUG: The variable is fixed:  Ts1[0.0]
+INFO: elapsed time: 1.2 seconds
 INFO: This is run 31 out of 32.
-INFO: The code has run  725.97 seconds.
-INFO: Estimated remaining time:  23.42 seconds
+INFO: The code has run  33.42 seconds.
+INFO: Estimated remaining time:  1.08 seconds
 </pre></div>
 </div>
 <img alt="../_images/783f3ad79b7bedc6d7ee5cbffb1cbf9e675751d4de447a020829374ae6e3c1d1.png" src="../_images/783f3ad79b7bedc6d7ee5cbffb1cbf9e675751d4de447a020829374ae6e3c1d1.png" />
@@ -1594,14 +1640,10 @@ u1_amplitude = 35 % power
 INFO: =======Iteration Number: 32 =====
 DEBUG: Design variable values of this iteration: {&#39;u1_period&#39;: 8,
 &#39;u1_amplitude&#39;: 45}
-WARNING: Loading a SolverResults object with a warning status into
-model.name=&quot;unknown&quot;;
-    - termination condition: infeasible
-    - message from solver: Ipopt 3.13.2\x3a Converged to a locally infeasible
-      point. Problem may be infeasible.
-INFO: elapsed time: 9.1 seconds
+DEBUG: The variable is fixed:  Ts1[0.0]
+INFO: elapsed time: 1.0 seconds
 INFO: This is run 32 out of 32.
-INFO: The code has run  735.09 seconds.
+INFO: The code has run  34.38 seconds.
 INFO: Estimated remaining time:  0.0 seconds
 </pre></div>
 </div>
@@ -1614,7 +1656,7 @@ CpS = 0.01 Joules/degC
 u1_period = 8 minutes
 u1_amplitude = 45 % power
  
-INFO: Overall wall clock time [s]:  735.0857825791463
+INFO: Overall wall clock time [s]:  34.38077020907076
 </pre></div>
 </div>
 </div>
@@ -1639,20 +1681,18 @@ INFO: Overall wall clock time [s]:  735.0857825791463
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/Users/adowling/DowlingLab/pyomo/pyomo/contrib/doe/result.py:663: RuntimeWarning: invalid value encountered in log10
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/Users/adowling/DowlingLab/dev/pyomo/pyomo/contrib/doe/result.py:663: RuntimeWarning: invalid value encountered in log10
   hes_e = np.log10(self.cri_e)
-/Users/adowling/DowlingLab/pyomo/pyomo/contrib/doe/result.py:664: RuntimeWarning: divide by zero encountered in log10
+/Users/adowling/DowlingLab/dev/pyomo/pyomo/contrib/doe/result.py:664: RuntimeWarning: invalid value encountered in log10
   hes_d = np.log10(self.cri_d)
-/Users/adowling/DowlingLab/pyomo/pyomo/contrib/doe/result.py:664: RuntimeWarning: invalid value encountered in log10
-  hes_d = np.log10(self.cri_d)
-/Users/adowling/DowlingLab/pyomo/pyomo/contrib/doe/result.py:665: RuntimeWarning: invalid value encountered in log10
+/Users/adowling/DowlingLab/dev/pyomo/pyomo/contrib/doe/result.py:665: RuntimeWarning: invalid value encountered in log10
   hes_e2 = np.log10(self.cri_e_cond)
 </pre></div>
 </div>
-<img alt="../_images/4a4f7f528cbd0670e55613df21b24e014fd963de47eb053733b0a5938085e641.png" src="../_images/4a4f7f528cbd0670e55613df21b24e014fd963de47eb053733b0a5938085e641.png" />
-<img alt="../_images/a211bb7338b7b1231c60cb3b047725025bbae03ea11552a613e0863a1778f248.png" src="../_images/a211bb7338b7b1231c60cb3b047725025bbae03ea11552a613e0863a1778f248.png" />
-<img alt="../_images/620134d1e650e43d28d819a73529ad6ca1aef75a23d7b1bac88247c5063bb24a.png" src="../_images/620134d1e650e43d28d819a73529ad6ca1aef75a23d7b1bac88247c5063bb24a.png" />
-<img alt="../_images/b7f355da72272333b09ca521245a3640c4345458825a80685e53eed9ae155238.png" src="../_images/b7f355da72272333b09ca521245a3640c4345458825a80685e53eed9ae155238.png" />
+<img alt="../_images/bebc0bb59899db8c7ee2d5a89ed18aec10eadecd9c71d446dbefc46cdc5b3862.png" src="../_images/bebc0bb59899db8c7ee2d5a89ed18aec10eadecd9c71d446dbefc46cdc5b3862.png" />
+<img alt="../_images/7b36e40ee82222537a6ea64de8e6b00b26f3fd883fead5f6d3319b3c62202e12.png" src="../_images/7b36e40ee82222537a6ea64de8e6b00b26f3fd883fead5f6d3319b3c62202e12.png" />
+<img alt="../_images/7107f6e3774cfffcce88393e0cee82a862b11a7d1e1bcbbe0dc8b7895c630b7d.png" src="../_images/7107f6e3774cfffcce88393e0cee82a862b11a7d1e1bcbbe0dc8b7895c630b7d.png" />
+<img alt="../_images/61f8f88ad4da4563f027941aefbbc0b297faf832902115ec824baa1b61bffcdb.png" src="../_images/61f8f88ad4da4563f027941aefbbc0b297faf832902115ec824baa1b61bffcdb.png" />
 </div>
 </div>
 </section>
@@ -1715,6 +1755,7 @@ INFO: Overall wall clock time [s]:  735.0857825791463
               
                 <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
 
+
   <div class="sidebar-secondary-item">
   <div class="page-toc tocsection onthispage">
     <i class="fa-solid fa-list"></i> Contents
@@ -1774,8 +1815,8 @@ By Alexander Dowling
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="../_static/scripts/bootstrap.js?digest=5b4479735964841361fd"></script>
-<script src="../_static/scripts/pydata-sphinx-theme.js?digest=5b4479735964841361fd"></script>
+  <script src="../_static/scripts/bootstrap.js?digest=bd9e20870c6007c4c509"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=bd9e20870c6007c4c509"></script>
 
   <footer class="bd-footer">
   </footer>
