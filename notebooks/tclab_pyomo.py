@@ -140,7 +140,8 @@ if "google.colab" in sys.modules:
 ### -------------- Part 2: Load libraries -------------- ###
 
 # Need to import IDAES for Ipopt
-# import idaes
+# This is important for running on local machines
+import idaes
 
 from pyomo.contrib.doe import (
     ModelOptionLib,
