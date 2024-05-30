@@ -9,7 +9,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
-    <title>Nonlinear Regression with ParmEst &#8212; Pyomo.DoE Workshop and Tutorials</title>
+    <title>Bonus: ParmEst with Two Datasets &#8212; Pyomo.DoE Workshop and Tutorials</title>
   
   
   
@@ -64,11 +64,11 @@ const thebe_selector_output = ".output, .cell_output"
     <script async="async" src="../_static/sphinx-thebe.js"></script>
     <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'notebooks/parmest';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'notebooks/parmest_bonus';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Exercise: ParmEst" href="parmest_exercise.html" />
-    <link rel="prev" title="Parameter Estimation" href="../regression.html" />
+    <link rel="next" title="Optimal Experiment Design" href="../mbdoe.html" />
+    <link rel="prev" title="Exercise: ParmEst" href="parmest_exercise.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -178,9 +178,9 @@ const thebe_selector_output = ".output, .cell_output"
 </ul>
 </li>
 <li class="toctree-l1 current active has-children"><a class="reference internal" href="../regression.html">Parameter Estimation</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-2"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
-<li class="toctree-l2 current active"><a class="current reference internal" href="#">Nonlinear Regression with ParmEst</a></li>
+<li class="toctree-l2"><a class="reference internal" href="parmest.html">Nonlinear Regression with ParmEst</a></li>
 <li class="toctree-l2"><a class="reference internal" href="parmest_exercise.html">Exercise: ParmEst</a></li>
-<li class="toctree-l2"><a class="reference internal" href="parmest_bonus.html">Bonus: ParmEst with Two Datasets</a></li>
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">Bonus: ParmEst with Two Datasets</a></li>
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../mbdoe.html">Optimal Experiment Design</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-3"><i class="fa-solid fa-chevron-down"></i></label><ul>
@@ -248,7 +248,7 @@ const thebe_selector_output = ".output, .cell_output"
       
       
       
-      <li><a href="https://colab.research.google.com/github/dowlinglab/pyomo-doe/blob/main/notebooks/parmest.ipynb" target="_blank"
+      <li><a href="https://colab.research.google.com/github/dowlinglab/pyomo-doe/blob/main/notebooks/parmest_bonus.ipynb" target="_blank"
    class="btn btn-sm dropdown-item"
    title="Launch onColab"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -296,7 +296,7 @@ const thebe_selector_output = ".output, .cell_output"
       
       
       
-      <li><a href="https://github.com/dowlinglab/pyomo-doe/issues/new?title=Issue%20on%20page%20%2Fnotebooks/parmest.html&body=Your%20issue%20content%20here." target="_blank"
+      <li><a href="https://github.com/dowlinglab/pyomo-doe/issues/new?title=Issue%20on%20page%20%2Fnotebooks/parmest_bonus.html&body=Your%20issue%20content%20here." target="_blank"
    class="btn btn-sm btn-source-issues-button dropdown-item"
    title="Open an issue"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -326,7 +326,7 @@ const thebe_selector_output = ".output, .cell_output"
       
       
       
-      <li><a href="../_sources/notebooks/parmest.ipynb" target="_blank"
+      <li><a href="../_sources/notebooks/parmest_bonus.ipynb" target="_blank"
    class="btn btn-sm btn-download-source-button dropdown-item"
    title="Download source file"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -410,7 +410,7 @@ document.write(`
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>Nonlinear Regression with ParmEst</h1>
+    <h1>Bonus: ParmEst with Two Datasets</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
@@ -420,9 +420,9 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#load-and-explore-experimental-data">Load and explore experimental data</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#store-in-custom-data-class">Store in Custom Data Class</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#parameter-estimation-with-parmest">Parameter Estimation with ParmEst</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#load-and-explore-experimental-data-step-test">Load and explore experimental data (step test)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#load-and-explore-experimental-data-sine-test">Load and explore experimental data (sine test)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#parameter-estimation-with-parmest">Parameter estimation with ParmEst</a></li>
 </ul>
             </nav>
         </div>
@@ -434,8 +434,10 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article" role="main">
                   
-  <section class="tex2jax_ignore mathjax_ignore" id="nonlinear-regression-with-parmest">
-<h1>Nonlinear Regression with ParmEst<a class="headerlink" href="#nonlinear-regression-with-parmest" title="Permalink to this heading">#</a></h1>
+  <section class="tex2jax_ignore mathjax_ignore" id="bonus-parmest-with-two-datasets">
+<h1>Bonus: ParmEst with Two Datasets<a class="headerlink" href="#bonus-parmest-with-two-datasets" title="Permalink to this heading">#</a></h1>
+<p>We have already estimated the four parameters (<span class="math notranslate nohighlight">\(U_a\)</span>, <span class="math notranslate nohighlight">\(U_b\)</span>, <span class="math notranslate nohighlight">\(C_p^H\)</span>, <span class="math notranslate nohighlight">\(C_p^S\)</span>) in the TCLab model using the <a class="reference internal" href="parmest_exercise.html"><span class="doc std std-doc">step test data</span></a> and <a class="reference internal" href="parmest.html"><span class="doc std std-doc">sine test data</span></a>.</p>
+<p>Can we use ParmEst to estimate these parameters using both data sets simultanously? Yes, we can! Let’s see the syntax below.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">sys</span>
@@ -451,27 +453,261 @@ document.write(`
     <span class="n">create_model</span><span class="p">,</span>
     <span class="n">extract_results</span><span class="p">,</span>
     <span class="n">extract_plot_results</span><span class="p">,</span>
-    <span class="n">results_summary</span><span class="p">,</span>
 <span class="p">)</span>
-
-<span class="c1"># set default number of states in the TCLab model</span>
-<span class="n">number_tclab_states</span> <span class="o">=</span> <span class="mi">2</span>
 </pre></div>
 </div>
 </div>
 </div>
-<section id="load-and-explore-experimental-data">
-<h2>Load and explore experimental data<a class="headerlink" href="#load-and-explore-experimental-data" title="Permalink to this heading">#</a></h2>
+<section id="load-and-explore-experimental-data-step-test">
+<h2>Load and explore experimental data (step test)<a class="headerlink" href="#load-and-explore-experimental-data-step-test" title="Permalink to this heading">#</a></h2>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 
 <span class="k">if</span> <span class="n">on_colab</span><span class="p">:</span>
+    <span class="n">file</span> <span class="o">=</span> <span class="s2">&quot;https://raw.githubusercontent.com/dowlinglab/pyomo-doe/main/data/tclab_step_test.csv&quot;</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="n">file</span> <span class="o">=</span> <span class="s1">&#39;../data/tclab_step_test.csv&#39;</span>
+<span class="n">df_step</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+<span class="n">df_step</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Time</th>
+      <th>T1</th>
+      <th>T2</th>
+      <th>Q1</th>
+      <th>Q2</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>0.00</td>
+      <td>22.84</td>
+      <td>22.52</td>
+      <td>50.0</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>1.01</td>
+      <td>22.84</td>
+      <td>22.52</td>
+      <td>50.0</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>2.01</td>
+      <td>22.84</td>
+      <td>22.52</td>
+      <td>50.0</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>3.00</td>
+      <td>22.84</td>
+      <td>22.52</td>
+      <td>50.0</td>
+      <td>0.0</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>4.00</td>
+      <td>22.84</td>
+      <td>22.20</td>
+      <td>50.0</td>
+      <td>0.0</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+<p>Make two plots to visualize the temperature and heat power data as a function of time.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ax</span> <span class="o">=</span> <span class="n">df_step</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s1">&#39;Time&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;T1&#39;</span><span class="p">,</span> <span class="s1">&#39;T2&#39;</span><span class="p">],</span> <span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Time (s)&#39;</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;Temperature (°C)&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/ace0e87f3c987743b111efe8c4c6f1ceb33ddd3e24210166d57716455993ce5e.png" src="../_images/ace0e87f3c987743b111efe8c4c6f1ceb33ddd3e24210166d57716455993ce5e.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ax</span> <span class="o">=</span> <span class="n">df_step</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s1">&#39;Time&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Q1&#39;</span><span class="p">,</span> <span class="s1">&#39;Q2&#39;</span><span class="p">],</span> <span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Time (s)&#39;</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;Heater Power (%)&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/48caad3e7815ebae388dd6f44fba32f69e19110f39800969690bdd2dcc088c2a.png" src="../_images/48caad3e7815ebae388dd6f44fba32f69e19110f39800969690bdd2dcc088c2a.png" />
+</div>
+</div>
+<p>We’ll now store the data in this custom <em>data class</em> objective. This is a nice trick to help keep data organized, but it is NOT required to use ParmEst or Pyomo data. Alternatively, we could just use a pandas DataFrame.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">df_to_dataclass</span><span class="p">(</span><span class="n">df</span><span class="p">):</span>
+    <span class="n">tc_data</span> <span class="o">=</span> <span class="n">TCLabExperiment</span><span class="p">(</span>
+        <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Sine Wave Test for Heater 1&quot;</span><span class="p">,</span>
+        <span class="n">time</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
+        <span class="n">T1</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;T1&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
+        <span class="n">u1</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Q1&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
+        <span class="n">P1</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span>
+        <span class="n">TS1_data</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">T2</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;T2&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
+        <span class="n">u2</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Q2&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
+        <span class="n">P2</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span>
+        <span class="n">TS2_data</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">Tamb</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;T1&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="n">tc_data</span>
+
+<span class="n">tc_data_step</span> <span class="o">=</span> <span class="n">df_to_dataclass</span><span class="p">(</span><span class="n">df_step</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Our custom data class has a method to export the data as a Pandas Data Frame.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">tc_data_step</span><span class="o">.</span><span class="n">to_data_frame</span><span class="p">()</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>time</th>
+      <th>T1</th>
+      <th>u1</th>
+      <th>P1</th>
+      <th>TS1_data</th>
+      <th>T2</th>
+      <th>u2</th>
+      <th>P2</th>
+      <th>TS2_data</th>
+      <th>Tamb</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>0.00</td>
+      <td>22.84</td>
+      <td>50.0</td>
+      <td>200</td>
+      <td>None</td>
+      <td>22.52</td>
+      <td>0.0</td>
+      <td>200</td>
+      <td>None</td>
+      <td>22.84</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>1.01</td>
+      <td>22.84</td>
+      <td>50.0</td>
+      <td>200</td>
+      <td>None</td>
+      <td>22.52</td>
+      <td>0.0</td>
+      <td>200</td>
+      <td>None</td>
+      <td>22.84</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>2.01</td>
+      <td>22.84</td>
+      <td>50.0</td>
+      <td>200</td>
+      <td>None</td>
+      <td>22.52</td>
+      <td>0.0</td>
+      <td>200</td>
+      <td>None</td>
+      <td>22.84</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>3.00</td>
+      <td>22.84</td>
+      <td>50.0</td>
+      <td>200</td>
+      <td>None</td>
+      <td>22.52</td>
+      <td>0.0</td>
+      <td>200</td>
+      <td>None</td>
+      <td>22.84</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>4.00</td>
+      <td>22.84</td>
+      <td>50.0</td>
+      <td>200</td>
+      <td>None</td>
+      <td>22.20</td>
+      <td>0.0</td>
+      <td>200</td>
+      <td>None</td>
+      <td>22.84</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+</section>
+<section id="load-and-explore-experimental-data-sine-test">
+<h2>Load and explore experimental data (sine test)<a class="headerlink" href="#load-and-explore-experimental-data-sine-test" title="Permalink to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="n">on_colab</span><span class="p">:</span>
     <span class="n">file</span> <span class="o">=</span> <span class="s2">&quot;https://raw.githubusercontent.com/dowlinglab/pyomo-doe/main/data/tclab_sine_test.csv&quot;</span>
 <span class="k">else</span><span class="p">:</span>
     <span class="n">file</span> <span class="o">=</span> <span class="s1">&#39;../data/tclab_sine_test.csv&#39;</span>
-<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
-<span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+<span class="n">df_sine</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+<span class="n">df_sine</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -548,7 +784,7 @@ document.write(`
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ax</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s1">&#39;Time&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;T1&#39;</span><span class="p">,</span> <span class="s1">&#39;T2&#39;</span><span class="p">],</span> <span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Time (s)&#39;</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;Temperature (°C)&#39;</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ax</span> <span class="o">=</span> <span class="n">df_sine</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s1">&#39;Time&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;T1&#39;</span><span class="p">,</span> <span class="s1">&#39;T2&#39;</span><span class="p">],</span> <span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Time (s)&#39;</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;Temperature (°C)&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -558,7 +794,7 @@ document.write(`
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ax</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s1">&#39;Time&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Q1&#39;</span><span class="p">,</span> <span class="s1">&#39;Q2&#39;</span><span class="p">],</span> <span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Time (s)&#39;</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;Heater Power (%)&#39;</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ax</span> <span class="o">=</span> <span class="n">df_sine</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s1">&#39;Time&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Q1&#39;</span><span class="p">,</span> <span class="s1">&#39;Q2&#39;</span><span class="p">],</span> <span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;Time (s)&#39;</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;Heater Power (%)&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -566,195 +802,39 @@ document.write(`
 <img alt="../_images/29a4ce3fe8920e28b94e4400b1cbc886ddd011db0d4c8b1b89de62826a399ada.png" src="../_images/29a4ce3fe8920e28b94e4400b1cbc886ddd011db0d4c8b1b89de62826a399ada.png" />
 </div>
 </div>
-</section>
-<section id="store-in-custom-data-class">
-<h2>Store in Custom Data Class<a class="headerlink" href="#store-in-custom-data-class" title="Permalink to this heading">#</a></h2>
-<p>In the file <code class="docutils literal notranslate"><span class="pre">tclab_pyomo.py</span></code>, we defined a <code class="docutils literal notranslate"><span class="pre">dataclass</span></code> for convenience. It is essentially a light weight container to store experimental data.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">tc_data</span> <span class="o">=</span> <span class="n">TCLabExperiment</span><span class="p">(</span>
-    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Sine Wave Test for Heater 1&quot;</span><span class="p">,</span>
-    <span class="n">time</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
-    <span class="n">T1</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;T1&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
-    <span class="n">u1</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Q1&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
-    <span class="n">P1</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span>
-    <span class="n">TS1_data</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-    <span class="n">T2</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;T2&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
-    <span class="n">u2</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Q2&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
-    <span class="n">P2</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span>
-    <span class="n">TS2_data</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-    <span class="n">Tamb</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;T1&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
-<span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">tc_data_sine</span> <span class="o">=</span> <span class="n">df_to_dataclass</span><span class="p">(</span><span class="n">df_sine</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">tc_data</span><span class="o">.</span><span class="n">to_data_frame</span><span class="p">()</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_html"><div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>time</th>
-      <th>T1</th>
-      <th>u1</th>
-      <th>P1</th>
-      <th>TS1_data</th>
-      <th>T2</th>
-      <th>u2</th>
-      <th>P2</th>
-      <th>TS2_data</th>
-      <th>Tamb</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>0</th>
-      <td>0.00</td>
-      <td>24.45</td>
-      <td>50.0</td>
-      <td>200</td>
-      <td>None</td>
-      <td>24.13</td>
-      <td>0.0</td>
-      <td>200</td>
-      <td>None</td>
-      <td>24.45</td>
-    </tr>
-    <tr>
-      <th>1</th>
-      <td>1.00</td>
-      <td>24.45</td>
-      <td>55.0</td>
-      <td>200</td>
-      <td>None</td>
-      <td>24.13</td>
-      <td>0.0</td>
-      <td>200</td>
-      <td>None</td>
-      <td>24.45</td>
-    </tr>
-    <tr>
-      <th>2</th>
-      <td>2.01</td>
-      <td>24.45</td>
-      <td>60.0</td>
-      <td>200</td>
-      <td>None</td>
-      <td>24.13</td>
-      <td>0.0</td>
-      <td>200</td>
-      <td>None</td>
-      <td>24.45</td>
-    </tr>
-    <tr>
-      <th>3</th>
-      <td>3.01</td>
-      <td>24.45</td>
-      <td>65.0</td>
-      <td>200</td>
-      <td>None</td>
-      <td>24.13</td>
-      <td>0.0</td>
-      <td>200</td>
-      <td>None</td>
-      <td>24.45</td>
-    </tr>
-    <tr>
-      <th>4</th>
-      <td>4.01</td>
-      <td>24.77</td>
-      <td>70.0</td>
-      <td>200</td>
-      <td>None</td>
-      <td>23.81</td>
-      <td>0.0</td>
-      <td>200</td>
-      <td>None</td>
-      <td>24.45</td>
-    </tr>
-  </tbody>
-</table>
-</div></div></div>
 </div>
 </section>
 <section id="parameter-estimation-with-parmest">
-<h2>Parameter Estimation with ParmEst<a class="headerlink" href="#parameter-estimation-with-parmest" title="Permalink to this heading">#</a></h2>
-<p>We seek to solve minimize of weighted sum of residuals squared:</p>
-<div class="math notranslate nohighlight">
-\[
-\begin{align*}
-\min_{C_p^H, C_p^S, U_a, U_b} \sum_{i \in \mathcal{T}} \left(T_{S}(t_i) - \bar{T}_{S,i} \right)^2 + w \left(T_{H}(t_i) - \bar{T}_{S,i} \right)^2
-\end{align*}
-\]</div>
-<p>subject to constraints</p>
-<div class="math notranslate nohighlight">
-\[\begin{split}
-\begin{align*}
-C_p^H \frac{dT_H}{dt} &amp; = U_a (T_{amb} - T_H) + U_c (T_S - T_H) + \alpha P u(t)\\
-C_p^S \frac{dT_S}{dt} &amp; = - U_b (T_S - T_H)  \\
-\\
-\text{control input data}\qquad u(t_i) &amp; = \bar{u}_{i}, \forall i \in \mathcal{T}
-\\
-\text{initial condition}\qquad T_H(t_0) &amp; = T_{amb} \\
-\text{initial condition}\qquad T_S(t_0) &amp; = T_{amb}
-\end{align*}
-\end{split}\]</div>
-<p>Here <span class="math notranslate nohighlight">\(\bar{T}_{S,i}\)</span> and <span class="math notranslate nohighlight">\(\bar{u}_i\)</span> are the measured sensor temperatures and control signals, respectives, at times <span class="math notranslate nohighlight">\(i \in \mathcal{T}\)</span>. <span class="math notranslate nohighlight">\(w\)</span> is a small weight that helps regularize the solution by preventing the model predictions <span class="math notranslate nohighlight">\(T_H\)</span> from deviating too much from the measured temperatures.</p>
-<p>In the <code class="docutils literal notranslate"><span class="pre">tclab_pyomo.py</span></code> model, we defined several helper functions:</p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">create_model</span></code> generates a Pyomo model that is initialized using a numeric integrator. The <code class="docutils literal notranslate"><span class="pre">mode</span></code> option determines which objective function to include.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">extract_results</span></code> takes a Pyomo model and returns the results stored in an instance of the <code class="docutils literal notranslate"><span class="pre">TCLabExperiment</span></code> dataclass.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">extract_plot_results</span></code> takes experimental data (stored in a <code class="docutils literal notranslate"><span class="pre">TCLabExperiment</span></code> instance) and a Pyomo model. The function then generates plots showing the data and model predictions.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">results_summary</span></code> summarizes the Pyomo.DoE results. We’ll use this later in the workshop.</p></li>
-</ul>
-<p><code class="docutils literal notranslate"><span class="pre">parmest</span></code> assumes the regression objective is specified in a specific way. Here is a code exercpt from <code class="docutils literal notranslate"><span class="pre">tclab_pyomo.py</span></code>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">m</span><span class="o">.</span><span class="n">FirstStageCost</span> <span class="o">=</span> <span class="n">Expression</span><span class="p">(</span><span class="n">expr</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-<span class="n">m</span><span class="o">.</span><span class="n">SecondStageCost</span> <span class="o">=</span> <span class="n">Expression</span><span class="p">(</span><span class="n">expr</span><span class="o">=</span><span class="nb">sum</span><span class="p">((</span><span class="n">m</span><span class="o">.</span><span class="n">Ts1</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="o">-</span> <span class="n">m</span><span class="o">.</span><span class="n">Ts1_measure</span><span class="p">[</span><span class="n">t</span><span class="p">])</span><span class="o">**</span><span class="mi">2</span> 
-    <span class="o">+</span> <span class="n">obj_weight_estimate</span><span class="o">*</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">Th1</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="o">-</span> <span class="n">m</span><span class="o">.</span><span class="n">Ts1_measure</span><span class="p">[</span><span class="n">t</span><span class="p">])</span><span class="o">**</span><span class="mi">2</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">m</span><span class="o">.</span><span class="n">t</span><span class="p">))</span>
-<span class="n">m</span><span class="o">.</span><span class="n">Total_Cost_Objective</span> <span class="o">=</span> <span class="n">Objective</span><span class="p">(</span><span class="n">expr</span><span class="o">=</span><span class="n">m</span><span class="o">.</span><span class="n">FirstStageCost</span> 
-    <span class="o">+</span> <span class="n">m</span><span class="o">.</span><span class="n">SecondStageCost</span><span class="p">,</span> <span class="n">sense</span><span class="o">=</span><span class="n">minimize</span><span class="p">)</span>
-</pre></div>
-</div>
+<h2>Parameter estimation with ParmEst<a class="headerlink" href="#parameter-estimation-with-parmest" title="Permalink to this heading">#</a></h2>
+<p>Now for the main event: performing nonlinear least squares with <code class="docutils literal notranslate"><span class="pre">ParmEst</span></code>. For multiple datasets, we just need to give <code class="docutils literal notranslate"><span class="pre">ParmEst</span></code> a list of dictionaries or pandas dataframes where each entry is an experiment. It’s that easy.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pyomo.contrib.parmest.parmest</span> <span class="k">as</span> <span class="nn">parmest</span>
-
-<span class="c1"># define the parameter names as a list</span>
-<span class="k">if</span> <span class="n">number_tclab_states</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
-    <span class="n">theta_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Ua&#39;</span><span class="p">,</span> <span class="s1">&#39;Ub&#39;</span><span class="p">,</span> <span class="s1">&#39;inv_CpH&#39;</span><span class="p">,</span> <span class="s1">&#39;inv_CpS&#39;</span><span class="p">]</span>
-<span class="k">else</span><span class="p">:</span>
-    <span class="n">theta_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Ua&#39;</span><span class="p">,</span> <span class="s1">&#39;Ub&#39;</span><span class="p">,</span> <span class="s1">&#39;Uc&#39;</span><span class="p">,</span> <span class="s1">&#39;inv_CpH&#39;</span><span class="p">,</span> <span class="s1">&#39;inv_CpS&#39;</span><span class="p">]</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Call ParmEst</span>
+<span class="kn">import</span> <span class="nn">pyomo.contrib.parmest.parmest</span> <span class="k">as</span> <span class="nn">parmest</span>
 
 <span class="n">parmest_create_model</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">data</span><span class="p">:</span> <span class="n">create_model</span><span class="p">(</span>
-    <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;parmest&#39;</span><span class="p">,</span> <span class="n">number_of_states</span><span class="o">=</span><span class="n">number_tclab_states</span>
+    <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;parmest&#39;</span><span class="p">,</span> <span class="n">number_of_states</span><span class="o">=</span><span class="mi">2</span>
 <span class="p">)</span>
+
+<span class="c1"># define the parameter names as a list</span>
+<span class="c1"># two-state model</span>
+<span class="n">theta_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Ua&#39;</span><span class="p">,</span> <span class="s1">&#39;Ub&#39;</span><span class="p">,</span> <span class="s1">&#39;inv_CpH&#39;</span><span class="p">,</span> <span class="s1">&#39;inv_CpS&#39;</span><span class="p">]</span>
+
+<span class="c1"># four-state model</span>
+<span class="c1"># theta_names = [&#39;Ua&#39;, &#39;Ub&#39;, &#39;Uc&#39;,&#39;inv_CpH&#39;, &#39;inv_CpS&#39;]</span>
+
+<span class="n">data_in_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">tc_data_step</span><span class="o">.</span><span class="n">to_data_frame</span><span class="p">(),</span> <span class="n">tc_data_sine</span><span class="o">.</span><span class="n">to_data_frame</span><span class="p">()]</span>
 
 <span class="c1"># Create a parameter estimation object</span>
 <span class="n">pest</span> <span class="o">=</span> <span class="n">parmest</span><span class="o">.</span><span class="n">Estimator</span><span class="p">(</span>
     <span class="n">parmest_create_model</span><span class="p">,</span>
-    <span class="n">data</span><span class="o">=</span><span class="p">[</span>
-        <span class="n">tc_data</span><span class="o">.</span><span class="n">to_data_frame</span><span class="p">()</span>
-    <span class="p">],</span>  <span class="c1"># Needs to be a list of dataframes, otherwise parmest threats each row as a separate model</span>
+    <span class="n">data</span><span class="o">=</span><span class="n">data_in_list</span><span class="p">,</span>
     <span class="n">theta_names</span><span class="o">=</span><span class="n">theta_names</span><span class="p">,</span>
     <span class="n">tee</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
 <span class="p">)</span>
@@ -775,110 +855,109 @@ Ipopt 3.13.2:
 This program contains Ipopt, a library for large-scale nonlinear optimization.
  Ipopt is released as open source code under the Eclipse Public License (EPL).
          For more information visit http://projects.coin-or.org/Ipopt
+
+This version of Ipopt was compiled from source code available at
+    https://github.com/IDAES/Ipopt as part of the Institute for the Design of
+    Advanced Energy Systems Process Systems Engineering Framework (IDAES PSE
+    Framework) Copyright (c) 2018-2019. See https://github.com/IDAES/idaes-pse.
+
+This version of Ipopt was compiled using HSL, a collection of Fortran codes
+    for large-scale scientific computation.  All technical papers, sales and
+    publicity material resulting from use of the HSL codes within IPOPT must
+    contain the following acknowledgement:
+        HSL, a collection of Fortran codes for large-scale scientific
+        computation. See http://www.hsl.rl.ac.uk.
 ******************************************************************************
 
-This is Ipopt version 3.13.2, running with linear solver ma27.
+This is Ipopt version 3.13.2, running with linear solver mumps.
+NOTE: Other linear solvers might be more efficient (see Ipopt documentation).
 
-Number of nonzeros in equality constraint Jacobian...:    15301
+Number of nonzeros in equality constraint Jacobian...:    30610
 Number of nonzeros in inequality constraint Jacobian.:        0
-Number of nonzeros in Lagrangian Hessian.............:     8103
+Number of nonzeros in Lagrangian Hessian.............:    16206
 
-Total number of variables............................:     3606
+Total number of variables............................:     7212
                      variables with only lower bounds:        0
-                variables with lower and upper bounds:     1804
+                variables with lower and upper bounds:     3608
                      variables with only upper bounds:        0
-Total number of equality constraints.................:     3602
+Total number of equality constraints.................:     7208
 Total number of inequality constraints...............:        0
         inequality constraints with only lower bounds:        0
    inequality constraints with lower and upper bounds:        0
         inequality constraints with only upper bounds:        0
 
 iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
-   0  1.3759806e+03 4.14e-01 2.97e+00  -1.0 0.00e+00    -  0.00e+00 0.00e+00   0
-   1  2.4878437e+02 1.16e-02 4.46e+02  -1.0 1.47e+00    -  7.90e-01 1.00e+00f  1
-   2  2.5236582e+02 1.20e-02 1.35e+02  -1.0 9.52e-01   0.0 9.95e-01 1.00e+00h  1
-   3  2.5106636e+02 3.83e-04 1.56e+02  -1.0 1.47e+00    -  1.00e+00 1.00e+00F  1
-   4  2.5082502e+02 4.50e-03 1.28e+02  -1.0 8.92e+00    -  8.61e-01 9.51e-02f  4
-   5  2.5061278e+02 8.16e-03 9.77e+01  -1.0 9.04e+00    -  1.00e+00 1.07e-01h  4
-   6  2.5984791e+02 1.67e-03 2.16e+03  -1.0 7.97e+00    -  4.80e-01 1.00e+00H  1
-   7  2.4967423e+02 1.65e-03 1.01e+03  -1.0 2.33e-01  -0.5 1.00e+00 1.00e+00f  1
-   8  2.4954700e+02 1.93e-04 1.61e+02  -1.0 1.16e-01  -1.0 1.00e+00 1.00e+00f  1
-   9  2.4949701e+02 4.22e-03 1.13e+02  -1.0 6.69e+01    -  3.67e-01 4.62e-02f  4
+   0  3.0342009e+03 4.14e-01 3.42e+00  -1.0 0.00e+00    -  0.00e+00 0.00e+00   0
+   1  5.0833478e+02 1.37e-01 1.28e+04  -1.0 2.66e+00    -  5.38e-01 1.00e+00f  1
+   2  5.0179349e+02 1.77e-02 1.13e+03  -1.0 7.53e-01   0.0 9.84e-01 1.00e+00f  1
+   3  4.8756975e+02 3.89e-02 2.19e+03  -1.0 1.92e+00    -  1.00e+00 1.00e+00f  1
+   4  4.8768802e+02 9.87e-04 3.40e+01  -1.0 1.99e-01  -0.5 1.00e+00 1.00e+00h  1
+   5  4.8718811e+02 4.41e-02 1.08e+03  -1.0 2.97e+00    -  1.00e+00 1.00e+00h  1
+   6  4.8682810e+02 8.79e-02 2.36e+03  -1.0 7.65e+00    -  1.00e+00 1.00e+00h  1
+   7  4.8674505e+02 3.73e-02 6.63e+01  -1.0 1.40e+01    -  1.00e+00 1.00e+00h  1
+   8  4.8668943e+02 2.50e-02 6.32e+02  -1.0 1.37e+01    -  1.00e+00 1.00e+00h  1
+   9  4.8670253e+02 3.95e-04 1.62e+01  -1.0 8.60e-01    -  1.00e+00 1.00e+00h  1
 iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
-  10  2.4945387e+02 8.01e-03 6.37e+01  -1.0 6.64e+01    -  1.00e+00 5.27e-02h  4
-  11  2.5051576e+02 3.13e-03 4.05e+02  -1.0 1.72e+01    -  1.00e+00 1.00e+00H  1
-  12  2.4915066e+02 4.34e-04 5.46e+02  -1.0 9.84e-02  -1.4 1.00e+00 1.00e+00f  1
-  13  2.4938383e+02 2.61e-07 1.49e-01  -1.0 3.76e-02  -1.9 1.00e+00 1.00e+00h  1
-  14  2.4932947e+02 2.37e-02 3.09e+01  -2.5 1.79e+01    -  7.84e-01 1.00e+00f  1
-  15  2.4931730e+02 4.78e-03 4.34e+00  -2.5 1.54e+01    -  1.00e+00 1.00e+00h  1
-  16  2.4931402e+02 3.50e-04 1.58e-02  -2.5 4.36e+00    -  1.00e+00 1.00e+00h  1
-  17  2.4931152e+02 1.48e-04 6.44e-03  -3.8 2.37e+00    -  1.00e+00 1.00e+00h  1
-  18  2.4931145e+02 1.80e-07 1.31e-04  -3.8 1.14e-01    -  1.00e+00 1.00e+00h  1
-  19  2.4931130e+02 5.23e-07 5.09e-06  -5.7 1.40e-01    -  1.00e+00 1.00e+00h  1
+  10  4.8670269e+02 6.82e-08 1.15e-01  -1.0 6.14e-02    -  1.00e+00 1.00e+00h  1
+  11  4.8663806e+02 2.96e-02 7.02e+02  -2.5 1.57e+01    -  7.61e-01 1.00e+00f  1
+  12  4.8662029e+02 1.02e-02 2.56e+02  -2.5 1.77e+01    -  1.00e+00 1.00e+00h  1
+  13  4.8660859e+02 4.86e-03 8.73e+01  -2.5 1.29e+01    -  1.00e+00 1.00e+00h  1
+  14  4.8660905e+02 1.98e-05 7.82e-01  -2.5 1.22e+00    -  1.00e+00 1.00e+00h  1
+  15  4.8660905e+02 2.91e-10 9.84e-05  -2.5 8.36e-03    -  1.00e+00 1.00e+00h  1
+  16  4.8660431e+02 7.97e-04 1.75e+01  -3.8 5.20e+00    -  9.97e-01 1.00e+00f  1
+  17  4.8660403e+02 5.69e-06 1.25e-01  -3.8 6.42e-01    -  1.00e+00 1.00e+00h  1
+  18  4.8660403e+02 8.50e-12 1.25e-06  -3.8 2.33e-03    -  1.00e+00 1.00e+00h  1
+  19  4.8660374e+02 3.49e-06 7.65e-02  -5.7 3.66e-01    -  1.00e+00 1.00e+00f  1
 iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
-  20  2.4931130e+02 1.10e-10 7.43e-09  -8.6 2.14e-03    -  1.00e+00 1.00e+00h  1
+  20  4.8660374e+02 9.34e-11 2.05e-06  -5.7 2.69e-03    -  1.00e+00 1.00e+00h  1
+  21  4.8660373e+02 5.49e-10 1.20e-05  -8.6 4.60e-03    -  1.00e+00 1.00e+00h  1
+  22  4.8660373e+02 1.42e-14 2.52e-10  -8.6 4.21e-07    -  1.00e+00 1.00e+00h  1
 
-Number of Iterations....: 20
+Number of Iterations....: 22
 
                                    (scaled)                 (unscaled)
-Objective...............:   2.4931130187792564e+02    2.4931130187792564e+02
-Dual infeasibility......:   7.4315102342597524e-09    7.4315102342597524e-09
-Constraint violation....:   1.1029205326806846e-10    1.1029205326806846e-10
-Complementarity.........:   2.5886083464131973e-09    2.5886083464131973e-09
-Overall NLP error.......:   7.4315102342597524e-09    7.4315102342597524e-09
+Objective...............:   4.8660373461274651e+02    4.8660373461274651e+02
+Dual infeasibility......:   2.5197502959237447e-10    2.5197502959237447e-10
+Constraint violation....:   1.4169221351778560e-14    1.4169221351778560e-14
+Complementarity.........:   2.5059035616614240e-09    2.5059035616614240e-09
+Overall NLP error.......:   2.5059035616614240e-09    2.5059035616614240e-09
 
 
-Number of objective function evaluations             = 53
-Number of objective gradient evaluations             = 21
-Number of equality constraint evaluations            = 53
+Number of objective function evaluations             = 23
+Number of objective gradient evaluations             = 23
+Number of equality constraint evaluations            = 23
 Number of inequality constraint evaluations          = 0
-Number of equality constraint Jacobian evaluations   = 21
+Number of equality constraint Jacobian evaluations   = 23
 Number of inequality constraint Jacobian evaluations = 0
-Number of Lagrangian Hessian evaluations             = 20
-Total CPU secs in IPOPT (w/o function evaluations)   =      0.098
-Total CPU secs in NLP function evaluations           =      0.085
+Number of Lagrangian Hessian evaluations             = 22
+Total CPU secs in IPOPT (w/o function evaluations)   =      0.401
+Total CPU secs in NLP function evaluations           =      0.106
 
 EXIT: Optimal Solution Found.
 </pre></div>
 </div>
 </div>
 </div>
-<p>During Summer 2024, we are creating a new modeling interface for <code class="docutils literal notranslate"><span class="pre">parmest</span></code> and <code class="docutils literal notranslate"><span class="pre">Pyomo.DoE</span></code>. This notebook currently uses the legacy <code class="docutils literal notranslate"><span class="pre">parmest</span></code> interface, hence the depreciation warnings above. Once the revisions are complete, we will update this workshop website.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">parmest_regression_results</span> <span class="o">=</span> <span class="n">extract_plot_results</span><span class="p">(</span>
-    <span class="n">tc_data</span><span class="p">,</span> <span class="n">pest</span><span class="o">.</span><span class="n">pest_deprecated</span><span class="o">.</span><span class="n">parmest_model</span>
-<span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<img alt="../_images/8f1177de49d8a4e2d8cdfb1ebb85aab2760deae8db96cb9e20132c78c66bb357.png" src="../_images/8f1177de49d8a4e2d8cdfb1ebb85aab2760deae8db96cb9e20132c78c66bb357.png" />
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model parameters:
-Ua = 0.0515 Watts/degC
-Ub = 0.0005 Watts/degC
-CpH = 6.8386 Joules/degC
-CpS = 0.01 Joules/degC
- 
-</pre></div>
-</div>
-</div>
-</div>
-<p>Let’s see how to access the regression results:</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">theta_values</span> <span class="o">=</span> <span class="n">theta</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Estimated parameters:</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">theta_values</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Estimated parameters:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Estimated parameters:
- {&#39;Ua&#39;: 0.05147278733764144, &#39;Ub&#39;: 0.0005342082803591557, &#39;inv_CpH&#39;: 0.1462287940317429, &#39;inv_CpS&#39;: 99.99999854623738}
+Ua          0.050244
+Ub          0.000500
+inv_CpH     0.146888
+inv_CpS    99.999995
+dtype: float64
 </pre></div>
 </div>
 </div>
 </div>
+<p><strong>Discussion</strong>: How do these results compare to our <a class="reference internal" href="parmest.html"><span class="doc std std-doc">previous analysis</span></a>?</p>
+<p>In progress: modifying our helper functions in <code class="docutils literal notranslate"><span class="pre">tclab_pyomo.py</span></code> to extract and plot results from a ParmEst model with multiple datasets.</p>
 </section>
 </section>
 
@@ -913,20 +992,20 @@ CpS = 0.01 Joules/degC
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="../regression.html"
+       href="parmest_exercise.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Parameter Estimation</p>
+        <p class="prev-next-title">Exercise: ParmEst</p>
       </div>
     </a>
     <a class="right-next"
-       href="parmest_exercise.html"
+       href="../mbdoe.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Exercise: ParmEst</p>
+        <p class="prev-next-title">Optimal Experiment Design</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -945,9 +1024,9 @@ CpS = 0.01 Joules/degC
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#load-and-explore-experimental-data">Load and explore experimental data</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#store-in-custom-data-class">Store in Custom Data Class</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#parameter-estimation-with-parmest">Parameter Estimation with ParmEst</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#load-and-explore-experimental-data-step-test">Load and explore experimental data (step test)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#load-and-explore-experimental-data-sine-test">Load and explore experimental data (sine test)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#parameter-estimation-with-parmest">Parameter estimation with ParmEst</a></li>
 </ul>
   </nav></div>
 
