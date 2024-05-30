@@ -93,7 +93,11 @@ if "google.colab" in sys.modules:
         _print_solver_versions()
 
     # Check if correct version of Pyomo is installed
-    def _check_pyomo_installed():
+    def _check_pyomo_installed_old():
+        '''
+        This is no longer needed because improvements to Pyomo.DoE have been merged into
+        the next release of Pyomo. This function is kept for reference.
+        '''
 
         try:
             v = subprocess.run(
@@ -110,7 +114,10 @@ if "google.colab" in sys.modules:
         return reinstall_pyomo
 
     # Install updated version of Pyomo
-    if _check_pyomo_installed():
+    # No longer needed because improvements to Pyomo.DoE have been 
+    # merged into the next release of Pyomo
+    '''
+    if _check_pyomo_installed_old():
         print("Installing updated version of Pyomo.DoE...")
         print("  (this takes up to 5 minutes)")
         v = subprocess.run(
@@ -130,6 +137,7 @@ if "google.colab" in sys.modules:
             print(v.stdout)
             print(v.stderr)
         _check_pyomo_installed()
+    '''
 
     import idaes
 
