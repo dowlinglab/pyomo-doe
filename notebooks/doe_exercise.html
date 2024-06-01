@@ -179,6 +179,7 @@ const thebe_selector_output = ".output, .cell_output"
 <li class="toctree-l2"><a class="reference internal" href="parmest.html">Nonlinear Regression with ParmEst</a></li>
 <li class="toctree-l2"><a class="reference internal" href="parmest_exercise.html">Exercise: ParmEst</a></li>
 <li class="toctree-l2"><a class="reference internal" href="parmest_bonus.html">Bonus: ParmEst with Two Datasets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="parmest_four_states.html">Bonus: ParmEst for Four State Model</a></li>
 </ul>
 </li>
 <li class="toctree-l1 current active has-children"><a class="reference internal" href="../mbdoe.html">Optimal Experiment Design</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-3"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
@@ -605,7 +606,20 @@ document.write(`
 <p>Now we are ready to compute the A-optimal next best experiment. Why are we starting with A-optimality? It runs faster so it is better for debugging syntax.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create a new DoE object</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Extract the prior FIM and Jacobian information from the previous</span>
+<span class="c1"># result to use for initialization.</span>
+<span class="c1"># Add your solution here</span>
+
+<span class="c1"># Set Ipopt options</span>
+<span class="n">solver</span> <span class="o">=</span> <span class="n">SolverFactory</span><span class="p">(</span><span class="s1">&#39;ipopt&#39;</span><span class="p">)</span>
+<span class="c1"># solver.options[&#39;bound_push&#39;] = 1E-10</span>
+<span class="n">solver</span><span class="o">.</span><span class="n">options</span><span class="p">[</span><span class="s1">&#39;halt_on_ampl_error&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;yes&#39;</span>
+<span class="c1"># solver.options[&#39;tol&#39;] = 1E-5</span>
+<span class="c1"># solver.options[&#39;acceptable_tol&#39;] = 1E-4</span>
+<span class="c1"># solver.options[&#39;max_iter&#39;] = 100</span>
+<span class="n">solver</span><span class="o">.</span><span class="n">options</span><span class="p">[</span><span class="s1">&#39;linear_solver&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;ma57&#39;</span>
+
+<span class="c1"># Create a new DoE object</span>
 <span class="c1"># Add your solution here</span>
 
 <span class="c1"># Solve the DoE problem</span>
@@ -637,20 +651,7 @@ document.write(`
 <p>Finally, we are ready to solve the D-optimality problem. This may take 2 minutes to run.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Extract the prior FIM and Jacobian information from the previous</span>
-<span class="c1"># result to use for initialization.</span>
-<span class="c1"># Add your solution here</span>
-
-<span class="c1"># Set Ipopt options</span>
-<span class="n">solver</span> <span class="o">=</span> <span class="n">SolverFactory</span><span class="p">(</span><span class="s1">&#39;ipopt&#39;</span><span class="p">)</span>
-<span class="c1"># solver.options[&#39;bound_push&#39;] = 1E-10</span>
-<span class="n">solver</span><span class="o">.</span><span class="n">options</span><span class="p">[</span><span class="s1">&#39;halt_on_ampl_error&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;yes&#39;</span>
-<span class="c1"># solver.options[&#39;tol&#39;] = 1E-5</span>
-<span class="c1"># solver.options[&#39;acceptable_tol&#39;] = 1E-4</span>
-<span class="c1"># solver.options[&#39;max_iter&#39;] = 100</span>
-<span class="n">solver</span><span class="o">.</span><span class="n">options</span><span class="p">[</span><span class="s1">&#39;linear_solver&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;ma57&#39;</span>
-
-<span class="c1"># Create a new DoE object</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create a new DoE object</span>
 <span class="c1"># Add your solution here</span>
 
 <span class="c1"># Solve the DoE problem</span>

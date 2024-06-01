@@ -181,6 +181,7 @@ const thebe_selector_output = ".output, .cell_output"
 <li class="toctree-l2"><a class="reference internal" href="parmest.html">Nonlinear Regression with ParmEst</a></li>
 <li class="toctree-l2"><a class="reference internal" href="parmest_exercise.html">Exercise: ParmEst</a></li>
 <li class="toctree-l2"><a class="reference internal" href="parmest_bonus.html">Bonus: ParmEst with Two Datasets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="parmest_four_states.html">Bonus: ParmEst for Four State Model</a></li>
 </ul>
 </li>
 <li class="toctree-l1 current active has-children"><a class="reference internal" href="../mbdoe.html">Optimal Experiment Design</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-3"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
@@ -619,7 +620,10 @@ document.write(`
 <span class="n">t_control</span> <span class="o">=</span> <span class="n">tc_data</span><span class="o">.</span><span class="n">time</span>
 
 <span class="n">measurements</span> <span class="o">=</span> <span class="n">MeasurementVariables</span><span class="p">()</span>
-<span class="n">measurements</span><span class="o">.</span><span class="n">add_variables</span><span class="p">(</span><span class="s1">&#39;Ts1&#39;</span><span class="p">,</span> <span class="n">indices</span><span class="o">=</span><span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="n">t_control</span><span class="p">},</span> <span class="n">time_index_position</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">measurements</span><span class="o">.</span><span class="n">add_variables</span><span class="p">(</span>
+    <span class="s1">&#39;Ts1&#39;</span><span class="p">,</span> <span class="c1"># this needs to match the name of the variable in the Pyomo model</span>
+    <span class="n">indices</span><span class="o">=</span><span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="n">t_control</span><span class="p">},</span> <span class="c1"># specify which time points are measurements</span>
+    <span class="n">time_index_position</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="c1"># specify which index is time</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="n">measurements</span><span class="o">.</span><span class="n">variable_names</span><span class="p">)</span>
 </pre></div>
@@ -636,12 +640,12 @@ document.write(`
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">decisions</span> <span class="o">=</span> <span class="n">DesignVariables</span><span class="p">()</span>
 
 <span class="n">decisions</span><span class="o">.</span><span class="n">add_variables</span><span class="p">(</span>
-    <span class="s1">&#39;U1&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;U1&#39;</span><span class="p">,</span> <span class="c1"># this needs to match the name of the variable in the Pyomo model</span>
     <span class="n">indices</span><span class="o">=</span><span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="n">t_control</span><span class="p">},</span>
     <span class="n">time_index_position</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
     <span class="n">lower_bounds</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
     <span class="n">upper_bounds</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
-    <span class="n">values</span><span class="o">=</span><span class="n">tc_data</span><span class="o">.</span><span class="n">u1</span><span class="p">,</span>
+    <span class="n">values</span><span class="o">=</span><span class="n">tc_data</span><span class="o">.</span><span class="n">u1</span><span class="p">,</span> <span class="c1"># these values are used for initialization</span>
 <span class="p">)</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="n">decisions</span><span class="o">.</span><span class="n">variable_names</span><span class="p">)</span>
@@ -657,8 +661,23 @@ document.write(`
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">create_model_doe</span><span class="p">(</span><span class="n">theta</span><span class="o">=</span><span class="n">theta_values</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39; Pyomo.DoE needs to be given a function that builds and initializes the model</span>
+
+<span class="sd">    Arguments:</span>
+<span class="sd">        theta: values for the parameters (dictionary). These are used for initialization.</span>
+<span class="sd">    </span>
+<span class="sd">    Returns:</span>
+<span class="sd">        Pyomo model</span>
+
+<span class="sd">    This function is simply a wrapper around the `create_model` method defined in tclab_pyomo.py</span>
+<span class="sd">    Our `create_model` in tclab_pyomo.py has additional inputs we need to specify.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
     <span class="k">return</span> <span class="n">create_model</span><span class="p">(</span>
-        <span class="n">data</span><span class="o">=</span><span class="n">tc_data</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;doe&#39;</span><span class="p">,</span> <span class="n">theta</span><span class="o">=</span><span class="n">theta</span><span class="p">,</span> <span class="n">number_of_states</span><span class="o">=</span><span class="n">number_tclab_states</span>
+        <span class="n">data</span><span class="o">=</span><span class="n">tc_data</span><span class="p">,</span> 
+        <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;doe&#39;</span><span class="p">,</span> 
+        <span class="n">theta</span><span class="o">=</span><span class="n">theta</span><span class="p">,</span> 
+        <span class="n">number_of_states</span><span class="o">=</span><span class="n">number_tclab_states</span>
     <span class="p">)</span>
 </pre></div>
 </div>
@@ -825,7 +844,10 @@ u(t) = 50 + a \sin(\frac{2 \pi}{60 p} t)
 <span class="n">t_control</span> <span class="o">=</span> <span class="n">tc_data</span><span class="o">.</span><span class="n">time</span>
 
 <span class="n">measurements2</span> <span class="o">=</span> <span class="n">MeasurementVariables</span><span class="p">()</span>
-<span class="n">measurements2</span><span class="o">.</span><span class="n">add_variables</span><span class="p">(</span><span class="s1">&#39;Ts1&#39;</span><span class="p">,</span> <span class="n">indices</span><span class="o">=</span><span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="n">t_control</span><span class="p">},</span> <span class="n">time_index_position</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">measurements2</span><span class="o">.</span><span class="n">add_variables</span><span class="p">(</span>
+    <span class="s1">&#39;Ts1&#39;</span><span class="p">,</span> 
+    <span class="n">indices</span><span class="o">=</span><span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="n">t_control</span><span class="p">},</span> 
+    <span class="n">time_index_position</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 
 <span class="n">decisions2</span> <span class="o">=</span> <span class="n">DesignVariables</span><span class="p">()</span>
 <span class="n">decisions2</span><span class="o">.</span><span class="n">add_variables</span><span class="p">(</span>

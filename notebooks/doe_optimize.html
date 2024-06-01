@@ -181,6 +181,7 @@ const thebe_selector_output = ".output, .cell_output"
 <li class="toctree-l2"><a class="reference internal" href="parmest.html">Nonlinear Regression with ParmEst</a></li>
 <li class="toctree-l2"><a class="reference internal" href="parmest_exercise.html">Exercise: ParmEst</a></li>
 <li class="toctree-l2"><a class="reference internal" href="parmest_bonus.html">Bonus: ParmEst with Two Datasets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="parmest_four_states.html">Bonus: ParmEst for Four State Model</a></li>
 </ul>
 </li>
 <li class="toctree-l1 current active has-children"><a class="reference internal" href="../mbdoe.html">Optimal Experiment Design</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-3"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
@@ -638,7 +639,10 @@ document.write(`
 <span class="n">t_control</span> <span class="o">=</span> <span class="n">tc_data</span><span class="o">.</span><span class="n">time</span>
 
 <span class="n">measurements</span> <span class="o">=</span> <span class="n">MeasurementVariables</span><span class="p">()</span>
-<span class="n">measurements</span><span class="o">.</span><span class="n">add_variables</span><span class="p">(</span><span class="s1">&#39;Ts1&#39;</span><span class="p">,</span> <span class="n">indices</span><span class="o">=</span><span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="n">t_control</span><span class="p">},</span> <span class="n">time_index_position</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">measurements</span><span class="o">.</span><span class="n">add_variables</span><span class="p">(</span>
+    <span class="s1">&#39;Ts1&#39;</span><span class="p">,</span> 
+    <span class="n">indices</span><span class="o">=</span><span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="n">t_control</span><span class="p">},</span> 
+    <span class="n">time_index_position</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>

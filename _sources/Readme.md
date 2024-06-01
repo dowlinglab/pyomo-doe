@@ -40,14 +40,19 @@ In this workshop, we will learn how to develop digital twin models in the open-s
 
 This tutorial assumes the audience is familiar with basic Python programming. (New to Python? Check out [this](https://lectures.scientific-python.org/index.html) and similar online resources.) The tutorial is designed to run in Google Colab. The `tclab_pyomo.py` file contains the Pyomo model for our motivating system as well as utilities to install software on Colab.
 
-Alternatively, pariticipants can run the tutorial locally on their computer. Use the following commands to create a new conda environment:
+Alternatively, pariticipants can run the tutorial locally on their computer. Use the following command to create a new conda environment:
 
 ```
 conda create -n summer2024 -c conda-forge -c IDAES-PSE python=3.10 idaes-pse pandas numpy matplotlib scipy ipykernel
-idaes get-extensions
-pip uninstall pyomo
-pip install git+https://github.com/adowling2/pyomo.git@pyomo-doe-fixes
 ```
+
+Then install the optimization solvers, including `Ipopt` with HSL linear algebra and `k_aug`:
+
+```
+idaes get-extensions
+```
+
+Note: `k_aug` is not distributed for macOS users with an Intel processor. Instead, you will either need to compile yourself or skip a few sections of the tutorial. `k_aug` is an optional dependency for `Pyomo.DoE`.
 
 Next, download the files for this tutorial:
 

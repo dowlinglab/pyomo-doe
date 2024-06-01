@@ -178,6 +178,7 @@ const thebe_selector_output = ".output, .cell_output"
 <li class="toctree-l2"><a class="reference internal" href="../notebooks/parmest.html">Nonlinear Regression with ParmEst</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../notebooks/parmest_exercise.html">Exercise: ParmEst</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../notebooks/parmest_bonus.html">Bonus: ParmEst with Two Datasets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notebooks/parmest_four_states.html">Bonus: ParmEst for Four State Model</a></li>
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../mbdoe.html">Optimal Experiment Design</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-3"><i class="fa-solid fa-chevron-down"></i></label><ul>
@@ -563,7 +564,7 @@ document.write(`
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/663624025578c9bc8fe4a8c289ea9a426fbee76450068372da9c3972d06e97e9.png" src="../_images/663624025578c9bc8fe4a8c289ea9a426fbee76450068372da9c3972d06e97e9.png" />
+<img alt="../_images/0758d7f5079dabaeaf7fc8ebcb0eda588d0108e49e85ef5034a3271db7db38a2.png" src="../_images/0758d7f5079dabaeaf7fc8ebcb0eda588d0108e49e85ef5034a3271db7db38a2.png" />
 </div>
 </div>
 <div class="cell docutils container">
@@ -574,7 +575,7 @@ document.write(`
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/c78b6e4827981f1620a9d16dc20852bd2037f36befd35f9ca4d4151cf49cdc82.png" src="../_images/c78b6e4827981f1620a9d16dc20852bd2037f36befd35f9ca4d4151cf49cdc82.png" />
+<img alt="../_images/08ea440db409573b951294a9739bdfda1eaa718e15fec3d4e0e44c5a77c8119a.png" src="../_images/08ea440db409573b951294a9739bdfda1eaa718e15fec3d4e0e44c5a77c8119a.png" />
 </div>
 </div>
 <div class="cell docutils container">
@@ -636,7 +637,10 @@ document.write(`
 <span class="c1"># Define the measurement variables</span>
 <span class="n">measurements</span> <span class="o">=</span> <span class="n">MeasurementVariables</span><span class="p">()</span>
 <span class="c1">### BEGIN SOLUTION</span>
-<span class="n">measurements</span><span class="o">.</span><span class="n">add_variables</span><span class="p">(</span><span class="s1">&#39;Ts1&#39;</span><span class="p">,</span> <span class="n">indices</span><span class="o">=</span><span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="n">t_control</span><span class="p">},</span> <span class="n">time_index_position</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">measurements</span><span class="o">.</span><span class="n">add_variables</span><span class="p">(</span>
+    <span class="s1">&#39;Ts1&#39;</span><span class="p">,</span> 
+    <span class="n">indices</span><span class="o">=</span><span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="n">t_control</span><span class="p">},</span> 
+    <span class="n">time_index_position</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 
 <span class="c1">### END SOLUTION</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">measurements</span><span class="o">.</span><span class="n">variable_names</span><span class="p">)</span>
@@ -725,6 +729,18 @@ document.write(`
 This program contains Ipopt, a library for large-scale nonlinear optimization.
  Ipopt is released as open source code under the Eclipse Public License (EPL).
          For more information visit http://projects.coin-or.org/Ipopt
+
+This version of Ipopt was compiled from source code available at
+    https://github.com/IDAES/Ipopt as part of the Institute for the Design of
+    Advanced Energy Systems Process Systems Engineering Framework (IDAES PSE
+    Framework) Copyright (c) 2018-2019. See https://github.com/IDAES/idaes-pse.
+
+This version of Ipopt was compiled using HSL, a collection of Fortran codes
+    for large-scale scientific computation.  All technical papers, sales and
+    publicity material resulting from use of the HSL codes within IPOPT must
+    contain the following acknowledgement:
+        HSL, a collection of Fortran codes for large-scale scientific
+        computation. See http://www.hsl.rl.ac.uk.
 ******************************************************************************
 
 This is Ipopt version 3.13.2, running with linear solver ma27.
@@ -764,11 +780,11 @@ Number of inequality constraint evaluations          = 0
 Number of equality constraint Jacobian evaluations   = 2
 Number of inequality constraint Jacobian evaluations = 0
 Number of Lagrangian Hessian evaluations             = 1
-Total CPU secs in IPOPT (w/o function evaluations)   =      0.079
-Total CPU secs in NLP function evaluations           =      0.009
+Total CPU secs in IPOPT (w/o function evaluations)   =      0.044
+Total CPU secs in NLP function evaluations           =      0.003
 
 EXIT: Optimal Solution Found.
-INFO: elapsed time: 6.8 seconds
+INFO: elapsed time: 4.1 seconds
 </pre></div>
 </div>
 </div>
@@ -806,11 +822,11 @@ eigenvectors:
  [-5.36617311e-06 -2.29296389e-07  2.40570040e-06  1.00000000e+00]]
 </pre></div>
 </div>
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/Users/adowling/DowlingLab/pyomo-doe/exercise_solutions/../notebooks/tclab_pyomo.py:639: RuntimeWarning: divide by zero encountered in log10
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/Users/adowling/Teaching/pyomo-doe/exercise_solutions/../notebooks/tclab_pyomo.py:790: RuntimeWarning: divide by zero encountered in log10
   print(&quot;D-optimality:&quot;, np.log10(result.det))
-/Users/adowling/DowlingLab/pyomo-doe/exercise_solutions/../notebooks/tclab_pyomo.py:640: RuntimeWarning: invalid value encountered in log10
+/Users/adowling/Teaching/pyomo-doe/exercise_solutions/../notebooks/tclab_pyomo.py:791: RuntimeWarning: invalid value encountered in log10
   print(&quot;E-optimality:&quot;, np.log10(result.min_eig))
-/Users/adowling/DowlingLab/pyomo-doe/exercise_solutions/../notebooks/tclab_pyomo.py:641: RuntimeWarning: invalid value encountered in log10
+/Users/adowling/Teaching/pyomo-doe/exercise_solutions/../notebooks/tclab_pyomo.py:792: RuntimeWarning: invalid value encountered in log10
   print(&quot;Modified E-optimality:&quot;, np.log10(result.cond))
 </pre></div>
 </div>
@@ -823,7 +839,23 @@ eigenvectors:
 <p>Now we are ready to compute the A-optimal next best experiment. Why are we starting with A-optimality? It runs faster so it is better for debugging syntax.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create a new DoE object</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Extract the prior FIM and Jacobian information from the previous</span>
+<span class="c1"># result to use for initialization.</span>
+<span class="c1">### BEGIN SOLUTION</span>
+<span class="n">prior</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">FIM</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="n">jac_for_initialization</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">jaco_information</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="c1">### END SOLUTION</span>
+
+<span class="c1"># Set Ipopt options</span>
+<span class="n">solver</span> <span class="o">=</span> <span class="n">SolverFactory</span><span class="p">(</span><span class="s1">&#39;ipopt&#39;</span><span class="p">)</span>
+<span class="c1"># solver.options[&#39;bound_push&#39;] = 1E-10</span>
+<span class="n">solver</span><span class="o">.</span><span class="n">options</span><span class="p">[</span><span class="s1">&#39;halt_on_ampl_error&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;yes&#39;</span>
+<span class="c1"># solver.options[&#39;tol&#39;] = 1E-5</span>
+<span class="c1"># solver.options[&#39;acceptable_tol&#39;] = 1E-4</span>
+<span class="c1"># solver.options[&#39;max_iter&#39;] = 100</span>
+<span class="n">solver</span><span class="o">.</span><span class="n">options</span><span class="p">[</span><span class="s1">&#39;linear_solver&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;ma57&#39;</span>
+
+<span class="c1"># Create a new DoE object</span>
 <span class="c1">### BEGIN SOLUTION</span>
 <span class="n">doe_object3</span> <span class="o">=</span> <span class="n">DesignOfExperiments</span><span class="p">(</span>
     <span class="n">theta_values</span><span class="p">,</span>  <span class="c1"># dictionary of parameters</span>
@@ -858,6 +890,18 @@ linear_solver=ma57
 This program contains Ipopt, a library for large-scale nonlinear optimization.
  Ipopt is released as open source code under the Eclipse Public License (EPL).
          For more information visit http://projects.coin-or.org/Ipopt
+
+This version of Ipopt was compiled from source code available at
+    https://github.com/IDAES/Ipopt as part of the Institute for the Design of
+    Advanced Energy Systems Process Systems Engineering Framework (IDAES PSE
+    Framework) Copyright (c) 2018-2019. See https://github.com/IDAES/idaes-pse.
+
+This version of Ipopt was compiled using HSL, a collection of Fortran codes
+    for large-scale scientific computation.  All technical papers, sales and
+    publicity material resulting from use of the HSL codes within IPOPT must
+    contain the following acknowledgement:
+        HSL, a collection of Fortran codes for large-scale scientific
+        computation. See http://www.hsl.rl.ac.uk.
 ******************************************************************************
 
 This is Ipopt version 3.13.2, running with linear solver ma57.
@@ -900,8 +944,8 @@ Number of inequality constraint evaluations          = 0
 Number of equality constraint Jacobian evaluations   = 4
 Number of inequality constraint Jacobian evaluations = 0
 Number of Lagrangian Hessian evaluations             = 3
-Total CPU secs in IPOPT (w/o function evaluations)   =      0.285
-Total CPU secs in NLP function evaluations           =      0.016
+Total CPU secs in IPOPT (w/o function evaluations)   =      0.287
+Total CPU secs in NLP function evaluations           =      0.014
 
 EXIT: Optimal Solution Found.
 Ipopt 3.13.2: halt_on_ampl_error=yes
@@ -912,6 +956,18 @@ linear_solver=ma57
 This program contains Ipopt, a library for large-scale nonlinear optimization.
  Ipopt is released as open source code under the Eclipse Public License (EPL).
          For more information visit http://projects.coin-or.org/Ipopt
+
+This version of Ipopt was compiled from source code available at
+    https://github.com/IDAES/Ipopt as part of the Institute for the Design of
+    Advanced Energy Systems Process Systems Engineering Framework (IDAES PSE
+    Framework) Copyright (c) 2018-2019. See https://github.com/IDAES/idaes-pse.
+
+This version of Ipopt was compiled using HSL, a collection of Fortran codes
+    for large-scale scientific computation.  All technical papers, sales and
+    publicity material resulting from use of the HSL codes within IPOPT must
+    contain the following acknowledgement:
+        HSL, a collection of Fortran codes for large-scale scientific
+        computation. See http://www.hsl.rl.ac.uk.
 ******************************************************************************
 
 This is Ipopt version 3.13.2, running with linear solver ma57.
@@ -994,11 +1050,11 @@ Number of inequality constraint evaluations          = 0
 Number of equality constraint Jacobian evaluations   = 38
 Number of inequality constraint Jacobian evaluations = 0
 Number of Lagrangian Hessian evaluations             = 37
-Total CPU secs in IPOPT (w/o function evaluations)   =      5.156
-Total CPU secs in NLP function evaluations           =      0.229
+Total CPU secs in IPOPT (w/o function evaluations)   =      4.838
+Total CPU secs in NLP function evaluations           =      0.181
 
 EXIT: Solved To Acceptable Level.
-INFO: elapsed time: 13.3 seconds
+INFO: elapsed time: 12.0 seconds
 </pre></div>
 </div>
 </div>
@@ -1013,7 +1069,7 @@ INFO: elapsed time: 13.3 seconds
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/54cbe395f16bfa2438ac2bbe34f017a0296e35278f20c7c8123c030d0e99bc1d.png" src="../_images/54cbe395f16bfa2438ac2bbe34f017a0296e35278f20c7c8123c030d0e99bc1d.png" />
+<img alt="../_images/ede09cefec8800ee806f239f80de580d6aeadec2d35fbf93222f43c45b933888.png" src="../_images/ede09cefec8800ee806f239f80de580d6aeadec2d35fbf93222f43c45b933888.png" />
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model parameters:
 Ua = 0.0515 Watts/degC
 Ub = 0.0005 Watts/degC
@@ -1067,23 +1123,7 @@ eigenvectors:
 <p>Finally, we are ready to solve the D-optimality problem. This may take 2 minutes to run.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Extract the prior FIM and Jacobian information from the previous</span>
-<span class="c1"># result to use for initialization.</span>
-<span class="c1">### BEGIN SOLUTION</span>
-<span class="n">prior</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">FIM</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-<span class="n">jac_for_initialization</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">jaco_information</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-<span class="c1">### END SOLUTION</span>
-
-<span class="c1"># Set Ipopt options</span>
-<span class="n">solver</span> <span class="o">=</span> <span class="n">SolverFactory</span><span class="p">(</span><span class="s1">&#39;ipopt&#39;</span><span class="p">)</span>
-<span class="c1"># solver.options[&#39;bound_push&#39;] = 1E-10</span>
-<span class="n">solver</span><span class="o">.</span><span class="n">options</span><span class="p">[</span><span class="s1">&#39;halt_on_ampl_error&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;yes&#39;</span>
-<span class="c1"># solver.options[&#39;tol&#39;] = 1E-5</span>
-<span class="c1"># solver.options[&#39;acceptable_tol&#39;] = 1E-4</span>
-<span class="c1"># solver.options[&#39;max_iter&#39;] = 100</span>
-<span class="n">solver</span><span class="o">.</span><span class="n">options</span><span class="p">[</span><span class="s1">&#39;linear_solver&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;ma57&#39;</span>
-
-<span class="c1"># Create a new DoE object</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create a new DoE object</span>
 <span class="c1">### BEGIN SOLUTION</span>
 <span class="n">doe_object2</span> <span class="o">=</span> <span class="n">DesignOfExperiments</span><span class="p">(</span>
     <span class="n">theta_values</span><span class="p">,</span>  <span class="c1"># dictionary of parameters</span>
@@ -1118,6 +1158,18 @@ linear_solver=ma57
 This program contains Ipopt, a library for large-scale nonlinear optimization.
  Ipopt is released as open source code under the Eclipse Public License (EPL).
          For more information visit http://projects.coin-or.org/Ipopt
+
+This version of Ipopt was compiled from source code available at
+    https://github.com/IDAES/Ipopt as part of the Institute for the Design of
+    Advanced Energy Systems Process Systems Engineering Framework (IDAES PSE
+    Framework) Copyright (c) 2018-2019. See https://github.com/IDAES/idaes-pse.
+
+This version of Ipopt was compiled using HSL, a collection of Fortran codes
+    for large-scale scientific computation.  All technical papers, sales and
+    publicity material resulting from use of the HSL codes within IPOPT must
+    contain the following acknowledgement:
+        HSL, a collection of Fortran codes for large-scale scientific
+        computation. See http://www.hsl.rl.ac.uk.
 ******************************************************************************
 
 This is Ipopt version 3.13.2, running with linear solver ma57.
@@ -1160,8 +1212,8 @@ Number of inequality constraint evaluations          = 0
 Number of equality constraint Jacobian evaluations   = 4
 Number of inequality constraint Jacobian evaluations = 0
 Number of Lagrangian Hessian evaluations             = 3
-Total CPU secs in IPOPT (w/o function evaluations)   =      0.297
-Total CPU secs in NLP function evaluations           =      0.017
+Total CPU secs in IPOPT (w/o function evaluations)   =      0.287
+Total CPU secs in NLP function evaluations           =      0.014
 
 EXIT: Optimal Solution Found.
 Ipopt 3.13.2: halt_on_ampl_error=yes
@@ -1172,6 +1224,18 @@ linear_solver=ma57
 This program contains Ipopt, a library for large-scale nonlinear optimization.
  Ipopt is released as open source code under the Eclipse Public License (EPL).
          For more information visit http://projects.coin-or.org/Ipopt
+
+This version of Ipopt was compiled from source code available at
+    https://github.com/IDAES/Ipopt as part of the Institute for the Design of
+    Advanced Energy Systems Process Systems Engineering Framework (IDAES PSE
+    Framework) Copyright (c) 2018-2019. See https://github.com/IDAES/idaes-pse.
+
+This version of Ipopt was compiled using HSL, a collection of Fortran codes
+    for large-scale scientific computation.  All technical papers, sales and
+    publicity material resulting from use of the HSL codes within IPOPT must
+    contain the following acknowledgement:
+        HSL, a collection of Fortran codes for large-scale scientific
+        computation. See http://www.hsl.rl.ac.uk.
 ******************************************************************************
 
 This is Ipopt version 3.13.2, running with linear solver ma57.
@@ -1558,11 +1622,11 @@ Number of inequality constraint evaluations          = 0
 Number of equality constraint Jacobian evaluations   = 316
 Number of inequality constraint Jacobian evaluations = 0
 Number of Lagrangian Hessian evaluations             = 315
-Total CPU secs in IPOPT (w/o function evaluations)   =     58.109
-Total CPU secs in NLP function evaluations           =      1.966
+Total CPU secs in IPOPT (w/o function evaluations)   =     54.794
+Total CPU secs in NLP function evaluations           =      1.462
 
 EXIT: Optimal Solution Found.
-INFO: elapsed time: 72.2 seconds
+INFO: elapsed time: 72.7 seconds
 </pre></div>
 </div>
 </div>
@@ -1577,7 +1641,7 @@ INFO: elapsed time: 72.2 seconds
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/2d4fdf287c0ca6159a97ba676e098e9bf0d9f5b8ee38ee8b401c163f04bd2d05.png" src="../_images/2d4fdf287c0ca6159a97ba676e098e9bf0d9f5b8ee38ee8b401c163f04bd2d05.png" />
+<img alt="../_images/3955314cebd313be8224c340a21286fa777eb8c5342e6dda88b1dbdb6dcca77f.png" src="../_images/3955314cebd313be8224c340a21286fa777eb8c5342e6dda88b1dbdb6dcca77f.png" />
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model parameters:
 Ua = 0.0515 Watts/degC
 Ub = 0.0005 Watts/degC
