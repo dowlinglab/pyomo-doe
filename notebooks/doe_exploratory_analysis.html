@@ -1712,6 +1712,9 @@ INFO: Overall wall clock time [s]:  34.38077020907076
 <img alt="../_images/61f8f88ad4da4563f027941aefbbc0b297faf832902115ec824baa1b61bffcdb.png" src="../_images/61f8f88ad4da4563f027941aefbbc0b297faf832902115ec824baa1b61bffcdb.png" />
 </div>
 </div>
+<p>These heatmaps tell us a lot about the mathematical model for the TCLab system.</p>
+<p>A-optimality (trace of FIM) is the largest with a long period (8 minutes) and large amplitude (45%). Why does this make sense? The long period means the heating and cooling is more gradual. This gives more information about the dynamics of the system, especially the lag in heat transfer between the two modeled thermal masses. Likewise, the larger amplitude ensures a larger temperature range is explored, which maximizes the ratio of the signal to noise (which is assumed to be i.i.d.)</p>
+<p>The D-, E-, and modified-E optimality results are more nuanced. We see a random pattern of white and colors. The white corresponds to <code class="docutils literal notranslate"><span class="pre">nan</span></code> results from taking the log of a negative number. Recall for this system, the smallest eigenvalue is numerically near zero. These results tell us that even optimizing the period and amplitude is not enough to reliably estimate <span class="math notranslate nohighlight">\(C_p^S\)</span>. We need either multiple experiments or a different experiment design.</p>
 </section>
 </section>
 
