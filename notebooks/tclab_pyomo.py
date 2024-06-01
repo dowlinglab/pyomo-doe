@@ -731,6 +731,7 @@ def extract_plot_results(tc_exp_data, model):
     else:
         nc = 1
     plt.legend(ncol=nc)
+    plt.grid(True)
 
     # subplot 2: control decision
     plt.subplot(2, 1, 2)
