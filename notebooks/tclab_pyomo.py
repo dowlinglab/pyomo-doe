@@ -679,6 +679,8 @@ def extract_plot_results(tc_exp_data, model):
 
     LW = 3.0  # line width
 
+    four_states = (mod.TS2_data is not None) and (mod.T2 is not None)
+
     if exp.T1 is not None:
         plt.scatter(
             exp.time,
@@ -723,8 +725,12 @@ def extract_plot_results(tc_exp_data, model):
         )
 
     plt.ylabel('Temperature (°C)')
-    plt.legend()
-    plt.grid(True)
+
+    if four_states:
+        nc = 2
+    else:
+        nc = 1
+    plt.legend(ncol=nc)
 
     # subplot 2: control decision
     plt.subplot(2, 1, 2)
@@ -753,7 +759,7 @@ def extract_plot_results(tc_exp_data, model):
 
     plt.ylabel('Heater Power (%)')
     plt.xlabel('Time (s)')
-    plt.legend()
+    plt.legend(ncol=nc)
     plt.grid(True)
 
     plt.tight_layout()
