@@ -9,6 +9,8 @@ These materials were created by [Prof. Alexander Dowling](https://dowlinglab.nd.
 ## ESCAPE/PSE 2024 Workshop Schedule
 
 Thank you for joining the workshop at the ESCAPE/PSE meeting in Florence, Italy on June 2, 2024.
+* [Workshop slides](https://raw.githubusercontent.com/dowlinglab/pyomo-doe/main/slides/ESCAPE34_PSE24_Workshop.pdf)
+* [Presentation slides](https://raw.githubusercontent.com/dowlinglab/pyomo-doe/main/slides/ESCAPE34_PSE24_Presentation.pdf)
 
 | Time | Topic |
 | ---- | -------- |
