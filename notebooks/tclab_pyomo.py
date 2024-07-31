@@ -151,12 +151,8 @@ if "google.colab" in sys.modules:
 # This is important for running on local machines
 import idaes
 
-from pyomo.contrib.doe import (
-    ModelOptionLib,
-    # DesignOfExperiments,
-    # MeasurementVariables,
-    # DesignVariables,
-)
+from pyomo.contrib.doe.experiment import Experiment
+from pyomo.contrib.doe import DesignOfExperiments
 
 from pyomo.environ import (
     ConcreteModel,
@@ -229,6 +225,49 @@ class TCLabExperiment:
 
         return df
 
+### -------------- Part 4 v 2: Create Experiment object -------------- ###
+class TCLab_experiment(Experiment):
+    def __init__(self, data, nfe, ncp):
+        self.data = data
+        self.nfe = nfe
+        self.ncp = ncp
+        self.model = None
+    
+    def get_labeled_model(self, number_of_states=2):
+        if self.model is None:
+            self.create_model(number_of_states=number_of_states)
+            self.finalize_model(number_of_states=number_of_states)
+            self.label_experiment(number_of_states=number_of_states)
+        return self.model
+    
+    def create_model(self, number_of_states=2):
+        """
+        Method to create an unlabled, undiscretized model of the
+        TC Lab with either 2 or 4 states (determined by the 
+        ``number_of_states`` input).
+        
+        """
+        m = self.model = ConcreteModel()
+        
+        return m
+    
+    def finalize_model(self, number_of_states=2):
+        """
+        Finalizing the TC Lab model. Here, we will discretize 
+        the model and set the experimental conditions.
+        
+        """
+        m = self.model
+    
+    def label_experiment(self, number_of_states=2):
+        """
+        Annotating (labeling) the model with experimental 
+        data, associated measurement error, experimental 
+        design decisions, and unknown model parameters.
+
+        """
+        m = self.model
+        
 
 ### -------------- Part 4: Construct Pyomo Model -------------- ###
 
