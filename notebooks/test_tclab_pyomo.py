@@ -63,7 +63,7 @@ plt.close()
 from pyomo.contrib.doe import DesignOfExperiments
 
 test_DoE = DesignOfExperiments(experiment=TC_lab_exp_instance, 
-                               step=1e-3, 
+                               step=1e-2, 
                                scale_nominal_param_value=True, 
                                objective_option="trace", 
                                tee=True, 
@@ -85,13 +85,21 @@ plt.show()
 plt.clf()
 plt.close()
 
-test_DoE_second_exp = DesignOfExperiments(experiment=TC_lab_exp_instance, 
-                                          step=1e-3, 
+TC_lab_exp_instance2 = TC_Lab_experiment(data=tc_data, theta_initial=theta_vals)
+
+solver = aml.SolverFactory('ipopt')
+# solver.options['bound_push'] = 1E-10
+solver.options['halt_on_ampl_error'] = 'yes'
+# solver.options['linear_solver'] = 'ma57'
+
+test_DoE_second_exp = DesignOfExperiments(experiment=TC_lab_exp_instance2, 
+                                          step=1e-2, 
                                           scale_nominal_param_value=True, 
                                           objective_option="determinant", 
-                                          prior_FIM=np.array(d['FIM']), 
-                                          tee=True, 
-                                          logger_level=logging.INFO)
+                                          prior_FIM=prior_FIM, 
+                                          tee=True,
+                                          solver=solver,
+                                          logger_level=logging.INFO,)
 
 test_DoE_second_exp.run_doe(results_file="test_solve_d_opt.json")
 

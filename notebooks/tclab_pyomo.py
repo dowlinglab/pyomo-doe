@@ -526,8 +526,10 @@ class TC_Lab_experiment(Experiment):
         # (experiment measurements)
         
         m.experiment_outputs = Suffix(direction=Suffix.LOCAL)
-        # Add fin 1 temperature (m.Th1) to experiment outputs
-        m.experiment_outputs.update((m.Th1[t], self.data.T1[ind]) for ind, t in enumerate(self.data.time))
+        # Add sensor 1 temperature (m.Ts1) to experiment outputs
+        m.experiment_outputs.update((m.Ts1[t], self.data.T1[ind]) for ind, t in enumerate(self.data.time))
+        if self.number_of_states == 4:
+            m.experiment_outputs.update((m.Ts2[t], self.data.T2[ind]) for ind, t in enumerate(self.data.time))
         
         # End experiment outputs
         #################################
@@ -562,8 +564,10 @@ class TC_Lab_experiment(Experiment):
         # (for experiment outputs)
         
         m.measurement_error = Suffix(direction=Suffix.LOCAL)
-        # Add fin 1 temperature (m.Th1) measurement error (assuming constant error of 0.01 deg C)
-        m.measurement_error.update((m.Th1[t], 0.01) for t in self.data.time)
+        # Add sensor 1 temperature (m.Ts1) measurement error (assuming constant error of 0.01 deg C)
+        m.measurement_error.update((m.Ts1[t], 0.05) for t in self.data.time)
+        if self.number_of_states == 4:
+            m.measurement_error.update((m.Ts2[t], 0.05) for ind, t in enumerate(self.data.time))
         
         # End measurement error
         #################################
