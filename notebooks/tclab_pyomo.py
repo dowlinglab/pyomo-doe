@@ -149,9 +149,10 @@ if "google.colab" in sys.modules:
 
 # Need to import IDAES for Ipopt
 # This is important for running on local machines
-import idaes
+# TODO: uncomment this
+# import idaes
 
-from pyomo.contrib.doe.experiment import Experiment
+from pyomo.contrib.parmest.experiment import Experiment
 from pyomo.contrib.doe import DesignOfExperiments
 
 from pyomo.environ import (
@@ -190,7 +191,7 @@ from dataclasses import dataclass
 
 
 @dataclass
-class TCLabExperiment:
+class TC_Lab_data:
     """Class for storing data from a TCLab experiment."""
 
     name: str  # Name of the experiment (optional)
@@ -225,41 +226,293 @@ class TCLabExperiment:
 
         return df
 
+### -------------- Part 3.1: Helper function for initializing the model -------------- ###
+def helper(my_array, time):
+    '''
+    Method that builds a dictionary to help initialization.
+    Arguments:
+        my_array: an array
+    Returns:
+        data: a dict {time: array_value}
+    '''
+    # ensure that the dimensions of array and time data match
+    assert len(my_array) == len(time), "Dimension mismatch."
+    data2 = {}
+    for k, t in enumerate(time):
+        if my_array[k] is not None:
+            data2[t] = my_array[k]
+        else:
+            # Replace None with 0
+            data2[t] = 0
+    return data2
+
 ### -------------- Part 4 v 2: Create Experiment object -------------- ###
-class TCLab_experiment(Experiment):
-    def __init__(self, data, nfe, ncp):
+class TC_Lab_experiment(Experiment):
+    def __init__(self, data, alpha=0.00016, theta_initial=None, number_of_states=2, sine_amplitude=None, sine_period=None):
+        """
+        Arguments
+        ---------
+        data: TC_Lab_Data object
+        alpha: float, Conversion factor for TCLab (fixed parameter)
+        theta_initial: dictionary, initial guesses for the unknown parameters
+        number_of_states: number of states in the heat transfer model (must be 2 or 4), default: 2
+        sine_amplitude: float, amplitude of the sine wave, default: None (do not use the sine wave)
+        sine_period: float, period of the sine wave, default: None (do not use the sine wave)
+        
+        """
         self.data = data
-        self.nfe = nfe
-        self.ncp = ncp
+        
+        if theta_initial is None:
+            self.theta_initial={
+                "Ua": 0.0535,
+                "Ub": 0.0148,
+                "inv_CpH": 1 / 6.911,
+                "inv_CpS": 1 / 0.318,
+                "Uc": 0.001,
+            }
+        else:
+            self.theta_initial = theta_initial
+        
+        # TODO: Move alpha to the data object?
+        self.alpha = alpha
+        
+        # Make sure that the number of states is either 2 or 4
+        if number_of_states not in [2, 4, ]:
+            raise ValueError("number_of_states must be 2 or 4.")
+        self.number_of_states = number_of_states
+        
+        # Make sure that the sine amplitude and period are reasonable
+        if sine_amplitude is not None and sine_period is not None:
+            self.sine_period_max = 10  # minutes
+            self.sine_period_min = 10 / 60  # minutes
+
+            assert sine_amplitude <= 50, "Sine amplitude must be less than 50."
+            assert sine_amplitude >= 0, "Sine amplitude must be greater than 0."
+
+            assert sine_period <= sine_period_max, "Sine period must be less than " + str(
+                sine_period_max
+            )
+            assert (
+                sine_period >= sine_period_min
+            ), "Sine period must be greater than " + str(sine_period_min)
+        elif sine_amplitude is not None or sine_period is not None:
+            raise ValueError("If sine wave is used, both amplitude and period must be provided.")
+        else:
+            self.sine_period_max = None
+            self.sine_period_min = None
+        self.sine_amplitude = sine_amplitude
+        self.sine_period = sine_period
+        
         self.model = None
     
-    def get_labeled_model(self, number_of_states=2):
+    def get_labeled_model(self):
         if self.model is None:
-            self.create_model(number_of_states=number_of_states)
-            self.finalize_model(number_of_states=number_of_states)
-            self.label_experiment(number_of_states=number_of_states)
+            self.create_model()
+            self.finalize_model()
+            self.label_experiment()
         return self.model
     
-    def create_model(self, number_of_states=2):
+    def create_model(self):
         """
-        Method to create an unlabled, undiscretized model of the
-        TC Lab with either 2 or 4 states (determined by the 
-        ``number_of_states`` input).
+        Method to create an unlabled model of the TC Lab system.
         
         """
         m = self.model = ConcreteModel()
         
+        #########################################
+        # Model parameters that remain constant
+        m.Tamb = Param(initialize=self.data.Tamb)
+        m.P1 = Param(initialize=self.data.P1)
+        m.alpha = Param(initialize=self.alpha)
+        m.P2 = Param(initialize=self.data.P2)
+        
+        m.Tmax = 85  # Maximum temparture (Deg C)
+        
+        # End constant model parameters
+        #########################################
+        
+        ################################
+        # Defining state variables
+        m.t = ContinuousSet(initialize=self.data.time)
+        
+        # Temperature states for the fins
+        m.Th1 = Var(m.t, bounds=[0, m.Tmax], initialize=m.Tamb.value)
+        m.Ts1 = Var(m.t, bounds=[0, m.Tmax], initialize=m.Tamb.value)
+
+        if self.number_of_states == 4:
+            m.Th2 = Var(m.t, bounds=[0, m.Tmax], initialize=m.Tamb.value)
+            m.Ts2 = Var(m.t, bounds=[0, m.Tmax], initialize=m.Tamb.value)
+        
+        # Derivatives of the temperature state variables
+        m.Th1dot = DerivativeVar(m.Th1, wrt=m.t)
+        m.Ts1dot = DerivativeVar(m.Ts1, wrt=m.t)
+
+        if self.number_of_states == 4:
+            m.Th2dot = DerivativeVar(m.Th2, wrt=m.t)
+            m.Ts2dot = DerivativeVar(m.Ts2, wrt=m.t)
+        
+        # End state variable definition
+        ################################
+
+        ####################################
+        # Defining experimental inputs
+        
+        # Add control variables (experimental design decisions)
+        m.U1 = Var(m.t, bounds=(0, 100), initialize=helper(self.data.u1, self.data.time))
+        m.U1.fix()  # Fixed for parameter estimation
+
+        if self.number_of_states == 4:
+            m.U2 = Var(m.t, bounds=(0, 100), initialize=helper(self.data.u2, self.data.time))
+            m.U2.fix()  # Fixed for parameter estimation
+        
+        # End experimental input definition
+        ####################################
+        
+        ####################################
+        # Defining unknown model parameters
+        # (estimated during parameter estimation)
+        
+        # Heat transfer coefficients
+        m.Ua = Param(initialize=self.theta_initial["Ua"], mutable=True)
+        m.Ub = Param(initialize=self.theta_initial["Ub"], mutable=True)
+        
+        if self.number_of_states == 4:
+            m.Uc = Param(initialize=self.theta_initial["Uc"], mutable=True)
+        
+        # Inverse of the heat capacity coefficients (1/CpH and 1/CpS)
+        m.inv_CpH = Param(initialize=self.theta_initial["inv_CpH"], mutable=True)
+        m.inv_CpS = Param(initialize=self.theta_initial["inv_CpS"], mutable=True)
+        
+        # End unknown parameter definition
+        ####################################
+        
+        ################################
+        # Defining model equations
+        
+        # First fin energy balance
+        @m.Constraint(m.t)
+        def Th1_ode(m, t):
+            rhs_expr = (m.Ua * (m.Tamb - m.Th1[t]) + m.Ub * (m.Ts1[t] - m.Th1[t]) + m.alpha * m.P1 * m.U1[t]) * m.inv_CpH
+            
+            # If we use the 4-state model, we add heat transfer from sensor 2 to the energy balance on fin 1
+            if self.number_of_states == 4:
+                rhs_expr += (m.Uc * (m.Th1[t] - m.Th2[t])) * m.inv_CpH
+            
+            return m.Th1dot[t] == rhs_expr
+        
+        # First sensor energy balance
+        @m.Constraint(m.t)
+        def Ts1_ode(m, t):
+            return m.Ts1dot[t] == (m.Ub * (m.Th1[t] - m.Ts1[t])) * m.inv_CpS
+        
+        # Second fin/sensor (only active for the 4-state model
+        if self.number_of_states == 4:
+            # Second fin energy balance
+            @m.Constraint(m.t)
+            def Th2_ode(m, t):
+                return m.Th2dot[t] == (m.Ua * (m.Tamb - m.Th2[t]) + m.Ub * (m.Ts2[t] - m.Th2[t]) + m.Uc * (m.Th1[t] - m.Th2[t]) + m.alpha * m.P2 * m.U2[t]) * m.inv_CpH
+            
+            # Second sensor energy balance
+            @m.Constraint(m.t)
+            def Ts2_ode(m, t):
+                return m.Ts2dot[t] == (m.Ub * (m.Th2[t] - m.Ts2[t])) * m.inv_CpS
+        
+        # End model equation definition
+        ################################
+        
         return m
     
-    def finalize_model(self, number_of_states=2):
+    def finalize_model(self):
         """
-        Finalizing the TC Lab model. Here, we will discretize 
-        the model and set the experimental conditions.
+        Finalizing the TC Lab model. Here, we will set the 
+        experimental conditions and discretize the dae model.
         
         """
         m = self.model
+        
+        ####################################
+        # Set initial conditions
+        if self.data.time[0] == 0:
+            if self.data.TS1_data is not None and self.data.TS1_data[0] is not None:
+                # Initialize with first temperature measurement
+                m.Th1[0].fix(self.data.TS1_data[0])
+                m.Ts1[0].fix(self.data.TS1_data[0])
+            else:
+                # Initialize with ambient temperature
+                m.Th1[0].fix(m.Tamb)
+                m.Ts1[0].fix(m.Tamb)
+
+            if self.number_of_states == 4:
+                if self.data.TS2_data is not None and self.data.TS2_data[0] is not None:
+                    # Initialize with first temperature measurement
+                    m.Th2[0].fix(self.data.TS2_data[0])
+                    m.Ts2[0].fix(self.data.TS2_data[0])
+                else:
+                    # Initialize with ambient temperature
+                    m.Th2[0].fix(m.Tamb)
+                    m.Ts2[0].fix(m.Tamb)
+        
+        # End initial conditions definition
+        ####################################
+        
+        ########################################
+        # Defining optional sine wave equations
+        # (only when sine wave control is used)
+        
+        if self.sine_amplitude is not None and self.sine_period is not None:
+            # Add measurement control decision variables
+            m.u1_period = Var(
+                initialize=self.sine_period, bounds=(self.sine_period_min, self.sine_period_max)
+            )  # minutes
+            m.u1_amplitude = Var(initialize=self.sine_amplitude)  # % power
+
+            # Add constraint to calculate u1
+            @m.Constraint(m.t)
+            def u1_constraint(m, t):
+                return m.U1[t] == 50 + m.u1_amplitude * sin(2 * np.pi / (m.u1_period * 60) * value(t))
+        
+        # TODO: Add second sine wave functionality for 4-state model
+        
+        # End optional sine wave constraints
+        ########################################
+        
+        #########################################
+        # Initialize the model using integration
+        m.var_input = Suffix(direction=Suffix.LOCAL)
+
+        if self.data.u1 is not None:
+            # initialize with data
+            m.var_input[m.U1] = helper(self.data.u1, self.data.time)
+        else:
+            # otherwise initialize control decision of 0
+            m.var_input[m.U1] = {0: 0}
+
+        if self.number_of_states == 4:
+            if self.data.u2 is not None:
+                # initialize with data
+                m.var_input[m.U2] = helper(self.data.u2, self.data.time)
+            else:
+                # otherwise initialize control decision of 0
+                m.var_input[m.U2] = {0: 0}
+
+        # Simulate to initialize
+        # Makes the solver more efficient
+        sim = Simulator(m, package='scipy')
+        tsim, profiles = sim.simulate(
+            numpoints=100, integrator='vode', varying_inputs=m.var_input
+        )
+        sim.initialize_model()
+        
+        TransformationFactory('dae.finite_difference').apply_to(
+            m, scheme='BACKWARD', nfe=len(self.data.time) - 1
+        )
+        
+        # End dynamic model initialization
+        #########################################
+        
+        # TODO: Add "optimize" mode equations OUTSIDE of the get_labeled_model workflow
     
-    def label_experiment(self, number_of_states=2):
+    def label_experiment(self):
         """
         Annotating (labeling) the model with experimental 
         data, associated measurement error, experimental 
@@ -267,6 +520,53 @@ class TCLab_experiment(Experiment):
 
         """
         m = self.model
+        
+        #################################
+        # Labeling experiment outputs
+        # (experiment measurements)
+        
+        m.experiment_outputs = Suffix(direction=Suffix.LOCAL)
+        # Add fin 1 temperature (m.Th1) to experiment outputs
+        m.experiment_outputs.update((m.Th1[t], self.data.T1[ind]) for ind, t in enumerate(self.data.time))
+        
+        # End experiment outputs
+        #################################
+        
+        #################################
+        # Labeling unknown parameters
+        
+        m.unknown_parameters = Suffix(direction=Suffix.LOCAL)
+        # Add labels to all unknown parameters with nominal value as the value
+        m.unknown_parameters.update((k, k.value) for k in [m.Ua, m.Ub, m.inv_CpH, m.inv_CpS])
+        if self.number_of_states == 4:
+            m.unknown_parameters[m.Uc] = m.UC.value
+        
+        # End unknown parameters
+        #################################
+        
+        #################################
+        # Labeling experiment inputs
+        # (experiment design decisions)
+        
+        m.experiment_inputs = Suffix(direction=Suffix.LOCAL)
+        # Add experimental input label for control variable (m.U1)
+        m.experiment_inputs.update((m.U1[t], None) for t in self.data.time)
+        if self.number_of_states == 4:
+            m.experiment_inputs.update((m.U2[t], None) for t in self.data.time)
+        
+        # End experiment inputs
+        #################################
+        
+        #################################
+        # Labeling measurement error
+        # (for experiment outputs)
+        
+        m.measurement_error = Suffix(direction=Suffix.LOCAL)
+        # Add fin 1 temperature (m.Th1) measurement error (assuming constant error of 0.01 deg C)
+        m.measurement_error.update((m.Th1[t], 0.01) for t in self.data.time)
+        
+        # End measurement error
+        #################################
         
 
 ### -------------- Part 4: Construct Pyomo Model -------------- ###
