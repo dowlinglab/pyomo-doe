@@ -151,6 +151,7 @@ if "google.colab" in sys.modules:
 # This is important for running on local machines
 # TODO: uncomment this
 # import idaes
+from idaes.core.util import DiagnosticsToolbox
 
 from pyomo.contrib.parmest.experiment import Experiment
 from pyomo.contrib.doe import DesignOfExperiments
@@ -164,10 +165,11 @@ from pyomo.environ import (
     SolverFactory,
     Objective,
     minimize,
-    value,
+    value as pyovalue,
     Suffix,
     Expression,
     sin,
+    PositiveReals,
 )
 from pyomo.dae import DerivativeVar, ContinuousSet, Simulator
 
@@ -289,12 +291,12 @@ class TC_Lab_experiment(Experiment):
             assert sine_amplitude <= 50, "Sine amplitude must be less than 50."
             assert sine_amplitude >= 0, "Sine amplitude must be greater than 0."
 
-            assert sine_period <= sine_period_max, "Sine period must be less than " + str(
-                sine_period_max
+            assert sine_period <= self.sine_period_max, "Sine period must be less than " + str(
+                self.sine_period_max
             )
             assert (
-                sine_period >= sine_period_min
-            ), "Sine period must be greater than " + str(sine_period_min)
+                sine_period >= self.sine_period_min
+            ), "Sine period must be greater than " + str(self.sine_period_min)
         elif sine_amplitude is not None or sine_period is not None:
             raise ValueError("If sine wave is used, both amplitude and period must be provided.")
         else:
@@ -373,15 +375,24 @@ class TC_Lab_experiment(Experiment):
         # (estimated during parameter estimation)
         
         # Heat transfer coefficients
-        m.Ua = Param(initialize=self.theta_initial["Ua"], mutable=True)
-        m.Ub = Param(initialize=self.theta_initial["Ub"], mutable=True)
+        # m.Ua = Param(initialize=self.theta_initial["Ua"], bounds=(0, 1e4), mutable=True)
+        # m.Ub = Param(initialize=self.theta_initial["Ub"], bounds=(0, 1e4), mutable=True)
+        m.Ua = Var(initialize=self.theta_initial["Ua"], bounds=(0, 1e4))
+        m.Ua.fix()
+        m.Ub = Var(initialize=self.theta_initial["Ub"], bounds=(0, 1e4))
+        m.Ub.fix()
         
         if self.number_of_states == 4:
-            m.Uc = Param(initialize=self.theta_initial["Uc"], mutable=True)
+            m.Uc = Var(initialize=self.theta_initial["Uc"], bounds=(0, 1e4))
+            m.Uc.fix()
         
         # Inverse of the heat capacity coefficients (1/CpH and 1/CpS)
-        m.inv_CpH = Param(initialize=self.theta_initial["inv_CpH"], mutable=True)
-        m.inv_CpS = Param(initialize=self.theta_initial["inv_CpS"], mutable=True)
+        # m.inv_CpH = Param(initialize=self.theta_initial["inv_CpH"], within=PositiveReals, mutable=True)
+        # m.inv_CpS = Param(initialize=self.theta_initial["inv_CpS"], within=PositiveReals, mutable=True)
+        m.inv_CpH = Var(initialize=self.theta_initial["inv_CpH"], bounds=(0, 1e6))
+        m.inv_CpH.fix()
+        m.inv_CpS = Var(initialize=self.theta_initial["inv_CpS"], bounds=(0, 1e3))
+        m.inv_CpS.fix()
         
         # End unknown parameter definition
         ####################################
@@ -464,12 +475,18 @@ class TC_Lab_experiment(Experiment):
             m.u1_period = Var(
                 initialize=self.sine_period, bounds=(self.sine_period_min, self.sine_period_max)
             )  # minutes
-            m.u1_amplitude = Var(initialize=self.sine_amplitude)  # % power
+            m.u1_amplitude = Var(initialize=self.sine_amplitude, bounds=(0,50))  # % power
+            
+            # Fixed for parameter estimation
+            m.u1_period.fix()
+            m.u1_amplitude.fix()
 
             # Add constraint to calculate u1
             @m.Constraint(m.t)
             def u1_constraint(m, t):
-                return m.U1[t] == 50 + m.u1_amplitude * sin(2 * np.pi / (m.u1_period * 60) * value(t))
+                return m.U1[t] == 50 + m.u1_amplitude * sin(2 * np.pi / (m.u1_period * 60) * t)
+            
+            m.U1.unfix()  # Unfixed for because of above constraints
         
         # TODO: Add second sine wave functionality for 4-state model
         
@@ -497,16 +514,24 @@ class TC_Lab_experiment(Experiment):
 
         # Simulate to initialize
         # Makes the solver more efficient
-        sim = Simulator(m, package='scipy')
-        tsim, profiles = sim.simulate(
-            numpoints=100, integrator='vode', varying_inputs=m.var_input
-        )
-        sim.initialize_model()
+        if self.sine_amplitude is None or self.sine_period is None:
+            sim = Simulator(m, package='scipy')
+            tsim, profiles = sim.simulate(
+                numpoints=100, integrator='vode', varying_inputs=m.var_input
+            )
+            sim.initialize_model()
+        else:
+            # sim = Simulator(m, package='casadi')
+            # tsim, profiles = sim.simulate(
+                # numpoints=100, integrator='idas', varying_inputs=m.var_input
+            # )
+            # sim.initialize_model()
+            pass
         
         TransformationFactory('dae.finite_difference').apply_to(
             m, scheme='BACKWARD', nfe=len(self.data.time) - 1
         )
-        
+            
         # End dynamic model initialization
         #########################################
         
@@ -539,9 +564,22 @@ class TC_Lab_experiment(Experiment):
         
         m.unknown_parameters = Suffix(direction=Suffix.LOCAL)
         # Add labels to all unknown parameters with nominal value as the value
-        m.unknown_parameters.update((k, k.value) for k in [m.Ua, m.Ub, m.inv_CpH, m.inv_CpS])
+        m.unknown_parameters.update((k, k.value) for k in [m.Ua, m.Ub, m.inv_CpH])
+        # m.unknown_parameters.update((k, k.value) for k in [m.Ua, m.inv_CpH, m.inv_CpS])
         if self.number_of_states == 4:
-            m.unknown_parameters[m.Uc] = m.UC.value
+            m.unknown_parameters[m.Uc] = m.Uc.value
+        
+        #~~~~~~~~~~~~~~~~~~~~~~~~
+        # DEBUGGING
+        # m.unknown_parameters = Suffix(direction=Suffix.LOCAL)
+        # # Add labels to all unknown parameters with nominal value as the value
+        # m.unknown_parameters.update((k, k.value) for k in [m.Ua, m.Ub, m.inv_CpH])
+        # if self.number_of_states == 4:
+            # m.unknown_parameters[m.Uc] = m.Uc.value
+        
+        # END DEBUGGING
+        #~~~~~~~~~~~~~~~~~~~~~~~~
+        
         
         # End unknown parameters
         #################################
@@ -552,9 +590,13 @@ class TC_Lab_experiment(Experiment):
         
         m.experiment_inputs = Suffix(direction=Suffix.LOCAL)
         # Add experimental input label for control variable (m.U1)
-        m.experiment_inputs.update((m.U1[t], None) for t in self.data.time)
-        if self.number_of_states == 4:
-            m.experiment_inputs.update((m.U2[t], None) for t in self.data.time)
+        if self.sine_amplitude is not None and self.sine_period is not None:
+            m.experiment_inputs[m.u1_period] = None
+            m.experiment_inputs[m.u1_amplitude] = None
+        else:    
+            m.experiment_inputs.update((m.U1[t], None) for t in self.data.time)
+            if self.number_of_states == 4:
+                m.experiment_inputs.update((m.U2[t], None) for t in self.data.time)
         
         # End experiment inputs
         #################################
@@ -564,10 +606,10 @@ class TC_Lab_experiment(Experiment):
         # (for experiment outputs)
         
         m.measurement_error = Suffix(direction=Suffix.LOCAL)
-        # Add sensor 1 temperature (m.Ts1) measurement error (assuming constant error of 0.01 deg C)
-        m.measurement_error.update((m.Ts1[t], 0.05) for t in self.data.time)
+        # Add sensor 1 temperature (m.Ts1) measurement error (assuming constant error of 0.1 deg C)
+        m.measurement_error.update((m.Ts1[t], 1) for t in self.data.time)
         if self.number_of_states == 4:
-            m.measurement_error.update((m.Ts2[t], 0.05) for ind, t in enumerate(self.data.time))
+            m.measurement_error.update((m.Ts2[t], 1) for ind, t in enumerate(self.data.time))
         
         # End measurement error
         #################################
