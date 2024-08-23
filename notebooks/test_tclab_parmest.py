@@ -63,7 +63,7 @@ num_states = 4
 
 # Create an experiment list
 exp_list = []
-# exp_list.append(TC_Lab_experiment(data=tc_data, number_of_states=num_states))
+exp_list.append(TC_Lab_experiment(data=tc_data, number_of_states=num_states))
 exp_list.append(TC_Lab_experiment(data=tc_data2, number_of_states=num_states))
 
 pest = parmest.Estimator(exp_list, obj_function='SSE', tee=True)
@@ -124,9 +124,9 @@ def plot_data_and_prediction(model, df):
 
     print((sum((Ts1_vals[i] - df['T1'].values[i])**2 for i, v in enumerate(df['Time'].values)) + sum((Ts2_vals[i] - df['T2'].values[i])**2 for i, v in enumerate(df['Time'].values))))
 
-# model = pest.ef_instance.Scenario0
+model = pest.ef_instance.Scenario0
 # model = pest.ef_instance
-# plot_data_and_prediction(model, df)
-# model2 = pest.ef_instance.Scenario1
-model2 = pest.ef_instance
+plot_data_and_prediction(model, df)
+model2 = pest.ef_instance.Scenario1
+# model2 = pest.ef_instance
 plot_data_and_prediction(model2, df2)

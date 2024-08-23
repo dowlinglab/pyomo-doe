@@ -397,7 +397,7 @@ class TC_Lab_experiment(Experiment):
         # REPARAMETRIZATION
         m.beta_1 = Var(initialize=self.theta_initial["Ua"] * self.theta_initial["inv_CpH"], bounds=(0, 1e6))
         m.beta_1.fix()
-        m.beta_2 = Var(initialize=self.theta_initial["Ub"] * self.theta_initial["inv_CpH"], bounds=(0, 1e6))
+        m.beta_2 = Var(initialize=self.theta_initial["Ub"] * self.theta_initial["inv_CpH"], bounds=(1e-6, 1e6))
         m.beta_2.fix()
         m.beta_3 = Var(initialize=self.theta_initial["Ub"] * self.theta_initial["inv_CpS"], bounds=(0, 1e6))
         m.beta_3.fix()
