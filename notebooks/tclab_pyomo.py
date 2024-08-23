@@ -151,7 +151,7 @@ if "google.colab" in sys.modules:
 # This is important for running on local machines
 # TODO: uncomment this
 # import idaes
-from idaes.core.util import DiagnosticsToolbox
+# from idaes.core.util import DiagnosticsToolbox
 
 from pyomo.contrib.parmest.experiment import Experiment
 from pyomo.contrib.doe import DesignOfExperiments
@@ -322,7 +322,7 @@ class TC_Lab_experiment(Experiment):
         m = self.model = ConcreteModel()
         
         #########################################
-        # Model parameters that remain constant
+        # Begin model constants definition
         m.Tamb = Param(initialize=self.data.Tamb)
         m.P1 = Param(initialize=self.data.P1)
         m.alpha = Param(initialize=self.alpha)
@@ -330,7 +330,7 @@ class TC_Lab_experiment(Experiment):
         
         m.Tmax = 85  # Maximum temparture (Deg C)
         
-        # End constant model parameters
+        # End model constants
         #########################################
         
         ################################
@@ -352,6 +352,10 @@ class TC_Lab_experiment(Experiment):
         if self.number_of_states == 4:
             m.Th2dot = DerivativeVar(m.Th2, wrt=m.t)
             m.Ts2dot = DerivativeVar(m.Ts2, wrt=m.t)
+        
+        # Temperature state for the board
+        m.T_board = Var(m.t, bounds=[0, m.Tmax], initialize=m.Tamb.value)
+        m.T_boarddot = DerivativeVar(m.T_board, wrt=m.t)
         
         # End state variable definition
         ################################
@@ -375,8 +379,6 @@ class TC_Lab_experiment(Experiment):
         # (estimated during parameter estimation)
         
         # Heat transfer coefficients
-        # m.Ua = Param(initialize=self.theta_initial["Ua"], bounds=(0, 1e4), mutable=True)
-        # m.Ub = Param(initialize=self.theta_initial["Ub"], bounds=(0, 1e4), mutable=True)
         m.Ua = Var(initialize=self.theta_initial["Ua"], bounds=(0, 1e4))
         m.Ua.fix()
         m.Ub = Var(initialize=self.theta_initial["Ub"], bounds=(0, 1e4))
@@ -387,12 +389,45 @@ class TC_Lab_experiment(Experiment):
             m.Uc.fix()
         
         # Inverse of the heat capacity coefficients (1/CpH and 1/CpS)
-        # m.inv_CpH = Param(initialize=self.theta_initial["inv_CpH"], within=PositiveReals, mutable=True)
-        # m.inv_CpS = Param(initialize=self.theta_initial["inv_CpS"], within=PositiveReals, mutable=True)
         m.inv_CpH = Var(initialize=self.theta_initial["inv_CpH"], bounds=(0, 1e6))
         m.inv_CpH.fix()
         m.inv_CpS = Var(initialize=self.theta_initial["inv_CpS"], bounds=(0, 1e3))
         m.inv_CpS.fix()
+
+        # REPARAMETRIZATION
+        m.beta_1 = Var(initialize=self.theta_initial["Ua"] * self.theta_initial["inv_CpH"], bounds=(0, 1e6))
+        m.beta_1.fix()
+        m.beta_2 = Var(initialize=self.theta_initial["Ub"] * self.theta_initial["inv_CpH"], bounds=(0, 1e6))
+        m.beta_2.fix()
+        m.beta_3 = Var(initialize=self.theta_initial["Ub"] * self.theta_initial["inv_CpS"], bounds=(0, 1e6))
+        m.beta_3.fix()
+        m.beta_4 = Var(initialize=self.alpha * pyovalue(m.P1) * self.theta_initial["inv_CpH"], bounds=(0, 1e6))
+        m.beta_4.fix()
+
+        # m.beta_12 = Var(initialize=self.theta_initial["Ua"] * self.theta_initial["inv_CpH"], bounds=(0, 1e6))
+        # m.beta_12.fix()
+        # m.beta_22 = Var(initialize=self.theta_initial["Ub"] * self.theta_initial["inv_CpH"], bounds=(0, 1e6))
+        # m.beta_22.fix()
+        # m.beta_32 = Var(initialize=self.theta_initial["Ub"] * self.theta_initial["inv_CpS"], bounds=(0, 1e6))
+        # m.beta_32.fix()
+        # m.beta_42 = Var(initialize=self.alpha * pyovalue(m.P1) * self.theta_initial["inv_CpH"], bounds=(0, 1e6))
+        # m.beta_42.fix()
+
+        # Board beta values
+        # m.beta_board = Var(initialize=self.theta_initial["Ua"] * self.theta_initial["inv_CpH"], bounds=(0, 1e6))
+        # m.beta_board.fix()
+        # m.beta_board_1 = Var(initialize=self.theta_initial["Ua"] * self.theta_initial["inv_CpH"], bounds=(0, 1e6))
+        # m.beta_board_1.fix()
+        # m.beta_board_2 = Var(initialize=self.theta_initial["Ua"] * self.theta_initial["inv_CpH"], bounds=(0, 1e6))
+        # m.beta_board_2.fix()
+
+        if self.number_of_states == 4:
+            m.beta_5 = Var(initialize=self.theta_initial["Uc"] / self.theta_initial["inv_CpH"], bounds=(0, 1e6))
+            m.beta_5.fix()
+
+            # Board beta for heater 2
+            # m.beta_board_3 = Var(initialize=self.theta_initial["Ua"] * self.theta_initial["inv_CpH"], bounds=(0, 1e6))
+            # m.beta_board_3.fix()
         
         # End unknown parameter definition
         ####################################
@@ -403,31 +438,56 @@ class TC_Lab_experiment(Experiment):
         # First fin energy balance
         @m.Constraint(m.t)
         def Th1_ode(m, t):
-            rhs_expr = (m.Ua * (m.Tamb - m.Th1[t]) + m.Ub * (m.Ts1[t] - m.Th1[t]) + m.alpha * m.P1 * m.U1[t]) * m.inv_CpH
+            #rhs_expr = (m.Ua * (m.Tamb - m.Th1[t]) + m.Ub * (m.Ts1[t] - m.Th1[t]) + m.alpha * m.P1 * m.U1[t]) * m.inv_CpH
+            # REPARAM
+            rhs_expr = m.beta_1 * (m.Tamb - m.Th1[t]) + m.beta_2 * (m.Ts1[t] - m.Th1[t]) + m.beta_4 * m.U1[t]
+            # rhs_expr = m.beta_1 * (m.Tamb - m.Th1[t]) + m.beta_board * (m.T_board[t] - m.Th1[t]) + m.beta_2 * (m.Ts1[t] - m.Th1[t]) + m.beta_4 * m.U1[t]
+
             
             # If we use the 4-state model, we add heat transfer from sensor 2 to the energy balance on fin 1
             if self.number_of_states == 4:
-                rhs_expr += (m.Uc * (m.Th1[t] - m.Th2[t])) * m.inv_CpH
+                #rhs_expr += (m.Uc * (m.Th2[t] - m.Th1[t])) * m.inv_CpH
+                # REPARAM
+                rhs_expr += m.beta_5 * (m.Th2[t] - m.Th1[t])
+                # pass
             
             return m.Th1dot[t] == rhs_expr
         
         # First sensor energy balance
         @m.Constraint(m.t)
         def Ts1_ode(m, t):
-            return m.Ts1dot[t] == (m.Ub * (m.Th1[t] - m.Ts1[t])) * m.inv_CpS
+            #return m.Ts1dot[t] == (m.Ub * (m.Th1[t] - m.Ts1[t])) * m.inv_CpS
+            # REPARAM
+            return m.Ts1dot[t] == m.beta_3 * (m.Th1[t] - m.Ts1[t])
         
         # Second fin/sensor (only active for the 4-state model
         if self.number_of_states == 4:
             # Second fin energy balance
             @m.Constraint(m.t)
             def Th2_ode(m, t):
-                return m.Th2dot[t] == (m.Ua * (m.Tamb - m.Th2[t]) + m.Ub * (m.Ts2[t] - m.Th2[t]) + m.Uc * (m.Th1[t] - m.Th2[t]) + m.alpha * m.P2 * m.U2[t]) * m.inv_CpH
+                #return m.Th2dot[t] == (m.Ua * (m.Tamb - m.Th2[t]) + m.Ub * (m.Ts2[t] - m.Th2[t]) + m.Uc * (m.Th1[t] - m.Th2[t]) + m.alpha * m.P2 * m.U2[t]) * m.inv_CpH
+                # REPARAM
+                return m.Th2dot[t] == m.beta_1 * (m.Tamb - m.Th2[t]) + m.beta_2 * (m.Ts2[t] - m.Th2[t]) + m.beta_5 * (m.Th1[t] - m.Th2[t]) + m.beta_4 * m.U2[t]
+                # return m.Th2dot[t] == m.beta_12 * (m.Tamb - m.Th2[t]) + m.beta_22 * (m.Ts2[t] - m.Th2[t]) + m.beta_5 * (m.Th1[t] - m.Th2[t]) + m.beta_42 * m.U2[t]
+                # return m.Th2dot[t] == m.beta_1 * (m.Tamb - m.Th2[t]) + m.beta_2 * (m.Ts2[t] - m.Th2[t]) + m.beta_board * (m.T_board[t] - m.Th2[t]) + m.beta_4 * m.U2[t]
             
             # Second sensor energy balance
             @m.Constraint(m.t)
             def Ts2_ode(m, t):
-                return m.Ts2dot[t] == (m.Ub * (m.Th2[t] - m.Ts2[t])) * m.inv_CpS
+                #return m.Ts2dot[t] == (m.Ub * (m.Th2[t] - m.Ts2[t])) * m.inv_CpS
+                # REPARAM
+                return m.Ts2dot[t] == m.beta_3 * (m.Th2[t] - m.Ts2[t])
+                # return m.Ts2dot[t] == m.beta_32 * (m.Th2[t] - m.Ts2[t])
         
+        # @m.Constraint(m.t)
+        # def T_board_ode(m, t):
+        #     rhs = m.beta_board_1 * (m.Tamb - m.T_board[t]) + m.beta_board_2 * (m.Th1[t] - m.T_board[t])
+
+        #     if self.number_of_states == 4:
+        #         rhs += m.beta_board_3 * (m.Th2[t] - m.T_board[t])
+            
+        #     return m.T_boarddot[t] == rhs
+
         # End model equation definition
         ################################
         
@@ -463,6 +523,9 @@ class TC_Lab_experiment(Experiment):
                     m.Th2[0].fix(m.Tamb)
                     m.Ts2[0].fix(m.Tamb)
         
+        # Fix board temperature
+        # m.T_board[0].fix(m.Tamb)
+
         # End initial conditions definition
         ####################################
         
@@ -475,7 +538,7 @@ class TC_Lab_experiment(Experiment):
             m.u1_period = Var(
                 initialize=self.sine_period, bounds=(self.sine_period_min, self.sine_period_max)
             )  # minutes
-            m.u1_amplitude = Var(initialize=self.sine_amplitude, bounds=(0,50))  # % power
+            m.u1_amplitude = Var(initialize=self.sine_amplitude, bounds=(0, 50))  # % power
             
             # Fixed for parameter estimation
             m.u1_period.fix()
@@ -564,21 +627,19 @@ class TC_Lab_experiment(Experiment):
         
         m.unknown_parameters = Suffix(direction=Suffix.LOCAL)
         # Add labels to all unknown parameters with nominal value as the value
-        m.unknown_parameters.update((k, k.value) for k in [m.Ua, m.Ub, m.inv_CpH])
-        # m.unknown_parameters.update((k, k.value) for k in [m.Ua, m.inv_CpH, m.inv_CpS])
-        if self.number_of_states == 4:
-            m.unknown_parameters[m.Uc] = m.Uc.value
-        
-        #~~~~~~~~~~~~~~~~~~~~~~~~
-        # DEBUGGING
-        # m.unknown_parameters = Suffix(direction=Suffix.LOCAL)
-        # # Add labels to all unknown parameters with nominal value as the value
         # m.unknown_parameters.update((k, k.value) for k in [m.Ua, m.Ub, m.inv_CpH])
+        # m.unknown_parameters.update((k, k.value) for k in [m.Ua, m.inv_CpH, m.inv_CpS])
         # if self.number_of_states == 4:
-            # m.unknown_parameters[m.Uc] = m.Uc.value
+        #     m.unknown_parameters[m.Uc] = m.Uc.value
         
-        # END DEBUGGING
-        #~~~~~~~~~~~~~~~~~~~~~~~~
+        # REPARAM
+        m.unknown_parameters.update((k, k.value) for k in [m.beta_1, m.beta_2, m.beta_3, m.beta_4])
+        # m.unknown_parameters.update((k, k.value) for k in [m.beta_12, m.beta_22, m.beta_32, m.beta_42])
+        # m.unknown_parameters.update((k, k.value) for k in [m.beta_1, m.beta_2, m.beta_3, m.beta_4, m.beta_board, m.beta_board_1, m.beta_board_2])
+        if self.number_of_states == 4:
+            m.unknown_parameters[m.beta_5] = m.beta_5.value
+            # m.unknown_parameters[m.beta_board_3] = m.beta_board_3.value
+
         
         
         # End unknown parameters
