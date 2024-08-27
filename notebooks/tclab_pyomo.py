@@ -354,8 +354,8 @@ class TC_Lab_experiment(Experiment):
             m.Ts2dot = DerivativeVar(m.Ts2, wrt=m.t)
         
         # Temperature state for the board
-        m.T_board = Var(m.t, bounds=[0, m.Tmax], initialize=m.Tamb.value)
-        m.T_boarddot = DerivativeVar(m.T_board, wrt=m.t)
+        # m.T_board = Var(m.t, bounds=[0, m.Tmax], initialize=m.Tamb.value)
+        # m.T_boarddot = DerivativeVar(m.T_board, wrt=m.t)
         
         # End state variable definition
         ################################
@@ -584,11 +584,11 @@ class TC_Lab_experiment(Experiment):
             )
             sim.initialize_model()
         else:
-            # sim = Simulator(m, package='casadi')
-            # tsim, profiles = sim.simulate(
-                # numpoints=100, integrator='idas', varying_inputs=m.var_input
-            # )
-            # sim.initialize_model()
+            sim = Simulator(m, package='casadi')
+            tsim, profiles = sim.simulate(
+                numpoints=100, integrator='idas', varying_inputs=m.var_input
+            )
+            sim.initialize_model()
             pass
         
         TransformationFactory('dae.finite_difference').apply_to(
@@ -634,11 +634,9 @@ class TC_Lab_experiment(Experiment):
         
         # REPARAM
         m.unknown_parameters.update((k, k.value) for k in [m.beta_1, m.beta_2, m.beta_3, m.beta_4])
-        # m.unknown_parameters.update((k, k.value) for k in [m.beta_12, m.beta_22, m.beta_32, m.beta_42])
-        # m.unknown_parameters.update((k, k.value) for k in [m.beta_1, m.beta_2, m.beta_3, m.beta_4, m.beta_board, m.beta_board_1, m.beta_board_2])
+        # m.unknown_parameters.update((k, k.value) for k in [m.beta_2, ])
         if self.number_of_states == 4:
             m.unknown_parameters[m.beta_5] = m.beta_5.value
-            # m.unknown_parameters[m.beta_board_3] = m.beta_board_3.value
 
         
         
@@ -667,8 +665,8 @@ class TC_Lab_experiment(Experiment):
         # (for experiment outputs)
         
         m.measurement_error = Suffix(direction=Suffix.LOCAL)
-        # Add sensor 1 temperature (m.Ts1) measurement error (assuming constant error of 0.1 deg C)
-        m.measurement_error.update((m.Ts1[t], 1) for t in self.data.time)
+        # Add sensor 1 temperature (m.Ts1) measurement error (assuming constant error of 0.25 deg C)
+        m.measurement_error.update((m.Ts1[t], 0.25) for t in self.data.time)
         if self.number_of_states == 4:
             m.measurement_error.update((m.Ts2[t], 1) for ind, t in enumerate(self.data.time))
         

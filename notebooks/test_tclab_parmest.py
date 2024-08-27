@@ -12,24 +12,27 @@ from pyomo.common.dependencies import pandas as pd
 from os.path import join, abspath, dirname
 import pyomo.contrib.parmest.parmest as parmest
 
+import copy
 
-file = '../data/tclab_sine_test.csv'
+
+file = '../data/validation_experiment_env_2_sin_5_50_run_1.csv'
+# file = '../data/validation_experiment_env_1_step_50_run_1.csv'
 df = pd.read_csv(file)
 df.head()
 
-other_T1 = [i for i in df['T1'].values]
 
-time_delay = 0
+# other_T1 = [i for i in df['T1'].values]
 
-new_list = other_T1[time_delay:]
-for i in range(time_delay):
-    new_list.append(df['T1'].values[-1])
+# time_delay = 0
+
+# new_list = other_T1[time_delay:]
+# for i in range(time_delay):
+    # new_list.append(df['T1'].values[-1])
 
 tc_data = TC_Lab_data(
     name="Sine Wave Test for Heater 1",
     time=df['Time'].values,
-    # T1=df['T1'].values,
-    T1=new_list,
+    T1=df['T1'].values,
     u1=df['Q1'].values,
     P1=200,
     TS1_data=None,
@@ -40,7 +43,8 @@ tc_data = TC_Lab_data(
     Tamb=df['T1'].values[0],
 )
 
-file = '../data/tclab_step_test.csv'
+file = '../data/validation_experiment_env_2_step_50_run_1.csv'
+# file = '../data/tclab_step_test.csv'
 df2 = pd.read_csv(file)
 df2.head()
 
@@ -59,12 +63,43 @@ tc_data2 = TC_Lab_data(
 )
 
 # Number of states
-num_states = 4
+num_states = 2
+run_single = True
 
 # Create an experiment list
 exp_list = []
-exp_list.append(TC_Lab_experiment(data=tc_data, number_of_states=num_states))
-exp_list.append(TC_Lab_experiment(data=tc_data2, number_of_states=num_states))
+if run_single:
+    exp_list.append(TC_Lab_experiment(data=tc_data, number_of_states=num_states))
+    # exp_list.append(TC_Lab_experiment(data=tc_data2, number_of_states=num_states))
+else:
+    for k in [5, ]:
+        track_Ts1_vals = pd.DataFrame(columns=['Ts1 1', 'Ts1 2', 'Ts1 3'])
+        track_Ts2_vals = pd.DataFrame(columns=['Ts2 1', 'Ts2 2', 'Ts2 3'])
+        for i in range(3):
+            file = '../data/validation_experiment_env_2_sin_{}_50_run_{}.csv'.format(k, i + 1)
+            df = pd.read_csv(file)
+            
+            tc_data = TC_Lab_data(
+                name="Sine Wave Test {}, {} for Heater 1".format(k, i + 1),
+                time=df['Time'].values,
+                T1=df['T1'].values,
+                u1=df['Q1'].values,
+                P1=200,
+                TS1_data=None,
+                T2=df['T2'].values,
+                u2=df['Q2'].values,
+                P2=200,
+                TS2_data=None,
+                Tamb=df['T1'].values[0],
+            )
+            
+            track_Ts1_vals['Ts1 {}'.format(i + 1)] = df['T1'].values
+            track_Ts2_vals['Ts2 {}'.format(i + 1)] = df['T2'].values
+            
+            exp_list.append(TC_Lab_experiment(data=copy.deepcopy(tc_data), number_of_states=num_states))
+
+
+# exp_list.append(TC_Lab_experiment(data=tc_data2, number_of_states=num_states))
 
 pest = parmest.Estimator(exp_list, obj_function='SSE', tee=True)
 
@@ -105,28 +140,54 @@ print("inv_CpH: {:.8f} \ninv_CpS: {:.8f}\nUa: {:.8f}\nUb: {:.8f}\nUc: {:.8f}\n".
 # plt.clf()
 # plt.close()
 
-def plot_data_and_prediction(model, df):
+def plot_data_and_prediction(model):
     Th1_vals = [aml.value(model.Th1[t]) for t in model.t]
     Ts1_vals = [aml.value(model.Ts1[t]) for t in model.t]
-    Th2_vals = [aml.value(model.Th2[t]) for t in model.t]
-    Ts2_vals = [aml.value(model.Ts2[t]) for t in model.t]
+    if num_states == 4:
+        Th2_vals = [aml.value(model.Th2[t]) for t in model.t]
+        Ts2_vals = [aml.value(model.Ts2[t]) for t in model.t]
+    
+    Ts1_data = [v for k,v in model.experiment_outputs.items() if 'Ts1' in k.name]
+    Ts2_data = [v for k,v in model.experiment_outputs.items() if 'Ts2' in k.name]
 
     plt.plot(model.t, Ts1_vals, color='green', label='Ts1')
-    plt.plot(model.t, df['T1'].values, color='green', linestyle='--', label='Ts1 Data')
-    plt.plot(model.t, Ts2_vals, color='blue', label='Ts2')
-    plt.plot(model.t, df['T2'].values, color='blue', linestyle='--', label='Ts2 Data')
-    plt.plot(model.t, Th1_vals, color='black', label='Th1')
-    plt.plot(model.t, Th2_vals, color='black', label='Th2')
+    plt.plot(model.t, Ts1_data, color='green', linestyle='--', label='Ts1 Data')
+    if num_states == 4:
+        plt.plot(model.t, Ts2_vals, color='blue', label='Ts2')
+        plt.plot(model.t, Ts2_data, color='blue', linestyle='--', label='Ts2 Data')
+        plt.plot(model.t, Th1_vals, color='black', label='Th1')
+        plt.plot(model.t, Th2_vals, color='black', label='Th2')
     plt.legend()
     plt.show()
     plt.clf()
     plt.close()
 
-    print((sum((Ts1_vals[i] - df['T1'].values[i])**2 for i, v in enumerate(df['Time'].values)) + sum((Ts2_vals[i] - df['T2'].values[i])**2 for i, v in enumerate(df['Time'].values))))
+    SSE = sum((Ts1_vals[i] - Ts1_data[i])**2 for i, v in enumerate(model.t))
+    if num_states == 4:
+        SSE += sum((Ts2_vals[i] - Ts2_data[i])**2 for i, v in enumerate(model.t))
 
-model = pest.ef_instance.Scenario0
+    print(SSE)
+
+# model = pest.ef_instance.Scenario0
+# model = pest.ef_instance.Scenario2
 # model = pest.ef_instance
-plot_data_and_prediction(model, df)
-model2 = pest.ef_instance.Scenario1
+# plot_data_and_prediction(model)
+# model2 = pest.ef_instance.Scenario1
 # model2 = pest.ef_instance
-plot_data_and_prediction(model2, df2)
+# plot_data_and_prediction(model2)
+
+# Print all 3 model scenarios
+# model = pest.ef_instance.Scenario0
+# plot_data_and_prediction(model)
+# model = pest.ef_instance.Scenario1
+# plot_data_and_prediction(model)
+# model = pest.ef_instance.Scenario2
+# plot_data_and_prediction(model)
+
+# track_Ts1_vals['std'] = track_Ts1_vals.std(axis=1)
+# track_Ts2_vals['std'] = track_Ts2_vals.std(axis=1)
+# print(track_Ts1_vals.std(axis=1))
+# print(track_Ts2_vals.std(axis=1))
+
+# track_Ts1_vals.to_csv('Ts1_for_sin_5_50_all_runs.csv', index=False)
+# track_Ts2_vals.to_csv('Ts2_for_sin_5_50_all_runs.csv', index=False)
