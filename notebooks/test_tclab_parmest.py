@@ -15,6 +15,28 @@ import pyomo.contrib.parmest.parmest as parmest
 import copy
 
 
+def time_delay_data(data, time_delay):
+    # # Uncomment for deleting data
+    # new_T1 = copy.deepcopy(data['T1'].values)
+    # new_T2 = copy.deepcopy(data['T2'].values)
+    
+    # new_data = copy.deepcopy(data.head(-time_delay))
+    # new_data['T1'] = new_T1[time_delay:]
+    # new_data['T2'] = new_T2[time_delay:]
+    
+    # Uncomment for shifting u to have 0s at beginning
+    new_U1 = np.zeros(len(data['Q1'].values))
+    new_U2 = np.zeros(len(data['Q2'].values))
+    
+    new_U1[time_delay:] = copy.deepcopy(data['Q1'].values)[:-time_delay]
+    new_U2[time_delay:] = copy.deepcopy(data['Q2'].values)[:-time_delay]
+    
+    new_data = copy.deepcopy(data)
+    new_data['Q1'] = new_U1
+    new_data['Q2'] = new_U2
+    
+    return copy.deepcopy(new_data)
+
 file = '../data/validation_experiment_env_2_sin_5_50_run_1.csv'
 # file = '../data/validation_experiment_env_1_step_50_run_1.csv'
 df = pd.read_csv(file)
@@ -64,7 +86,7 @@ tc_data2 = TC_Lab_data(
 
 # Number of states
 num_states = 2
-run_single = True
+run_single = False
 
 # Create an experiment list
 exp_list = []
@@ -72,12 +94,14 @@ if run_single:
     exp_list.append(TC_Lab_experiment(data=tc_data, number_of_states=num_states))
     # exp_list.append(TC_Lab_experiment(data=tc_data2, number_of_states=num_states))
 else:
-    for k in [5, ]:
+    for k in [50, 2, 5, ]:
         track_Ts1_vals = pd.DataFrame(columns=['Ts1 1', 'Ts1 2', 'Ts1 3'])
         track_Ts2_vals = pd.DataFrame(columns=['Ts2 1', 'Ts2 2', 'Ts2 3'])
         for i in range(3):
             file = '../data/validation_experiment_env_2_sin_{}_50_run_{}.csv'.format(k, i + 1)
             df = pd.read_csv(file)
+            
+            df = time_delay_data(df, 8)
             
             tc_data = TC_Lab_data(
                 name="Sine Wave Test {}, {} for Heater 1".format(k, i + 1),
@@ -93,8 +117,8 @@ else:
                 Tamb=df['T1'].values[0],
             )
             
-            track_Ts1_vals['Ts1 {}'.format(i + 1)] = df['T1'].values
-            track_Ts2_vals['Ts2 {}'.format(i + 1)] = df['T2'].values
+            # track_Ts1_vals['Ts1 {}'.format(i + 1)] = df['T1'].values
+            # track_Ts2_vals['Ts2 {}'.format(i + 1)] = df['T2'].values
             
             exp_list.append(TC_Lab_experiment(data=copy.deepcopy(tc_data), number_of_states=num_states))
 
@@ -177,12 +201,24 @@ def plot_data_and_prediction(model):
 # plot_data_and_prediction(model2)
 
 # Print all 3 model scenarios
-# model = pest.ef_instance.Scenario0
-# plot_data_and_prediction(model)
-# model = pest.ef_instance.Scenario1
-# plot_data_and_prediction(model)
-# model = pest.ef_instance.Scenario2
-# plot_data_and_prediction(model)
+model = pest.ef_instance.Scenario0
+plot_data_and_prediction(model)
+model = pest.ef_instance.Scenario1
+plot_data_and_prediction(model)
+model = pest.ef_instance.Scenario2
+plot_data_and_prediction(model)
+model = pest.ef_instance.Scenario3
+plot_data_and_prediction(model)
+model = pest.ef_instance.Scenario4
+plot_data_and_prediction(model)
+model = pest.ef_instance.Scenario5
+plot_data_and_prediction(model)
+model = pest.ef_instance.Scenario6
+plot_data_and_prediction(model)
+model = pest.ef_instance.Scenario7
+plot_data_and_prediction(model)
+model = pest.ef_instance.Scenario8
+plot_data_and_prediction(model)
 
 # track_Ts1_vals['std'] = track_Ts1_vals.std(axis=1)
 # track_Ts2_vals['std'] = track_Ts2_vals.std(axis=1)

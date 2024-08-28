@@ -353,10 +353,6 @@ class TC_Lab_experiment(Experiment):
             m.Th2dot = DerivativeVar(m.Th2, wrt=m.t)
             m.Ts2dot = DerivativeVar(m.Ts2, wrt=m.t)
         
-        # Temperature state for the board
-        # m.T_board = Var(m.t, bounds=[0, m.Tmax], initialize=m.Tamb.value)
-        # m.T_boarddot = DerivativeVar(m.T_board, wrt=m.t)
-        
         # End state variable definition
         ################################
 
@@ -404,30 +400,9 @@ class TC_Lab_experiment(Experiment):
         m.beta_4 = Var(initialize=self.alpha * pyovalue(m.P1) * self.theta_initial["inv_CpH"], bounds=(0, 1e6))
         m.beta_4.fix()
 
-        # m.beta_12 = Var(initialize=self.theta_initial["Ua"] * self.theta_initial["inv_CpH"], bounds=(0, 1e6))
-        # m.beta_12.fix()
-        # m.beta_22 = Var(initialize=self.theta_initial["Ub"] * self.theta_initial["inv_CpH"], bounds=(0, 1e6))
-        # m.beta_22.fix()
-        # m.beta_32 = Var(initialize=self.theta_initial["Ub"] * self.theta_initial["inv_CpS"], bounds=(0, 1e6))
-        # m.beta_32.fix()
-        # m.beta_42 = Var(initialize=self.alpha * pyovalue(m.P1) * self.theta_initial["inv_CpH"], bounds=(0, 1e6))
-        # m.beta_42.fix()
-
-        # Board beta values
-        # m.beta_board = Var(initialize=self.theta_initial["Ua"] * self.theta_initial["inv_CpH"], bounds=(0, 1e6))
-        # m.beta_board.fix()
-        # m.beta_board_1 = Var(initialize=self.theta_initial["Ua"] * self.theta_initial["inv_CpH"], bounds=(0, 1e6))
-        # m.beta_board_1.fix()
-        # m.beta_board_2 = Var(initialize=self.theta_initial["Ua"] * self.theta_initial["inv_CpH"], bounds=(0, 1e6))
-        # m.beta_board_2.fix()
-
         if self.number_of_states == 4:
             m.beta_5 = Var(initialize=self.theta_initial["Uc"] / self.theta_initial["inv_CpH"], bounds=(0, 1e6))
             m.beta_5.fix()
-
-            # Board beta for heater 2
-            # m.beta_board_3 = Var(initialize=self.theta_initial["Ua"] * self.theta_initial["inv_CpH"], bounds=(0, 1e6))
-            # m.beta_board_3.fix()
         
         # End unknown parameter definition
         ####################################
@@ -478,15 +453,6 @@ class TC_Lab_experiment(Experiment):
                 # REPARAM
                 return m.Ts2dot[t] == m.beta_3 * (m.Th2[t] - m.Ts2[t])
                 # return m.Ts2dot[t] == m.beta_32 * (m.Th2[t] - m.Ts2[t])
-        
-        # @m.Constraint(m.t)
-        # def T_board_ode(m, t):
-        #     rhs = m.beta_board_1 * (m.Tamb - m.T_board[t]) + m.beta_board_2 * (m.Th1[t] - m.T_board[t])
-
-        #     if self.number_of_states == 4:
-        #         rhs += m.beta_board_3 * (m.Th2[t] - m.T_board[t])
-            
-        #     return m.T_boarddot[t] == rhs
 
         # End model equation definition
         ################################
@@ -522,9 +488,6 @@ class TC_Lab_experiment(Experiment):
                     # Initialize with ambient temperature
                     m.Th2[0].fix(m.Tamb)
                     m.Ts2[0].fix(m.Tamb)
-        
-        # Fix board temperature
-        # m.T_board[0].fix(m.Tamb)
 
         # End initial conditions definition
         ####################################
