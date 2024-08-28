@@ -17,9 +17,7 @@ import copy
 from pyomo.contrib.doe import DesignOfExperiments
 
 
-def run_parmest_instance(filename, num_states=2):
-    df = pd.read_csv(file)
-
+def run_parmest_instance(df, num_states=2, tee=True):
     tc_data = TC_Lab_data(
         name="Sine Wave Test for Heater 1",
         time=df['Time'].values,
@@ -37,14 +35,12 @@ def run_parmest_instance(filename, num_states=2):
     exp_list = []
     exp_list.append(TC_Lab_experiment(data=copy.deepcopy(tc_data), number_of_states=num_states))
     
-    pest = parmest.Estimator(exp_list, obj_function='SSE', tee=True)
+    pest = parmest.Estimator(exp_list, obj_function='SSE', tee=tee)
     
     return pest.theta_est()
 
 
-def run_FIM_instance(filename, num_states=2):
-    df = pd.read_csv(file)
-
+def run_FIM_instance(df, theta_init=None, num_states=2, tee=True):
     tc_data = TC_Lab_data(
         name="Sine Wave Test for Heater 1",
         time=df['Time'].values,
@@ -59,7 +55,10 @@ def run_FIM_instance(filename, num_states=2):
         Tamb=df['T1'].values[0],
     )
     
-    TC_exp = TC_Lab_experiment(data=copy.deepcopy(tc_data), number_of_states=num_states)
+    if theta_init is not None:
+        TC_exp = TC_Lab_experiment(data=copy.deepcopy(tc_data), theta_initial=theta_init, number_of_states=num_states)
+    else:
+        TC_exp = TC_Lab_experiment(data=copy.deepcopy(tc_data), number_of_states=num_states)
     
     solver = aml.SolverFactory('ipopt')
     # solver.options['bound_push'] = 1E-10
@@ -72,7 +71,7 @@ def run_FIM_instance(filename, num_states=2):
                                      scale_constant_value=1,
                                      scale_nominal_param_value=True, 
                                      objective_option="trace",                                
-                                     tee=True,
+                                     tee=tee,
                                      solver=solver,                                 
                                      logger_level=logging.INFO)
 
@@ -128,37 +127,40 @@ def run_FIM_instance(filename, num_states=2):
 # frame.to_csv('ParmEst_results_from_single_experiments_{}_states.csv'.format(num_states), index=False)
 
 
-# Declaring num states
-num_states = 2
+if __name__=='__main__':
+    # Declaring num states
+    num_states = 2
 
-A_vals = []
-D_vals = []
-E_vals = []
-# Run all experiments
-for k in [50, 2, 5, ]:
+    A_vals = []
+    D_vals = []
+    E_vals = []
+    # Run all experiments
+    for k in [50, 2, 5, ]:
+        for i in range(3):
+            file = '../data/validation_experiment_env_2_sin_{}_50_run_{}.csv'.format(k, i + 1)
+            df = pd.read_csv(file)
+            
+            FIM = run_FIM_instance(df, num_states)
+            A_vals.append(np.log10(np.trace(FIM)))
+            D_vals.append(np.log10(np.linalg.det(FIM)))
+            E_vals.append(np.log10(min(np.linalg.eig(FIM)[0])))
+
+    # Step experiments
     for i in range(3):
-        file = '../data/validation_experiment_env_2_sin_{}_50_run_{}.csv'.format(k, i + 1)
+        file = '../data/validation_experiment_env_2_step_50_run_{}.csv'.format(i + 1)
+        df = pd.read_csv(file)
         
+        FIM = run_FIM_instance(file, num_states)
         FIM = run_FIM_instance(file, num_states)
         A_vals.append(np.log10(np.trace(FIM)))
         D_vals.append(np.log10(np.linalg.det(FIM)))
         E_vals.append(np.log10(min(np.linalg.eig(FIM)[0])))
+        
+    # Save to a file
+    frame2 = pd.DataFrame(columns=['beta_1', 'beta_2', 'beta_3', 'beta_4'])
 
-# Step experiments
-for i in range(3):
-    file = '../data/validation_experiment_env_2_step_50_run_{}.csv'.format(i + 1)
-    
-    FIM = run_FIM_instance(file, num_states)
-    FIM = run_FIM_instance(file, num_states)
-    A_vals.append(np.log10(np.trace(FIM)))
-    D_vals.append(np.log10(np.linalg.det(FIM)))
-    E_vals.append(np.log10(min(np.linalg.eig(FIM)[0])))
-    
-# Save to a file
-frame2 = pd.DataFrame(columns=['beta_1', 'beta_2', 'beta_3', 'beta_4'])
+    frame2['A'] = A_vals
+    frame2['D'] = D_vals
+    frame2['E'] = E_vals
 
-frame2['A'] = A_vals
-frame2['D'] = D_vals
-frame2['E'] = E_vals
-
-frame2.to_csv('FIM_results_from_single_experiments_{}_states.csv'.format(num_states), index=False)
+    frame2.to_csv('FIM_results_from_single_experiments_{}_states.csv'.format(num_states), index=False)
