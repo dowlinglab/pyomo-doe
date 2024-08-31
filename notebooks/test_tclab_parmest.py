@@ -37,19 +37,10 @@ def time_delay_data(data, time_delay):
     
     return copy.deepcopy(new_data)
 
-file = '../data/validation_experiment_env_2_sin_5_50_run_1.csv'
-# file = '../data/validation_experiment_env_1_step_50_run_1.csv'
+# file = '../data/validation_experiment_env_2_sin_5_50_run_1.csv'
+file = '../data/validation_experiment_env_2_step_50_run_1.csv'
 df = pd.read_csv(file)
 df.head()
-
-
-# other_T1 = [i for i in df['T1'].values]
-
-# time_delay = 0
-
-# new_list = other_T1[time_delay:]
-# for i in range(time_delay):
-    # new_list.append(df['T1'].values[-1])
 
 tc_data = TC_Lab_data(
     name="Sine Wave Test for Heater 1",
@@ -86,7 +77,7 @@ tc_data2 = TC_Lab_data(
 
 # Number of states
 num_states = 2
-run_single = False
+run_single = True
 
 # Create an experiment list
 exp_list = []
@@ -132,25 +123,25 @@ obj, theta = pest.theta_est()
 print(obj)
 print(theta)
 
-# REPARAM PRINTING
-P1 = 200
-alpha = 0.00016
+# # REPARAM PRINTING
+# P1 = 200
+# alpha = 0.00016
 
-inv_CpH = theta['beta_4'] / (P1 * alpha)
-Ua = theta['beta_1'] / (inv_CpH)
-Ub = theta['beta_2'] / (inv_CpH)
-if num_states == 4:
-    Uc = theta['beta_5'] / (inv_CpH)
-else:
-    theta['beta_5'] = 0.0
-    Uc = 0.0
-inv_CpS = theta['beta_3'] / (Ub)
+# inv_CpH = theta['beta_4'] / (P1 * alpha)
+# Ua = theta['beta_1'] / (inv_CpH)
+# Ub = theta['beta_2'] / (inv_CpH)
+# if num_states == 4:
+    # Uc = theta['beta_5'] / (inv_CpH)
+# else:
+    # theta['beta_5'] = 0.0
+    # Uc = 0.0
+# inv_CpS = theta['beta_3'] / (Ub)
 
-print("Reparametrized Parameters")
-print("beta 1: {:.8f} \nbeta_2: {:.8f}\nbeta_3: {:.8f}\nbeta_4: {:.8f}\nbeta_5: {:.8f}\n".format(theta['beta_1'], theta['beta_2'], theta['beta_3'], theta['beta_4'], theta['beta_5']))
+# print("Reparametrized Parameters")
+# print("beta 1: {:.8f} \nbeta_2: {:.8f}\nbeta_3: {:.8f}\nbeta_4: {:.8f}\nbeta_5: {:.8f}\n".format(theta['beta_1'], theta['beta_2'], theta['beta_3'], theta['beta_4'], theta['beta_5']))
 
-print("Original Parameters")
-print("inv_CpH: {:.8f} \ninv_CpS: {:.8f}\nUa: {:.8f}\nUb: {:.8f}\nUc: {:.8f}\n".format(inv_CpH, inv_CpS, Ua, Ub, Uc))
+# print("Original Parameters")
+# print("inv_CpH: {:.8f} \ninv_CpS: {:.8f}\nUa: {:.8f}\nUb: {:.8f}\nUc: {:.8f}\n".format(inv_CpH, inv_CpS, Ua, Ub, Uc))
 
 # U1_vals = np.array([aml.value(model.U1[t]) for t in model.t])
 # U2_vals = [aml.value(model.U2[t]) for t in model.t]
@@ -194,31 +185,31 @@ def plot_data_and_prediction(model):
 
 # model = pest.ef_instance.Scenario0
 # model = pest.ef_instance.Scenario2
-# model = pest.ef_instance
-# plot_data_and_prediction(model)
+model = pest.ef_instance
+plot_data_and_prediction(model)
 # model2 = pest.ef_instance.Scenario1
 # model2 = pest.ef_instance
 # plot_data_and_prediction(model2)
 
 # Print all 3 model scenarios
-model = pest.ef_instance.Scenario0
-plot_data_and_prediction(model)
-model = pest.ef_instance.Scenario1
-plot_data_and_prediction(model)
-model = pest.ef_instance.Scenario2
-plot_data_and_prediction(model)
-model = pest.ef_instance.Scenario3
-plot_data_and_prediction(model)
-model = pest.ef_instance.Scenario4
-plot_data_and_prediction(model)
-model = pest.ef_instance.Scenario5
-plot_data_and_prediction(model)
-model = pest.ef_instance.Scenario6
-plot_data_and_prediction(model)
-model = pest.ef_instance.Scenario7
-plot_data_and_prediction(model)
-model = pest.ef_instance.Scenario8
-plot_data_and_prediction(model)
+# model = pest.ef_instance.Scenario0
+# plot_data_and_prediction(model)
+# model = pest.ef_instance.Scenario1
+# plot_data_and_prediction(model)
+# model = pest.ef_instance.Scenario2
+# plot_data_and_prediction(model)
+# model = pest.ef_instance.Scenario3
+# plot_data_and_prediction(model)
+# model = pest.ef_instance.Scenario4
+# plot_data_and_prediction(model)
+# model = pest.ef_instance.Scenario5
+# plot_data_and_prediction(model)
+# model = pest.ef_instance.Scenario6
+# plot_data_and_prediction(model)
+# model = pest.ef_instance.Scenario7
+# plot_data_and_prediction(model)
+# model = pest.ef_instance.Scenario8
+# plot_data_and_prediction(model)
 
 # track_Ts1_vals['std'] = track_Ts1_vals.std(axis=1)
 # track_Ts2_vals['std'] = track_Ts2_vals.std(axis=1)
