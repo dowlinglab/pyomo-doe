@@ -37,8 +37,8 @@ def time_delay_data(data, time_delay):
     
     return copy.deepcopy(new_data)
 
-# file = '../data/validation_experiment_env_2_sin_5_50_run_1.csv'
-file = '../data/validation_experiment_env_2_step_50_run_1.csv'
+file = '../data/validation_experiment_env_2_sin_5_50_run_1.csv'
+# file = '../data/validation_experiment_env_2_step_50_run_1.csv'
 df = pd.read_csv(file)
 df.head()
 
@@ -83,7 +83,7 @@ run_single = True
 exp_list = []
 if run_single:
     exp_list.append(TC_Lab_experiment(data=tc_data, number_of_states=num_states))
-    # exp_list.append(TC_Lab_experiment(data=tc_data2, number_of_states=num_states))
+    exp_list.append(TC_Lab_experiment(data=tc_data2, number_of_states=num_states))
 else:
     for k in [50, 2, 5, ]:
         track_Ts1_vals = pd.DataFrame(columns=['Ts1 1', 'Ts1 2', 'Ts1 3'])
@@ -116,12 +116,52 @@ else:
 
 # exp_list.append(TC_Lab_experiment(data=tc_data2, number_of_states=num_states))
 
-pest = parmest.Estimator(exp_list, obj_function='SSE', tee=True)
+# pest = parmest.Estimator(exp_list, obj_function='SSE', tee=True)
 
-# Parameter estimation with covariance
-obj, theta = pest.theta_est()
-print(obj)
-print(theta)
+# # Parameter estimation with covariance
+# obj, theta = pest.theta_est()
+# print(obj)
+# print(theta)
+
+# print(exp_list)
+
+orders = []
+values = []
+
+# MULTIPLE IN SAME INSTANCE
+for i in range(1):
+    exp_list = []
+
+    # Make experiments
+    exp_list.append(TC_Lab_experiment(data=tc_data, number_of_states=num_states))
+    exp_list.append(TC_Lab_experiment(data=tc_data2, number_of_states=num_states))
+
+    # Run Parmest
+    try:
+        pest = parmest.Estimator(exp_list, obj_function='SSE', tee=False)
+
+        # Parameter estimation with covariance
+        obj, theta = pest.theta_est()
+        print(obj)
+        print(theta)
+
+        new_orders = []
+        for i in pest.ef_instance._C_EF_:
+            new_orders.append(str(pest.ef_instance._C_EF_[i].body))
+        
+        values.append(theta)
+
+        orders.append(new_orders)
+    except:
+        new_orders = []
+        new_orders.append('FAILURE')
+        values.append('FAILURE')
+
+        orders.append(new_orders)
+
+
+    
+
 
 # # REPARAM PRINTING
 # P1 = 200
@@ -131,14 +171,24 @@ print(theta)
 # Ua = theta['beta_1'] / (inv_CpH)
 # Ub = theta['beta_2'] / (inv_CpH)
 # if num_states == 4:
-    # Uc = theta['beta_5'] / (inv_CpH)
+#     Uc = theta['beta_5'] / (inv_CpH)
 # else:
-    # theta['beta_5'] = 0.0
-    # Uc = 0.0
+#     theta['beta_5'] = 0.0
+#     Uc = 0.0
 # inv_CpS = theta['beta_3'] / (Ub)
 
-# print("Reparametrized Parameters")
-# print("beta 1: {:.8f} \nbeta_2: {:.8f}\nbeta_3: {:.8f}\nbeta_4: {:.8f}\nbeta_5: {:.8f}\n".format(theta['beta_1'], theta['beta_2'], theta['beta_3'], theta['beta_4'], theta['beta_5']))
+# inv_CpH = 1 / theta['inv_CpH']
+# Ua = theta['Ua']
+# Ub = theta['Ub']
+# if num_states == 4:
+#     Uc = theta['beta_5'] / (inv_CpH)
+# else:
+#     theta['beta_5'] = 0.0
+#     Uc = 0.0
+# inv_CpS = 1 / theta['inv_CpS']
+
+# # print("Reparametrized Parameters")
+# # print("beta 1: {:.8f} \nbeta_2: {:.8f}\nbeta_3: {:.8f}\nbeta_4: {:.8f}\nbeta_5: {:.8f}\n".format(theta['beta_1'], theta['beta_2'], theta['beta_3'], theta['beta_4'], theta['beta_5']))
 
 # print("Original Parameters")
 # print("inv_CpH: {:.8f} \ninv_CpS: {:.8f}\nUa: {:.8f}\nUb: {:.8f}\nUc: {:.8f}\n".format(inv_CpH, inv_CpS, Ua, Ub, Uc))
@@ -185,8 +235,8 @@ def plot_data_and_prediction(model):
 
 # model = pest.ef_instance.Scenario0
 # model = pest.ef_instance.Scenario2
-model = pest.ef_instance
-plot_data_and_prediction(model)
+# model = pest.ef_instance
+# plot_data_and_prediction(model)
 # model2 = pest.ef_instance.Scenario1
 # model2 = pest.ef_instance
 # plot_data_and_prediction(model2)
