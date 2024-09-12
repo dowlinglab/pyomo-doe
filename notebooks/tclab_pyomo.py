@@ -554,11 +554,11 @@ class TC_Lab_experiment(Experiment):
             )
             sim.initialize_model()
         else:
-            sim = Simulator(m, package='casadi')
-            tsim, profiles = sim.simulate(
-                numpoints=100, integrator='idas', varying_inputs=m.var_input
-            )
-            sim.initialize_model()
+            # sim = Simulator(m, package='casadi')
+            # tsim, profiles = sim.simulate(
+            #     numpoints=100, integrator='idas', varying_inputs=m.var_input
+            # )
+            # sim.initialize_model()
             pass
         
         TransformationFactory('dae.finite_difference').apply_to(
@@ -818,15 +818,17 @@ def extract_plot_results(tc_exp_data, model, number_of_states=2):
 
 
 def results_summary(result):
+    eigenvalues, eigenvectors = np.linalg.eig(result)
+
+    min_eig = min(eigenvalues)
+
     print("======Results Summary======")
     print("Four design criteria log10() value:")
-    print("A-optimality:", np.log10(result.trace))
-    print("D-optimality:", np.log10(result.det))
-    print("E-optimality:", np.log10(result.min_eig))
-    print("Modified E-optimality:", np.log10(result.cond))
-    print("\nFIM:\n", result.FIM)
-
-    eigenvalues, eigenvectors = np.linalg.eig(result.FIM)
+    print("A-optimality:", np.log10(np.trace(result)))
+    print("D-optimality:", np.log10(np.linalg.det(result)))
+    print("E-optimality:", np.log10(min_eig))
+    print("Modified E-optimality:", np.log10(np.linalg.cond(result)))
+    print("\nFIM:\n", result)
 
     print("\neigenvalues:\n", eigenvalues)
 
