@@ -177,11 +177,10 @@ const thebe_selector_output = ".output, .cell_output"
 <li class="toctree-l2"><a class="reference internal" href="pyomo_simulation.html">Modeling with Pyomo</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="experiment_abstraction.html">Experiment Abstraction</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../regression.html">Parameter Estimation</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-2"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="parmest.html">Nonlinear Regression with ParmEst</a></li>
 <li class="toctree-l2"><a class="reference internal" href="parmest_exercise.html">Exercise: ParmEst</a></li>
-<li class="toctree-l2"><a class="reference internal" href="parmest_bonus.html">Bonus: ParmEst with Two Datasets</a></li>
-<li class="toctree-l2"><a class="reference internal" href="parmest_four_states.html">Bonus: ParmEst for Four State Model</a></li>
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../mbdoe.html">Optimal Experiment Design</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-3"><i class="fa-solid fa-chevron-down"></i></label><ul>
@@ -524,39 +523,39 @@ document.write(`
       <th>0</th>
       <td>0.00</td>
       <td>22.84</td>
-      <td>22.52</td>
+      <td>22.84</td>
       <td>50.0</td>
       <td>0.0</td>
     </tr>
     <tr>
       <th>1</th>
-      <td>1.01</td>
+      <td>1.00</td>
       <td>22.84</td>
-      <td>22.52</td>
+      <td>22.84</td>
       <td>50.0</td>
       <td>0.0</td>
     </tr>
     <tr>
       <th>2</th>
       <td>2.01</td>
+      <td>23.16</td>
       <td>22.84</td>
-      <td>22.52</td>
       <td>50.0</td>
       <td>0.0</td>
     </tr>
     <tr>
       <th>3</th>
-      <td>3.00</td>
+      <td>3.02</td>
       <td>22.84</td>
-      <td>22.52</td>
+      <td>22.84</td>
       <td>50.0</td>
       <td>0.0</td>
     </tr>
     <tr>
       <th>4</th>
-      <td>4.00</td>
+      <td>4.01</td>
       <td>22.84</td>
-      <td>22.20</td>
+      <td>22.84</td>
       <td>50.0</td>
       <td>0.0</td>
     </tr>
@@ -572,7 +571,7 @@ document.write(`
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/48caad3e7815ebae388dd6f44fba32f69e19110f39800969690bdd2dcc088c2a.png" src="../_images/48caad3e7815ebae388dd6f44fba32f69e19110f39800969690bdd2dcc088c2a.png" />
+<img alt="../_images/1ec0c081b9f0a828f1857de54d84d1b3bf3e482c2cde0ba738e506f6c2990293.png" src="../_images/1ec0c081b9f0a828f1857de54d84d1b3bf3e482c2cde0ba738e506f6c2990293.png" />
 </div>
 </div>
 <p>In this step test, heater 1 was set to 50% power and heater 2 was off. Let’s see the resulting temperature profiles.</p>
@@ -585,7 +584,7 @@ document.write(`
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/ace0e87f3c987743b111efe8c4c6f1ceb33ddd3e24210166d57716455993ce5e.png" src="../_images/ace0e87f3c987743b111efe8c4c6f1ceb33ddd3e24210166d57716455993ce5e.png" />
+<img alt="../_images/22bb6e842955ea3f922517818f5d1d2467a981ab5811ff3097f933c71680d9d9.png" src="../_images/22bb6e842955ea3f922517818f5d1d2467a981ab5811ff3097f933c71680d9d9.png" />
 </div>
 </div>
 <p>As expected, temperature 1 rises as expected for a (near) linear system. The experimentation noise is noticeable once the device approaches steady-state after 600 seconds. As expected, temperature 2 gradually rises in response to heater assembly 1 heating up. On the device, the two heater assembles are separated by ~1 cm.</p>
@@ -595,9 +594,9 @@ document.write(`
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="n">on_colab</span><span class="p">:</span>
-    <span class="n">file</span> <span class="o">=</span> <span class="s2">&quot;https://raw.githubusercontent.com/dowlinglab/pyomo-doe/main/data/tclab_sine_test.csv&quot;</span>
+    <span class="n">file</span> <span class="o">=</span> <span class="s2">&quot;https://raw.githubusercontent.com/dowlinglab/pyomo-doe/main/data/tclab_sine_test_5min_period.csv&quot;</span>
 <span class="k">else</span><span class="p">:</span>
-    <span class="n">file</span> <span class="o">=</span> <span class="s1">&#39;../data/tclab_sine_test.csv&#39;</span>
+    <span class="n">file</span> <span class="o">=</span> <span class="s1">&#39;../data/tclab_sine_test_5min_period.csv&#39;</span>
 
 <span class="n">df2</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
 <span class="n">df2</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
@@ -634,42 +633,42 @@ document.write(`
     <tr>
       <th>0</th>
       <td>0.00</td>
-      <td>24.45</td>
-      <td>24.13</td>
-      <td>50.0</td>
-      <td>0.0</td>
+      <td>22.2</td>
+      <td>22.2</td>
+      <td>50</td>
+      <td>0</td>
     </tr>
     <tr>
       <th>1</th>
-      <td>1.00</td>
-      <td>24.45</td>
-      <td>24.13</td>
-      <td>55.0</td>
-      <td>0.0</td>
+      <td>1.01</td>
+      <td>22.2</td>
+      <td>22.2</td>
+      <td>51</td>
+      <td>0</td>
     </tr>
     <tr>
       <th>2</th>
       <td>2.01</td>
-      <td>24.45</td>
-      <td>24.13</td>
-      <td>60.0</td>
-      <td>0.0</td>
+      <td>22.2</td>
+      <td>22.2</td>
+      <td>52</td>
+      <td>0</td>
     </tr>
     <tr>
       <th>3</th>
-      <td>3.01</td>
-      <td>24.45</td>
-      <td>24.13</td>
-      <td>65.0</td>
-      <td>0.0</td>
+      <td>3.00</td>
+      <td>22.2</td>
+      <td>22.2</td>
+      <td>53</td>
+      <td>0</td>
     </tr>
     <tr>
       <th>4</th>
       <td>4.01</td>
-      <td>24.77</td>
-      <td>23.81</td>
-      <td>70.0</td>
-      <td>0.0</td>
+      <td>22.2</td>
+      <td>22.2</td>
+      <td>54</td>
+      <td>0</td>
     </tr>
   </tbody>
 </table>
@@ -682,7 +681,7 @@ document.write(`
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/b724d863e93f2fad889b9ce9294890583295b6978279f7f13f29e5070cbad786.png" src="../_images/b724d863e93f2fad889b9ce9294890583295b6978279f7f13f29e5070cbad786.png" />
+<img alt="../_images/fbf2644f6f803238293870aec0099c1bb77225c820bcc42071fca6f36db6f2e6.png" src="../_images/fbf2644f6f803238293870aec0099c1bb77225c820bcc42071fca6f36db6f2e6.png" />
 </div>
 </div>
 </section>
@@ -736,7 +735,7 @@ C^S_p\frac{dT_{S,1}}{dt} &amp; = U_b(T_{H,1} - T_{S,1})
 \[\begin{split}
 \begin{align}
 C^H_p\frac{d(T_{H,1} - T_{amb})}{dt} &amp; = U_a(T_{amb} - T_{H,1}) + U_b((T_{S,1} - T_{amb}) - (T_{H,1} - T_{amb})) + \alpha P_1u_1\\
-C^S_p\frac{d(T_{S,1} - T_{amb})}{dt} &amp; = U_b(T_{H,1} - T_{amb}) - (T_{S,1} - T_{amb})
+C^S_p\frac{d(T_{S,1} - T_{amb})}{dt} &amp; = U_b((T_{H,1} - T_{amb}) - (T_{S,1} - T_{amb}))
 \end{align}
 \end{split}\]</div>
 <p>Then divide by the heat capacities.</p>
@@ -744,7 +743,7 @@ C^S_p\frac{d(T_{S,1} - T_{amb})}{dt} &amp; = U_b(T_{H,1} - T_{amb}) - (T_{S,1} -
 \[\begin{split}
 \begin{align}
 \frac{d(T_{H,1} - T_{amb})}{dt} &amp; = -\frac{U_a+U_b}{C^H_p}(T_{H,1} - T_{amb}) + \frac{U_b}{C^H_p}(T_{S,1} - T_{amb}) + \frac{\alpha P_1}{C^H_p}u_1 \\
-\frac{d(T_{S,1} - T_{amb})}{dt} &amp; = \frac{U_b}{C^S_p}((T_{H,1} - T_{amb}) - \frac{U_b}{C^S_p} (T_{S,1} - T_{amb})) 
+\frac{d(T_{S,1} - T_{amb})}{dt} &amp; = \frac{U_b}{C^S_p}((T_{H,1} - T_{amb}) - (T_{S,1} - T_{amb})) 
 \end{align}
 \end{split}\]</div>
 <p>The two-state model can be rewritten using vectors to collect the states, inputs, measurable outputs, and arrays to collect the coefficients of the differential equations.</p>

@@ -177,11 +177,10 @@ const thebe_selector_output = ".output, .cell_output"
 <li class="toctree-l2"><a class="reference internal" href="../notebooks/pyomo_simulation.html">Modeling with Pyomo</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="../notebooks/experiment_abstraction.html">Experiment Abstraction</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../regression.html">Parameter Estimation</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-2"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../notebooks/parmest.html">Nonlinear Regression with ParmEst</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../notebooks/parmest_exercise.html">Exercise: ParmEst</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/parmest_bonus.html">Bonus: ParmEst with Two Datasets</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../notebooks/parmest_four_states.html">Bonus: ParmEst for Four State Model</a></li>
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../mbdoe.html">Optimal Experiment Design</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-3"><i class="fa-solid fa-chevron-down"></i></label><ul>
@@ -456,11 +455,14 @@ document.write(`
 
 <span class="c1"># import TCLab model, simulation, and data analysis functions</span>
 <span class="kn">from</span> <span class="nn">tclab_pyomo</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">TCLabExperiment</span><span class="p">,</span>
-    <span class="n">create_model</span><span class="p">,</span>
+    <span class="n">TC_Lab_data</span><span class="p">,</span>
+    <span class="n">TC_Lab_experiment</span><span class="p">,</span>
     <span class="n">extract_results</span><span class="p">,</span>
     <span class="n">extract_plot_results</span><span class="p">,</span>
 <span class="p">)</span>
+
+<span class="c1"># set default number of states in the TCLab model</span>
+<span class="n">number_tclab_states</span> <span class="o">=</span> <span class="mi">2</span>
 </pre></div>
 </div>
 </div>
@@ -511,39 +513,39 @@ document.write(`
       <th>0</th>
       <td>0.00</td>
       <td>22.84</td>
-      <td>22.52</td>
+      <td>22.84</td>
       <td>50.0</td>
       <td>0.0</td>
     </tr>
     <tr>
       <th>1</th>
-      <td>1.01</td>
+      <td>1.00</td>
       <td>22.84</td>
-      <td>22.52</td>
+      <td>22.84</td>
       <td>50.0</td>
       <td>0.0</td>
     </tr>
     <tr>
       <th>2</th>
       <td>2.01</td>
+      <td>23.16</td>
       <td>22.84</td>
-      <td>22.52</td>
       <td>50.0</td>
       <td>0.0</td>
     </tr>
     <tr>
       <th>3</th>
-      <td>3.00</td>
+      <td>3.02</td>
       <td>22.84</td>
-      <td>22.52</td>
+      <td>22.84</td>
       <td>50.0</td>
       <td>0.0</td>
     </tr>
     <tr>
       <th>4</th>
-      <td>4.00</td>
+      <td>4.01</td>
       <td>22.84</td>
-      <td>22.20</td>
+      <td>22.84</td>
       <td>50.0</td>
       <td>0.0</td>
     </tr>
@@ -561,7 +563,7 @@ document.write(`
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/ace0e87f3c987743b111efe8c4c6f1ceb33ddd3e24210166d57716455993ce5e.png" src="../_images/ace0e87f3c987743b111efe8c4c6f1ceb33ddd3e24210166d57716455993ce5e.png" />
+<img alt="../_images/22bb6e842955ea3f922517818f5d1d2467a981ab5811ff3097f933c71680d9d9.png" src="../_images/22bb6e842955ea3f922517818f5d1d2467a981ab5811ff3097f933c71680d9d9.png" />
 </div>
 </div>
 <div class="cell docutils container">
@@ -573,14 +575,14 @@ document.write(`
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/48caad3e7815ebae388dd6f44fba32f69e19110f39800969690bdd2dcc088c2a.png" src="../_images/48caad3e7815ebae388dd6f44fba32f69e19110f39800969690bdd2dcc088c2a.png" />
+<img alt="../_images/1ec0c081b9f0a828f1857de54d84d1b3bf3e482c2cde0ba738e506f6c2990293.png" src="../_images/1ec0c081b9f0a828f1857de54d84d1b3bf3e482c2cde0ba738e506f6c2990293.png" />
 </div>
 </div>
 <p>We’ll now store the data in this custom <em>data class</em> objective. This is a nice trick to help keep data organized, but it is NOT required to use ParmEst or Pyomo data. Alternatively, we could just use a pandas DataFrame.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">tc_data</span> <span class="o">=</span> <span class="n">TCLabExperiment</span><span class="p">(</span>
-    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Sine Wave Test for Heater 1&quot;</span><span class="p">,</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">tc_data</span> <span class="o">=</span> <span class="n">TC_Lab_data</span><span class="p">(</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Step Test for Heater 1&quot;</span><span class="p">,</span>
     <span class="n">time</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
     <span class="n">T1</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;T1&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
     <span class="n">u1</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Q1&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
@@ -642,7 +644,7 @@ document.write(`
       <td>50.0</td>
       <td>200</td>
       <td>None</td>
-      <td>22.52</td>
+      <td>22.84</td>
       <td>0.0</td>
       <td>200</td>
       <td>None</td>
@@ -650,12 +652,12 @@ document.write(`
     </tr>
     <tr>
       <th>1</th>
-      <td>1.01</td>
+      <td>1.00</td>
       <td>22.84</td>
       <td>50.0</td>
       <td>200</td>
       <td>None</td>
-      <td>22.52</td>
+      <td>22.84</td>
       <td>0.0</td>
       <td>200</td>
       <td>None</td>
@@ -664,11 +666,11 @@ document.write(`
     <tr>
       <th>2</th>
       <td>2.01</td>
-      <td>22.84</td>
+      <td>23.16</td>
       <td>50.0</td>
       <td>200</td>
       <td>None</td>
-      <td>22.52</td>
+      <td>22.84</td>
       <td>0.0</td>
       <td>200</td>
       <td>None</td>
@@ -676,12 +678,12 @@ document.write(`
     </tr>
     <tr>
       <th>3</th>
-      <td>3.00</td>
+      <td>3.02</td>
       <td>22.84</td>
       <td>50.0</td>
       <td>200</td>
       <td>None</td>
-      <td>22.52</td>
+      <td>22.84</td>
       <td>0.0</td>
       <td>200</td>
       <td>None</td>
@@ -689,12 +691,12 @@ document.write(`
     </tr>
     <tr>
       <th>4</th>
-      <td>4.00</td>
+      <td>4.01</td>
       <td>22.84</td>
       <td>50.0</td>
       <td>200</td>
       <td>None</td>
-      <td>22.20</td>
+      <td>22.84</td>
       <td>0.0</td>
       <td>200</td>
       <td>None</td>
@@ -710,75 +712,45 @@ document.write(`
 <p>Now for the main event: performing nonlinear least squares with <code class="docutils literal notranslate"><span class="pre">ParmEst</span></code>.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Call ParmEst</span>
-<span class="c1">### BEGIN SOLUTION</span>
-<span class="kn">import</span> <span class="nn">pyomo.contrib.parmest.parmest</span> <span class="k">as</span> <span class="nn">parmest</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pyomo.contrib.parmest.parmest</span> <span class="k">as</span> <span class="nn">parmest</span>
 
-<span class="n">parmest_create_model</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">data</span><span class="p">:</span> <span class="n">create_model</span><span class="p">(</span>
-    <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;parmest&#39;</span><span class="p">,</span> <span class="n">number_of_states</span><span class="o">=</span><span class="mi">2</span>
-<span class="p">)</span>
+<span class="c1"># First, we define an Experiment object within parmest</span>
+<span class="n">TC_Lab_sine_exp</span> <span class="o">=</span> <span class="n">TC_Lab_experiment</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">tc_data</span><span class="p">,</span> <span class="n">number_of_states</span><span class="o">=</span><span class="n">number_tclab_states</span><span class="p">)</span>
 
-<span class="c1"># define the parameter names as a list</span>
-<span class="c1"># two-state model</span>
-<span class="n">theta_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Ua&#39;</span><span class="p">,</span> <span class="s1">&#39;Ub&#39;</span><span class="p">,</span> <span class="s1">&#39;inv_CpH&#39;</span><span class="p">,</span> <span class="s1">&#39;inv_CpS&#39;</span><span class="p">]</span>
-
-<span class="c1"># four-state model</span>
-<span class="c1"># theta_names = [&#39;Ua&#39;, &#39;Ub&#39;, &#39;Uc&#39;,&#39;inv_CpH&#39;, &#39;inv_CpS&#39;]</span>
-
-<span class="c1"># Create a parameter estimation object</span>
-<span class="n">pest</span> <span class="o">=</span> <span class="n">parmest</span><span class="o">.</span><span class="n">Estimator</span><span class="p">(</span>
-    <span class="n">parmest_create_model</span><span class="p">,</span>
-    <span class="n">data</span><span class="o">=</span><span class="p">[</span>
-        <span class="n">tc_data</span><span class="o">.</span><span class="n">to_data_frame</span><span class="p">()</span>
-    <span class="p">],</span>  <span class="c1"># Needs to be a list of dataframes, otherwise parmest threats each row as a separate model</span>
-    <span class="n">theta_names</span><span class="o">=</span><span class="n">theta_names</span><span class="p">,</span>
-    <span class="n">tee</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-<span class="p">)</span>
+<span class="c1"># Since everything has been labeled properly in the Experiment object, we simply invoke</span>
+<span class="c1"># parmest&#39;s Estimator function to estimate the parameters.</span>
+<span class="n">pest</span> <span class="o">=</span> <span class="n">parmest</span><span class="o">.</span><span class="n">Estimator</span><span class="p">([</span><span class="n">TC_Lab_sine_exp</span><span class="p">,</span> <span class="p">],</span> <span class="n">obj_function</span><span class="o">=</span><span class="s1">&#39;SSE&#39;</span><span class="p">,</span> <span class="n">tee</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
 <span class="n">obj</span><span class="p">,</span> <span class="n">theta</span> <span class="o">=</span> <span class="n">pest</span><span class="o">.</span><span class="n">theta_est</span><span class="p">()</span>
-
-<span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">obj, theta, cov = pest.theta_est(calc_cov=True, # boolean to calculate the covariance matrix</span>
-<span class="sd">                                    cov_n = len(tc_data.time) # number of data points in the least squares objective</span>
-<span class="sd">)</span>
-<span class="sd">&#39;&#39;&#39;</span>
-<span class="c1">### END SOLUTION</span>
-
-<span class="c1"># Visualize the results using our custom function</span>
-<span class="c1">### BEGIN SOLUTION</span>
-<span class="n">parmest_regression_results2</span> <span class="o">=</span> <span class="n">extract_plot_results</span><span class="p">(</span>
-    <span class="n">tc_data</span><span class="p">,</span> <span class="n">pest</span><span class="o">.</span><span class="n">pest_deprecated</span><span class="o">.</span><span class="n">parmest_model</span>
-<span class="p">)</span>
-<span class="c1">### END SOLUTION</span>
-
-
-<span class="c1">### BEGIN SOLUTION</span>
-<span class="c1"># Print the covariance matrix</span>
-<span class="c1"># print(&quot;Covariance matrix:&quot;)</span>
-<span class="c1"># print(cov)</span>
-<span class="c1">### END SOLUTION</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>WARNING: DEPRECATED: You&#39;re using the deprecated parmest interface
-(model_function, data, theta_names). This interface will be removed in a
-future release, please update to the new parmest interface using experiment
-lists.  (deprecated in 6.7.2) (called from
-/Users/adowling/opt/anaconda3/envs/summer2024/lib/python3.10/functools.py:926)
-Ipopt 3.13.2: 
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Ipopt 3.13.2: 
 
 ******************************************************************************
 This program contains Ipopt, a library for large-scale nonlinear optimization.
  Ipopt is released as open source code under the Eclipse Public License (EPL).
          For more information visit http://projects.coin-or.org/Ipopt
+
+This version of Ipopt was compiled from source code available at
+    https://github.com/IDAES/Ipopt as part of the Institute for the Design of
+    Advanced Energy Systems Process Systems Engineering Framework (IDAES PSE
+    Framework) Copyright (c) 2018-2019. See https://github.com/IDAES/idaes-pse.
+
+This version of Ipopt was compiled using HSL, a collection of Fortran codes
+    for large-scale scientific computation.  All technical papers, sales and
+    publicity material resulting from use of the HSL codes within IPOPT must
+    contain the following acknowledgement:
+        HSL, a collection of Fortran codes for large-scale scientific
+        computation. See http://www.hsl.rl.ac.uk.
 ******************************************************************************
 
 This is Ipopt version 3.13.2, running with linear solver ma27.
 
 Number of nonzeros in equality constraint Jacobian...:    15301
 Number of nonzeros in inequality constraint Jacobian.:        0
-Number of nonzeros in Lagrangian Hessian.............:     8103
+Number of nonzeros in Lagrangian Hessian.............:     7203
 
 Total number of variables............................:     3606
                      variables with only lower bounds:        0
@@ -791,57 +763,68 @@ Total number of inequality constraints...............:        0
         inequality constraints with only upper bounds:        0
 
 iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
-   0  4.6924213e+03 2.32e-01 5.21e+00  -1.0 0.00e+00    -  0.00e+00 0.00e+00   0
-   1  1.3667295e+02 7.89e-03 2.40e+03  -1.0 2.57e+00    -  8.38e-01 1.00e+00f  1
-   2  1.3664538e+02 3.87e-05 1.59e+01  -1.0 1.86e-02   2.0 9.96e-01 1.00e+00h  1
-   3  1.2300652e+02 7.90e-03 2.29e+02  -1.0 5.88e-01    -  1.00e+00 1.00e+00f  1
-   4  1.2299246e+02 3.10e-05 6.73e+00  -1.0 1.87e-02   1.5 1.00e+00 1.00e+00h  1
-   5  1.2255521e+02 1.12e-02 7.32e+01  -1.0 1.16e+00    -  1.00e+00 1.00e+00f  1
-   6  1.2165455e+02 9.98e-02 1.74e+01  -1.0 4.80e+00    -  1.00e+00 1.00e+00h  1
-   7  1.2175076e+02 1.76e-02 1.99e+02  -1.0 1.37e+01    -  1.00e+00 1.00e+00h  1
-   8  1.2171720e+02 9.95e-06 2.92e-01  -1.0 1.82e-03   1.0 1.00e+00 1.00e+00h  1
-   9  1.2157278e+02 4.71e-02 1.91e+00  -1.7 1.29e+01    -  7.40e-01 1.00e+00f  1
+   0  5.1436530e+04 2.32e-01 1.31e+01  -1.0 0.00e+00    -  0.00e+00 0.00e+00   0
+   1  1.5532093e+02 3.70e-02 1.52e+04  -1.0 8.79e+00    -  8.50e-01 1.00e+00f  1
+   2  1.6227889e+02 2.30e-03 8.55e+03  -1.0 5.40e-01   2.0 9.90e-01 1.00e+00h  1
+   3  3.7562775e+01 1.39e-03 4.30e+03  -1.0 4.74e-01    -  9.90e-01 1.00e+00f  1
+   4  2.2919842e+01 1.98e-01 7.58e+02  -1.0 3.43e+00    -  9.97e-01 8.72e-01f  1
+   5  2.4039376e+01 2.58e-03 1.26e+03  -1.0 5.10e-02   1.5 1.00e+00 1.00e+00h  1
+   6  2.2841812e+01 2.56e-04 1.63e+02  -1.0 8.78e-02    -  1.00e+00 1.00e+00f  1
+   7  2.2804825e+01 2.50e-05 1.15e+01  -1.0 2.53e-02    -  1.00e+00 1.00e+00h  1
+   8  2.2806558e+01 9.64e-10 1.47e-03  -1.0 1.32e-04   1.0 1.00e+00 1.00e+00h  1
+   9  2.2802018e+01 7.47e-06 4.57e-02  -2.5 3.52e-02    -  1.00e+00 1.00e+00f  1
 iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
-  10  1.2153393e+02 2.69e-02 4.55e+01  -1.7 2.65e+01    -  1.00e+00 1.00e+00h  1
-  11  1.2152492e+02 4.93e-03 7.64e+00  -1.7 1.96e+01    -  1.00e+00 1.00e+00h  1
-  12  1.2153040e+02 5.16e-04 9.33e-03  -1.7 3.61e+00    -  1.00e+00 1.00e+00h  1
-  13  1.2151701e+02 4.71e-03 6.32e+00  -3.8 1.36e+01    -  8.60e-01 1.00e+00h  1
-  14  1.2151462e+02 3.84e-04 3.58e-01  -3.8 6.11e+00    -  1.00e+00 1.00e+00h  1
-  15  1.2151434e+02 4.83e-06 1.51e-03  -3.8 6.64e-01    -  1.00e+00 1.00e+00h  1
-  16  1.2151434e+02 7.12e-12 3.62e-08  -3.8 3.05e-03    -  1.00e+00 1.00e+00h  1
-  17  1.2151419e+02 8.99e-07 1.80e-05  -5.7 2.33e-01    -  1.00e+00 1.00e+00f  1
-  18  1.2151419e+02 2.27e-10 2.75e-08  -8.6 3.99e-03    -  1.00e+00 1.00e+00h  1
-  19  1.2151419e+02 1.36e-14 1.22e-10  -8.6 2.51e-07    -  1.00e+00 1.00e+00h  1
+  10  2.2802049e+01 8.05e-12 2.04e-05  -2.5 5.50e-06   0.6 1.00e+00 1.00e+00h  1
+  11  2.2802045e+01 4.14e-05 3.63e-03  -3.8 9.58e-02    -  1.00e+00 1.00e+00h  1
+  12  2.2802045e+01 9.14e-05 2.48e-02  -3.8 9.18e+00    -  9.83e-01 1.17e-02h  7
+  13  2.2802048e+01 2.02e-05 1.84e-03  -3.8 3.67e-01    -  1.00e+00 1.00e+00H  1
+  14  2.2802047e+01 5.87e-10 2.29e-04  -3.8 8.33e-05   0.1 1.00e+00 1.00e+00h  1
+  15  2.2802046e+01 4.49e-10 4.57e-05  -5.7 1.11e-04  -0.4 1.00e+00 1.00e+00h  1
+  16  2.2802045e+01 1.77e-10 1.10e-05  -5.7 7.98e-05  -0.9 1.00e+00 1.00e+00h  1
+  17  2.2802045e+01 1.33e-11 1.04e-06  -8.6 2.28e-05  -1.3 1.00e+00 1.00e+00h  1
+  18  2.2802045e+01 1.36e-13 3.54e-08  -8.6 2.32e-06  -1.8 1.00e+00 1.00e+00h  1
+  19  2.2802045e+01 1.59e-14 4.01e-10  -8.6 7.89e-08  -2.3 1.00e+00 1.00e+00h  1
 
 Number of Iterations....: 19
 
                                    (scaled)                 (unscaled)
-Objective...............:   1.2151419060681862e+02    1.2151419060681862e+02
-Dual infeasibility......:   1.2213144550448856e-10    1.2213144550448856e-10
-Constraint violation....:   1.3635360202046698e-14    1.3635360202046698e-14
-Complementarity.........:   2.5059035598301955e-09    2.5059035598301955e-09
-Overall NLP error.......:   2.5059035598301955e-09    2.5059035598301955e-09
+Objective...............:   2.2802045378652373e+01    2.2802045378652373e+01
+Dual infeasibility......:   4.0072241098023035e-10    4.0072241098023035e-10
+Constraint violation....:   1.5855372570428017e-14    1.5855372570428017e-14
+Complementarity.........:   2.5059035596800626e-09    2.5059035596800626e-09
+Overall NLP error.......:   2.5059035596800626e-09    2.5059035596800626e-09
 
 
-Number of objective function evaluations             = 20
+Number of objective function evaluations             = 30
 Number of objective gradient evaluations             = 20
-Number of equality constraint evaluations            = 20
+Number of equality constraint evaluations            = 30
 Number of inequality constraint evaluations          = 0
 Number of equality constraint Jacobian evaluations   = 20
 Number of inequality constraint Jacobian evaluations = 0
 Number of Lagrangian Hessian evaluations             = 19
-Total CPU secs in IPOPT (w/o function evaluations)   =      0.079
-Total CPU secs in NLP function evaluations           =      0.046
+Total CPU secs in IPOPT (w/o function evaluations)   =      0.201
+Total CPU secs in NLP function evaluations           =      0.006
 
 EXIT: Optimal Solution Found.
 </pre></div>
 </div>
-<img alt="../_images/1b666307da0d9aead1cd0cf7fcd9038a393361600325f571e5430f80bd84d495.png" src="../_images/1b666307da0d9aead1cd0cf7fcd9038a393361600325f571e5430f80bd84d495.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">parmest_regression_results</span> <span class="o">=</span> <span class="n">extract_plot_results</span><span class="p">(</span>
+    <span class="n">tc_data</span><span class="p">,</span> <span class="n">pest</span><span class="o">.</span><span class="n">ef_instance</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/00b22f04e1ec9c5f0e80122eab2e940e6dce8aa728d8d457046f4d7ba5a6da20.png" src="../_images/00b22f04e1ec9c5f0e80122eab2e940e6dce8aa728d8d457046f4d7ba5a6da20.png" />
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model parameters:
-Ua = 0.0491 Watts/degC
-Ub = 0.0004 Watts/degC
-CpH = 6.6745 Joules/degC
-CpS = 0.01 Joules/degC
+Ua = 0.041 Watts/degC
+Ub = 0.0091 Watts/degC
+CpH = 5.9527 Joules/degC
+CpS = 0.1387 Joules/degC
  
 </pre></div>
 </div>

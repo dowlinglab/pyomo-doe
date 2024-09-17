@@ -67,7 +67,7 @@ const thebe_selector_output = ".output, .cell_output"
     <script>DOCUMENTATION_OPTIONS.pagename = 'notebooks/pyomo_simulation';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Parameter Estimation" href="../regression.html" />
+    <link rel="next" title="Experiment Abstraction" href="experiment_abstraction.html" />
     <link rel="prev" title="Modeling with Numpy" href="numpy_simulation.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
@@ -177,11 +177,10 @@ const thebe_selector_output = ".output, .cell_output"
 <li class="toctree-l2 current active"><a class="current reference internal" href="#">Modeling with Pyomo</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="experiment_abstraction.html">Experiment Abstraction</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../regression.html">Parameter Estimation</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-2"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="parmest.html">Nonlinear Regression with ParmEst</a></li>
 <li class="toctree-l2"><a class="reference internal" href="parmest_exercise.html">Exercise: ParmEst</a></li>
-<li class="toctree-l2"><a class="reference internal" href="parmest_bonus.html">Bonus: ParmEst with Two Datasets</a></li>
-<li class="toctree-l2"><a class="reference internal" href="parmest_four_states.html">Bonus: ParmEst for Four State Model</a></li>
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../mbdoe.html">Optimal Experiment Design</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-3"><i class="fa-solid fa-chevron-down"></i></label><ul>
@@ -495,7 +494,7 @@ document.write(`
 \[\begin{align*}
 \max{}~~ &amp; 0 \\
 \mathrm{s.t.}~~ &amp; C_p^H \frac{dT_H}{dt} = U_a (T_{amb} - T_H) + U_b (T_S - T_H) + \alpha P u(t) \\
- &amp; C_p^S \frac{dT_S}{dt} = - U_b (T_S - T_H) \\
+ &amp; C_p^S \frac{dT_S}{dt} = U_b (T_H - T_S) \\
  &amp; T_H(t_0) = T_{amb} \\
  &amp; T_S(t_0) = T_{amb} \\
  &amp; u(t) = u_{ramp} = 50\%, \quad \forall t \in [t_0, t_f]
@@ -628,7 +627,7 @@ Th= 49.21 °C and Ts= 42.97 °C at time 200 seconds.
 \[\begin{align*}
 \min_{u_{ramp}} ~~ &amp; ||~ T_{H}(t_f) - 60 ~||^2 \\
 \mathrm{s.t.}~~ &amp; C_p^H \frac{dT_H}{dt} = U_a (T_{amb} - T_H) + U_b (T_S - T_H) + \alpha P u(t) \\
- &amp; C_p^S \frac{dT_S}{dt} = - U_b (T_S - T_H) \\
+ &amp; C_p^S \frac{dT_S}{dt} = U_b (T_H - T_S) \\
  &amp; T_H(t_0) = T_{amb} \\
  &amp; T_S(t_0) = T_{amb} \\
  &amp; u(t) = u_{ramp}, \quad \forall t \in [t_0, t_f]
@@ -648,7 +647,7 @@ Th= 49.21 °C and Ts= 42.97 °C at time 200 seconds.
 \[\begin{split}
 \begin{align*}
 C_p^H \frac{dT_H}{dt} &amp; = U_a (T_{amb} - T_H) + U_c (T_S - T_H) + \alpha P u(t)\\
-C_p^S \frac{dT_S}{dt} &amp; = - U_b (T_S - T_H)  \\
+C_p^S \frac{dT_S}{dt} &amp; = U_b (T_H - T_S)  \\
 \\
 \text{control limits}\qquad0 \leq u(t) &amp; \leq 100.0
 \\
@@ -803,7 +802,7 @@ C_p^S \frac{dT_S}{dt} &amp; = - U_b (T_S - T_H)  \\
 \[\begin{align*}
 \min_{u(t)} ~~ &amp; \int_{t_0}^{t_f} \|~SP(t) - T_H(t)~\|^2\,dt \\
 \mathrm{s.t.}~~ &amp; C_p^H \frac{dT_H}{dt} = U_a (T_{amb} - T_H) + U_b (T_S - T_H) + \alpha P u(t) \\
- &amp; C_p^S \frac{dT_S}{dt} = - U_b (T_S - T_H) \\
+ &amp; C_p^S \frac{dT_S}{dt} = U_b (T_H - T_S) \\
  &amp; T_H(t_0) = T_{amb} \\
  &amp; T_S(t_0) = T_{amb}
 \end{align*}\]</div>
@@ -933,11 +932,11 @@ C_p^S \frac{dT_S}{dt} &amp; = - U_b (T_S - T_H)  \\
       </div>
     </a>
     <a class="right-next"
-       href="../regression.html"
+       href="experiment_abstraction.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Parameter Estimation</p>
+        <p class="prev-next-title">Experiment Abstraction</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>

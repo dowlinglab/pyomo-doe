@@ -67,7 +67,7 @@ const thebe_selector_output = ".output, .cell_output"
     <script>DOCUMENTATION_OPTIONS.pagename = 'notebooks/parmest_exercise';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Bonus: ParmEst with Two Datasets" href="parmest_bonus.html" />
+    <link rel="next" title="Optimal Experiment Design" href="../mbdoe.html" />
     <link rel="prev" title="Nonlinear Regression with ParmEst" href="parmest.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
@@ -177,11 +177,10 @@ const thebe_selector_output = ".output, .cell_output"
 <li class="toctree-l2"><a class="reference internal" href="pyomo_simulation.html">Modeling with Pyomo</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="experiment_abstraction.html">Experiment Abstraction</a></li>
 <li class="toctree-l1 current active has-children"><a class="reference internal" href="../regression.html">Parameter Estimation</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-2"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="parmest.html">Nonlinear Regression with ParmEst</a></li>
 <li class="toctree-l2 current active"><a class="current reference internal" href="#">Exercise: ParmEst</a></li>
-<li class="toctree-l2"><a class="reference internal" href="parmest_bonus.html">Bonus: ParmEst with Two Datasets</a></li>
-<li class="toctree-l2"><a class="reference internal" href="parmest_four_states.html">Bonus: ParmEst for Four State Model</a></li>
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../mbdoe.html">Optimal Experiment Design</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-3"><i class="fa-solid fa-chevron-down"></i></label><ul>
@@ -456,11 +455,14 @@ document.write(`
 
 <span class="c1"># import TCLab model, simulation, and data analysis functions</span>
 <span class="kn">from</span> <span class="nn">tclab_pyomo</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">TCLabExperiment</span><span class="p">,</span>
-    <span class="n">create_model</span><span class="p">,</span>
+    <span class="n">TC_Lab_data</span><span class="p">,</span>
+    <span class="n">TC_Lab_experiment</span><span class="p">,</span>
     <span class="n">extract_results</span><span class="p">,</span>
     <span class="n">extract_plot_results</span><span class="p">,</span>
 <span class="p">)</span>
+
+<span class="c1"># set default number of states in the TCLab model</span>
+<span class="n">number_tclab_states</span> <span class="o">=</span> <span class="mi">2</span>
 </pre></div>
 </div>
 </div>
@@ -499,8 +501,8 @@ document.write(`
 <p>We’ll now store the data in this custom <em>data class</em> objective. This is a nice trick to help keep data organized, but it is NOT required to use ParmEst or Pyomo data. Alternatively, we could just use a pandas DataFrame.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">tc_data</span> <span class="o">=</span> <span class="n">TCLabExperiment</span><span class="p">(</span>
-    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Sine Wave Test for Heater 1&quot;</span><span class="p">,</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">tc_data</span> <span class="o">=</span> <span class="n">TC_Lab_data</span><span class="p">(</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Step Test for Heater 1&quot;</span><span class="p">,</span>
     <span class="n">time</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
     <span class="n">T1</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;T1&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
     <span class="n">u1</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Q1&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
@@ -530,14 +532,25 @@ document.write(`
 <p>Now for the main event: performing nonlinear least squares with <code class="docutils literal notranslate"><span class="pre">ParmEst</span></code>.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Call ParmEst</span>
-<span class="c1"># Add your solution here</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pyomo.contrib.parmest.parmest</span> <span class="k">as</span> <span class="nn">parmest</span>
 
-<span class="c1"># Visualize the results using our custom function</span>
-<span class="c1"># Add your solution here</span>
+<span class="c1"># First, we define an Experiment object within parmest</span>
+<span class="n">TC_Lab_sine_exp</span> <span class="o">=</span> <span class="n">TC_Lab_experiment</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">tc_data</span><span class="p">,</span> <span class="n">number_of_states</span><span class="o">=</span><span class="n">number_tclab_states</span><span class="p">)</span>
 
+<span class="c1"># Since everything has been labeled properly in the Experiment object, we simply invoke</span>
+<span class="c1"># parmest&#39;s Estimator function to estimate the parameters.</span>
+<span class="n">pest</span> <span class="o">=</span> <span class="n">parmest</span><span class="o">.</span><span class="n">Estimator</span><span class="p">([</span><span class="n">TC_Lab_sine_exp</span><span class="p">,</span> <span class="p">],</span> <span class="n">obj_function</span><span class="o">=</span><span class="s1">&#39;SSE&#39;</span><span class="p">,</span> <span class="n">tee</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
-<span class="c1"># Add your solution here</span>
+<span class="n">obj</span><span class="p">,</span> <span class="n">theta</span> <span class="o">=</span> <span class="n">pest</span><span class="o">.</span><span class="n">theta_est</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">parmest_regression_results</span> <span class="o">=</span> <span class="n">extract_plot_results</span><span class="p">(</span>
+    <span class="n">tc_data</span><span class="p">,</span> <span class="n">pest</span><span class="o">.</span><span class="n">ef_instance</span>
+<span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -586,11 +599,11 @@ document.write(`
       </div>
     </a>
     <a class="right-next"
-       href="parmest_bonus.html"
+       href="../mbdoe.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Bonus: ParmEst with Two Datasets</p>
+        <p class="prev-next-title">Optimal Experiment Design</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>

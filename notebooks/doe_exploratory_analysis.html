@@ -177,11 +177,10 @@ const thebe_selector_output = ".output, .cell_output"
 <li class="toctree-l2"><a class="reference internal" href="pyomo_simulation.html">Modeling with Pyomo</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="experiment_abstraction.html">Experiment Abstraction</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../regression.html">Parameter Estimation</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-2"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="parmest.html">Nonlinear Regression with ParmEst</a></li>
 <li class="toctree-l2"><a class="reference internal" href="parmest_exercise.html">Exercise: ParmEst</a></li>
-<li class="toctree-l2"><a class="reference internal" href="parmest_bonus.html">Bonus: ParmEst with Two Datasets</a></li>
-<li class="toctree-l2"><a class="reference internal" href="parmest_four_states.html">Bonus: ParmEst for Four State Model</a></li>
 </ul>
 </li>
 <li class="toctree-l1 current active has-children"><a class="reference internal" href="../mbdoe.html">Optimal Experiment Design</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-3"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
@@ -423,6 +422,7 @@ document.write(`
                 <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#load-experimental-data-sine-test">Load experimental data (sine test)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#analyze-fim-with-pyomo-doe-at-initial-point-sine-test">Analyze FIM with Pyomo.DoE at initial point (sine test)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#reusing-the-experiment-object-used-for-parameter-estimation">Reusing the Experiment object used for parameter estimation</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#define-parameterized-sine-wave-experiment">Define parameterized sine wave experiment</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#perform-sensitivity-analysis-to-sine-wave-frequency-and-period">Perform sensitivity analysis to sine wave frequency and period</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#visualize-and-interpret-sensitivity-analysis-results">Visualize and interpret sensitivity analysis results</a></li>
@@ -441,6 +441,26 @@ document.write(`
 <h1>Pyomo.DoE: Exploratory Analysis<a class="headerlink" href="#pyomo-doe-exploratory-analysis" title="Permalink to this heading">#</a></h1>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+<span class="n">SMALL_SIZE</span> <span class="o">=</span> <span class="mi">14</span>
+<span class="n">MEDIUM_SIZE</span> <span class="o">=</span> <span class="mi">16</span>
+<span class="n">BIGGER_SIZE</span> <span class="o">=</span> <span class="mi">18</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">rc</span><span class="p">(</span><span class="s1">&#39;font&#39;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">SMALL_SIZE</span><span class="p">)</span>  <span class="c1"># controls default text sizes</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">rc</span><span class="p">(</span><span class="s1">&#39;axes&#39;</span><span class="p">,</span> <span class="n">titlesize</span><span class="o">=</span><span class="n">SMALL_SIZE</span><span class="p">)</span>  <span class="c1"># fontsize of the axes title</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">rc</span><span class="p">(</span><span class="s1">&#39;axes&#39;</span><span class="p">,</span> <span class="n">labelsize</span><span class="o">=</span><span class="n">MEDIUM_SIZE</span><span class="p">)</span>  <span class="c1"># fontsize of the x and y labels</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">rc</span><span class="p">(</span><span class="s1">&#39;xtick&#39;</span><span class="p">,</span> <span class="n">labelsize</span><span class="o">=</span><span class="n">SMALL_SIZE</span><span class="p">)</span>  <span class="c1"># fontsize of the tick labels</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">rc</span><span class="p">(</span><span class="s1">&#39;ytick&#39;</span><span class="p">,</span> <span class="n">labelsize</span><span class="o">=</span><span class="n">SMALL_SIZE</span><span class="p">)</span>  <span class="c1"># fontsize of the tick labels</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">rc</span><span class="p">(</span><span class="s1">&#39;legend&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="n">SMALL_SIZE</span><span class="p">)</span>  <span class="c1"># legend fontsize</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">rc</span><span class="p">(</span><span class="s1">&#39;figure&#39;</span><span class="p">,</span> <span class="n">titlesize</span><span class="o">=</span><span class="n">BIGGER_SIZE</span><span class="p">)</span>  <span class="c1"># fontsize of the figure title</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">rc</span><span class="p">(</span><span class="s1">&#39;lines&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">sys</span>
 
 <span class="c1"># If running on Google Colab, install Pyomo and Ipopt via IDAES</span>
@@ -450,8 +470,8 @@ document.write(`
 
 <span class="c1"># import TCLab model, simulation, and data analysis functions</span>
 <span class="kn">from</span> <span class="nn">tclab_pyomo</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">TCLabExperiment</span><span class="p">,</span>
-    <span class="n">create_model</span><span class="p">,</span>
+    <span class="n">TC_Lab_data</span><span class="p">,</span>
+    <span class="n">TC_Lab_experiment</span><span class="p">,</span>
     <span class="n">extract_results</span><span class="p">,</span>
     <span class="n">extract_plot_results</span><span class="p">,</span>
     <span class="n">results_summary</span><span class="p">,</span>
@@ -470,9 +490,9 @@ document.write(`
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 
 <span class="k">if</span> <span class="n">on_colab</span><span class="p">:</span>
-    <span class="n">file</span> <span class="o">=</span> <span class="s2">&quot;https://raw.githubusercontent.com/dowlinglab/pyomo-doe/main/data/tclab_sine_test.csv&quot;</span>
+    <span class="n">file</span> <span class="o">=</span> <span class="s2">&quot;https://raw.githubusercontent.com/dowlinglab/pyomo-doe/main/data/tclab_sine_test_5min_period.csv&quot;</span>
 <span class="k">else</span><span class="p">:</span>
-    <span class="n">file</span> <span class="o">=</span> <span class="s1">&#39;../data/tclab_sine_test.csv&#39;</span>
+    <span class="n">file</span> <span class="o">=</span> <span class="s1">&#39;../data/tclab_sine_test_5min_period.csv&#39;</span>
 <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
 <span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
 </pre></div>
@@ -508,42 +528,42 @@ document.write(`
     <tr>
       <th>0</th>
       <td>0.00</td>
-      <td>24.45</td>
-      <td>24.13</td>
-      <td>50.0</td>
-      <td>0.0</td>
+      <td>22.2</td>
+      <td>22.2</td>
+      <td>50</td>
+      <td>0</td>
     </tr>
     <tr>
       <th>1</th>
-      <td>1.00</td>
-      <td>24.45</td>
-      <td>24.13</td>
-      <td>55.0</td>
-      <td>0.0</td>
+      <td>1.01</td>
+      <td>22.2</td>
+      <td>22.2</td>
+      <td>51</td>
+      <td>0</td>
     </tr>
     <tr>
       <th>2</th>
       <td>2.01</td>
-      <td>24.45</td>
-      <td>24.13</td>
-      <td>60.0</td>
-      <td>0.0</td>
+      <td>22.2</td>
+      <td>22.2</td>
+      <td>52</td>
+      <td>0</td>
     </tr>
     <tr>
       <th>3</th>
-      <td>3.01</td>
-      <td>24.45</td>
-      <td>24.13</td>
-      <td>65.0</td>
-      <td>0.0</td>
+      <td>3.00</td>
+      <td>22.2</td>
+      <td>22.2</td>
+      <td>53</td>
+      <td>0</td>
     </tr>
     <tr>
       <th>4</th>
       <td>4.01</td>
-      <td>24.77</td>
-      <td>23.81</td>
-      <td>70.0</td>
-      <td>0.0</td>
+      <td>22.2</td>
+      <td>22.2</td>
+      <td>54</td>
+      <td>0</td>
     </tr>
   </tbody>
 </table>
@@ -556,7 +576,7 @@ document.write(`
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/b724d863e93f2fad889b9ce9294890583295b6978279f7f13f29e5070cbad786.png" src="../_images/b724d863e93f2fad889b9ce9294890583295b6978279f7f13f29e5070cbad786.png" />
+<img alt="../_images/fbf2644f6f803238293870aec0099c1bb77225c820bcc42071fca6f36db6f2e6.png" src="../_images/fbf2644f6f803238293870aec0099c1bb77225c820bcc42071fca6f36db6f2e6.png" />
 </div>
 </div>
 <div class="cell docutils container">
@@ -566,20 +586,25 @@ document.write(`
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/29a4ce3fe8920e28b94e4400b1cbc886ddd011db0d4c8b1b89de62826a399ada.png" src="../_images/29a4ce3fe8920e28b94e4400b1cbc886ddd011db0d4c8b1b89de62826a399ada.png" />
+<img alt="../_images/ab15113c9ac37b32ee9820b6e12aa73656cb2294c8fbe7117425cffc67afcbcb.png" src="../_images/ab15113c9ac37b32ee9820b6e12aa73656cb2294c8fbe7117425cffc67afcbcb.png" />
 </div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">tc_data</span> <span class="o">=</span> <span class="n">TCLabExperiment</span><span class="p">(</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Here, we will induce a step size of 6 seconds, as to not give too many </span>
+<span class="c1"># degrees of freedom for experimental design.</span>
+<span class="n">skip</span> <span class="o">=</span> <span class="mi">6</span>
+
+<span class="c1"># Create the data object considering the new control points every 6 seconds</span>
+<span class="n">tc_data</span> <span class="o">=</span> <span class="n">TC_Lab_data</span><span class="p">(</span>
     <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Sine Wave Test for Heater 1&quot;</span><span class="p">,</span>
-    <span class="n">time</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
-    <span class="n">T1</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;T1&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
-    <span class="n">u1</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Q1&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
+    <span class="n">time</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[::</span><span class="n">skip</span><span class="p">],</span>
+    <span class="n">T1</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;T1&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[::</span><span class="n">skip</span><span class="p">],</span>
+    <span class="n">u1</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Q1&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[::</span><span class="n">skip</span><span class="p">],</span>
     <span class="n">P1</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span>
     <span class="n">TS1_data</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-    <span class="n">T2</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;T2&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
-    <span class="n">u2</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Q2&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
+    <span class="n">T2</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;T2&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[::</span><span class="n">skip</span><span class="p">],</span>
+    <span class="n">u2</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Q2&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[::</span><span class="n">skip</span><span class="p">],</span>
     <span class="n">P2</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span>
     <span class="n">TS2_data</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">Tamb</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;T1&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
@@ -593,215 +618,84 @@ document.write(`
 <h2>Analyze FIM with Pyomo.DoE at initial point (sine test)<a class="headerlink" href="#analyze-fim-with-pyomo-doe-at-initial-point-sine-test" title="Permalink to this heading">#</a></h2>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Load Pyomo.DoE functions</span>
-<span class="kn">from</span> <span class="nn">pyomo.contrib.doe</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">ModelOptionLib</span><span class="p">,</span>
-    <span class="n">DesignOfExperiments</span><span class="p">,</span>
-    <span class="n">MeasurementVariables</span><span class="p">,</span>
-    <span class="n">DesignVariables</span><span class="p">,</span>
-<span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Load Pyomo.DoE class</span>
+<span class="kn">from</span> <span class="nn">pyomo.contrib.doe</span> <span class="kn">import</span> <span class="n">DesignOfExperiments</span>
 
 <span class="kn">from</span> <span class="nn">pyomo.environ</span> <span class="kn">import</span> <span class="n">SolverFactory</span>
 
 <span class="c1"># Copied from previous notebook</span>
 <span class="n">theta_values</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s1">&#39;Ua&#39;</span><span class="p">:</span> <span class="mf">0.05147278733764012</span><span class="p">,</span>
-    <span class="s1">&#39;Ub&#39;</span><span class="p">:</span> <span class="mf">0.0005342082856927798</span><span class="p">,</span>
-    <span class="s1">&#39;inv_CpH&#39;</span><span class="p">:</span> <span class="mf">0.14622879403418604</span><span class="p">,</span>
-    <span class="s1">&#39;inv_CpS&#39;</span><span class="p">:</span> <span class="mf">99.99999754623846</span><span class="p">,</span>
+    <span class="s1">&#39;Ua&#39;</span><span class="p">:</span> <span class="mf">0.0417051733576387</span><span class="p">,</span>
+    <span class="s1">&#39;Ub&#39;</span><span class="p">:</span> <span class="mf">0.009440714239773074</span><span class="p">,</span>
+    <span class="s1">&#39;inv_CpH&#39;</span><span class="p">:</span> <span class="mf">0.1659093525658045</span><span class="p">,</span>
+    <span class="s1">&#39;inv_CpS&#39;</span><span class="p">:</span> <span class="mf">5.8357556063605465</span><span class="p">,</span>
 <span class="p">}</span>
 </pre></div>
 </div>
 </div>
 </div>
+</section>
+<section id="reusing-the-experiment-object-used-for-parameter-estimation">
+<h2>Reusing the Experiment object used for parameter estimation<a class="headerlink" href="#reusing-the-experiment-object-used-for-parameter-estimation" title="Permalink to this heading">#</a></h2>
+<p>Recall that we utilized the experiment object during parameter estimation. From the Experiment Abstraction notebook, we labeled the important sets:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">experiment_inputs</span></code> - The experimental design decisions (control variables <span class="math notranslate nohighlight">\(u_2\)</span> in this case)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">experiment_outputs</span></code> - The values measured during the experiment (temperature sensor data <span class="math notranslate nohighlight">\(T_{S1}\)</span> in this case)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">measurement_error</span></code> - The error associated with individual values measured during the experiment</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">unknown_parameters</span></code> - Those parameters in the model that are estimated using the measured values during the experiment (heat transfer coefficients (<span class="math notranslate nohighlight">\(U_a\)</span> and <span class="math notranslate nohighlight">\(U_b\)</span>) and heat capacities (<span class="math notranslate nohighlight">\(C^H_p\)</span> and <span class="math notranslate nohighlight">\(C^S_p\)</span>) in this case)</p></li>
+</ul>
+<p>This means we can use the same experiment object for optimal DoE! Therefore, we go about creating this object in the same way, except we will specify the values of the unknown parameters, <span class="math notranslate nohighlight">\(\theta\)</span>.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Get time points for control decisions</span>
-<span class="n">t_control</span> <span class="o">=</span> <span class="n">tc_data</span><span class="o">.</span><span class="n">time</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create experiment object for design of experiments</span>
+<span class="n">doe_experiment</span> <span class="o">=</span> <span class="n">TC_Lab_experiment</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">tc_data</span><span class="p">,</span> <span class="n">theta_initial</span><span class="o">=</span><span class="n">theta_values</span><span class="p">,</span> <span class="n">number_of_states</span><span class="o">=</span><span class="n">number_tclab_states</span><span class="p">)</span>
 
-<span class="n">measurements</span> <span class="o">=</span> <span class="n">MeasurementVariables</span><span class="p">()</span>
-<span class="n">measurements</span><span class="o">.</span><span class="n">add_variables</span><span class="p">(</span>
-    <span class="s1">&#39;Ts1&#39;</span><span class="p">,</span> <span class="c1"># this needs to match the name of the variable in the Pyomo model</span>
-    <span class="n">indices</span><span class="o">=</span><span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="n">t_control</span><span class="p">},</span> <span class="c1"># specify which time points are measurements</span>
-    <span class="n">time_index_position</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="c1"># specify which index is time</span>
+<span class="c1"># Create the design of experiments object using our experiment instance from above</span>
+<span class="n">TC_Lab_DoE</span> <span class="o">=</span> <span class="n">DesignOfExperiments</span><span class="p">(</span><span class="n">experiment</span><span class="o">=</span><span class="n">doe_experiment</span><span class="p">,</span> 
+                                 <span class="n">step</span><span class="o">=</span><span class="mf">1e-2</span><span class="p">,</span>
+                                 <span class="n">scale_constant_value</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                                 <span class="n">scale_nominal_param_value</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> 
+                                 <span class="n">tee</span><span class="o">=</span><span class="kc">True</span><span class="p">,)</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="n">measurements</span><span class="o">.</span><span class="n">variable_names</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[&#39;Ts1[0.0]&#39;, &#39;Ts1[1.0]&#39;, &#39;Ts1[2.01]&#39;, &#39;Ts1[3.01]&#39;, &#39;Ts1[4.01]&#39;, &#39;Ts1[5.01]&#39;, &#39;Ts1[6.01]&#39;, &#39;Ts1[7.01]&#39;, &#39;Ts1[8.01]&#39;, &#39;Ts1[9.01]&#39;, &#39;Ts1[10.0]&#39;, &#39;Ts1[11.01]&#39;, &#39;Ts1[12.01]&#39;, &#39;Ts1[13.01]&#39;, &#39;Ts1[14.01]&#39;, &#39;Ts1[15.01]&#39;, &#39;Ts1[16.01]&#39;, &#39;Ts1[17.01]&#39;, &#39;Ts1[18.01]&#39;, &#39;Ts1[19.01]&#39;, &#39;Ts1[20.01]&#39;, &#39;Ts1[21.01]&#39;, &#39;Ts1[22.01]&#39;, &#39;Ts1[23.01]&#39;, &#39;Ts1[24.01]&#39;, &#39;Ts1[25.01]&#39;, &#39;Ts1[26.01]&#39;, &#39;Ts1[27.01]&#39;, &#39;Ts1[28.01]&#39;, &#39;Ts1[29.01]&#39;, &#39;Ts1[30.0]&#39;, &#39;Ts1[31.0]&#39;, &#39;Ts1[32.01]&#39;, &#39;Ts1[33.01]&#39;, &#39;Ts1[34.01]&#39;, &#39;Ts1[35.01]&#39;, &#39;Ts1[36.01]&#39;, &#39;Ts1[37.0]&#39;, &#39;Ts1[38.01]&#39;, &#39;Ts1[39.01]&#39;, &#39;Ts1[40.01]&#39;, &#39;Ts1[41.01]&#39;, &#39;Ts1[42.01]&#39;, &#39;Ts1[43.01]&#39;, &#39;Ts1[44.01]&#39;, &#39;Ts1[45.01]&#39;, &#39;Ts1[46.01]&#39;, &#39;Ts1[47.01]&#39;, &#39;Ts1[48.01]&#39;, &#39;Ts1[49.0]&#39;, &#39;Ts1[50.01]&#39;, &#39;Ts1[51.01]&#39;, &#39;Ts1[52.01]&#39;, &#39;Ts1[53.0]&#39;, &#39;Ts1[54.0]&#39;, &#39;Ts1[55.01]&#39;, &#39;Ts1[56.01]&#39;, &#39;Ts1[57.01]&#39;, &#39;Ts1[58.01]&#39;, &#39;Ts1[59.01]&#39;, &#39;Ts1[60.01]&#39;, &#39;Ts1[61.01]&#39;, &#39;Ts1[62.01]&#39;, &#39;Ts1[63.01]&#39;, &#39;Ts1[64.01]&#39;, &#39;Ts1[65.01]&#39;, &#39;Ts1[66.01]&#39;, &#39;Ts1[67.01]&#39;, &#39;Ts1[68.01]&#39;, &#39;Ts1[69.0]&#39;, &#39;Ts1[70.01]&#39;, &#39;Ts1[71.01]&#39;, &#39;Ts1[72.01]&#39;, &#39;Ts1[73.0]&#39;, &#39;Ts1[74.0]&#39;, &#39;Ts1[75.01]&#39;, &#39;Ts1[76.01]&#39;, &#39;Ts1[77.01]&#39;, &#39;Ts1[78.01]&#39;, &#39;Ts1[79.01]&#39;, &#39;Ts1[80.01]&#39;, &#39;Ts1[81.01]&#39;, &#39;Ts1[82.01]&#39;, &#39;Ts1[83.01]&#39;, &#39;Ts1[84.01]&#39;, &#39;Ts1[85.0]&#39;, &#39;Ts1[86.01]&#39;, &#39;Ts1[87.01]&#39;, &#39;Ts1[88.01]&#39;, &#39;Ts1[89.01]&#39;, &#39;Ts1[90.01]&#39;, &#39;Ts1[91.01]&#39;, &#39;Ts1[92.01]&#39;, &#39;Ts1[93.01]&#39;, &#39;Ts1[94.01]&#39;, &#39;Ts1[95.01]&#39;, &#39;Ts1[96.01]&#39;, &#39;Ts1[97.01]&#39;, &#39;Ts1[98.01]&#39;, &#39;Ts1[99.01]&#39;, &#39;Ts1[100.01]&#39;, &#39;Ts1[101.01]&#39;, &#39;Ts1[102.01]&#39;, &#39;Ts1[103.01]&#39;, &#39;Ts1[104.01]&#39;, &#39;Ts1[105.01]&#39;, &#39;Ts1[106.01]&#39;, &#39;Ts1[107.01]&#39;, &#39;Ts1[108.01]&#39;, &#39;Ts1[109.01]&#39;, &#39;Ts1[110.01]&#39;, &#39;Ts1[111.01]&#39;, &#39;Ts1[112.01]&#39;, &#39;Ts1[113.01]&#39;, &#39;Ts1[114.01]&#39;, &#39;Ts1[115.0]&#39;, &#39;Ts1[116.01]&#39;, &#39;Ts1[117.01]&#39;, &#39;Ts1[118.01]&#39;, &#39;Ts1[119.0]&#39;, &#39;Ts1[120.01]&#39;, &#39;Ts1[121.01]&#39;, &#39;Ts1[122.01]&#39;, &#39;Ts1[123.01]&#39;, &#39;Ts1[124.01]&#39;, &#39;Ts1[125.01]&#39;, &#39;Ts1[126.01]&#39;, &#39;Ts1[127.01]&#39;, &#39;Ts1[128.01]&#39;, &#39;Ts1[129.01]&#39;, &#39;Ts1[130.01]&#39;, &#39;Ts1[131.0]&#39;, &#39;Ts1[132.01]&#39;, &#39;Ts1[133.01]&#39;, &#39;Ts1[134.01]&#39;, &#39;Ts1[135.01]&#39;, &#39;Ts1[136.01]&#39;, &#39;Ts1[137.01]&#39;, &#39;Ts1[138.01]&#39;, &#39;Ts1[139.01]&#39;, &#39;Ts1[140.01]&#39;, &#39;Ts1[141.01]&#39;, &#39;Ts1[142.01]&#39;, &#39;Ts1[143.0]&#39;, &#39;Ts1[144.01]&#39;, &#39;Ts1[145.01]&#39;, &#39;Ts1[146.01]&#39;, &#39;Ts1[147.01]&#39;, &#39;Ts1[148.01]&#39;, &#39;Ts1[149.01]&#39;, &#39;Ts1[150.01]&#39;, &#39;Ts1[151.01]&#39;, &#39;Ts1[152.0]&#39;, &#39;Ts1[153.01]&#39;, &#39;Ts1[154.01]&#39;, &#39;Ts1[155.0]&#39;, &#39;Ts1[156.01]&#39;, &#39;Ts1[157.01]&#39;, &#39;Ts1[158.01]&#39;, &#39;Ts1[159.0]&#39;, &#39;Ts1[160.01]&#39;, &#39;Ts1[161.01]&#39;, &#39;Ts1[162.01]&#39;, &#39;Ts1[163.01]&#39;, &#39;Ts1[164.01]&#39;, &#39;Ts1[165.01]&#39;, &#39;Ts1[166.0]&#39;, &#39;Ts1[167.01]&#39;, &#39;Ts1[168.01]&#39;, &#39;Ts1[169.0]&#39;, &#39;Ts1[170.01]&#39;, &#39;Ts1[171.0]&#39;, &#39;Ts1[172.01]&#39;, &#39;Ts1[173.01]&#39;, &#39;Ts1[174.01]&#39;, &#39;Ts1[175.01]&#39;, &#39;Ts1[176.01]&#39;, &#39;Ts1[177.01]&#39;, &#39;Ts1[178.01]&#39;, &#39;Ts1[179.01]&#39;, &#39;Ts1[180.01]&#39;, &#39;Ts1[181.01]&#39;, &#39;Ts1[182.01]&#39;, &#39;Ts1[183.01]&#39;, &#39;Ts1[184.01]&#39;, &#39;Ts1[185.0]&#39;, &#39;Ts1[186.01]&#39;, &#39;Ts1[187.01]&#39;, &#39;Ts1[188.01]&#39;, &#39;Ts1[189.01]&#39;, &#39;Ts1[190.01]&#39;, &#39;Ts1[191.01]&#39;, &#39;Ts1[192.0]&#39;, &#39;Ts1[193.01]&#39;, &#39;Ts1[194.01]&#39;, &#39;Ts1[195.01]&#39;, &#39;Ts1[196.01]&#39;, &#39;Ts1[197.01]&#39;, &#39;Ts1[198.01]&#39;, &#39;Ts1[199.01]&#39;, &#39;Ts1[200.01]&#39;, &#39;Ts1[201.01]&#39;, &#39;Ts1[202.01]&#39;, &#39;Ts1[203.0]&#39;, &#39;Ts1[204.01]&#39;, &#39;Ts1[205.01]&#39;, &#39;Ts1[206.01]&#39;, &#39;Ts1[207.01]&#39;, &#39;Ts1[208.01]&#39;, &#39;Ts1[209.0]&#39;, &#39;Ts1[210.01]&#39;, &#39;Ts1[211.01]&#39;, &#39;Ts1[212.01]&#39;, &#39;Ts1[213.01]&#39;, &#39;Ts1[214.01]&#39;, &#39;Ts1[215.01]&#39;, &#39;Ts1[216.01]&#39;, &#39;Ts1[217.01]&#39;, &#39;Ts1[218.01]&#39;, &#39;Ts1[219.01]&#39;, &#39;Ts1[220.0]&#39;, &#39;Ts1[221.01]&#39;, &#39;Ts1[222.01]&#39;, &#39;Ts1[223.01]&#39;, &#39;Ts1[224.01]&#39;, &#39;Ts1[225.01]&#39;, &#39;Ts1[226.01]&#39;, &#39;Ts1[227.01]&#39;, &#39;Ts1[228.01]&#39;, &#39;Ts1[229.01]&#39;, &#39;Ts1[230.01]&#39;, &#39;Ts1[231.01]&#39;, &#39;Ts1[232.01]&#39;, &#39;Ts1[233.01]&#39;, &#39;Ts1[234.0]&#39;, &#39;Ts1[235.0]&#39;, &#39;Ts1[236.01]&#39;, &#39;Ts1[237.01]&#39;, &#39;Ts1[238.01]&#39;, &#39;Ts1[239.01]&#39;, &#39;Ts1[240.01]&#39;, &#39;Ts1[241.01]&#39;, &#39;Ts1[242.01]&#39;, &#39;Ts1[243.01]&#39;, &#39;Ts1[244.01]&#39;, &#39;Ts1[245.01]&#39;, &#39;Ts1[246.01]&#39;, &#39;Ts1[247.01]&#39;, &#39;Ts1[248.01]&#39;, &#39;Ts1[249.01]&#39;, &#39;Ts1[250.01]&#39;, &#39;Ts1[251.01]&#39;, &#39;Ts1[252.01]&#39;, &#39;Ts1[253.01]&#39;, &#39;Ts1[254.01]&#39;, &#39;Ts1[255.01]&#39;, &#39;Ts1[256.01]&#39;, &#39;Ts1[257.01]&#39;, &#39;Ts1[258.01]&#39;, &#39;Ts1[259.01]&#39;, &#39;Ts1[260.01]&#39;, &#39;Ts1[261.01]&#39;, &#39;Ts1[262.01]&#39;, &#39;Ts1[263.01]&#39;, &#39;Ts1[264.01]&#39;, &#39;Ts1[265.01]&#39;, &#39;Ts1[266.01]&#39;, &#39;Ts1[267.01]&#39;, &#39;Ts1[268.01]&#39;, &#39;Ts1[269.0]&#39;, &#39;Ts1[270.01]&#39;, &#39;Ts1[271.01]&#39;, &#39;Ts1[272.01]&#39;, &#39;Ts1[273.01]&#39;, &#39;Ts1[274.01]&#39;, &#39;Ts1[275.01]&#39;, &#39;Ts1[276.01]&#39;, &#39;Ts1[277.01]&#39;, &#39;Ts1[278.01]&#39;, &#39;Ts1[279.01]&#39;, &#39;Ts1[280.01]&#39;, &#39;Ts1[281.01]&#39;, &#39;Ts1[282.01]&#39;, &#39;Ts1[283.01]&#39;, &#39;Ts1[284.01]&#39;, &#39;Ts1[285.01]&#39;, &#39;Ts1[286.01]&#39;, &#39;Ts1[287.01]&#39;, &#39;Ts1[288.0]&#39;, &#39;Ts1[289.01]&#39;, &#39;Ts1[290.01]&#39;, &#39;Ts1[291.01]&#39;, &#39;Ts1[292.0]&#39;, &#39;Ts1[293.01]&#39;, &#39;Ts1[294.01]&#39;, &#39;Ts1[295.01]&#39;, &#39;Ts1[296.01]&#39;, &#39;Ts1[297.01]&#39;, &#39;Ts1[298.01]&#39;, &#39;Ts1[299.01]&#39;, &#39;Ts1[300.01]&#39;, &#39;Ts1[301.01]&#39;, &#39;Ts1[302.01]&#39;, &#39;Ts1[303.01]&#39;, &#39;Ts1[304.01]&#39;, &#39;Ts1[305.01]&#39;, &#39;Ts1[306.01]&#39;, &#39;Ts1[307.01]&#39;, &#39;Ts1[308.01]&#39;, &#39;Ts1[309.01]&#39;, &#39;Ts1[310.01]&#39;, &#39;Ts1[311.01]&#39;, &#39;Ts1[312.0]&#39;, &#39;Ts1[313.0]&#39;, &#39;Ts1[314.01]&#39;, &#39;Ts1[315.01]&#39;, &#39;Ts1[316.01]&#39;, &#39;Ts1[317.01]&#39;, &#39;Ts1[318.01]&#39;, &#39;Ts1[319.01]&#39;, &#39;Ts1[320.01]&#39;, &#39;Ts1[321.01]&#39;, &#39;Ts1[322.01]&#39;, &#39;Ts1[323.01]&#39;, &#39;Ts1[324.01]&#39;, &#39;Ts1[325.01]&#39;, &#39;Ts1[326.01]&#39;, &#39;Ts1[327.01]&#39;, &#39;Ts1[328.01]&#39;, &#39;Ts1[329.01]&#39;, &#39;Ts1[330.01]&#39;, &#39;Ts1[331.01]&#39;, &#39;Ts1[332.01]&#39;, &#39;Ts1[333.01]&#39;, &#39;Ts1[334.01]&#39;, &#39;Ts1[335.01]&#39;, &#39;Ts1[336.01]&#39;, &#39;Ts1[337.01]&#39;, &#39;Ts1[338.01]&#39;, &#39;Ts1[339.01]&#39;, &#39;Ts1[340.01]&#39;, &#39;Ts1[341.01]&#39;, &#39;Ts1[342.01]&#39;, &#39;Ts1[343.01]&#39;, &#39;Ts1[344.01]&#39;, &#39;Ts1[345.01]&#39;, &#39;Ts1[346.01]&#39;, &#39;Ts1[347.01]&#39;, &#39;Ts1[348.01]&#39;, &#39;Ts1[349.01]&#39;, &#39;Ts1[350.0]&#39;, &#39;Ts1[351.01]&#39;, &#39;Ts1[352.01]&#39;, &#39;Ts1[353.01]&#39;, &#39;Ts1[354.0]&#39;, &#39;Ts1[355.01]&#39;, &#39;Ts1[356.01]&#39;, &#39;Ts1[357.01]&#39;, &#39;Ts1[358.01]&#39;, &#39;Ts1[359.01]&#39;, &#39;Ts1[360.01]&#39;, &#39;Ts1[361.0]&#39;, &#39;Ts1[362.01]&#39;, &#39;Ts1[363.01]&#39;, &#39;Ts1[364.0]&#39;, &#39;Ts1[365.0]&#39;, &#39;Ts1[366.01]&#39;, &#39;Ts1[367.01]&#39;, &#39;Ts1[368.01]&#39;, &#39;Ts1[369.01]&#39;, &#39;Ts1[370.01]&#39;, &#39;Ts1[371.01]&#39;, &#39;Ts1[372.0]&#39;, &#39;Ts1[373.01]&#39;, &#39;Ts1[374.01]&#39;, &#39;Ts1[375.01]&#39;, &#39;Ts1[376.01]&#39;, &#39;Ts1[377.01]&#39;, &#39;Ts1[378.01]&#39;, &#39;Ts1[379.0]&#39;, &#39;Ts1[380.01]&#39;, &#39;Ts1[381.01]&#39;, &#39;Ts1[382.01]&#39;, &#39;Ts1[383.01]&#39;, &#39;Ts1[384.01]&#39;, &#39;Ts1[385.01]&#39;, &#39;Ts1[386.01]&#39;, &#39;Ts1[387.01]&#39;, &#39;Ts1[388.01]&#39;, &#39;Ts1[389.01]&#39;, &#39;Ts1[390.01]&#39;, &#39;Ts1[391.01]&#39;, &#39;Ts1[392.01]&#39;, &#39;Ts1[393.01]&#39;, &#39;Ts1[394.01]&#39;, &#39;Ts1[395.01]&#39;, &#39;Ts1[396.01]&#39;, &#39;Ts1[397.01]&#39;, &#39;Ts1[398.01]&#39;, &#39;Ts1[399.01]&#39;, &#39;Ts1[400.01]&#39;, &#39;Ts1[401.01]&#39;, &#39;Ts1[402.01]&#39;, &#39;Ts1[403.01]&#39;, &#39;Ts1[404.01]&#39;, &#39;Ts1[405.01]&#39;, &#39;Ts1[406.01]&#39;, &#39;Ts1[407.01]&#39;, &#39;Ts1[408.01]&#39;, &#39;Ts1[409.01]&#39;, &#39;Ts1[410.01]&#39;, &#39;Ts1[411.01]&#39;, &#39;Ts1[412.01]&#39;, &#39;Ts1[413.01]&#39;, &#39;Ts1[414.01]&#39;, &#39;Ts1[415.01]&#39;, &#39;Ts1[416.0]&#39;, &#39;Ts1[417.01]&#39;, &#39;Ts1[418.01]&#39;, &#39;Ts1[419.01]&#39;, &#39;Ts1[420.01]&#39;, &#39;Ts1[421.01]&#39;, &#39;Ts1[422.01]&#39;, &#39;Ts1[423.01]&#39;, &#39;Ts1[424.01]&#39;, &#39;Ts1[425.01]&#39;, &#39;Ts1[426.01]&#39;, &#39;Ts1[427.01]&#39;, &#39;Ts1[428.01]&#39;, &#39;Ts1[429.01]&#39;, &#39;Ts1[430.01]&#39;, &#39;Ts1[431.01]&#39;, &#39;Ts1[432.01]&#39;, &#39;Ts1[433.01]&#39;, &#39;Ts1[434.01]&#39;, &#39;Ts1[435.01]&#39;, &#39;Ts1[436.01]&#39;, &#39;Ts1[437.01]&#39;, &#39;Ts1[438.01]&#39;, &#39;Ts1[439.01]&#39;, &#39;Ts1[440.01]&#39;, &#39;Ts1[441.01]&#39;, &#39;Ts1[442.01]&#39;, &#39;Ts1[443.0]&#39;, &#39;Ts1[444.0]&#39;, &#39;Ts1[445.01]&#39;, &#39;Ts1[446.01]&#39;, &#39;Ts1[447.01]&#39;, &#39;Ts1[448.01]&#39;, &#39;Ts1[449.0]&#39;, &#39;Ts1[450.01]&#39;, &#39;Ts1[451.01]&#39;, &#39;Ts1[452.01]&#39;, &#39;Ts1[453.01]&#39;, &#39;Ts1[454.0]&#39;, &#39;Ts1[455.01]&#39;, &#39;Ts1[456.01]&#39;, &#39;Ts1[457.01]&#39;, &#39;Ts1[458.01]&#39;, &#39;Ts1[459.0]&#39;, &#39;Ts1[460.01]&#39;, &#39;Ts1[461.01]&#39;, &#39;Ts1[462.01]&#39;, &#39;Ts1[463.0]&#39;, &#39;Ts1[464.01]&#39;, &#39;Ts1[465.01]&#39;, &#39;Ts1[466.01]&#39;, &#39;Ts1[467.01]&#39;, &#39;Ts1[468.01]&#39;, &#39;Ts1[469.01]&#39;, &#39;Ts1[470.01]&#39;, &#39;Ts1[471.01]&#39;, &#39;Ts1[472.01]&#39;, &#39;Ts1[473.0]&#39;, &#39;Ts1[474.01]&#39;, &#39;Ts1[475.0]&#39;, &#39;Ts1[476.01]&#39;, &#39;Ts1[477.01]&#39;, &#39;Ts1[478.01]&#39;, &#39;Ts1[479.01]&#39;, &#39;Ts1[480.01]&#39;, &#39;Ts1[481.01]&#39;, &#39;Ts1[482.01]&#39;, &#39;Ts1[483.01]&#39;, &#39;Ts1[484.01]&#39;, &#39;Ts1[485.01]&#39;, &#39;Ts1[486.01]&#39;, &#39;Ts1[487.0]&#39;, &#39;Ts1[488.01]&#39;, &#39;Ts1[489.01]&#39;, &#39;Ts1[490.01]&#39;, &#39;Ts1[491.01]&#39;, &#39;Ts1[492.01]&#39;, &#39;Ts1[493.01]&#39;, &#39;Ts1[494.01]&#39;, &#39;Ts1[495.01]&#39;, &#39;Ts1[496.01]&#39;, &#39;Ts1[497.01]&#39;, &#39;Ts1[498.01]&#39;, &#39;Ts1[499.01]&#39;, &#39;Ts1[500.01]&#39;, &#39;Ts1[501.01]&#39;, &#39;Ts1[502.01]&#39;, &#39;Ts1[503.01]&#39;, &#39;Ts1[504.01]&#39;, &#39;Ts1[505.0]&#39;, &#39;Ts1[506.01]&#39;, &#39;Ts1[507.01]&#39;, &#39;Ts1[508.0]&#39;, &#39;Ts1[509.01]&#39;, &#39;Ts1[510.01]&#39;, &#39;Ts1[511.01]&#39;, &#39;Ts1[512.01]&#39;, &#39;Ts1[513.01]&#39;, &#39;Ts1[514.01]&#39;, &#39;Ts1[515.01]&#39;, &#39;Ts1[516.01]&#39;, &#39;Ts1[517.0]&#39;, &#39;Ts1[518.01]&#39;, &#39;Ts1[519.01]&#39;, &#39;Ts1[520.01]&#39;, &#39;Ts1[521.01]&#39;, &#39;Ts1[522.0]&#39;, &#39;Ts1[523.01]&#39;, &#39;Ts1[524.01]&#39;, &#39;Ts1[525.01]&#39;, &#39;Ts1[526.01]&#39;, &#39;Ts1[527.0]&#39;, &#39;Ts1[528.01]&#39;, &#39;Ts1[529.01]&#39;, &#39;Ts1[530.0]&#39;, &#39;Ts1[531.01]&#39;, &#39;Ts1[532.01]&#39;, &#39;Ts1[533.01]&#39;, &#39;Ts1[534.01]&#39;, &#39;Ts1[535.01]&#39;, &#39;Ts1[536.01]&#39;, &#39;Ts1[537.01]&#39;, &#39;Ts1[538.01]&#39;, &#39;Ts1[539.01]&#39;, &#39;Ts1[540.01]&#39;, &#39;Ts1[541.01]&#39;, &#39;Ts1[542.01]&#39;, &#39;Ts1[543.01]&#39;, &#39;Ts1[544.01]&#39;, &#39;Ts1[545.01]&#39;, &#39;Ts1[546.01]&#39;, &#39;Ts1[547.01]&#39;, &#39;Ts1[548.0]&#39;, &#39;Ts1[549.01]&#39;, &#39;Ts1[550.01]&#39;, &#39;Ts1[551.01]&#39;, &#39;Ts1[552.01]&#39;, &#39;Ts1[553.01]&#39;, &#39;Ts1[554.01]&#39;, &#39;Ts1[555.0]&#39;, &#39;Ts1[556.0]&#39;, &#39;Ts1[557.0]&#39;, &#39;Ts1[558.01]&#39;, &#39;Ts1[559.0]&#39;, &#39;Ts1[560.01]&#39;, &#39;Ts1[561.01]&#39;, &#39;Ts1[562.01]&#39;, &#39;Ts1[563.01]&#39;, &#39;Ts1[564.01]&#39;, &#39;Ts1[565.01]&#39;, &#39;Ts1[566.01]&#39;, &#39;Ts1[567.01]&#39;, &#39;Ts1[568.01]&#39;, &#39;Ts1[569.0]&#39;, &#39;Ts1[570.0]&#39;, &#39;Ts1[571.0]&#39;, &#39;Ts1[572.0]&#39;, &#39;Ts1[573.01]&#39;, &#39;Ts1[574.01]&#39;, &#39;Ts1[575.01]&#39;, &#39;Ts1[576.0]&#39;, &#39;Ts1[577.0]&#39;, &#39;Ts1[578.01]&#39;, &#39;Ts1[579.0]&#39;, &#39;Ts1[580.01]&#39;, &#39;Ts1[581.0]&#39;, &#39;Ts1[582.0]&#39;, &#39;Ts1[583.01]&#39;, &#39;Ts1[584.0]&#39;, &#39;Ts1[585.0]&#39;, &#39;Ts1[586.01]&#39;, &#39;Ts1[587.0]&#39;, &#39;Ts1[588.0]&#39;, &#39;Ts1[589.01]&#39;, &#39;Ts1[590.0]&#39;, &#39;Ts1[591.01]&#39;, &#39;Ts1[592.01]&#39;, &#39;Ts1[593.01]&#39;, &#39;Ts1[594.0]&#39;, &#39;Ts1[595.01]&#39;, &#39;Ts1[596.0]&#39;, &#39;Ts1[597.0]&#39;, &#39;Ts1[598.01]&#39;, &#39;Ts1[599.01]&#39;, &#39;Ts1[600.01]&#39;, &#39;Ts1[601.0]&#39;, &#39;Ts1[602.01]&#39;, &#39;Ts1[603.01]&#39;, &#39;Ts1[604.01]&#39;, &#39;Ts1[605.01]&#39;, &#39;Ts1[606.0]&#39;, &#39;Ts1[607.01]&#39;, &#39;Ts1[608.01]&#39;, &#39;Ts1[609.01]&#39;, &#39;Ts1[610.01]&#39;, &#39;Ts1[611.01]&#39;, &#39;Ts1[612.0]&#39;, &#39;Ts1[613.01]&#39;, &#39;Ts1[614.01]&#39;, &#39;Ts1[615.01]&#39;, &#39;Ts1[616.01]&#39;, &#39;Ts1[617.01]&#39;, &#39;Ts1[618.01]&#39;, &#39;Ts1[619.01]&#39;, &#39;Ts1[620.01]&#39;, &#39;Ts1[621.01]&#39;, &#39;Ts1[622.01]&#39;, &#39;Ts1[623.01]&#39;, &#39;Ts1[624.01]&#39;, &#39;Ts1[625.01]&#39;, &#39;Ts1[626.01]&#39;, &#39;Ts1[627.01]&#39;, &#39;Ts1[628.0]&#39;, &#39;Ts1[629.0]&#39;, &#39;Ts1[630.01]&#39;, &#39;Ts1[631.01]&#39;, &#39;Ts1[632.01]&#39;, &#39;Ts1[633.01]&#39;, &#39;Ts1[634.01]&#39;, &#39;Ts1[635.01]&#39;, &#39;Ts1[636.01]&#39;, &#39;Ts1[637.01]&#39;, &#39;Ts1[638.01]&#39;, &#39;Ts1[639.01]&#39;, &#39;Ts1[640.01]&#39;, &#39;Ts1[641.0]&#39;, &#39;Ts1[642.01]&#39;, &#39;Ts1[643.01]&#39;, &#39;Ts1[644.01]&#39;, &#39;Ts1[645.01]&#39;, &#39;Ts1[646.01]&#39;, &#39;Ts1[647.01]&#39;, &#39;Ts1[648.01]&#39;, &#39;Ts1[649.01]&#39;, &#39;Ts1[650.01]&#39;, &#39;Ts1[651.01]&#39;, &#39;Ts1[652.01]&#39;, &#39;Ts1[653.01]&#39;, &#39;Ts1[654.01]&#39;, &#39;Ts1[655.0]&#39;, &#39;Ts1[656.01]&#39;, &#39;Ts1[657.01]&#39;, &#39;Ts1[658.01]&#39;, &#39;Ts1[659.01]&#39;, &#39;Ts1[660.01]&#39;, &#39;Ts1[661.01]&#39;, &#39;Ts1[662.01]&#39;, &#39;Ts1[663.01]&#39;, &#39;Ts1[664.01]&#39;, &#39;Ts1[665.01]&#39;, &#39;Ts1[666.01]&#39;, &#39;Ts1[667.01]&#39;, &#39;Ts1[668.01]&#39;, &#39;Ts1[669.01]&#39;, &#39;Ts1[670.01]&#39;, &#39;Ts1[671.01]&#39;, &#39;Ts1[672.01]&#39;, &#39;Ts1[673.01]&#39;, &#39;Ts1[674.01]&#39;, &#39;Ts1[675.01]&#39;, &#39;Ts1[676.01]&#39;, &#39;Ts1[677.01]&#39;, &#39;Ts1[678.01]&#39;, &#39;Ts1[679.01]&#39;, &#39;Ts1[680.01]&#39;, &#39;Ts1[681.01]&#39;, &#39;Ts1[682.01]&#39;, &#39;Ts1[683.01]&#39;, &#39;Ts1[684.01]&#39;, &#39;Ts1[685.01]&#39;, &#39;Ts1[686.01]&#39;, &#39;Ts1[687.01]&#39;, &#39;Ts1[688.0]&#39;, &#39;Ts1[689.01]&#39;, &#39;Ts1[690.01]&#39;, &#39;Ts1[691.01]&#39;, &#39;Ts1[692.0]&#39;, &#39;Ts1[693.01]&#39;, &#39;Ts1[694.01]&#39;, &#39;Ts1[695.01]&#39;, &#39;Ts1[696.01]&#39;, &#39;Ts1[697.01]&#39;, &#39;Ts1[698.01]&#39;, &#39;Ts1[699.01]&#39;, &#39;Ts1[700.0]&#39;, &#39;Ts1[701.01]&#39;, &#39;Ts1[702.01]&#39;, &#39;Ts1[703.01]&#39;, &#39;Ts1[704.01]&#39;, &#39;Ts1[705.01]&#39;, &#39;Ts1[706.01]&#39;, &#39;Ts1[707.01]&#39;, &#39;Ts1[708.01]&#39;, &#39;Ts1[709.01]&#39;, &#39;Ts1[710.01]&#39;, &#39;Ts1[711.01]&#39;, &#39;Ts1[712.01]&#39;, &#39;Ts1[713.01]&#39;, &#39;Ts1[714.01]&#39;, &#39;Ts1[715.0]&#39;, &#39;Ts1[716.01]&#39;, &#39;Ts1[717.01]&#39;, &#39;Ts1[718.0]&#39;, &#39;Ts1[719.01]&#39;, &#39;Ts1[720.0]&#39;, &#39;Ts1[721.01]&#39;, &#39;Ts1[722.01]&#39;, &#39;Ts1[723.01]&#39;, &#39;Ts1[724.01]&#39;, &#39;Ts1[725.01]&#39;, &#39;Ts1[726.01]&#39;, &#39;Ts1[727.01]&#39;, &#39;Ts1[728.01]&#39;, &#39;Ts1[729.0]&#39;, &#39;Ts1[730.0]&#39;, &#39;Ts1[731.01]&#39;, &#39;Ts1[732.01]&#39;, &#39;Ts1[733.01]&#39;, &#39;Ts1[734.01]&#39;, &#39;Ts1[735.01]&#39;, &#39;Ts1[736.01]&#39;, &#39;Ts1[737.01]&#39;, &#39;Ts1[738.01]&#39;, &#39;Ts1[739.0]&#39;, &#39;Ts1[740.0]&#39;, &#39;Ts1[741.01]&#39;, &#39;Ts1[742.01]&#39;, &#39;Ts1[743.01]&#39;, &#39;Ts1[744.0]&#39;, &#39;Ts1[745.01]&#39;, &#39;Ts1[746.01]&#39;, &#39;Ts1[747.01]&#39;, &#39;Ts1[748.01]&#39;, &#39;Ts1[749.01]&#39;, &#39;Ts1[750.01]&#39;, &#39;Ts1[751.01]&#39;, &#39;Ts1[752.01]&#39;, &#39;Ts1[753.01]&#39;, &#39;Ts1[754.01]&#39;, &#39;Ts1[755.01]&#39;, &#39;Ts1[756.01]&#39;, &#39;Ts1[757.01]&#39;, &#39;Ts1[758.01]&#39;, &#39;Ts1[759.01]&#39;, &#39;Ts1[760.01]&#39;, &#39;Ts1[761.01]&#39;, &#39;Ts1[762.01]&#39;, &#39;Ts1[763.01]&#39;, &#39;Ts1[764.01]&#39;, &#39;Ts1[765.01]&#39;, &#39;Ts1[766.01]&#39;, &#39;Ts1[767.01]&#39;, &#39;Ts1[768.01]&#39;, &#39;Ts1[769.01]&#39;, &#39;Ts1[770.01]&#39;, &#39;Ts1[771.0]&#39;, &#39;Ts1[772.01]&#39;, &#39;Ts1[773.01]&#39;, &#39;Ts1[774.01]&#39;, &#39;Ts1[775.01]&#39;, &#39;Ts1[776.01]&#39;, &#39;Ts1[777.01]&#39;, &#39;Ts1[778.0]&#39;, &#39;Ts1[779.01]&#39;, &#39;Ts1[780.01]&#39;, &#39;Ts1[781.01]&#39;, &#39;Ts1[782.01]&#39;, &#39;Ts1[783.01]&#39;, &#39;Ts1[784.01]&#39;, &#39;Ts1[785.01]&#39;, &#39;Ts1[786.0]&#39;, &#39;Ts1[787.0]&#39;, &#39;Ts1[788.0]&#39;, &#39;Ts1[789.01]&#39;, &#39;Ts1[790.0]&#39;, &#39;Ts1[791.01]&#39;, &#39;Ts1[792.0]&#39;, &#39;Ts1[793.0]&#39;, &#39;Ts1[794.01]&#39;, &#39;Ts1[795.0]&#39;, &#39;Ts1[796.01]&#39;, &#39;Ts1[797.01]&#39;, &#39;Ts1[798.0]&#39;, &#39;Ts1[799.01]&#39;, &#39;Ts1[800.01]&#39;, &#39;Ts1[801.01]&#39;, &#39;Ts1[802.01]&#39;, &#39;Ts1[803.01]&#39;, &#39;Ts1[804.01]&#39;, &#39;Ts1[805.01]&#39;, &#39;Ts1[806.01]&#39;, &#39;Ts1[807.01]&#39;, &#39;Ts1[808.01]&#39;, &#39;Ts1[809.01]&#39;, &#39;Ts1[810.0]&#39;, &#39;Ts1[811.01]&#39;, &#39;Ts1[812.01]&#39;, &#39;Ts1[813.01]&#39;, &#39;Ts1[814.01]&#39;, &#39;Ts1[815.01]&#39;, &#39;Ts1[816.01]&#39;, &#39;Ts1[817.0]&#39;, &#39;Ts1[818.01]&#39;, &#39;Ts1[819.01]&#39;, &#39;Ts1[820.01]&#39;, &#39;Ts1[821.01]&#39;, &#39;Ts1[822.01]&#39;, &#39;Ts1[823.01]&#39;, &#39;Ts1[824.01]&#39;, &#39;Ts1[825.01]&#39;, &#39;Ts1[826.0]&#39;, &#39;Ts1[827.01]&#39;, &#39;Ts1[828.01]&#39;, &#39;Ts1[829.01]&#39;, &#39;Ts1[830.01]&#39;, &#39;Ts1[831.01]&#39;, &#39;Ts1[832.01]&#39;, &#39;Ts1[833.01]&#39;, &#39;Ts1[834.01]&#39;, &#39;Ts1[835.01]&#39;, &#39;Ts1[836.01]&#39;, &#39;Ts1[837.01]&#39;, &#39;Ts1[838.01]&#39;, &#39;Ts1[839.01]&#39;, &#39;Ts1[840.01]&#39;, &#39;Ts1[841.01]&#39;, &#39;Ts1[842.01]&#39;, &#39;Ts1[843.01]&#39;, &#39;Ts1[844.01]&#39;, &#39;Ts1[845.0]&#39;, &#39;Ts1[846.01]&#39;, &#39;Ts1[847.01]&#39;, &#39;Ts1[848.01]&#39;, &#39;Ts1[849.01]&#39;, &#39;Ts1[850.01]&#39;, &#39;Ts1[851.01]&#39;, &#39;Ts1[852.01]&#39;, &#39;Ts1[853.01]&#39;, &#39;Ts1[854.01]&#39;, &#39;Ts1[855.01]&#39;, &#39;Ts1[856.01]&#39;, &#39;Ts1[857.01]&#39;, &#39;Ts1[858.01]&#39;, &#39;Ts1[859.01]&#39;, &#39;Ts1[860.01]&#39;, &#39;Ts1[861.01]&#39;, &#39;Ts1[862.01]&#39;, &#39;Ts1[863.01]&#39;, &#39;Ts1[864.01]&#39;, &#39;Ts1[865.01]&#39;, &#39;Ts1[866.01]&#39;, &#39;Ts1[867.01]&#39;, &#39;Ts1[868.01]&#39;, &#39;Ts1[869.01]&#39;, &#39;Ts1[870.01]&#39;, &#39;Ts1[871.01]&#39;, &#39;Ts1[872.01]&#39;, &#39;Ts1[873.01]&#39;, &#39;Ts1[874.01]&#39;, &#39;Ts1[875.01]&#39;, &#39;Ts1[876.0]&#39;, &#39;Ts1[877.01]&#39;, &#39;Ts1[878.01]&#39;, &#39;Ts1[879.01]&#39;, &#39;Ts1[880.01]&#39;, &#39;Ts1[881.01]&#39;, &#39;Ts1[882.01]&#39;, &#39;Ts1[883.01]&#39;, &#39;Ts1[884.01]&#39;, &#39;Ts1[885.01]&#39;, &#39;Ts1[886.01]&#39;, &#39;Ts1[887.01]&#39;, &#39;Ts1[888.01]&#39;, &#39;Ts1[889.01]&#39;, &#39;Ts1[890.01]&#39;, &#39;Ts1[891.01]&#39;, &#39;Ts1[892.01]&#39;, &#39;Ts1[893.01]&#39;, &#39;Ts1[894.01]&#39;, &#39;Ts1[895.01]&#39;, &#39;Ts1[896.01]&#39;, &#39;Ts1[897.01]&#39;, &#39;Ts1[898.0]&#39;, &#39;Ts1[899.01]&#39;, &#39;Ts1[900.01]&#39;]
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">decisions</span> <span class="o">=</span> <span class="n">DesignVariables</span><span class="p">()</span>
-
-<span class="n">decisions</span><span class="o">.</span><span class="n">add_variables</span><span class="p">(</span>
-    <span class="s1">&#39;U1&#39;</span><span class="p">,</span> <span class="c1"># this needs to match the name of the variable in the Pyomo model</span>
-    <span class="n">indices</span><span class="o">=</span><span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="n">t_control</span><span class="p">},</span>
-    <span class="n">time_index_position</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-    <span class="n">lower_bounds</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-    <span class="n">upper_bounds</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
-    <span class="n">values</span><span class="o">=</span><span class="n">tc_data</span><span class="o">.</span><span class="n">u1</span><span class="p">,</span> <span class="c1"># these values are used for initialization</span>
-<span class="p">)</span>
-
-<span class="nb">print</span><span class="p">(</span><span class="n">decisions</span><span class="o">.</span><span class="n">variable_names</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[&#39;U1[0.0]&#39;, &#39;U1[1.0]&#39;, &#39;U1[2.01]&#39;, &#39;U1[3.01]&#39;, &#39;U1[4.01]&#39;, &#39;U1[5.01]&#39;, &#39;U1[6.01]&#39;, &#39;U1[7.01]&#39;, &#39;U1[8.01]&#39;, &#39;U1[9.01]&#39;, &#39;U1[10.0]&#39;, &#39;U1[11.01]&#39;, &#39;U1[12.01]&#39;, &#39;U1[13.01]&#39;, &#39;U1[14.01]&#39;, &#39;U1[15.01]&#39;, &#39;U1[16.01]&#39;, &#39;U1[17.01]&#39;, &#39;U1[18.01]&#39;, &#39;U1[19.01]&#39;, &#39;U1[20.01]&#39;, &#39;U1[21.01]&#39;, &#39;U1[22.01]&#39;, &#39;U1[23.01]&#39;, &#39;U1[24.01]&#39;, &#39;U1[25.01]&#39;, &#39;U1[26.01]&#39;, &#39;U1[27.01]&#39;, &#39;U1[28.01]&#39;, &#39;U1[29.01]&#39;, &#39;U1[30.0]&#39;, &#39;U1[31.0]&#39;, &#39;U1[32.01]&#39;, &#39;U1[33.01]&#39;, &#39;U1[34.01]&#39;, &#39;U1[35.01]&#39;, &#39;U1[36.01]&#39;, &#39;U1[37.0]&#39;, &#39;U1[38.01]&#39;, &#39;U1[39.01]&#39;, &#39;U1[40.01]&#39;, &#39;U1[41.01]&#39;, &#39;U1[42.01]&#39;, &#39;U1[43.01]&#39;, &#39;U1[44.01]&#39;, &#39;U1[45.01]&#39;, &#39;U1[46.01]&#39;, &#39;U1[47.01]&#39;, &#39;U1[48.01]&#39;, &#39;U1[49.0]&#39;, &#39;U1[50.01]&#39;, &#39;U1[51.01]&#39;, &#39;U1[52.01]&#39;, &#39;U1[53.0]&#39;, &#39;U1[54.0]&#39;, &#39;U1[55.01]&#39;, &#39;U1[56.01]&#39;, &#39;U1[57.01]&#39;, &#39;U1[58.01]&#39;, &#39;U1[59.01]&#39;, &#39;U1[60.01]&#39;, &#39;U1[61.01]&#39;, &#39;U1[62.01]&#39;, &#39;U1[63.01]&#39;, &#39;U1[64.01]&#39;, &#39;U1[65.01]&#39;, &#39;U1[66.01]&#39;, &#39;U1[67.01]&#39;, &#39;U1[68.01]&#39;, &#39;U1[69.0]&#39;, &#39;U1[70.01]&#39;, &#39;U1[71.01]&#39;, &#39;U1[72.01]&#39;, &#39;U1[73.0]&#39;, &#39;U1[74.0]&#39;, &#39;U1[75.01]&#39;, &#39;U1[76.01]&#39;, &#39;U1[77.01]&#39;, &#39;U1[78.01]&#39;, &#39;U1[79.01]&#39;, &#39;U1[80.01]&#39;, &#39;U1[81.01]&#39;, &#39;U1[82.01]&#39;, &#39;U1[83.01]&#39;, &#39;U1[84.01]&#39;, &#39;U1[85.0]&#39;, &#39;U1[86.01]&#39;, &#39;U1[87.01]&#39;, &#39;U1[88.01]&#39;, &#39;U1[89.01]&#39;, &#39;U1[90.01]&#39;, &#39;U1[91.01]&#39;, &#39;U1[92.01]&#39;, &#39;U1[93.01]&#39;, &#39;U1[94.01]&#39;, &#39;U1[95.01]&#39;, &#39;U1[96.01]&#39;, &#39;U1[97.01]&#39;, &#39;U1[98.01]&#39;, &#39;U1[99.01]&#39;, &#39;U1[100.01]&#39;, &#39;U1[101.01]&#39;, &#39;U1[102.01]&#39;, &#39;U1[103.01]&#39;, &#39;U1[104.01]&#39;, &#39;U1[105.01]&#39;, &#39;U1[106.01]&#39;, &#39;U1[107.01]&#39;, &#39;U1[108.01]&#39;, &#39;U1[109.01]&#39;, &#39;U1[110.01]&#39;, &#39;U1[111.01]&#39;, &#39;U1[112.01]&#39;, &#39;U1[113.01]&#39;, &#39;U1[114.01]&#39;, &#39;U1[115.0]&#39;, &#39;U1[116.01]&#39;, &#39;U1[117.01]&#39;, &#39;U1[118.01]&#39;, &#39;U1[119.0]&#39;, &#39;U1[120.01]&#39;, &#39;U1[121.01]&#39;, &#39;U1[122.01]&#39;, &#39;U1[123.01]&#39;, &#39;U1[124.01]&#39;, &#39;U1[125.01]&#39;, &#39;U1[126.01]&#39;, &#39;U1[127.01]&#39;, &#39;U1[128.01]&#39;, &#39;U1[129.01]&#39;, &#39;U1[130.01]&#39;, &#39;U1[131.0]&#39;, &#39;U1[132.01]&#39;, &#39;U1[133.01]&#39;, &#39;U1[134.01]&#39;, &#39;U1[135.01]&#39;, &#39;U1[136.01]&#39;, &#39;U1[137.01]&#39;, &#39;U1[138.01]&#39;, &#39;U1[139.01]&#39;, &#39;U1[140.01]&#39;, &#39;U1[141.01]&#39;, &#39;U1[142.01]&#39;, &#39;U1[143.0]&#39;, &#39;U1[144.01]&#39;, &#39;U1[145.01]&#39;, &#39;U1[146.01]&#39;, &#39;U1[147.01]&#39;, &#39;U1[148.01]&#39;, &#39;U1[149.01]&#39;, &#39;U1[150.01]&#39;, &#39;U1[151.01]&#39;, &#39;U1[152.0]&#39;, &#39;U1[153.01]&#39;, &#39;U1[154.01]&#39;, &#39;U1[155.0]&#39;, &#39;U1[156.01]&#39;, &#39;U1[157.01]&#39;, &#39;U1[158.01]&#39;, &#39;U1[159.0]&#39;, &#39;U1[160.01]&#39;, &#39;U1[161.01]&#39;, &#39;U1[162.01]&#39;, &#39;U1[163.01]&#39;, &#39;U1[164.01]&#39;, &#39;U1[165.01]&#39;, &#39;U1[166.0]&#39;, &#39;U1[167.01]&#39;, &#39;U1[168.01]&#39;, &#39;U1[169.0]&#39;, &#39;U1[170.01]&#39;, &#39;U1[171.0]&#39;, &#39;U1[172.01]&#39;, &#39;U1[173.01]&#39;, &#39;U1[174.01]&#39;, &#39;U1[175.01]&#39;, &#39;U1[176.01]&#39;, &#39;U1[177.01]&#39;, &#39;U1[178.01]&#39;, &#39;U1[179.01]&#39;, &#39;U1[180.01]&#39;, &#39;U1[181.01]&#39;, &#39;U1[182.01]&#39;, &#39;U1[183.01]&#39;, &#39;U1[184.01]&#39;, &#39;U1[185.0]&#39;, &#39;U1[186.01]&#39;, &#39;U1[187.01]&#39;, &#39;U1[188.01]&#39;, &#39;U1[189.01]&#39;, &#39;U1[190.01]&#39;, &#39;U1[191.01]&#39;, &#39;U1[192.0]&#39;, &#39;U1[193.01]&#39;, &#39;U1[194.01]&#39;, &#39;U1[195.01]&#39;, &#39;U1[196.01]&#39;, &#39;U1[197.01]&#39;, &#39;U1[198.01]&#39;, &#39;U1[199.01]&#39;, &#39;U1[200.01]&#39;, &#39;U1[201.01]&#39;, &#39;U1[202.01]&#39;, &#39;U1[203.0]&#39;, &#39;U1[204.01]&#39;, &#39;U1[205.01]&#39;, &#39;U1[206.01]&#39;, &#39;U1[207.01]&#39;, &#39;U1[208.01]&#39;, &#39;U1[209.0]&#39;, &#39;U1[210.01]&#39;, &#39;U1[211.01]&#39;, &#39;U1[212.01]&#39;, &#39;U1[213.01]&#39;, &#39;U1[214.01]&#39;, &#39;U1[215.01]&#39;, &#39;U1[216.01]&#39;, &#39;U1[217.01]&#39;, &#39;U1[218.01]&#39;, &#39;U1[219.01]&#39;, &#39;U1[220.0]&#39;, &#39;U1[221.01]&#39;, &#39;U1[222.01]&#39;, &#39;U1[223.01]&#39;, &#39;U1[224.01]&#39;, &#39;U1[225.01]&#39;, &#39;U1[226.01]&#39;, &#39;U1[227.01]&#39;, &#39;U1[228.01]&#39;, &#39;U1[229.01]&#39;, &#39;U1[230.01]&#39;, &#39;U1[231.01]&#39;, &#39;U1[232.01]&#39;, &#39;U1[233.01]&#39;, &#39;U1[234.0]&#39;, &#39;U1[235.0]&#39;, &#39;U1[236.01]&#39;, &#39;U1[237.01]&#39;, &#39;U1[238.01]&#39;, &#39;U1[239.01]&#39;, &#39;U1[240.01]&#39;, &#39;U1[241.01]&#39;, &#39;U1[242.01]&#39;, &#39;U1[243.01]&#39;, &#39;U1[244.01]&#39;, &#39;U1[245.01]&#39;, &#39;U1[246.01]&#39;, &#39;U1[247.01]&#39;, &#39;U1[248.01]&#39;, &#39;U1[249.01]&#39;, &#39;U1[250.01]&#39;, &#39;U1[251.01]&#39;, &#39;U1[252.01]&#39;, &#39;U1[253.01]&#39;, &#39;U1[254.01]&#39;, &#39;U1[255.01]&#39;, &#39;U1[256.01]&#39;, &#39;U1[257.01]&#39;, &#39;U1[258.01]&#39;, &#39;U1[259.01]&#39;, &#39;U1[260.01]&#39;, &#39;U1[261.01]&#39;, &#39;U1[262.01]&#39;, &#39;U1[263.01]&#39;, &#39;U1[264.01]&#39;, &#39;U1[265.01]&#39;, &#39;U1[266.01]&#39;, &#39;U1[267.01]&#39;, &#39;U1[268.01]&#39;, &#39;U1[269.0]&#39;, &#39;U1[270.01]&#39;, &#39;U1[271.01]&#39;, &#39;U1[272.01]&#39;, &#39;U1[273.01]&#39;, &#39;U1[274.01]&#39;, &#39;U1[275.01]&#39;, &#39;U1[276.01]&#39;, &#39;U1[277.01]&#39;, &#39;U1[278.01]&#39;, &#39;U1[279.01]&#39;, &#39;U1[280.01]&#39;, &#39;U1[281.01]&#39;, &#39;U1[282.01]&#39;, &#39;U1[283.01]&#39;, &#39;U1[284.01]&#39;, &#39;U1[285.01]&#39;, &#39;U1[286.01]&#39;, &#39;U1[287.01]&#39;, &#39;U1[288.0]&#39;, &#39;U1[289.01]&#39;, &#39;U1[290.01]&#39;, &#39;U1[291.01]&#39;, &#39;U1[292.0]&#39;, &#39;U1[293.01]&#39;, &#39;U1[294.01]&#39;, &#39;U1[295.01]&#39;, &#39;U1[296.01]&#39;, &#39;U1[297.01]&#39;, &#39;U1[298.01]&#39;, &#39;U1[299.01]&#39;, &#39;U1[300.01]&#39;, &#39;U1[301.01]&#39;, &#39;U1[302.01]&#39;, &#39;U1[303.01]&#39;, &#39;U1[304.01]&#39;, &#39;U1[305.01]&#39;, &#39;U1[306.01]&#39;, &#39;U1[307.01]&#39;, &#39;U1[308.01]&#39;, &#39;U1[309.01]&#39;, &#39;U1[310.01]&#39;, &#39;U1[311.01]&#39;, &#39;U1[312.0]&#39;, &#39;U1[313.0]&#39;, &#39;U1[314.01]&#39;, &#39;U1[315.01]&#39;, &#39;U1[316.01]&#39;, &#39;U1[317.01]&#39;, &#39;U1[318.01]&#39;, &#39;U1[319.01]&#39;, &#39;U1[320.01]&#39;, &#39;U1[321.01]&#39;, &#39;U1[322.01]&#39;, &#39;U1[323.01]&#39;, &#39;U1[324.01]&#39;, &#39;U1[325.01]&#39;, &#39;U1[326.01]&#39;, &#39;U1[327.01]&#39;, &#39;U1[328.01]&#39;, &#39;U1[329.01]&#39;, &#39;U1[330.01]&#39;, &#39;U1[331.01]&#39;, &#39;U1[332.01]&#39;, &#39;U1[333.01]&#39;, &#39;U1[334.01]&#39;, &#39;U1[335.01]&#39;, &#39;U1[336.01]&#39;, &#39;U1[337.01]&#39;, &#39;U1[338.01]&#39;, &#39;U1[339.01]&#39;, &#39;U1[340.01]&#39;, &#39;U1[341.01]&#39;, &#39;U1[342.01]&#39;, &#39;U1[343.01]&#39;, &#39;U1[344.01]&#39;, &#39;U1[345.01]&#39;, &#39;U1[346.01]&#39;, &#39;U1[347.01]&#39;, &#39;U1[348.01]&#39;, &#39;U1[349.01]&#39;, &#39;U1[350.0]&#39;, &#39;U1[351.01]&#39;, &#39;U1[352.01]&#39;, &#39;U1[353.01]&#39;, &#39;U1[354.0]&#39;, &#39;U1[355.01]&#39;, &#39;U1[356.01]&#39;, &#39;U1[357.01]&#39;, &#39;U1[358.01]&#39;, &#39;U1[359.01]&#39;, &#39;U1[360.01]&#39;, &#39;U1[361.0]&#39;, &#39;U1[362.01]&#39;, &#39;U1[363.01]&#39;, &#39;U1[364.0]&#39;, &#39;U1[365.0]&#39;, &#39;U1[366.01]&#39;, &#39;U1[367.01]&#39;, &#39;U1[368.01]&#39;, &#39;U1[369.01]&#39;, &#39;U1[370.01]&#39;, &#39;U1[371.01]&#39;, &#39;U1[372.0]&#39;, &#39;U1[373.01]&#39;, &#39;U1[374.01]&#39;, &#39;U1[375.01]&#39;, &#39;U1[376.01]&#39;, &#39;U1[377.01]&#39;, &#39;U1[378.01]&#39;, &#39;U1[379.0]&#39;, &#39;U1[380.01]&#39;, &#39;U1[381.01]&#39;, &#39;U1[382.01]&#39;, &#39;U1[383.01]&#39;, &#39;U1[384.01]&#39;, &#39;U1[385.01]&#39;, &#39;U1[386.01]&#39;, &#39;U1[387.01]&#39;, &#39;U1[388.01]&#39;, &#39;U1[389.01]&#39;, &#39;U1[390.01]&#39;, &#39;U1[391.01]&#39;, &#39;U1[392.01]&#39;, &#39;U1[393.01]&#39;, &#39;U1[394.01]&#39;, &#39;U1[395.01]&#39;, &#39;U1[396.01]&#39;, &#39;U1[397.01]&#39;, &#39;U1[398.01]&#39;, &#39;U1[399.01]&#39;, &#39;U1[400.01]&#39;, &#39;U1[401.01]&#39;, &#39;U1[402.01]&#39;, &#39;U1[403.01]&#39;, &#39;U1[404.01]&#39;, &#39;U1[405.01]&#39;, &#39;U1[406.01]&#39;, &#39;U1[407.01]&#39;, &#39;U1[408.01]&#39;, &#39;U1[409.01]&#39;, &#39;U1[410.01]&#39;, &#39;U1[411.01]&#39;, &#39;U1[412.01]&#39;, &#39;U1[413.01]&#39;, &#39;U1[414.01]&#39;, &#39;U1[415.01]&#39;, &#39;U1[416.0]&#39;, &#39;U1[417.01]&#39;, &#39;U1[418.01]&#39;, &#39;U1[419.01]&#39;, &#39;U1[420.01]&#39;, &#39;U1[421.01]&#39;, &#39;U1[422.01]&#39;, &#39;U1[423.01]&#39;, &#39;U1[424.01]&#39;, &#39;U1[425.01]&#39;, &#39;U1[426.01]&#39;, &#39;U1[427.01]&#39;, &#39;U1[428.01]&#39;, &#39;U1[429.01]&#39;, &#39;U1[430.01]&#39;, &#39;U1[431.01]&#39;, &#39;U1[432.01]&#39;, &#39;U1[433.01]&#39;, &#39;U1[434.01]&#39;, &#39;U1[435.01]&#39;, &#39;U1[436.01]&#39;, &#39;U1[437.01]&#39;, &#39;U1[438.01]&#39;, &#39;U1[439.01]&#39;, &#39;U1[440.01]&#39;, &#39;U1[441.01]&#39;, &#39;U1[442.01]&#39;, &#39;U1[443.0]&#39;, &#39;U1[444.0]&#39;, &#39;U1[445.01]&#39;, &#39;U1[446.01]&#39;, &#39;U1[447.01]&#39;, &#39;U1[448.01]&#39;, &#39;U1[449.0]&#39;, &#39;U1[450.01]&#39;, &#39;U1[451.01]&#39;, &#39;U1[452.01]&#39;, &#39;U1[453.01]&#39;, &#39;U1[454.0]&#39;, &#39;U1[455.01]&#39;, &#39;U1[456.01]&#39;, &#39;U1[457.01]&#39;, &#39;U1[458.01]&#39;, &#39;U1[459.0]&#39;, &#39;U1[460.01]&#39;, &#39;U1[461.01]&#39;, &#39;U1[462.01]&#39;, &#39;U1[463.0]&#39;, &#39;U1[464.01]&#39;, &#39;U1[465.01]&#39;, &#39;U1[466.01]&#39;, &#39;U1[467.01]&#39;, &#39;U1[468.01]&#39;, &#39;U1[469.01]&#39;, &#39;U1[470.01]&#39;, &#39;U1[471.01]&#39;, &#39;U1[472.01]&#39;, &#39;U1[473.0]&#39;, &#39;U1[474.01]&#39;, &#39;U1[475.0]&#39;, &#39;U1[476.01]&#39;, &#39;U1[477.01]&#39;, &#39;U1[478.01]&#39;, &#39;U1[479.01]&#39;, &#39;U1[480.01]&#39;, &#39;U1[481.01]&#39;, &#39;U1[482.01]&#39;, &#39;U1[483.01]&#39;, &#39;U1[484.01]&#39;, &#39;U1[485.01]&#39;, &#39;U1[486.01]&#39;, &#39;U1[487.0]&#39;, &#39;U1[488.01]&#39;, &#39;U1[489.01]&#39;, &#39;U1[490.01]&#39;, &#39;U1[491.01]&#39;, &#39;U1[492.01]&#39;, &#39;U1[493.01]&#39;, &#39;U1[494.01]&#39;, &#39;U1[495.01]&#39;, &#39;U1[496.01]&#39;, &#39;U1[497.01]&#39;, &#39;U1[498.01]&#39;, &#39;U1[499.01]&#39;, &#39;U1[500.01]&#39;, &#39;U1[501.01]&#39;, &#39;U1[502.01]&#39;, &#39;U1[503.01]&#39;, &#39;U1[504.01]&#39;, &#39;U1[505.0]&#39;, &#39;U1[506.01]&#39;, &#39;U1[507.01]&#39;, &#39;U1[508.0]&#39;, &#39;U1[509.01]&#39;, &#39;U1[510.01]&#39;, &#39;U1[511.01]&#39;, &#39;U1[512.01]&#39;, &#39;U1[513.01]&#39;, &#39;U1[514.01]&#39;, &#39;U1[515.01]&#39;, &#39;U1[516.01]&#39;, &#39;U1[517.0]&#39;, &#39;U1[518.01]&#39;, &#39;U1[519.01]&#39;, &#39;U1[520.01]&#39;, &#39;U1[521.01]&#39;, &#39;U1[522.0]&#39;, &#39;U1[523.01]&#39;, &#39;U1[524.01]&#39;, &#39;U1[525.01]&#39;, &#39;U1[526.01]&#39;, &#39;U1[527.0]&#39;, &#39;U1[528.01]&#39;, &#39;U1[529.01]&#39;, &#39;U1[530.0]&#39;, &#39;U1[531.01]&#39;, &#39;U1[532.01]&#39;, &#39;U1[533.01]&#39;, &#39;U1[534.01]&#39;, &#39;U1[535.01]&#39;, &#39;U1[536.01]&#39;, &#39;U1[537.01]&#39;, &#39;U1[538.01]&#39;, &#39;U1[539.01]&#39;, &#39;U1[540.01]&#39;, &#39;U1[541.01]&#39;, &#39;U1[542.01]&#39;, &#39;U1[543.01]&#39;, &#39;U1[544.01]&#39;, &#39;U1[545.01]&#39;, &#39;U1[546.01]&#39;, &#39;U1[547.01]&#39;, &#39;U1[548.0]&#39;, &#39;U1[549.01]&#39;, &#39;U1[550.01]&#39;, &#39;U1[551.01]&#39;, &#39;U1[552.01]&#39;, &#39;U1[553.01]&#39;, &#39;U1[554.01]&#39;, &#39;U1[555.0]&#39;, &#39;U1[556.0]&#39;, &#39;U1[557.0]&#39;, &#39;U1[558.01]&#39;, &#39;U1[559.0]&#39;, &#39;U1[560.01]&#39;, &#39;U1[561.01]&#39;, &#39;U1[562.01]&#39;, &#39;U1[563.01]&#39;, &#39;U1[564.01]&#39;, &#39;U1[565.01]&#39;, &#39;U1[566.01]&#39;, &#39;U1[567.01]&#39;, &#39;U1[568.01]&#39;, &#39;U1[569.0]&#39;, &#39;U1[570.0]&#39;, &#39;U1[571.0]&#39;, &#39;U1[572.0]&#39;, &#39;U1[573.01]&#39;, &#39;U1[574.01]&#39;, &#39;U1[575.01]&#39;, &#39;U1[576.0]&#39;, &#39;U1[577.0]&#39;, &#39;U1[578.01]&#39;, &#39;U1[579.0]&#39;, &#39;U1[580.01]&#39;, &#39;U1[581.0]&#39;, &#39;U1[582.0]&#39;, &#39;U1[583.01]&#39;, &#39;U1[584.0]&#39;, &#39;U1[585.0]&#39;, &#39;U1[586.01]&#39;, &#39;U1[587.0]&#39;, &#39;U1[588.0]&#39;, &#39;U1[589.01]&#39;, &#39;U1[590.0]&#39;, &#39;U1[591.01]&#39;, &#39;U1[592.01]&#39;, &#39;U1[593.01]&#39;, &#39;U1[594.0]&#39;, &#39;U1[595.01]&#39;, &#39;U1[596.0]&#39;, &#39;U1[597.0]&#39;, &#39;U1[598.01]&#39;, &#39;U1[599.01]&#39;, &#39;U1[600.01]&#39;, &#39;U1[601.0]&#39;, &#39;U1[602.01]&#39;, &#39;U1[603.01]&#39;, &#39;U1[604.01]&#39;, &#39;U1[605.01]&#39;, &#39;U1[606.0]&#39;, &#39;U1[607.01]&#39;, &#39;U1[608.01]&#39;, &#39;U1[609.01]&#39;, &#39;U1[610.01]&#39;, &#39;U1[611.01]&#39;, &#39;U1[612.0]&#39;, &#39;U1[613.01]&#39;, &#39;U1[614.01]&#39;, &#39;U1[615.01]&#39;, &#39;U1[616.01]&#39;, &#39;U1[617.01]&#39;, &#39;U1[618.01]&#39;, &#39;U1[619.01]&#39;, &#39;U1[620.01]&#39;, &#39;U1[621.01]&#39;, &#39;U1[622.01]&#39;, &#39;U1[623.01]&#39;, &#39;U1[624.01]&#39;, &#39;U1[625.01]&#39;, &#39;U1[626.01]&#39;, &#39;U1[627.01]&#39;, &#39;U1[628.0]&#39;, &#39;U1[629.0]&#39;, &#39;U1[630.01]&#39;, &#39;U1[631.01]&#39;, &#39;U1[632.01]&#39;, &#39;U1[633.01]&#39;, &#39;U1[634.01]&#39;, &#39;U1[635.01]&#39;, &#39;U1[636.01]&#39;, &#39;U1[637.01]&#39;, &#39;U1[638.01]&#39;, &#39;U1[639.01]&#39;, &#39;U1[640.01]&#39;, &#39;U1[641.0]&#39;, &#39;U1[642.01]&#39;, &#39;U1[643.01]&#39;, &#39;U1[644.01]&#39;, &#39;U1[645.01]&#39;, &#39;U1[646.01]&#39;, &#39;U1[647.01]&#39;, &#39;U1[648.01]&#39;, &#39;U1[649.01]&#39;, &#39;U1[650.01]&#39;, &#39;U1[651.01]&#39;, &#39;U1[652.01]&#39;, &#39;U1[653.01]&#39;, &#39;U1[654.01]&#39;, &#39;U1[655.0]&#39;, &#39;U1[656.01]&#39;, &#39;U1[657.01]&#39;, &#39;U1[658.01]&#39;, &#39;U1[659.01]&#39;, &#39;U1[660.01]&#39;, &#39;U1[661.01]&#39;, &#39;U1[662.01]&#39;, &#39;U1[663.01]&#39;, &#39;U1[664.01]&#39;, &#39;U1[665.01]&#39;, &#39;U1[666.01]&#39;, &#39;U1[667.01]&#39;, &#39;U1[668.01]&#39;, &#39;U1[669.01]&#39;, &#39;U1[670.01]&#39;, &#39;U1[671.01]&#39;, &#39;U1[672.01]&#39;, &#39;U1[673.01]&#39;, &#39;U1[674.01]&#39;, &#39;U1[675.01]&#39;, &#39;U1[676.01]&#39;, &#39;U1[677.01]&#39;, &#39;U1[678.01]&#39;, &#39;U1[679.01]&#39;, &#39;U1[680.01]&#39;, &#39;U1[681.01]&#39;, &#39;U1[682.01]&#39;, &#39;U1[683.01]&#39;, &#39;U1[684.01]&#39;, &#39;U1[685.01]&#39;, &#39;U1[686.01]&#39;, &#39;U1[687.01]&#39;, &#39;U1[688.0]&#39;, &#39;U1[689.01]&#39;, &#39;U1[690.01]&#39;, &#39;U1[691.01]&#39;, &#39;U1[692.0]&#39;, &#39;U1[693.01]&#39;, &#39;U1[694.01]&#39;, &#39;U1[695.01]&#39;, &#39;U1[696.01]&#39;, &#39;U1[697.01]&#39;, &#39;U1[698.01]&#39;, &#39;U1[699.01]&#39;, &#39;U1[700.0]&#39;, &#39;U1[701.01]&#39;, &#39;U1[702.01]&#39;, &#39;U1[703.01]&#39;, &#39;U1[704.01]&#39;, &#39;U1[705.01]&#39;, &#39;U1[706.01]&#39;, &#39;U1[707.01]&#39;, &#39;U1[708.01]&#39;, &#39;U1[709.01]&#39;, &#39;U1[710.01]&#39;, &#39;U1[711.01]&#39;, &#39;U1[712.01]&#39;, &#39;U1[713.01]&#39;, &#39;U1[714.01]&#39;, &#39;U1[715.0]&#39;, &#39;U1[716.01]&#39;, &#39;U1[717.01]&#39;, &#39;U1[718.0]&#39;, &#39;U1[719.01]&#39;, &#39;U1[720.0]&#39;, &#39;U1[721.01]&#39;, &#39;U1[722.01]&#39;, &#39;U1[723.01]&#39;, &#39;U1[724.01]&#39;, &#39;U1[725.01]&#39;, &#39;U1[726.01]&#39;, &#39;U1[727.01]&#39;, &#39;U1[728.01]&#39;, &#39;U1[729.0]&#39;, &#39;U1[730.0]&#39;, &#39;U1[731.01]&#39;, &#39;U1[732.01]&#39;, &#39;U1[733.01]&#39;, &#39;U1[734.01]&#39;, &#39;U1[735.01]&#39;, &#39;U1[736.01]&#39;, &#39;U1[737.01]&#39;, &#39;U1[738.01]&#39;, &#39;U1[739.0]&#39;, &#39;U1[740.0]&#39;, &#39;U1[741.01]&#39;, &#39;U1[742.01]&#39;, &#39;U1[743.01]&#39;, &#39;U1[744.0]&#39;, &#39;U1[745.01]&#39;, &#39;U1[746.01]&#39;, &#39;U1[747.01]&#39;, &#39;U1[748.01]&#39;, &#39;U1[749.01]&#39;, &#39;U1[750.01]&#39;, &#39;U1[751.01]&#39;, &#39;U1[752.01]&#39;, &#39;U1[753.01]&#39;, &#39;U1[754.01]&#39;, &#39;U1[755.01]&#39;, &#39;U1[756.01]&#39;, &#39;U1[757.01]&#39;, &#39;U1[758.01]&#39;, &#39;U1[759.01]&#39;, &#39;U1[760.01]&#39;, &#39;U1[761.01]&#39;, &#39;U1[762.01]&#39;, &#39;U1[763.01]&#39;, &#39;U1[764.01]&#39;, &#39;U1[765.01]&#39;, &#39;U1[766.01]&#39;, &#39;U1[767.01]&#39;, &#39;U1[768.01]&#39;, &#39;U1[769.01]&#39;, &#39;U1[770.01]&#39;, &#39;U1[771.0]&#39;, &#39;U1[772.01]&#39;, &#39;U1[773.01]&#39;, &#39;U1[774.01]&#39;, &#39;U1[775.01]&#39;, &#39;U1[776.01]&#39;, &#39;U1[777.01]&#39;, &#39;U1[778.0]&#39;, &#39;U1[779.01]&#39;, &#39;U1[780.01]&#39;, &#39;U1[781.01]&#39;, &#39;U1[782.01]&#39;, &#39;U1[783.01]&#39;, &#39;U1[784.01]&#39;, &#39;U1[785.01]&#39;, &#39;U1[786.0]&#39;, &#39;U1[787.0]&#39;, &#39;U1[788.0]&#39;, &#39;U1[789.01]&#39;, &#39;U1[790.0]&#39;, &#39;U1[791.01]&#39;, &#39;U1[792.0]&#39;, &#39;U1[793.0]&#39;, &#39;U1[794.01]&#39;, &#39;U1[795.0]&#39;, &#39;U1[796.01]&#39;, &#39;U1[797.01]&#39;, &#39;U1[798.0]&#39;, &#39;U1[799.01]&#39;, &#39;U1[800.01]&#39;, &#39;U1[801.01]&#39;, &#39;U1[802.01]&#39;, &#39;U1[803.01]&#39;, &#39;U1[804.01]&#39;, &#39;U1[805.01]&#39;, &#39;U1[806.01]&#39;, &#39;U1[807.01]&#39;, &#39;U1[808.01]&#39;, &#39;U1[809.01]&#39;, &#39;U1[810.0]&#39;, &#39;U1[811.01]&#39;, &#39;U1[812.01]&#39;, &#39;U1[813.01]&#39;, &#39;U1[814.01]&#39;, &#39;U1[815.01]&#39;, &#39;U1[816.01]&#39;, &#39;U1[817.0]&#39;, &#39;U1[818.01]&#39;, &#39;U1[819.01]&#39;, &#39;U1[820.01]&#39;, &#39;U1[821.01]&#39;, &#39;U1[822.01]&#39;, &#39;U1[823.01]&#39;, &#39;U1[824.01]&#39;, &#39;U1[825.01]&#39;, &#39;U1[826.0]&#39;, &#39;U1[827.01]&#39;, &#39;U1[828.01]&#39;, &#39;U1[829.01]&#39;, &#39;U1[830.01]&#39;, &#39;U1[831.01]&#39;, &#39;U1[832.01]&#39;, &#39;U1[833.01]&#39;, &#39;U1[834.01]&#39;, &#39;U1[835.01]&#39;, &#39;U1[836.01]&#39;, &#39;U1[837.01]&#39;, &#39;U1[838.01]&#39;, &#39;U1[839.01]&#39;, &#39;U1[840.01]&#39;, &#39;U1[841.01]&#39;, &#39;U1[842.01]&#39;, &#39;U1[843.01]&#39;, &#39;U1[844.01]&#39;, &#39;U1[845.0]&#39;, &#39;U1[846.01]&#39;, &#39;U1[847.01]&#39;, &#39;U1[848.01]&#39;, &#39;U1[849.01]&#39;, &#39;U1[850.01]&#39;, &#39;U1[851.01]&#39;, &#39;U1[852.01]&#39;, &#39;U1[853.01]&#39;, &#39;U1[854.01]&#39;, &#39;U1[855.01]&#39;, &#39;U1[856.01]&#39;, &#39;U1[857.01]&#39;, &#39;U1[858.01]&#39;, &#39;U1[859.01]&#39;, &#39;U1[860.01]&#39;, &#39;U1[861.01]&#39;, &#39;U1[862.01]&#39;, &#39;U1[863.01]&#39;, &#39;U1[864.01]&#39;, &#39;U1[865.01]&#39;, &#39;U1[866.01]&#39;, &#39;U1[867.01]&#39;, &#39;U1[868.01]&#39;, &#39;U1[869.01]&#39;, &#39;U1[870.01]&#39;, &#39;U1[871.01]&#39;, &#39;U1[872.01]&#39;, &#39;U1[873.01]&#39;, &#39;U1[874.01]&#39;, &#39;U1[875.01]&#39;, &#39;U1[876.0]&#39;, &#39;U1[877.01]&#39;, &#39;U1[878.01]&#39;, &#39;U1[879.01]&#39;, &#39;U1[880.01]&#39;, &#39;U1[881.01]&#39;, &#39;U1[882.01]&#39;, &#39;U1[883.01]&#39;, &#39;U1[884.01]&#39;, &#39;U1[885.01]&#39;, &#39;U1[886.01]&#39;, &#39;U1[887.01]&#39;, &#39;U1[888.01]&#39;, &#39;U1[889.01]&#39;, &#39;U1[890.01]&#39;, &#39;U1[891.01]&#39;, &#39;U1[892.01]&#39;, &#39;U1[893.01]&#39;, &#39;U1[894.01]&#39;, &#39;U1[895.01]&#39;, &#39;U1[896.01]&#39;, &#39;U1[897.01]&#39;, &#39;U1[898.0]&#39;, &#39;U1[899.01]&#39;, &#39;U1[900.01]&#39;]
+<span class="n">FIM</span> <span class="o">=</span> <span class="n">TC_Lab_DoE</span><span class="o">.</span><span class="n">compute_FIM</span><span class="p">(</span><span class="n">method</span><span class="o">=</span><span class="s1">&#39;sequential&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">create_model_doe</span><span class="p">(</span><span class="n">theta</span><span class="o">=</span><span class="n">theta_values</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&#39;&#39;&#39; Pyomo.DoE needs to be given a function that builds and initializes the model</span>
-
-<span class="sd">    Arguments:</span>
-<span class="sd">        theta: values for the parameters (dictionary). These are used for initialization.</span>
-<span class="sd">    </span>
-<span class="sd">    Returns:</span>
-<span class="sd">        Pyomo model</span>
-
-<span class="sd">    This function is simply a wrapper around the `create_model` method defined in tclab_pyomo.py</span>
-<span class="sd">    Our `create_model` in tclab_pyomo.py has additional inputs we need to specify.</span>
-<span class="sd">    &#39;&#39;&#39;</span>
-
-    <span class="k">return</span> <span class="n">create_model</span><span class="p">(</span>
-        <span class="n">data</span><span class="o">=</span><span class="n">tc_data</span><span class="p">,</span> 
-        <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;doe&#39;</span><span class="p">,</span> 
-        <span class="n">theta</span><span class="o">=</span><span class="n">theta</span><span class="p">,</span> 
-        <span class="n">number_of_states</span><span class="o">=</span><span class="n">number_tclab_states</span>
-    <span class="p">)</span>
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create doe_object using DesignOfExperiments</span>
-<span class="n">doe_object1</span> <span class="o">=</span> <span class="n">DesignOfExperiments</span><span class="p">(</span>
-    <span class="n">theta_values</span><span class="p">,</span>  <span class="c1"># dictionary of parameters</span>
-    <span class="n">decisions</span><span class="p">,</span>  <span class="c1"># design variable</span>
-    <span class="n">measurements</span><span class="p">,</span>  <span class="c1"># measurement variable</span>
-    <span class="n">create_model_doe</span><span class="p">,</span>  <span class="c1"># model</span>
-    <span class="n">solver</span><span class="o">=</span><span class="n">SolverFactory</span><span class="p">(</span><span class="s1">&#39;ipopt&#39;</span><span class="p">),</span>
-<span class="p">)</span>
-
-<span class="n">result</span> <span class="o">=</span> <span class="n">doe_object1</span><span class="o">.</span><span class="n">compute_FIM</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s1">&#39;sequential_finite&#39;</span><span class="p">,</span> <span class="n">formula</span><span class="o">=</span><span class="s1">&#39;central&#39;</span><span class="p">)</span>
-<span class="n">result</span><span class="o">.</span><span class="n">result_analysis</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Ipopt 3.13.2: 
-
-******************************************************************************
-This program contains Ipopt, a library for large-scale nonlinear optimization.
- Ipopt is released as open source code under the Eclipse Public License (EPL).
-         For more information visit http://projects.coin-or.org/Ipopt
-
-This version of Ipopt was compiled from source code available at
-    https://github.com/IDAES/Ipopt as part of the Institute for the Design of
-    Advanced Energy Systems Process Systems Engineering Framework (IDAES PSE
-    Framework) Copyright (c) 2018-2019. See https://github.com/IDAES/idaes-pse.
-
-This version of Ipopt was compiled using HSL, a collection of Fortran codes
-    for large-scale scientific computation.  All technical papers, sales and
-    publicity material resulting from use of the HSL codes within IPOPT must
-    contain the following acknowledgement:
-        HSL, a collection of Fortran codes for large-scale scientific
-        computation. See http://www.hsl.rl.ac.uk.
-******************************************************************************
-
-This is Ipopt version 3.13.2, running with linear solver ma27.
-
-Number of nonzeros in equality constraint Jacobian...:   111616
-Number of nonzeros in inequality constraint Jacobian.:        0
-Number of nonzeros in Lagrangian Hessian.............:        0
-
-Total number of variables............................:    39626
-                     variables with only lower bounds:        0
-                variables with lower and upper bounds:    23408
-                     variables with only upper bounds:        0
-Total number of equality constraints.................:    39626
-Total number of inequality constraints...............:        0
-        inequality constraints with only lower bounds:        0
-   inequality constraints with lower and upper bounds:        0
-        inequality constraints with only upper bounds:        0
-
-iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
-   0  0.0000000e+00 1.00e+00 0.00e+00  -1.0 0.00e+00    -  0.00e+00 0.00e+00   0
-   1  0.0000000e+00 1.00e-02 1.12e-01  -1.0 1.00e+00    -  9.80e-01 9.90e-01h  1
-   2  0.0000000e+00 9.90e-05 9.90e+00  -1.0 1.00e-02    -  1.00e+00 9.90e-01h  1
-   3  0.0000000e+00 1.53e-14 1.26e-05  -1.0 9.90e-05    -  1.00e+00 1.00e+00h  1
-
-Number of Iterations....: 3
-
-                                   (scaled)                 (unscaled)
-Objective...............:   0.0000000000000000e+00    0.0000000000000000e+00
-Dual infeasibility......:   0.0000000000000000e+00    0.0000000000000000e+00
-Constraint violation....:   1.5279139797464566e-14    1.5279139797464566e-14
-Complementarity.........:   0.0000000000000000e+00    0.0000000000000000e+00
-Overall NLP error.......:   1.5279139797464566e-14    1.5279139797464566e-14
-
-
-Number of objective function evaluations             = 4
-Number of objective gradient evaluations             = 4
-Number of equality constraint evaluations            = 4
-Number of inequality constraint evaluations          = 0
-Number of equality constraint Jacobian evaluations   = 4
-Number of inequality constraint Jacobian evaluations = 0
-Number of Lagrangian Hessian evaluations             = 3
-Total CPU secs in IPOPT (w/o function evaluations)   =      0.122
-Total CPU secs in NLP function evaluations           =      0.003
-
-EXIT: Optimal Solution Found.
-INFO: elapsed time: 3.9 seconds
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">results_summary</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">results_summary</span><span class="p">(</span><span class="n">FIM</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>======Results Summary======
 Four design criteria log10() value:
-A-optimality: 9.698903678283168
-D-optimality: 8.292425086814568
-E-optimality: -15.256790847776848
-Modified E-optimality: 24.939667881782306
+A-optimality: 5.773228885932493
+D-optimality: 12.308607163946094
+E-optimality: -1.793074158088514
+Modified E-optimality: 7.514721752736364
 
 FIM:
- [[ 1.88459415e+08 -1.91393890e+08 -8.24201918e+06 -1.04121590e+03]
- [-1.91393890e+08  4.80931030e+09  6.51658566e+07  2.58102008e+04]
- [-8.24201918e+06  6.51658566e+07  1.46673544e+06  3.51179540e+02]
- [-1.04121590e+03  2.58102008e+04  3.51179540e+02  1.38519624e-01]]
+ [[517225.40941304   1360.01262476 -66404.72541298  -1002.47319402]
+ [  1360.01262476   5004.3737258   12379.2662576    5238.40389773]
+ [-66404.72541298  12379.2662576   65481.16908635  14190.01468139]
+ [ -1002.47319402   5238.40389773  14190.01468139   5526.94375493]]
 
 eigenvalues:
- [4.81811358e+09 1.80716021e+08 4.06846518e+05 5.53616662e-16]
+ [5.26802218e+05 6.26035823e+04 3.83207978e+03 1.61037063e-02]
 
 eigenvectors:
- [[ 4.13259139e-02 -9.98655750e-01  3.12867703e-02 -1.00385955e-13]
- [-9.99053330e-01 -4.17276557e-02 -1.22982147e-02 -5.33299017e-06]
- [-1.35872064e-02  3.07489171e-02  9.99434786e-01 -2.48897568e-06]
- [-5.36175981e-06 -1.45999971e-07  2.42198262e-06  1.00000000e+00]]
+ [[-9.89752804e-01 -1.35949591e-01  4.36702406e-02 -7.52086327e-05]
+ [ 8.63262440e-04 -2.26164575e-01 -6.85698047e-01 -6.91857665e-01]
+ [ 1.42671125e-01 -9.31600001e-01  3.33329462e-01 -2.56487437e-02]
+ [ 5.79584008e-03 -2.49977462e-01 -6.45602485e-01  7.21578207e-01]]
 </pre></div>
 </div>
 </div>
 </div>
-<p>We can see the FIM of the sine wave experiment is rank deficient with one eigenvalue that is numerically zero. We wee the corresponding eigenvector points in the direction of the 4th parameter, <code class="docutils literal notranslate"><span class="pre">inv_CpS</span></code>. This means the experiment alone does not contain enough information to uniquely estimate all of the parameters if the model.</p>
-<p>Why does it make sense that <span class="math notranslate nohighlight">\(C_p^S\)</span> is difficult to estimate?</p>
+<p>We can see the FIM of the sine wave experiment is rank deficient with one eigenvalue that is numerically zero. We see the corresponding eigenvector points in the direction of the 2nd and 4th parameters, <code class="docutils literal notranslate"><span class="pre">U_b</span></code> and <code class="docutils literal notranslate"><span class="pre">inv_CpS</span></code>. This means the experiment alone does not contain enough information to uniquely estimate all of the parameters if the model.</p>
+<p>Why does it make sense that <span class="math notranslate nohighlight">\(U_b C_p^S\)</span> is difficult to estimate?</p>
 </section>
 <section id="define-parameterized-sine-wave-experiment">
 <h2>Define parameterized sine wave experiment<a class="headerlink" href="#define-parameterized-sine-wave-experiment" title="Permalink to this heading">#</a></h2>
@@ -811,171 +705,42 @@ eigenvectors:
 u(t) = 50 + a \sin(\frac{2 \pi}{60 p} t)
 \]</div>
 <p>where <span class="math notranslate nohighlight">\(a\)</span> is the amplitude (% power), <span class="math notranslate nohighlight">\(p\)</span> is the period (minutes), <span class="math notranslate nohighlight">\(t\)</span> is the time (seconds), and 60 is a conversion factor (seconds/minute).</p>
-<p>Here is code from the <code class="docutils literal notranslate"><span class="pre">create_model</span></code> function defined in <code class="docutils literal notranslate"><span class="pre">tclab_pyomo.py</span></code> to calculate the parameterized control signal from the inputs <code class="docutils literal notranslate"><span class="pre">sine_amplitude</span></code> and <code class="docutils literal notranslate"><span class="pre">sine_period</span></code>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Calculate parameterized control signal for u1</span>
-<span class="n">u1</span> <span class="o">=</span> <span class="mi">50</span> <span class="o">+</span> <span class="n">sine_amplitude</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="p">(</span><span class="n">sine_period</span><span class="o">*</span><span class="mi">60</span><span class="p">)</span><span class="o">*</span><span class="n">time</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>Here is code from <code class="docutils literal notranslate"><span class="pre">create_model</span></code> in <code class="docutils literal notranslate"><span class="pre">tclab_pyomo.py</span></code> to define the parameterized sine wave in Pyomo.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Add measurement control decision variables</span>
-<span class="n">m</span><span class="o">.</span><span class="n">u1_period</span> <span class="o">=</span> <span class="n">Var</span><span class="p">(</span><span class="n">initialize</span><span class="o">=</span><span class="n">sine_period</span><span class="p">,</span> <span class="n">bounds</span> <span class="o">=</span> <span class="p">(</span><span class="n">sine_period_min</span><span class="p">,</span> <span class="n">sine_period_max</span><span class="p">))</span> <span class="c1"># minutes</span>
-<span class="n">m</span><span class="o">.</span><span class="n">u1_amplitude</span> <span class="o">=</span> <span class="n">Var</span><span class="p">(</span><span class="n">initialize</span><span class="o">=</span><span class="n">sine_amplitude</span><span class="p">)</span> <span class="c1"># % power</span>
-
-<span class="c1"># Add constraint to calculate u1</span>
-<span class="n">m</span><span class="o">.</span><span class="n">u1_constraint</span> <span class="o">=</span> <span class="n">Constraint</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">t</span><span class="p">,</span> <span class="n">rule</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">m</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">m</span><span class="o">.</span><span class="n">U1</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="o">==</span> <span class="mi">50</span> <span class="o">+</span> <span class="n">m</span><span class="o">.</span><span class="n">u1_amplitude</span><span class="o">*</span><span class="n">sin</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">u1_period</span><span class="o">*</span><span class="mi">60</span><span class="p">)</span><span class="o">*</span><span class="n">value</span><span class="p">(</span><span class="n">t</span><span class="p">)))</span>
-</pre></div>
-</div>
-<p>Let’s look at the information content of <span class="math notranslate nohighlight">\(p = 1\)</span> minute and <span class="math notranslate nohighlight">\(a = 50\)</span> %.</p>
+<p>Let’s look at the information content of <span class="math notranslate nohighlight">\(p = 5\)</span> minute and <span class="math notranslate nohighlight">\(a = 50\)</span> %.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">create_model_sens</span><span class="p">(</span><span class="n">theta</span><span class="o">=</span><span class="n">theta_values</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&#39;&#39;&#39;This function creates a model with the given data and theta values&#39;&#39;&#39;</span>
-    <span class="k">return</span> <span class="n">create_model</span><span class="p">(</span>
-        <span class="n">data</span><span class="o">=</span><span class="n">tc_data</span><span class="p">,</span>
-        <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;doe&#39;</span><span class="p">,</span>
-        <span class="n">theta</span><span class="o">=</span><span class="n">theta</span><span class="p">,</span>
-        <span class="n">number_of_states</span><span class="o">=</span><span class="n">number_tclab_states</span><span class="p">,</span>
-        <span class="n">sine_period</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
-        <span class="n">sine_amplitude</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span>
-    <span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create experiment object for design of experiments, now including the sine period and amplitude</span>
+<span class="n">sine_period</span> <span class="o">=</span> <span class="mi">5</span>
+<span class="n">sine_amplitude</span> <span class="o">=</span> <span class="mi">50</span>
 
-
-<span class="c1"># Get time points for control decisions</span>
-<span class="n">t_control</span> <span class="o">=</span> <span class="n">tc_data</span><span class="o">.</span><span class="n">time</span>
-
-<span class="n">measurements2</span> <span class="o">=</span> <span class="n">MeasurementVariables</span><span class="p">()</span>
-<span class="n">measurements2</span><span class="o">.</span><span class="n">add_variables</span><span class="p">(</span>
-    <span class="s1">&#39;Ts1&#39;</span><span class="p">,</span> 
-    <span class="n">indices</span><span class="o">=</span><span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="n">t_control</span><span class="p">},</span> 
-    <span class="n">time_index_position</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-
-<span class="n">decisions2</span> <span class="o">=</span> <span class="n">DesignVariables</span><span class="p">()</span>
-<span class="n">decisions2</span><span class="o">.</span><span class="n">add_variables</span><span class="p">(</span>
-    <span class="s1">&#39;u1_period&#39;</span><span class="p">,</span>
-    <span class="n">indices</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-    <span class="n">time_index_position</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-    <span class="n">lower_bounds</span><span class="o">=</span><span class="mi">10</span> <span class="o">/</span> <span class="mi">60</span><span class="p">,</span>
-    <span class="n">upper_bounds</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
-    <span class="n">values</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+<span class="n">doe_experiment</span> <span class="o">=</span> <span class="n">TC_Lab_experiment</span><span class="p">(</span>
+    <span class="n">data</span><span class="o">=</span><span class="n">tc_data</span><span class="p">,</span> 
+    <span class="n">theta_initial</span><span class="o">=</span><span class="n">theta_values</span><span class="p">,</span> 
+    <span class="n">number_of_states</span><span class="o">=</span><span class="n">number_tclab_states</span><span class="p">,</span> 
+    <span class="n">sine_amplitude</span><span class="o">=</span><span class="n">sine_amplitude</span><span class="p">,</span>
+    <span class="n">sine_period</span><span class="o">=</span><span class="n">sine_period</span><span class="p">,</span>
 <span class="p">)</span>
 
-<span class="n">decisions2</span><span class="o">.</span><span class="n">add_variables</span><span class="p">(</span>
-    <span class="s1">&#39;u1_amplitude&#39;</span><span class="p">,</span>
-    <span class="n">indices</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-    <span class="n">time_index_position</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-    <span class="n">lower_bounds</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-    <span class="n">upper_bounds</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span>
-    <span class="n">values</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span>
-<span class="p">)</span>
+<span class="c1"># Create the design of experiments object using our experiment instance from above</span>
+<span class="n">TC_Lab_DoE</span> <span class="o">=</span> <span class="n">DesignOfExperiments</span><span class="p">(</span><span class="n">experiment</span><span class="o">=</span><span class="n">doe_experiment</span><span class="p">,</span> 
+                                 <span class="n">step</span><span class="o">=</span><span class="mf">1e-2</span><span class="p">,</span>
+                                 <span class="n">scale_constant_value</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                                 <span class="n">scale_nominal_param_value</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> 
+                                 <span class="n">tee</span><span class="o">=</span><span class="kc">True</span><span class="p">,)</span>
 
+<span class="n">FIM</span> <span class="o">=</span> <span class="n">TC_Lab_DoE</span><span class="o">.</span><span class="n">compute_FIM</span><span class="p">(</span><span class="n">method</span><span class="o">=</span><span class="s1">&#39;sequential&#39;</span><span class="p">)</span>
 
-<span class="n">solver</span> <span class="o">=</span> <span class="n">SolverFactory</span><span class="p">(</span><span class="s1">&#39;ipopt&#39;</span><span class="p">)</span>
-<span class="c1"># solver.options[&#39;bound_push&#39;] = 1E-10</span>
-<span class="n">solver</span><span class="o">.</span><span class="n">options</span><span class="p">[</span><span class="s1">&#39;halt_on_ampl_error&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;yes&#39;</span>
-<span class="c1"># solver.options[&#39;tol&#39;] = 1E-5</span>
-<span class="c1"># solver.options[&#39;acceptable_tol&#39;] = 1E-4</span>
-<span class="n">solver</span><span class="o">.</span><span class="n">options</span><span class="p">[</span><span class="s1">&#39;max_iter&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1000</span>
-<span class="n">solver</span><span class="o">.</span><span class="n">options</span><span class="p">[</span><span class="s1">&#39;linear_solver&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;ma57&#39;</span>
-
-<span class="kn">import</span> <span class="nn">logging</span>
-
-<span class="c1"># Create doe_object using DesignOfExperiments</span>
-<span class="n">doe_object2</span> <span class="o">=</span> <span class="n">DesignOfExperiments</span><span class="p">(</span>
-    <span class="n">theta_values</span><span class="p">,</span>  <span class="c1"># dictionary of parameters</span>
-    <span class="n">decisions2</span><span class="p">,</span>  <span class="c1"># design variable</span>
-    <span class="n">measurements2</span><span class="p">,</span>  <span class="c1"># measurement variable</span>
-    <span class="n">create_model_sens</span><span class="p">,</span>  <span class="c1"># model</span>
-    <span class="n">solver</span><span class="o">=</span><span class="n">solver</span><span class="p">,</span>
-    <span class="n">logger_level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">,</span>
-<span class="p">)</span>
-
-
-<span class="n">result</span> <span class="o">=</span> <span class="n">doe_object2</span><span class="o">.</span><span class="n">compute_FIM</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s1">&#39;sequential_finite&#39;</span><span class="p">,</span> <span class="n">formula</span><span class="o">=</span><span class="s1">&#39;central&#39;</span><span class="p">)</span>
-
-<span class="n">result</span><span class="o">.</span><span class="n">result_analysis</span><span class="p">()</span>
-
-
-<span class="n">pyomo_doe_results</span> <span class="o">=</span> <span class="n">extract_plot_results</span><span class="p">(</span><span class="n">tc_data</span><span class="p">,</span> <span class="n">doe_object2</span><span class="o">.</span><span class="n">model</span><span class="p">)</span>
+<span class="n">pyomo_doe_results</span> <span class="o">=</span> <span class="n">extract_plot_results</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">TC_Lab_DoE</span><span class="o">.</span><span class="n">compute_FIM_model</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Ipopt 3.13.2: halt_on_ampl_error=yes
-max_iter=1000
-linear_solver=ma57
-
-
-******************************************************************************
-This program contains Ipopt, a library for large-scale nonlinear optimization.
- Ipopt is released as open source code under the Eclipse Public License (EPL).
-         For more information visit http://projects.coin-or.org/Ipopt
-
-This version of Ipopt was compiled from source code available at
-    https://github.com/IDAES/Ipopt as part of the Institute for the Design of
-    Advanced Energy Systems Process Systems Engineering Framework (IDAES PSE
-    Framework) Copyright (c) 2018-2019. See https://github.com/IDAES/idaes-pse.
-
-This version of Ipopt was compiled using HSL, a collection of Fortran codes
-    for large-scale scientific computation.  All technical papers, sales and
-    publicity material resulting from use of the HSL codes within IPOPT must
-    contain the following acknowledgement:
-        HSL, a collection of Fortran codes for large-scale scientific
-        computation. See http://www.hsl.rl.ac.uk.
-******************************************************************************
-
-This is Ipopt version 3.13.2, running with linear solver ma57.
-
-Number of nonzeros in equality constraint Jacobian...:   127834
-Number of nonzeros in inequality constraint Jacobian.:        0
-Number of nonzeros in Lagrangian Hessian.............:       16
-
-Total number of variables............................:    40543
-                     variables with only lower bounds:        0
-                variables with lower and upper bounds:    24317
-                     variables with only upper bounds:        0
-Total number of equality constraints.................:    40543
-Total number of inequality constraints...............:        0
-        inequality constraints with only lower bounds:        0
-   inequality constraints with lower and upper bounds:        0
-        inequality constraints with only upper bounds:        0
-
-iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
-   0  0.0000000e+00 1.00e+00 0.00e+00  -1.0 0.00e+00    -  0.00e+00 0.00e+00   0
-   1  0.0000000e+00 1.00e-02 1.04e-01  -1.0 1.00e+00    -  9.81e-01 9.90e-01h  1
-   2  0.0000000e+00 9.90e-05 9.90e+00  -1.0 1.00e-02    -  1.00e+00 9.90e-01h  1
-   3  0.0000000e+00 3.13e-13 3.22e-04  -1.0 9.90e-05    -  1.00e+00 1.00e+00h  1
-
-Number of Iterations....: 3
-
-                                   (scaled)                 (unscaled)
-Objective...............:   0.0000000000000000e+00    0.0000000000000000e+00
-Dual infeasibility......:   0.0000000000000000e+00    0.0000000000000000e+00
-Constraint violation....:   3.1263880373444408e-13    3.1263880373444408e-13
-Complementarity.........:   0.0000000000000000e+00    0.0000000000000000e+00
-Overall NLP error.......:   3.1263880373444408e-13    3.1263880373444408e-13
-
-
-Number of objective function evaluations             = 4
-Number of objective gradient evaluations             = 4
-Number of equality constraint evaluations            = 4
-Number of inequality constraint evaluations          = 0
-Number of equality constraint Jacobian evaluations   = 4
-Number of inequality constraint Jacobian evaluations = 0
-Number of Lagrangian Hessian evaluations             = 3
-Total CPU secs in IPOPT (w/o function evaluations)   =      0.147
-Total CPU secs in NLP function evaluations           =      0.006
-
-EXIT: Optimal Solution Found.
-INFO: elapsed time: 4.2 seconds
-</pre></div>
-</div>
-<img alt="../_images/23c3c01c2633b6f7064316b9571a3177fdb6237693623e0c8afb0ec11266a78b.png" src="../_images/23c3c01c2633b6f7064316b9571a3177fdb6237693623e0c8afb0ec11266a78b.png" />
+<img alt="../_images/9caeb9bf9dd17f8f2ca8fa722a1a041a80ef970943b5533707f12c0d0f0f2c52.png" src="../_images/9caeb9bf9dd17f8f2ca8fa722a1a041a80ef970943b5533707f12c0d0f0f2c52.png" />
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model parameters:
-Ua = 0.0515 Watts/degC
-Ub = 0.0005 Watts/degC
-CpH = 6.8386 Joules/degC
-CpS = 0.01 Joules/degC
-u1_period = 1.0 minutes
+Ua = 0.0413 Watts/degC
+Ub = 0.0093 Watts/degC
+CpH = 6.0883 Joules/degC
+CpS = 0.1731 Joules/degC
+u1_period = 5 minutes
 u1_amplitude = 50 % power
  
 </pre></div>
@@ -984,40 +749,32 @@ u1_amplitude = 50 % power
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">results_summary</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">results_summary</span><span class="p">(</span><span class="n">FIM</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>======Results Summary======
 Four design criteria log10() value:
-A-optimality: 9.705521668583394
-D-optimality: nan
-E-optimality: nan
-Modified E-optimality: nan
+A-optimality: 5.780415236175106
+D-optimality: 12.321221800291308
+E-optimality: -1.7900021808076725
+Modified E-optimality: 7.519483927119054
 
 FIM:
- [[ 1.92187689e+08 -1.95158832e+08 -8.40569881e+06 -1.06170169e+03]
- [-1.95158832e+08  4.88231745e+09  6.63743245e+07  2.62025550e+04]
- [-8.40569881e+06  6.63743245e+07  1.49550678e+06  3.57695899e+02]
- [-1.06170169e+03  2.62025550e+04  3.57695899e+02  1.40628265e-01]]
+ [[526615.93104322   1269.39017779 -67742.74020183  -1135.81765702]
+ [  1269.39017779   5002.22184096  12430.15508962   5238.07864931]
+ [-67742.74020183  12430.15508962  65988.9240756   14256.31640107]
+ [ -1135.81765702   5238.07864931  14256.31640107   5528.90185893]]
 
 eigenvalues:
- [ 4.89133300e+09  1.84254423e+08  4.13222899e+05 -3.59981640e-16]
+ [5.36391326e+05 6.29165915e+04 3.82804512e+03 1.62180195e-02]
 
 eigenvectors:
- [[ 4.15154255e-02 -9.98649054e-01  3.12495844e-02 -1.00990095e-13]
- [-9.99044858e-01 -4.19179925e-02 -1.23390827e-02 -5.33299017e-06]
- [-1.36323331e-02  3.07074744e-02  9.99435446e-01 -2.48897568e-06]
- [-5.36182695e-06 -1.47118186e-07  2.42176631e-06  1.00000000e+00]]
-</pre></div>
-</div>
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/Users/adowling/DowlingLab/Teaching/pyomo-doe/notebooks/tclab_pyomo.py:776: RuntimeWarning: invalid value encountered in log10
-  print(&quot;D-optimality:&quot;, np.log10(result.det))
-/Users/adowling/DowlingLab/Teaching/pyomo-doe/notebooks/tclab_pyomo.py:777: RuntimeWarning: invalid value encountered in log10
-  print(&quot;E-optimality:&quot;, np.log10(result.min_eig))
-/Users/adowling/DowlingLab/Teaching/pyomo-doe/notebooks/tclab_pyomo.py:778: RuntimeWarning: invalid value encountered in log10
-  print(&quot;Modified E-optimality:&quot;, np.log10(result.cond))
+ [[-9.89741606e-01 -1.36133505e-01  4.33499251e-02 -7.45344234e-05]
+ [ 1.03341873e-03 -2.25549256e-01 -6.85896472e-01 -6.91861616e-01]
+ [ 1.42740848e-01 -9.31879387e-01  3.32518176e-01 -2.56421659e-02]
+ [ 5.96112603e-03 -2.49391279e-01 -6.45831616e-01  7.21574652e-01]]
 </pre></div>
 </div>
 </div>
@@ -1030,7 +787,6 @@ eigenvectors:
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Design variable ranges as lists</span>
-
 <span class="n">quick_run</span> <span class="o">=</span> <span class="kc">False</span>
 
 <span class="k">if</span> <span class="ow">not</span> <span class="n">quick_run</span><span class="p">:</span>
@@ -1039,641 +795,472 @@ eigenvectors:
         <span class="s2">&quot;u1_period&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">],</span>
         <span class="s2">&quot;u1_amplitude&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">15</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="mi">35</span><span class="p">,</span> <span class="mi">45</span><span class="p">],</span>
     <span class="p">}</span>
-
 <span class="k">else</span><span class="p">:</span>
     <span class="c1"># Faster sensitivity analysis, good for debugging</span>
     <span class="n">design_ranges</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;u1_period&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="s2">&quot;u1_amplitude&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">20</span><span class="p">,</span> <span class="mi">50</span><span class="p">]}</span>
 
-<span class="c1"># Choose from &#39;sequential_finite&#39;, &#39;direct_kaug&#39;</span>
-<span class="c1"># sensi_opt = &quot;sequential_finite&quot;</span>
-<span class="n">sensi_opt</span> <span class="o">=</span> <span class="s2">&quot;direct_kaug&quot;</span>
+<span class="n">sensi_opt</span> <span class="o">=</span> <span class="s2">&quot;sequential_finite&quot;</span>
 </pre></div>
 </div>
 </div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plot_each_iteration</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">mod</span><span class="p">:</span> <span class="n">extract_plot_results</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">mod</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">FIM_results</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">data_period</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">data_amplitude</span> <span class="o">=</span> <span class="p">[]</span>
 
+<span class="n">count</span> <span class="o">=</span> <span class="mi">0</span>
 <span class="c1"># Grid search</span>
-<span class="n">all_fim</span> <span class="o">=</span> <span class="n">doe_object2</span><span class="o">.</span><span class="n">run_grid_search</span><span class="p">(</span>
-    <span class="n">design_ranges</span><span class="p">,</span>  <span class="c1"># range of design variables</span>
-    <span class="n">mode</span><span class="o">=</span><span class="n">sensi_opt</span><span class="p">,</span>  <span class="c1"># solver option for sensitivity</span>
-    <span class="n">post_processing_function</span><span class="o">=</span><span class="n">plot_each_iteration</span><span class="p">,</span>
-<span class="p">)</span>
+<span class="k">for</span> <span class="n">period</span> <span class="ow">in</span> <span class="n">design_ranges</span><span class="p">[</span><span class="s2">&quot;u1_period&quot;</span><span class="p">]:</span>
+    <span class="k">for</span> <span class="n">amplitude</span> <span class="ow">in</span> <span class="n">design_ranges</span><span class="p">[</span><span class="s2">&quot;u1_amplitude&quot;</span><span class="p">]:</span>
+        <span class="n">count</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=======Iteration Number: </span><span class="si">{}</span><span class="s2"> =======&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">count</span><span class="p">))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Design variable values for this iteration: (Period: </span><span class="si">{}</span><span class="s2">, Amplitude: </span><span class="si">{}</span><span class="s2">)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">period</span><span class="p">,</span> <span class="n">amplitude</span><span class="p">))</span>
+
+        <span class="n">data_period</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">period</span><span class="p">)</span>
+        <span class="n">data_amplitude</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">amplitude</span><span class="p">)</span>
+        
+        <span class="n">doe_experiment</span> <span class="o">=</span> <span class="n">TC_Lab_experiment</span><span class="p">(</span>
+            <span class="n">data</span><span class="o">=</span><span class="n">tc_data</span><span class="p">,</span> 
+            <span class="n">theta_initial</span><span class="o">=</span><span class="n">theta_values</span><span class="p">,</span> 
+            <span class="n">number_of_states</span><span class="o">=</span><span class="n">number_tclab_states</span><span class="p">,</span> 
+            <span class="n">sine_amplitude</span><span class="o">=</span><span class="n">amplitude</span><span class="p">,</span>
+            <span class="n">sine_period</span><span class="o">=</span><span class="n">period</span><span class="p">,</span>
+        <span class="p">)</span>
+        
+        <span class="c1"># Create the design of experiments object using our experiment instance from above</span>
+        <span class="n">TC_Lab_DoE</span> <span class="o">=</span> <span class="n">DesignOfExperiments</span><span class="p">(</span><span class="n">experiment</span><span class="o">=</span><span class="n">doe_experiment</span><span class="p">,</span> 
+                                         <span class="n">step</span><span class="o">=</span><span class="mf">1e-2</span><span class="p">,</span>
+                                         <span class="n">scale_constant_value</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                                         <span class="n">scale_nominal_param_value</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> 
+                                         <span class="n">tee</span><span class="o">=</span><span class="kc">True</span><span class="p">,)</span>
+        
+        <span class="n">FIM</span> <span class="o">=</span> <span class="n">TC_Lab_DoE</span><span class="o">.</span><span class="n">compute_FIM</span><span class="p">(</span><span class="n">method</span><span class="o">=</span><span class="s1">&#39;sequential&#39;</span><span class="p">)</span>
+        
+        <span class="n">pyomo_doe_results</span> <span class="o">=</span> <span class="n">extract_plot_results</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">TC_Lab_DoE</span><span class="o">.</span><span class="n">compute_FIM_model</span><span class="p">)</span>
+
+        <span class="n">FIM_results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">FIM</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>INFO: =======Iteration Number: 1 =====
-DEBUG: Design variable values of this iteration: {&#39;u1_period&#39;: 1,
-&#39;u1_amplitude&#39;: 15}
-DEBUG: The variable is fixed:  Ts1[0.0]
-INFO: elapsed time: 1.1 seconds
-INFO: This is run 1 out of 32.
-INFO: The code has run  1.12 seconds.
-INFO: Estimated remaining time:  34.63 seconds
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>=======Iteration Number: 1 =======
+Design variable values for this iteration: (Period: 1, Amplitude: 15)
 </pre></div>
 </div>
-<img alt="../_images/1c5e492d00d47a70b4c31c360a3f72883275e33cb4ca118cfe9a3a067bf22c91.png" src="../_images/1c5e492d00d47a70b4c31c360a3f72883275e33cb4ca118cfe9a3a067bf22c91.png" />
+<img alt="../_images/1208d8731e9b34c2f132f56a816b3bf1471a6b99e0306d3d1f3216275741e5e4.png" src="../_images/1208d8731e9b34c2f132f56a816b3bf1471a6b99e0306d3d1f3216275741e5e4.png" />
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model parameters:
-Ua = 0.0515 Watts/degC
-Ub = 0.0005 Watts/degC
-CpH = 6.8386 Joules/degC
-CpS = 0.01 Joules/degC
+Ua = 0.0413 Watts/degC
+Ub = 0.0093 Watts/degC
+CpH = 6.0883 Joules/degC
+CpS = 0.1731 Joules/degC
 u1_period = 1 minutes
 u1_amplitude = 15 % power
  
-INFO: =======Iteration Number: 2 =====
-DEBUG: Design variable values of this iteration: {&#39;u1_period&#39;: 1,
-&#39;u1_amplitude&#39;: 25}
-DEBUG: The variable is fixed:  Ts1[0.0]
-INFO: elapsed time: 0.9 seconds
-INFO: This is run 2 out of 32.
-INFO: The code has run  2.05 seconds.
-INFO: Estimated remaining time:  30.78 seconds
+=======Iteration Number: 2 =======
+Design variable values for this iteration: (Period: 1, Amplitude: 25)
 </pre></div>
 </div>
-<img alt="../_images/ac91ecee523fb430496ae1e8e2e16ea4e99437ebeb65bf3032738fb12ca6d302.png" src="../_images/ac91ecee523fb430496ae1e8e2e16ea4e99437ebeb65bf3032738fb12ca6d302.png" />
+<img alt="../_images/53248ac05258492b512cb74832f9e84549201d248d8a66340ab319fff195fed2.png" src="../_images/53248ac05258492b512cb74832f9e84549201d248d8a66340ab319fff195fed2.png" />
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model parameters:
-Ua = 0.0515 Watts/degC
-Ub = 0.0005 Watts/degC
-CpH = 6.8386 Joules/degC
-CpS = 0.01 Joules/degC
+Ua = 0.0413 Watts/degC
+Ub = 0.0093 Watts/degC
+CpH = 6.0883 Joules/degC
+CpS = 0.1731 Joules/degC
 u1_period = 1 minutes
 u1_amplitude = 25 % power
  
-INFO: =======Iteration Number: 3 =====
-DEBUG: Design variable values of this iteration: {&#39;u1_period&#39;: 1,
-&#39;u1_amplitude&#39;: 35}
-DEBUG: The variable is fixed:  Ts1[0.0]
-INFO: elapsed time: 0.9 seconds
-INFO: This is run 3 out of 32.
-INFO: The code has run  2.99 seconds.
-INFO: Estimated remaining time:  28.87 seconds
+=======Iteration Number: 3 =======
+Design variable values for this iteration: (Period: 1, Amplitude: 35)
 </pre></div>
 </div>
-<img alt="../_images/0f851f0c423515a25cf35eacd1d82f3436ca0d85b7021b7e0823801d2ce56eb5.png" src="../_images/0f851f0c423515a25cf35eacd1d82f3436ca0d85b7021b7e0823801d2ce56eb5.png" />
+<img alt="../_images/d69f277783756c4cb4853e1acfd897e8de65592c13d6ead30a83016151f0501b.png" src="../_images/d69f277783756c4cb4853e1acfd897e8de65592c13d6ead30a83016151f0501b.png" />
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model parameters:
-Ua = 0.0515 Watts/degC
-Ub = 0.0005 Watts/degC
-CpH = 6.8386 Joules/degC
-CpS = 0.01 Joules/degC
+Ua = 0.0413 Watts/degC
+Ub = 0.0093 Watts/degC
+CpH = 6.0883 Joules/degC
+CpS = 0.1731 Joules/degC
 u1_period = 1 minutes
 u1_amplitude = 35 % power
  
-INFO: =======Iteration Number: 4 =====
-DEBUG: Design variable values of this iteration: {&#39;u1_period&#39;: 1,
-&#39;u1_amplitude&#39;: 45}
-DEBUG: The variable is fixed:  Ts1[0.0]
-INFO: elapsed time: 1.2 seconds
-INFO: This is run 4 out of 32.
-INFO: The code has run  4.21 seconds.
-INFO: Estimated remaining time:  29.48 seconds
+=======Iteration Number: 4 =======
+Design variable values for this iteration: (Period: 1, Amplitude: 45)
 </pre></div>
 </div>
-<img alt="../_images/3546c4fff5e28262bd098440a4da7b667f31c520c9614f03558022769f748a0e.png" src="../_images/3546c4fff5e28262bd098440a4da7b667f31c520c9614f03558022769f748a0e.png" />
+<img alt="../_images/73e0e2059b82e5a5edbb0c51a40cb229c07de3dace62410f078f4d6feff64917.png" src="../_images/73e0e2059b82e5a5edbb0c51a40cb229c07de3dace62410f078f4d6feff64917.png" />
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model parameters:
-Ua = 0.0515 Watts/degC
-Ub = 0.0005 Watts/degC
-CpH = 6.8386 Joules/degC
-CpS = 0.01 Joules/degC
+Ua = 0.0413 Watts/degC
+Ub = 0.0093 Watts/degC
+CpH = 6.0883 Joules/degC
+CpS = 0.1731 Joules/degC
 u1_period = 1 minutes
 u1_amplitude = 45 % power
  
-INFO: =======Iteration Number: 5 =====
-DEBUG: Design variable values of this iteration: {&#39;u1_period&#39;: 2,
-&#39;u1_amplitude&#39;: 15}
-DEBUG: The variable is fixed:  Ts1[0.0]
-INFO: elapsed time: 0.9 seconds
-INFO: This is run 5 out of 32.
-INFO: The code has run  5.15 seconds.
-INFO: Estimated remaining time:  27.81 seconds
+=======Iteration Number: 5 =======
+Design variable values for this iteration: (Period: 2, Amplitude: 15)
 </pre></div>
 </div>
-<img alt="../_images/b87ad8491dfa201db1d161d88fe0e05b44d15145b6a6d524f6ee50d64be700b0.png" src="../_images/b87ad8491dfa201db1d161d88fe0e05b44d15145b6a6d524f6ee50d64be700b0.png" />
+<img alt="../_images/aa4c287cda3bcde3f130368b4a2e5e6e3c5db415be40317f183cf8bd4579ffc5.png" src="../_images/aa4c287cda3bcde3f130368b4a2e5e6e3c5db415be40317f183cf8bd4579ffc5.png" />
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model parameters:
-Ua = 0.0515 Watts/degC
-Ub = 0.0005 Watts/degC
-CpH = 6.8386 Joules/degC
-CpS = 0.01 Joules/degC
+Ua = 0.0413 Watts/degC
+Ub = 0.0093 Watts/degC
+CpH = 6.0883 Joules/degC
+CpS = 0.1731 Joules/degC
 u1_period = 2 minutes
 u1_amplitude = 15 % power
  
-INFO: =======Iteration Number: 6 =====
-DEBUG: Design variable values of this iteration: {&#39;u1_period&#39;: 2,
-&#39;u1_amplitude&#39;: 25}
-DEBUG: The variable is fixed:  Ts1[0.0]
-INFO: elapsed time: 1.2 seconds
-INFO: This is run 6 out of 32.
-INFO: The code has run  6.36 seconds.
-INFO: Estimated remaining time:  27.57 seconds
+=======Iteration Number: 6 =======
+Design variable values for this iteration: (Period: 2, Amplitude: 25)
 </pre></div>
 </div>
-<img alt="../_images/56590503659c3e0fc2f63d0eaafb2fea6d6d97bdd88f1c9443e5c53e7bdac8b7.png" src="../_images/56590503659c3e0fc2f63d0eaafb2fea6d6d97bdd88f1c9443e5c53e7bdac8b7.png" />
+<img alt="../_images/47dad7911cdf3ed05fdd73801776220d54284fe07bcb9ad1a85a3497c18b3a1c.png" src="../_images/47dad7911cdf3ed05fdd73801776220d54284fe07bcb9ad1a85a3497c18b3a1c.png" />
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model parameters:
-Ua = 0.0515 Watts/degC
-Ub = 0.0005 Watts/degC
-CpH = 6.8386 Joules/degC
-CpS = 0.01 Joules/degC
+Ua = 0.0413 Watts/degC
+Ub = 0.0093 Watts/degC
+CpH = 6.0883 Joules/degC
+CpS = 0.1731 Joules/degC
 u1_period = 2 minutes
 u1_amplitude = 25 % power
  
-INFO: =======Iteration Number: 7 =====
-DEBUG: Design variable values of this iteration: {&#39;u1_period&#39;: 2,
-&#39;u1_amplitude&#39;: 35}
-DEBUG: The variable is fixed:  Ts1[0.0]
-INFO: elapsed time: 1.0 seconds
-INFO: This is run 7 out of 32.
-INFO: The code has run  7.32 seconds.
-INFO: Estimated remaining time:  26.13 seconds
+=======Iteration Number: 7 =======
+Design variable values for this iteration: (Period: 2, Amplitude: 35)
 </pre></div>
 </div>
-<img alt="../_images/e9d63e1982addce09b0e731b40eebc0a9293afdf363f60900cf0287794192f18.png" src="../_images/e9d63e1982addce09b0e731b40eebc0a9293afdf363f60900cf0287794192f18.png" />
+<img alt="../_images/28ade973eb3558a2447e33c76a45c02dc4b979f6e3d3ac2b1a330a5362aca55e.png" src="../_images/28ade973eb3558a2447e33c76a45c02dc4b979f6e3d3ac2b1a330a5362aca55e.png" />
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model parameters:
-Ua = 0.0515 Watts/degC
-Ub = 0.0005 Watts/degC
-CpH = 6.8386 Joules/degC
-CpS = 0.01 Joules/degC
+Ua = 0.0413 Watts/degC
+Ub = 0.0093 Watts/degC
+CpH = 6.0883 Joules/degC
+CpS = 0.1731 Joules/degC
 u1_period = 2 minutes
 u1_amplitude = 35 % power
  
-INFO: =======Iteration Number: 8 =====
-DEBUG: Design variable values of this iteration: {&#39;u1_period&#39;: 2,
-&#39;u1_amplitude&#39;: 45}
-DEBUG: The variable is fixed:  Ts1[0.0]
-INFO: elapsed time: 0.9 seconds
-INFO: This is run 8 out of 32.
-INFO: The code has run  8.25 seconds.
-INFO: Estimated remaining time:  24.76 seconds
+=======Iteration Number: 8 =======
+Design variable values for this iteration: (Period: 2, Amplitude: 45)
 </pre></div>
 </div>
-<img alt="../_images/47f39bd692232951bb176bcbf29e4953b614470bd977b6e65bef4461648d6f5f.png" src="../_images/47f39bd692232951bb176bcbf29e4953b614470bd977b6e65bef4461648d6f5f.png" />
+<img alt="../_images/ed3a9e265705587da33c16e5157d0ffdaf32025695917eb6253ab69b252d0209.png" src="../_images/ed3a9e265705587da33c16e5157d0ffdaf32025695917eb6253ab69b252d0209.png" />
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model parameters:
-Ua = 0.0515 Watts/degC
-Ub = 0.0005 Watts/degC
-CpH = 6.8386 Joules/degC
-CpS = 0.01 Joules/degC
+Ua = 0.0413 Watts/degC
+Ub = 0.0093 Watts/degC
+CpH = 6.0883 Joules/degC
+CpS = 0.1731 Joules/degC
 u1_period = 2 minutes
 u1_amplitude = 45 % power
  
-INFO: =======Iteration Number: 9 =====
-DEBUG: Design variable values of this iteration: {&#39;u1_period&#39;: 3,
-&#39;u1_amplitude&#39;: 15}
-DEBUG: The variable is fixed:  Ts1[0.0]
-INFO: elapsed time: 1.3 seconds
-INFO: This is run 9 out of 32.
-INFO: The code has run  9.52 seconds.
-INFO: Estimated remaining time:  24.33 seconds
+=======Iteration Number: 9 =======
+Design variable values for this iteration: (Period: 3, Amplitude: 15)
 </pre></div>
 </div>
-<img alt="../_images/e6173b94f370a855783f7e4152b40e9c7c66685300819f92f2ebe4e8c077d9cc.png" src="../_images/e6173b94f370a855783f7e4152b40e9c7c66685300819f92f2ebe4e8c077d9cc.png" />
+<img alt="../_images/506418d6a2f1f2b7cb14fa794d94467c55c8816aa21226d6828624bc942823f7.png" src="../_images/506418d6a2f1f2b7cb14fa794d94467c55c8816aa21226d6828624bc942823f7.png" />
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model parameters:
-Ua = 0.0515 Watts/degC
-Ub = 0.0005 Watts/degC
-CpH = 6.8386 Joules/degC
-CpS = 0.01 Joules/degC
+Ua = 0.0413 Watts/degC
+Ub = 0.0093 Watts/degC
+CpH = 6.0883 Joules/degC
+CpS = 0.1731 Joules/degC
 u1_period = 3 minutes
 u1_amplitude = 15 % power
  
-INFO: =======Iteration Number: 10 =====
-DEBUG: Design variable values of this iteration: {&#39;u1_period&#39;: 3,
-&#39;u1_amplitude&#39;: 25}
-DEBUG: The variable is fixed:  Ts1[0.0]
-INFO: elapsed time: 0.9 seconds
-INFO: This is run 10 out of 32.
-INFO: The code has run  10.47 seconds.
-INFO: Estimated remaining time:  23.02 seconds
+=======Iteration Number: 10 =======
+Design variable values for this iteration: (Period: 3, Amplitude: 25)
 </pre></div>
 </div>
-<img alt="../_images/650e780c3c324ba85d766eaade1bb6f9c5c6904ef5e58bda50e0d1227e03c729.png" src="../_images/650e780c3c324ba85d766eaade1bb6f9c5c6904ef5e58bda50e0d1227e03c729.png" />
+<img alt="../_images/b39c42ea0e360f6cb0e4582f16196e780b19c87d790d94661001e8552e63836d.png" src="../_images/b39c42ea0e360f6cb0e4582f16196e780b19c87d790d94661001e8552e63836d.png" />
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model parameters:
-Ua = 0.0515 Watts/degC
-Ub = 0.0005 Watts/degC
-CpH = 6.8386 Joules/degC
-CpS = 0.01 Joules/degC
+Ua = 0.0413 Watts/degC
+Ub = 0.0093 Watts/degC
+CpH = 6.0883 Joules/degC
+CpS = 0.1731 Joules/degC
 u1_period = 3 minutes
 u1_amplitude = 25 % power
  
-INFO: =======Iteration Number: 11 =====
-DEBUG: Design variable values of this iteration: {&#39;u1_period&#39;: 3,
-&#39;u1_amplitude&#39;: 35}
-DEBUG: The variable is fixed:  Ts1[0.0]
-INFO: elapsed time: 1.2 seconds
-INFO: This is run 11 out of 32.
-INFO: The code has run  11.68 seconds.
-INFO: Estimated remaining time:  22.3 seconds
+=======Iteration Number: 11 =======
+Design variable values for this iteration: (Period: 3, Amplitude: 35)
 </pre></div>
 </div>
-<img alt="../_images/fc93da1e9076563c89adf24b34795d3efbb8f4741882d35c897800d5da4b4c61.png" src="../_images/fc93da1e9076563c89adf24b34795d3efbb8f4741882d35c897800d5da4b4c61.png" />
+<img alt="../_images/903b18e36e2b8c4cb057bf21219dcc96ecbfc51013526b2c5f67763856648950.png" src="../_images/903b18e36e2b8c4cb057bf21219dcc96ecbfc51013526b2c5f67763856648950.png" />
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model parameters:
-Ua = 0.0515 Watts/degC
-Ub = 0.0005 Watts/degC
-CpH = 6.8386 Joules/degC
-CpS = 0.01 Joules/degC
+Ua = 0.0413 Watts/degC
+Ub = 0.0093 Watts/degC
+CpH = 6.0883 Joules/degC
+CpS = 0.1731 Joules/degC
 u1_period = 3 minutes
 u1_amplitude = 35 % power
  
-INFO: =======Iteration Number: 12 =====
-DEBUG: Design variable values of this iteration: {&#39;u1_period&#39;: 3,
-&#39;u1_amplitude&#39;: 45}
-DEBUG: The variable is fixed:  Ts1[0.0]
-INFO: elapsed time: 1.0 seconds
-INFO: This is run 12 out of 32.
-INFO: The code has run  12.64 seconds.
-INFO: Estimated remaining time:  21.07 seconds
+=======Iteration Number: 12 =======
+Design variable values for this iteration: (Period: 3, Amplitude: 45)
 </pre></div>
 </div>
-<img alt="../_images/d78357b3714f72e9efe1813e3b44fbfc69870f64bdf41a6c3430ce0a33bbb9ba.png" src="../_images/d78357b3714f72e9efe1813e3b44fbfc69870f64bdf41a6c3430ce0a33bbb9ba.png" />
+<img alt="../_images/7feb7785c27f730133b314faad8722a6f7a0f770d0ba3d40022df783e1182aaa.png" src="../_images/7feb7785c27f730133b314faad8722a6f7a0f770d0ba3d40022df783e1182aaa.png" />
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model parameters:
-Ua = 0.0515 Watts/degC
-Ub = 0.0005 Watts/degC
-CpH = 6.8386 Joules/degC
-CpS = 0.01 Joules/degC
+Ua = 0.0413 Watts/degC
+Ub = 0.0093 Watts/degC
+CpH = 6.0883 Joules/degC
+CpS = 0.1731 Joules/degC
 u1_period = 3 minutes
 u1_amplitude = 45 % power
  
-INFO: =======Iteration Number: 13 =====
-DEBUG: Design variable values of this iteration: {&#39;u1_period&#39;: 4,
-&#39;u1_amplitude&#39;: 15}
-DEBUG: The variable is fixed:  Ts1[0.0]
-INFO: elapsed time: 1.0 seconds
-INFO: This is run 13 out of 32.
-INFO: The code has run  13.6 seconds.
-INFO: Estimated remaining time:  19.88 seconds
+=======Iteration Number: 13 =======
+Design variable values for this iteration: (Period: 4, Amplitude: 15)
 </pre></div>
 </div>
-<img alt="../_images/6791b3a0bbb9493ca1f08a82825ac446104b952abfbfbf75f8d0109071ba32bd.png" src="../_images/6791b3a0bbb9493ca1f08a82825ac446104b952abfbfbf75f8d0109071ba32bd.png" />
+<img alt="../_images/8058d05f67728058a794ef62b53036da46405c07dcc9f4728f2f1f77829da67a.png" src="../_images/8058d05f67728058a794ef62b53036da46405c07dcc9f4728f2f1f77829da67a.png" />
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model parameters:
-Ua = 0.0515 Watts/degC
-Ub = 0.0005 Watts/degC
-CpH = 6.8386 Joules/degC
-CpS = 0.01 Joules/degC
+Ua = 0.0413 Watts/degC
+Ub = 0.0093 Watts/degC
+CpH = 6.0883 Joules/degC
+CpS = 0.1731 Joules/degC
 u1_period = 4 minutes
 u1_amplitude = 15 % power
  
-INFO: =======Iteration Number: 14 =====
-DEBUG: Design variable values of this iteration: {&#39;u1_period&#39;: 4,
-&#39;u1_amplitude&#39;: 25}
-DEBUG: The variable is fixed:  Ts1[0.0]
-INFO: elapsed time: 1.5 seconds
-INFO: This is run 14 out of 32.
-INFO: The code has run  15.06 seconds.
-INFO: Estimated remaining time:  19.36 seconds
+=======Iteration Number: 14 =======
+Design variable values for this iteration: (Period: 4, Amplitude: 25)
 </pre></div>
 </div>
-<img alt="../_images/8407fdefe9517f9966959ba1061b0ace1824628a51c35417f8702143a64b1456.png" src="../_images/8407fdefe9517f9966959ba1061b0ace1824628a51c35417f8702143a64b1456.png" />
+<img alt="../_images/ebb639a2816e8d2625ede7155fde378ff405c29e7a336627cad96bc38d3da0f3.png" src="../_images/ebb639a2816e8d2625ede7155fde378ff405c29e7a336627cad96bc38d3da0f3.png" />
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model parameters:
-Ua = 0.0515 Watts/degC
-Ub = 0.0005 Watts/degC
-CpH = 6.8386 Joules/degC
-CpS = 0.01 Joules/degC
+Ua = 0.0413 Watts/degC
+Ub = 0.0093 Watts/degC
+CpH = 6.0883 Joules/degC
+CpS = 0.1731 Joules/degC
 u1_period = 4 minutes
 u1_amplitude = 25 % power
  
-INFO: =======Iteration Number: 15 =====
-DEBUG: Design variable values of this iteration: {&#39;u1_period&#39;: 4,
-&#39;u1_amplitude&#39;: 35}
-DEBUG: The variable is fixed:  Ts1[0.0]
-INFO: elapsed time: 1.0 seconds
-INFO: This is run 15 out of 32.
-INFO: The code has run  16.02 seconds.
-INFO: Estimated remaining time:  18.16 seconds
+=======Iteration Number: 15 =======
+Design variable values for this iteration: (Period: 4, Amplitude: 35)
 </pre></div>
 </div>
-<img alt="../_images/4f0855d35b05d308c6a3602a79a4b8b36ea7562efea573c8add12014df521798.png" src="../_images/4f0855d35b05d308c6a3602a79a4b8b36ea7562efea573c8add12014df521798.png" />
+<img alt="../_images/9215d0075b6860e2b928f52f054a6e8f799913406c185a2cdd80e7f46e39458c.png" src="../_images/9215d0075b6860e2b928f52f054a6e8f799913406c185a2cdd80e7f46e39458c.png" />
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model parameters:
-Ua = 0.0515 Watts/degC
-Ub = 0.0005 Watts/degC
-CpH = 6.8386 Joules/degC
-CpS = 0.01 Joules/degC
+Ua = 0.0413 Watts/degC
+Ub = 0.0093 Watts/degC
+CpH = 6.0883 Joules/degC
+CpS = 0.1731 Joules/degC
 u1_period = 4 minutes
 u1_amplitude = 35 % power
  
-INFO: =======Iteration Number: 16 =====
-DEBUG: Design variable values of this iteration: {&#39;u1_period&#39;: 4,
-&#39;u1_amplitude&#39;: 45}
-DEBUG: The variable is fixed:  Ts1[0.0]
-INFO: elapsed time: 1.2 seconds
-INFO: This is run 16 out of 32.
-INFO: The code has run  17.2 seconds.
-INFO: Estimated remaining time:  17.2 seconds
+=======Iteration Number: 16 =======
+Design variable values for this iteration: (Period: 4, Amplitude: 45)
 </pre></div>
 </div>
-<img alt="../_images/fd840bf2225fa61307554019d93b744069e2766e966455181d7218114d0e00a6.png" src="../_images/fd840bf2225fa61307554019d93b744069e2766e966455181d7218114d0e00a6.png" />
+<img alt="../_images/b09e109e2d9e8d525f888d29fdbe7dbc0d8d10f221685ac86496ab721ae56a4e.png" src="../_images/b09e109e2d9e8d525f888d29fdbe7dbc0d8d10f221685ac86496ab721ae56a4e.png" />
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model parameters:
-Ua = 0.0515 Watts/degC
-Ub = 0.0005 Watts/degC
-CpH = 6.8386 Joules/degC
-CpS = 0.01 Joules/degC
+Ua = 0.0413 Watts/degC
+Ub = 0.0093 Watts/degC
+CpH = 6.0883 Joules/degC
+CpS = 0.1731 Joules/degC
 u1_period = 4 minutes
 u1_amplitude = 45 % power
  
-INFO: =======Iteration Number: 17 =====
-DEBUG: Design variable values of this iteration: {&#39;u1_period&#39;: 5,
-&#39;u1_amplitude&#39;: 15}
-DEBUG: The variable is fixed:  Ts1[0.0]
-INFO: elapsed time: 0.9 seconds
-INFO: This is run 17 out of 32.
-INFO: The code has run  18.15 seconds.
-INFO: Estimated remaining time:  16.01 seconds
+=======Iteration Number: 17 =======
+Design variable values for this iteration: (Period: 5, Amplitude: 15)
 </pre></div>
 </div>
-<img alt="../_images/2e54e10048b95558642769b977af2881a85a59ec25350c3c4214b9239764bed8.png" src="../_images/2e54e10048b95558642769b977af2881a85a59ec25350c3c4214b9239764bed8.png" />
+<img alt="../_images/355547dd114162c8e74369744168295ad38291c9f2a336a8bbebd3def471306d.png" src="../_images/355547dd114162c8e74369744168295ad38291c9f2a336a8bbebd3def471306d.png" />
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model parameters:
-Ua = 0.0515 Watts/degC
-Ub = 0.0005 Watts/degC
-CpH = 6.8386 Joules/degC
-CpS = 0.01 Joules/degC
+Ua = 0.0413 Watts/degC
+Ub = 0.0093 Watts/degC
+CpH = 6.0883 Joules/degC
+CpS = 0.1731 Joules/degC
 u1_period = 5 minutes
 u1_amplitude = 15 % power
  
-INFO: =======Iteration Number: 18 =====
-DEBUG: Design variable values of this iteration: {&#39;u1_period&#39;: 5,
-&#39;u1_amplitude&#39;: 25}
-DEBUG: The variable is fixed:  Ts1[0.0]
-INFO: elapsed time: 0.9 seconds
-INFO: This is run 18 out of 32.
-INFO: The code has run  19.08 seconds.
-INFO: Estimated remaining time:  14.84 seconds
+=======Iteration Number: 18 =======
+Design variable values for this iteration: (Period: 5, Amplitude: 25)
 </pre></div>
 </div>
-<img alt="../_images/90d821fe29bad3f28d217788fa7815e03180d69e45448d20a083e48c81a40485.png" src="../_images/90d821fe29bad3f28d217788fa7815e03180d69e45448d20a083e48c81a40485.png" />
+<img alt="../_images/a52285cbe7c41d093f3c69cfa3d13862b9a3a0a6845d9e79a3378c87e3542910.png" src="../_images/a52285cbe7c41d093f3c69cfa3d13862b9a3a0a6845d9e79a3378c87e3542910.png" />
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model parameters:
-Ua = 0.0515 Watts/degC
-Ub = 0.0005 Watts/degC
-CpH = 6.8386 Joules/degC
-CpS = 0.01 Joules/degC
+Ua = 0.0413 Watts/degC
+Ub = 0.0093 Watts/degC
+CpH = 6.0883 Joules/degC
+CpS = 0.1731 Joules/degC
 u1_period = 5 minutes
 u1_amplitude = 25 % power
  
-INFO: =======Iteration Number: 19 =====
-DEBUG: Design variable values of this iteration: {&#39;u1_period&#39;: 5,
-&#39;u1_amplitude&#39;: 35}
-DEBUG: The variable is fixed:  Ts1[0.0]
-INFO: elapsed time: 1.2 seconds
-INFO: This is run 19 out of 32.
-INFO: The code has run  20.31 seconds.
-INFO: Estimated remaining time:  13.89 seconds
+=======Iteration Number: 19 =======
+Design variable values for this iteration: (Period: 5, Amplitude: 35)
 </pre></div>
 </div>
-<img alt="../_images/ea9711f04aa17a024d50ff1329ef8bc325765a375c48c7827d2223b79f6e3de4.png" src="../_images/ea9711f04aa17a024d50ff1329ef8bc325765a375c48c7827d2223b79f6e3de4.png" />
+<img alt="../_images/a71bc7c2ca8d3a2104233ee09f2bd21ead0cc06fff2aa37f50a8a04f1c0add91.png" src="../_images/a71bc7c2ca8d3a2104233ee09f2bd21ead0cc06fff2aa37f50a8a04f1c0add91.png" />
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model parameters:
-Ua = 0.0515 Watts/degC
-Ub = 0.0005 Watts/degC
-CpH = 6.8386 Joules/degC
-CpS = 0.01 Joules/degC
+Ua = 0.0413 Watts/degC
+Ub = 0.0093 Watts/degC
+CpH = 6.0883 Joules/degC
+CpS = 0.1731 Joules/degC
 u1_period = 5 minutes
 u1_amplitude = 35 % power
  
-INFO: =======Iteration Number: 20 =====
-DEBUG: Design variable values of this iteration: {&#39;u1_period&#39;: 5,
-&#39;u1_amplitude&#39;: 45}
-DEBUG: The variable is fixed:  Ts1[0.0]
-INFO: elapsed time: 1.0 seconds
-INFO: This is run 20 out of 32.
-INFO: The code has run  21.28 seconds.
-INFO: Estimated remaining time:  12.77 seconds
+=======Iteration Number: 20 =======
+Design variable values for this iteration: (Period: 5, Amplitude: 45)
 </pre></div>
 </div>
-<img alt="../_images/0692dd8a60de073527f10d716ad8a58caeb3434284115f6545b328899ecf2c1b.png" src="../_images/0692dd8a60de073527f10d716ad8a58caeb3434284115f6545b328899ecf2c1b.png" />
+<img alt="../_images/ee800c1c84797faac5cdaa495850b0ca1ebbc4860a0fc860a64afc16319e84c7.png" src="../_images/ee800c1c84797faac5cdaa495850b0ca1ebbc4860a0fc860a64afc16319e84c7.png" />
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model parameters:
-Ua = 0.0515 Watts/degC
-Ub = 0.0005 Watts/degC
-CpH = 6.8386 Joules/degC
-CpS = 0.01 Joules/degC
+Ua = 0.0413 Watts/degC
+Ub = 0.0093 Watts/degC
+CpH = 6.0883 Joules/degC
+CpS = 0.1731 Joules/degC
 u1_period = 5 minutes
 u1_amplitude = 45 % power
  
-INFO: =======Iteration Number: 21 =====
-DEBUG: Design variable values of this iteration: {&#39;u1_period&#39;: 6,
-&#39;u1_amplitude&#39;: 15}
-DEBUG: The variable is fixed:  Ts1[0.0]
-INFO: elapsed time: 1.3 seconds
-INFO: This is run 21 out of 32.
-INFO: The code has run  22.58 seconds.
-INFO: Estimated remaining time:  11.83 seconds
+=======Iteration Number: 21 =======
+Design variable values for this iteration: (Period: 6, Amplitude: 15)
 </pre></div>
 </div>
-<img alt="../_images/54317a0863a120aa99eaf22d2b6845ef8e20fc9f86e853babe7b0b70efd7c7b3.png" src="../_images/54317a0863a120aa99eaf22d2b6845ef8e20fc9f86e853babe7b0b70efd7c7b3.png" />
+<img alt="../_images/3a8d4194fc31548471ccfa2ff16709bb6592001d1d228416b46396d01ba026ed.png" src="../_images/3a8d4194fc31548471ccfa2ff16709bb6592001d1d228416b46396d01ba026ed.png" />
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model parameters:
-Ua = 0.0515 Watts/degC
-Ub = 0.0005 Watts/degC
-CpH = 6.8386 Joules/degC
-CpS = 0.01 Joules/degC
+Ua = 0.0413 Watts/degC
+Ub = 0.0093 Watts/degC
+CpH = 6.0883 Joules/degC
+CpS = 0.1731 Joules/degC
 u1_period = 6 minutes
 u1_amplitude = 15 % power
  
-INFO: =======Iteration Number: 22 =====
-DEBUG: Design variable values of this iteration: {&#39;u1_period&#39;: 6,
-&#39;u1_amplitude&#39;: 25}
-DEBUG: The variable is fixed:  Ts1[0.0]
-INFO: elapsed time: 1.0 seconds
-INFO: This is run 22 out of 32.
-INFO: The code has run  23.54 seconds.
-INFO: Estimated remaining time:  10.7 seconds
+=======Iteration Number: 22 =======
+Design variable values for this iteration: (Period: 6, Amplitude: 25)
 </pre></div>
 </div>
-<img alt="../_images/42c6cff9050b4229509c30c434252935e2ca8212eb2d9c1ad1bfa5120f205921.png" src="../_images/42c6cff9050b4229509c30c434252935e2ca8212eb2d9c1ad1bfa5120f205921.png" />
+<img alt="../_images/8f65e8eb2faa736a462103656d2c6bb7ffb21d35f57ff45619d662d49dc0ad1a.png" src="../_images/8f65e8eb2faa736a462103656d2c6bb7ffb21d35f57ff45619d662d49dc0ad1a.png" />
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model parameters:
-Ua = 0.0515 Watts/degC
-Ub = 0.0005 Watts/degC
-CpH = 6.8386 Joules/degC
-CpS = 0.01 Joules/degC
+Ua = 0.0413 Watts/degC
+Ub = 0.0093 Watts/degC
+CpH = 6.0883 Joules/degC
+CpS = 0.1731 Joules/degC
 u1_period = 6 minutes
 u1_amplitude = 25 % power
  
-INFO: =======Iteration Number: 23 =====
-DEBUG: Design variable values of this iteration: {&#39;u1_period&#39;: 6,
-&#39;u1_amplitude&#39;: 35}
-DEBUG: The variable is fixed:  Ts1[0.0]
-INFO: elapsed time: 0.9 seconds
-INFO: This is run 23 out of 32.
-INFO: The code has run  24.5 seconds.
-INFO: Estimated remaining time:  9.59 seconds
+=======Iteration Number: 23 =======
+Design variable values for this iteration: (Period: 6, Amplitude: 35)
 </pre></div>
 </div>
-<img alt="../_images/592a9330194dd27a8f0c9e70db1f15b85858c05dfc327d82e029bf3472c20816.png" src="../_images/592a9330194dd27a8f0c9e70db1f15b85858c05dfc327d82e029bf3472c20816.png" />
+<img alt="../_images/0aa7adb0b4cafc9061b0a8ee4a18e2e7266235f47276890972896d508b31fcb4.png" src="../_images/0aa7adb0b4cafc9061b0a8ee4a18e2e7266235f47276890972896d508b31fcb4.png" />
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model parameters:
-Ua = 0.0515 Watts/degC
-Ub = 0.0005 Watts/degC
-CpH = 6.8386 Joules/degC
-CpS = 0.01 Joules/degC
+Ua = 0.0413 Watts/degC
+Ub = 0.0093 Watts/degC
+CpH = 6.0883 Joules/degC
+CpS = 0.1731 Joules/degC
 u1_period = 6 minutes
 u1_amplitude = 35 % power
  
-INFO: =======Iteration Number: 24 =====
-DEBUG: Design variable values of this iteration: {&#39;u1_period&#39;: 6,
-&#39;u1_amplitude&#39;: 45}
-DEBUG: The variable is fixed:  Ts1[0.0]
-INFO: elapsed time: 1.3 seconds
-INFO: This is run 24 out of 32.
-INFO: The code has run  25.76 seconds.
-INFO: Estimated remaining time:  8.59 seconds
+=======Iteration Number: 24 =======
+Design variable values for this iteration: (Period: 6, Amplitude: 45)
 </pre></div>
 </div>
-<img alt="../_images/baad835c2969b45773f30c976fba9b4f1897c649d5549098b6ae8e0afbc16bd3.png" src="../_images/baad835c2969b45773f30c976fba9b4f1897c649d5549098b6ae8e0afbc16bd3.png" />
+<img alt="../_images/f6ebb102d378503d9d0dcfe13d75b892e884d4959877f58d350d5d3d96882724.png" src="../_images/f6ebb102d378503d9d0dcfe13d75b892e884d4959877f58d350d5d3d96882724.png" />
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model parameters:
-Ua = 0.0515 Watts/degC
-Ub = 0.0005 Watts/degC
-CpH = 6.8386 Joules/degC
-CpS = 0.01 Joules/degC
+Ua = 0.0413 Watts/degC
+Ub = 0.0093 Watts/degC
+CpH = 6.0883 Joules/degC
+CpS = 0.1731 Joules/degC
 u1_period = 6 minutes
 u1_amplitude = 45 % power
  
-INFO: =======Iteration Number: 25 =====
-DEBUG: Design variable values of this iteration: {&#39;u1_period&#39;: 7,
-&#39;u1_amplitude&#39;: 15}
-DEBUG: The variable is fixed:  Ts1[0.0]
-INFO: elapsed time: 1.0 seconds
-INFO: This is run 25 out of 32.
-INFO: The code has run  26.73 seconds.
-INFO: Estimated remaining time:  7.49 seconds
+=======Iteration Number: 25 =======
+Design variable values for this iteration: (Period: 7, Amplitude: 15)
 </pre></div>
 </div>
-<img alt="../_images/3bcd53bc8d67e1b41dd95dd5aac831a348eb3124b8d5e5cd120c5e6da3c7c1a7.png" src="../_images/3bcd53bc8d67e1b41dd95dd5aac831a348eb3124b8d5e5cd120c5e6da3c7c1a7.png" />
+<img alt="../_images/cca0a103c3f33cae93c5582fa0f230bfc7faa18358f1f660cda8a1ec4d201688.png" src="../_images/cca0a103c3f33cae93c5582fa0f230bfc7faa18358f1f660cda8a1ec4d201688.png" />
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model parameters:
-Ua = 0.0515 Watts/degC
-Ub = 0.0005 Watts/degC
-CpH = 6.8386 Joules/degC
-CpS = 0.01 Joules/degC
+Ua = 0.0413 Watts/degC
+Ub = 0.0093 Watts/degC
+CpH = 6.0883 Joules/degC
+CpS = 0.1731 Joules/degC
 u1_period = 7 minutes
 u1_amplitude = 15 % power
  
-INFO: =======Iteration Number: 26 =====
-DEBUG: Design variable values of this iteration: {&#39;u1_period&#39;: 7,
-&#39;u1_amplitude&#39;: 25}
-DEBUG: The variable is fixed:  Ts1[0.0]
-INFO: elapsed time: 1.2 seconds
-INFO: This is run 26 out of 32.
-INFO: The code has run  27.97 seconds.
-INFO: Estimated remaining time:  6.45 seconds
+=======Iteration Number: 26 =======
+Design variable values for this iteration: (Period: 7, Amplitude: 25)
 </pre></div>
 </div>
-<img alt="../_images/c42264e0ef3f2cf52f47303265d9d5bee39d06d877d3e2a66e79f43bbe51ef0c.png" src="../_images/c42264e0ef3f2cf52f47303265d9d5bee39d06d877d3e2a66e79f43bbe51ef0c.png" />
+<img alt="../_images/e5b3f5fb6611198c443dbf643313c5840b85beaec747b453e4e90b5687d885ed.png" src="../_images/e5b3f5fb6611198c443dbf643313c5840b85beaec747b453e4e90b5687d885ed.png" />
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model parameters:
-Ua = 0.0515 Watts/degC
-Ub = 0.0005 Watts/degC
-CpH = 6.8386 Joules/degC
-CpS = 0.01 Joules/degC
+Ua = 0.0413 Watts/degC
+Ub = 0.0093 Watts/degC
+CpH = 6.0883 Joules/degC
+CpS = 0.1731 Joules/degC
 u1_period = 7 minutes
 u1_amplitude = 25 % power
  
-INFO: =======Iteration Number: 27 =====
-DEBUG: Design variable values of this iteration: {&#39;u1_period&#39;: 7,
-&#39;u1_amplitude&#39;: 35}
-DEBUG: The variable is fixed:  Ts1[0.0]
-INFO: elapsed time: 1.0 seconds
-INFO: This is run 27 out of 32.
-INFO: The code has run  28.93 seconds.
-INFO: Estimated remaining time:  5.36 seconds
+=======Iteration Number: 27 =======
+Design variable values for this iteration: (Period: 7, Amplitude: 35)
 </pre></div>
 </div>
-<img alt="../_images/bb3465e349652c9a726e622a12b250f6e9521fba64a91785de03b7eda2fca2e0.png" src="../_images/bb3465e349652c9a726e622a12b250f6e9521fba64a91785de03b7eda2fca2e0.png" />
+<img alt="../_images/e66e346bc0ab60beac6235ce9fb96b396b690b25cd36fad1e86194af047d891b.png" src="../_images/e66e346bc0ab60beac6235ce9fb96b396b690b25cd36fad1e86194af047d891b.png" />
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model parameters:
-Ua = 0.0515 Watts/degC
-Ub = 0.0005 Watts/degC
-CpH = 6.8386 Joules/degC
-CpS = 0.01 Joules/degC
+Ua = 0.0413 Watts/degC
+Ub = 0.0093 Watts/degC
+CpH = 6.0883 Joules/degC
+CpS = 0.1731 Joules/degC
 u1_period = 7 minutes
 u1_amplitude = 35 % power
  
-INFO: =======Iteration Number: 28 =====
-DEBUG: Design variable values of this iteration: {&#39;u1_period&#39;: 7,
-&#39;u1_amplitude&#39;: 45}
-DEBUG: The variable is fixed:  Ts1[0.0]
-INFO: elapsed time: 1.0 seconds
-INFO: This is run 28 out of 32.
-INFO: The code has run  29.92 seconds.
-INFO: Estimated remaining time:  4.27 seconds
+=======Iteration Number: 28 =======
+Design variable values for this iteration: (Period: 7, Amplitude: 45)
 </pre></div>
 </div>
-<img alt="../_images/5308fb11eeee11f05d5127d60520312c03316e6c69d962d111a3178f5a2064c5.png" src="../_images/5308fb11eeee11f05d5127d60520312c03316e6c69d962d111a3178f5a2064c5.png" />
+<img alt="../_images/a51087d10f4e039b8ec241800730fd15c9efbb22337182d5cd4877938afe38fc.png" src="../_images/a51087d10f4e039b8ec241800730fd15c9efbb22337182d5cd4877938afe38fc.png" />
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model parameters:
-Ua = 0.0515 Watts/degC
-Ub = 0.0005 Watts/degC
-CpH = 6.8386 Joules/degC
-CpS = 0.01 Joules/degC
+Ua = 0.0413 Watts/degC
+Ub = 0.0093 Watts/degC
+CpH = 6.0883 Joules/degC
+CpS = 0.1731 Joules/degC
 u1_period = 7 minutes
 u1_amplitude = 45 % power
  
-INFO: =======Iteration Number: 29 =====
-DEBUG: Design variable values of this iteration: {&#39;u1_period&#39;: 8,
-&#39;u1_amplitude&#39;: 15}
-DEBUG: The variable is fixed:  Ts1[0.0]
-INFO: elapsed time: 1.3 seconds
-INFO: This is run 29 out of 32.
-INFO: The code has run  31.2 seconds.
-INFO: Estimated remaining time:  3.23 seconds
+=======Iteration Number: 29 =======
+Design variable values for this iteration: (Period: 8, Amplitude: 15)
 </pre></div>
 </div>
-<img alt="../_images/a55c63caa738dd4ef33ac450a2c7c75310f3d659916ce525c354bc70cd5d0a4a.png" src="../_images/a55c63caa738dd4ef33ac450a2c7c75310f3d659916ce525c354bc70cd5d0a4a.png" />
+<img alt="../_images/866885fa097918c0c7611565b4f9a127b406a86e2085d314806da8a58012a17b.png" src="../_images/866885fa097918c0c7611565b4f9a127b406a86e2085d314806da8a58012a17b.png" />
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model parameters:
-Ua = 0.0515 Watts/degC
-Ub = 0.0005 Watts/degC
-CpH = 6.8386 Joules/degC
-CpS = 0.01 Joules/degC
+Ua = 0.0413 Watts/degC
+Ub = 0.0093 Watts/degC
+CpH = 6.0883 Joules/degC
+CpS = 0.1731 Joules/degC
 u1_period = 8 minutes
 u1_amplitude = 15 % power
  
-INFO: =======Iteration Number: 30 =====
-DEBUG: Design variable values of this iteration: {&#39;u1_period&#39;: 8,
-&#39;u1_amplitude&#39;: 25}
-DEBUG: The variable is fixed:  Ts1[0.0]
-INFO: elapsed time: 1.0 seconds
-INFO: This is run 30 out of 32.
-INFO: The code has run  32.17 seconds.
-INFO: Estimated remaining time:  2.14 seconds
+=======Iteration Number: 30 =======
+Design variable values for this iteration: (Period: 8, Amplitude: 25)
 </pre></div>
 </div>
-<img alt="../_images/2eaba2f70ad1bbccc855ffef7b860a6ef9a146ce2610e3d679573477523cb11b.png" src="../_images/2eaba2f70ad1bbccc855ffef7b860a6ef9a146ce2610e3d679573477523cb11b.png" />
+<img alt="../_images/ccfb681f6d581a940d0bd4fb65ef8c02fcd2209f3e411d1de556d87c30599443.png" src="../_images/ccfb681f6d581a940d0bd4fb65ef8c02fcd2209f3e411d1de556d87c30599443.png" />
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model parameters:
-Ua = 0.0515 Watts/degC
-Ub = 0.0005 Watts/degC
-CpH = 6.8386 Joules/degC
-CpS = 0.01 Joules/degC
+Ua = 0.0413 Watts/degC
+Ub = 0.0093 Watts/degC
+CpH = 6.0883 Joules/degC
+CpS = 0.1731 Joules/degC
 u1_period = 8 minutes
 u1_amplitude = 25 % power
  
-INFO: =======Iteration Number: 31 =====
-DEBUG: Design variable values of this iteration: {&#39;u1_period&#39;: 8,
-&#39;u1_amplitude&#39;: 35}
-DEBUG: The variable is fixed:  Ts1[0.0]
-INFO: elapsed time: 1.2 seconds
-INFO: This is run 31 out of 32.
-INFO: The code has run  33.42 seconds.
-INFO: Estimated remaining time:  1.08 seconds
+=======Iteration Number: 31 =======
+Design variable values for this iteration: (Period: 8, Amplitude: 35)
 </pre></div>
 </div>
-<img alt="../_images/783f3ad79b7bedc6d7ee5cbffb1cbf9e675751d4de447a020829374ae6e3c1d1.png" src="../_images/783f3ad79b7bedc6d7ee5cbffb1cbf9e675751d4de447a020829374ae6e3c1d1.png" />
+<img alt="../_images/f664a43427c3141caf0256e2c40b8afff2dfdba6e6ef117c86a403cae2100b45.png" src="../_images/f664a43427c3141caf0256e2c40b8afff2dfdba6e6ef117c86a403cae2100b45.png" />
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model parameters:
-Ua = 0.0515 Watts/degC
-Ub = 0.0005 Watts/degC
-CpH = 6.8386 Joules/degC
-CpS = 0.01 Joules/degC
+Ua = 0.0413 Watts/degC
+Ub = 0.0093 Watts/degC
+CpH = 6.0883 Joules/degC
+CpS = 0.1731 Joules/degC
 u1_period = 8 minutes
 u1_amplitude = 35 % power
  
-INFO: =======Iteration Number: 32 =====
-DEBUG: Design variable values of this iteration: {&#39;u1_period&#39;: 8,
-&#39;u1_amplitude&#39;: 45}
-DEBUG: The variable is fixed:  Ts1[0.0]
-INFO: elapsed time: 1.0 seconds
-INFO: This is run 32 out of 32.
-INFO: The code has run  34.38 seconds.
-INFO: Estimated remaining time:  0.0 seconds
+=======Iteration Number: 32 =======
+Design variable values for this iteration: (Period: 8, Amplitude: 45)
 </pre></div>
 </div>
-<img alt="../_images/2532cddc9899023a443b4291107e5c2c37ad0cca38be5e1de1f65e0a6be19119.png" src="../_images/2532cddc9899023a443b4291107e5c2c37ad0cca38be5e1de1f65e0a6be19119.png" />
+<img alt="../_images/7f651f73165df776bb07c66a99c7d7080a859127657d1ba668947fb382a3d9fb.png" src="../_images/7f651f73165df776bb07c66a99c7d7080a859127657d1ba668947fb382a3d9fb.png" />
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model parameters:
-Ua = 0.0515 Watts/degC
-Ub = 0.0005 Watts/degC
-CpH = 6.8386 Joules/degC
-CpS = 0.01 Joules/degC
+Ua = 0.0413 Watts/degC
+Ub = 0.0093 Watts/degC
+CpH = 6.0883 Joules/degC
+CpS = 0.1731 Joules/degC
 u1_period = 8 minutes
 u1_amplitude = 45 % power
  
-INFO: Overall wall clock time [s]:  34.38077020907076
 </pre></div>
 </div>
 </div>
@@ -1683,38 +1270,105 @@ INFO: Overall wall clock time [s]:  34.38077020907076
 <h2>Visualize and interpret sensitivity analysis results<a class="headerlink" href="#visualize-and-interpret-sensitivity-analysis-results" title="Permalink to this heading">#</a></h2>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Extract criteria from FIM</span>
-<span class="n">all_fim</span><span class="o">.</span><span class="n">extract_criteria</span><span class="p">()</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
-<span class="c1"># Make heat maps</span>
-<span class="n">all_fim</span><span class="o">.</span><span class="n">figure_drawing</span><span class="p">(</span>
-    <span class="p">{},</span>  <span class="c1"># Empty dictionary because the sensitivity analysis only included 2 dimensions.</span>
-    <span class="p">[</span><span class="s2">&quot;u1_period&quot;</span><span class="p">,</span> <span class="s2">&quot;u1_amplitude&quot;</span><span class="p">],</span>
-    <span class="s2">&quot;Sine Wave Test&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;Period [min]&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;Amplitude [% power]&quot;</span><span class="p">,</span>
-<span class="p">)</span>
+<span class="c1"># Extract criteria from FIM</span>
+<span class="k">def</span> <span class="nf">get_FIM_metrics</span><span class="p">(</span><span class="n">result</span><span class="p">):</span>
+    <span class="n">eigenvalues</span><span class="p">,</span> <span class="n">eigenvectors</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eig</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+    <span class="n">min_eig</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">eigenvalues</span><span class="p">)</span>
+
+    <span class="n">A_opt</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="n">result</span><span class="p">))</span>
+    <span class="n">D_opt</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">det</span><span class="p">(</span><span class="n">result</span><span class="p">))</span>
+    <span class="n">E_opt</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">min_eig</span><span class="p">)</span>
+    <span class="n">ME_opt</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">cond</span><span class="p">(</span><span class="n">result</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">A_opt</span><span class="p">,</span> <span class="n">D_opt</span><span class="p">,</span> <span class="n">E_opt</span><span class="p">,</span> <span class="n">ME_opt</span>
+
+<span class="n">FIM_metrics</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">FIM_results</span><span class="p">:</span>
+    <span class="n">FIM_metrics</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">get_FIM_metrics</span><span class="p">(</span><span class="n">i</span><span class="p">))</span>
+
+<span class="n">FIM_metrics_np</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">FIM_metrics</span><span class="p">)</span>
+
+<span class="c1"># Make heat map</span>
+<span class="k">def</span> <span class="nf">plot_heatmap</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">y_label</span><span class="p">,</span> <span class="n">x_label</span><span class="p">,</span> <span class="n">colorbar_label</span><span class="p">):</span>
+    <span class="c1"># set heatmap x,y ranges</span>
+    <span class="n">x_tick_labels</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">data</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]))</span>
+    <span class="n">y_tick_labels</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">data</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]))</span>
+
+    <span class="c1"># optimality-values</span>
+    <span class="n">opt_vals</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">data</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">])</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">x_tick_labels</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">y_tick_labels</span><span class="p">))</span>
+    
+    <span class="c1"># Plot the colormap</span>
+    <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+
+    <span class="c1"># Plotting options</span>
+    <span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">111</span><span class="p">)</span>
+    <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;mathtext.default&quot;</span><span class="p">:</span> <span class="s2">&quot;regular&quot;</span><span class="p">}</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">rcParams</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
+
+    <span class="c1"># Plotting data</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_yticks</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">y_tick_labels</span><span class="p">)))</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_yticklabels</span><span class="p">(</span><span class="n">y_tick_labels</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="n">y_label</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xticks</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">x_tick_labels</span><span class="p">)))</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xticklabels</span><span class="p">(</span><span class="n">x_tick_labels</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="n">x_label</span><span class="p">)</span>
+    <span class="n">im</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">opt_vals</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">plt</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">hot_r</span><span class="p">)</span>
+    <span class="n">ba</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">im</span><span class="p">)</span>
+    <span class="n">ba</span><span class="o">.</span><span class="n">set_label</span><span class="p">(</span><span class="n">colorbar_label</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="n">title</span><span class="p">)</span>
+
+<span class="c1"># X and Y axis labels</span>
+<span class="n">x_label</span> <span class="o">=</span> <span class="s2">&quot;Period [min]&quot;</span>
+<span class="n">y_label</span> <span class="o">=</span> <span class="s2">&quot;Amplitude [% power]&quot;</span>
+
+<span class="c1"># Draw A-optimality figure</span>
+<span class="n">data_A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">FIM_metrics</span><span class="p">),</span> <span class="mi">3</span><span class="p">))</span>
+<span class="n">data_A</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">data_period</span>
+<span class="n">data_A</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">data_amplitude</span>
+<span class="n">data_A</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">FIM_metrics_np</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span>
+
+<span class="n">plot_heatmap</span><span class="p">(</span><span class="n">data_A</span><span class="p">,</span> <span class="s2">&quot;Sine Wave Test: A-optimality&quot;</span><span class="p">,</span> <span class="n">y_label</span><span class="p">,</span> <span class="n">x_label</span><span class="p">,</span> <span class="s2">&quot;log10(trace(FIM))&quot;</span><span class="p">)</span>
+
+<span class="c1"># Draw D-optimality figure</span>
+<span class="n">data_D</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">FIM_metrics</span><span class="p">),</span> <span class="mi">3</span><span class="p">))</span>
+<span class="n">data_D</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">data_period</span>
+<span class="n">data_D</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">data_amplitude</span>
+<span class="n">data_D</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">FIM_metrics_np</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
+
+<span class="n">plot_heatmap</span><span class="p">(</span><span class="n">data_D</span><span class="p">,</span> <span class="s2">&quot;Sine Wave Test: D-optimality&quot;</span><span class="p">,</span> <span class="n">y_label</span><span class="p">,</span> <span class="n">x_label</span><span class="p">,</span> <span class="s2">&quot;log10(det(FIM))&quot;</span><span class="p">)</span>
+
+<span class="c1"># Draw E-optimality figure</span>
+<span class="n">data_E</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">FIM_metrics</span><span class="p">),</span> <span class="mi">3</span><span class="p">))</span>
+<span class="n">data_E</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">data_period</span>
+<span class="n">data_E</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">data_amplitude</span>
+<span class="n">data_E</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">FIM_metrics_np</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">]</span>
+
+<span class="n">plot_heatmap</span><span class="p">(</span><span class="n">data_E</span><span class="p">,</span> <span class="s2">&quot;Sine Wave Test: E-optimality&quot;</span><span class="p">,</span> <span class="n">y_label</span><span class="p">,</span> <span class="n">x_label</span><span class="p">,</span> <span class="s2">&quot;log10(min-eig(FIM))&quot;</span><span class="p">)</span>
+
+<span class="c1"># Draw ME-optimality figure</span>
+<span class="n">data_ME</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">FIM_metrics</span><span class="p">),</span> <span class="mi">3</span><span class="p">))</span>
+<span class="n">data_ME</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">data_period</span>
+<span class="n">data_ME</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">data_amplitude</span>
+<span class="n">data_ME</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">FIM_metrics_np</span><span class="p">[:,</span> <span class="mi">3</span><span class="p">]</span>
+
+<span class="n">plot_heatmap</span><span class="p">(</span><span class="n">data_ME</span><span class="p">,</span> <span class="s2">&quot;Sine Wave Test: ME-optimality&quot;</span><span class="p">,</span> <span class="n">y_label</span><span class="p">,</span> <span class="n">x_label</span><span class="p">,</span> <span class="s2">&quot;log10(cond(FIM))&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/Users/adowling/DowlingLab/dev/pyomo/pyomo/contrib/doe/result.py:663: RuntimeWarning: invalid value encountered in log10
-  hes_e = np.log10(self.cri_e)
-/Users/adowling/DowlingLab/dev/pyomo/pyomo/contrib/doe/result.py:664: RuntimeWarning: invalid value encountered in log10
-  hes_d = np.log10(self.cri_d)
-/Users/adowling/DowlingLab/dev/pyomo/pyomo/contrib/doe/result.py:665: RuntimeWarning: invalid value encountered in log10
-  hes_e2 = np.log10(self.cri_e_cond)
-</pre></div>
-</div>
-<img alt="../_images/bebc0bb59899db8c7ee2d5a89ed18aec10eadecd9c71d446dbefc46cdc5b3862.png" src="../_images/bebc0bb59899db8c7ee2d5a89ed18aec10eadecd9c71d446dbefc46cdc5b3862.png" />
-<img alt="../_images/7b36e40ee82222537a6ea64de8e6b00b26f3fd883fead5f6d3319b3c62202e12.png" src="../_images/7b36e40ee82222537a6ea64de8e6b00b26f3fd883fead5f6d3319b3c62202e12.png" />
-<img alt="../_images/7107f6e3774cfffcce88393e0cee82a862b11a7d1e1bcbbe0dc8b7895c630b7d.png" src="../_images/7107f6e3774cfffcce88393e0cee82a862b11a7d1e1bcbbe0dc8b7895c630b7d.png" />
-<img alt="../_images/61f8f88ad4da4563f027941aefbbc0b297faf832902115ec824baa1b61bffcdb.png" src="../_images/61f8f88ad4da4563f027941aefbbc0b297faf832902115ec824baa1b61bffcdb.png" />
+<img alt="../_images/60dc23d65e704df92b61f6e77680d1321cc232659b2d6fa1102698b050525dfb.png" src="../_images/60dc23d65e704df92b61f6e77680d1321cc232659b2d6fa1102698b050525dfb.png" />
+<img alt="../_images/4b096cc9246ffae3a657db43997dc7783f1aa9337d640908f036be302430e67a.png" src="../_images/4b096cc9246ffae3a657db43997dc7783f1aa9337d640908f036be302430e67a.png" />
+<img alt="../_images/cba1a02b69530e82e60a96e39c5721b35582f32f681b23dbb251c26c5447b485.png" src="../_images/cba1a02b69530e82e60a96e39c5721b35582f32f681b23dbb251c26c5447b485.png" />
+<img alt="../_images/b2189675e5af0e697d55e8804f207f3c92358586ad724ccba5c63e1f8daffcfb.png" src="../_images/b2189675e5af0e697d55e8804f207f3c92358586ad724ccba5c63e1f8daffcfb.png" />
 </div>
 </div>
 <p>These heatmaps tell us a lot about the mathematical model for the TCLab system.</p>
 <p>A-optimality (trace of FIM) is the largest with a long period (8 minutes) and large amplitude (45%). Why does this make sense? The long period means the heating and cooling is more gradual. This gives more information about the dynamics of the system, especially the lag in heat transfer between the two modeled thermal masses. Likewise, the larger amplitude ensures a larger temperature range is explored, which maximizes the ratio of the signal to noise (which is assumed to be i.i.d.)</p>
-<p>The D-, E-, and modified-E optimality results are more nuanced. We see a random pattern of white and colors. The white corresponds to <code class="docutils literal notranslate"><span class="pre">nan</span></code> results from taking the log of a negative number. Recall for this system, the smallest eigenvalue is numerically near zero. These results tell us that even optimizing the period and amplitude is not enough to reliably estimate <span class="math notranslate nohighlight">\(C_p^S\)</span>. We need either multiple experiments or a different experiment design.</p>
+<p>The D-, E-, and modified-E optimality results are more nuanced. Even with the poorly identifiable parameter, we are still able to see that choosing a period of approximately 3 minutes is best for E- and ME-optimality, where D-optimality sees an optima at about 4-5 minutes of period.</p>
+<p>One thing is consistent between all the optimality metrics: larger amplitude (toward 45%) results in more information.</p>
 </section>
 </section>
 
@@ -1783,6 +1437,7 @@ INFO: Overall wall clock time [s]:  34.38077020907076
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#load-experimental-data-sine-test">Load experimental data (sine test)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#analyze-fim-with-pyomo-doe-at-initial-point-sine-test">Analyze FIM with Pyomo.DoE at initial point (sine test)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#reusing-the-experiment-object-used-for-parameter-estimation">Reusing the Experiment object used for parameter estimation</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#define-parameterized-sine-wave-experiment">Define parameterized sine wave experiment</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#perform-sensitivity-analysis-to-sine-wave-frequency-and-period">Perform sensitivity analysis to sine wave frequency and period</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#visualize-and-interpret-sensitivity-analysis-results">Visualize and interpret sensitivity analysis results</a></li>

@@ -1,0 +1,961 @@
+
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>Experiment Abstraction &#8212; Pyomo.DoE Workshop and Tutorials</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=5b4479735964841361fd" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=5b4479735964841361fd" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=5b4479735964841361fd" rel="stylesheet" />
+
+  
+  <link href="../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=5b4479735964841361fd" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" href="../_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=5b4479735964841361fd" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=5b4479735964841361fd" />
+  <script src="../_static/vendor/fontawesome/6.1.2/js/all.min.js?digest=5b4479735964841361fd"></script>
+
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/clipboard.min.js"></script>
+    <script src="../_static/copybutton.js"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../_static/design-tabs.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
+    <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'notebooks/experiment_abstraction';</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Parameter Estimation" href="../regression.html" />
+    <link rel="prev" title="Modeling with Pyomo" href="pyomo_simulation.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>
+    Back to top
+  </button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
+    </nav>
+  
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+
+<a class="navbar-brand logo" href="../Readme.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/PyomoDoE-sm.png" class="logo__image only-light" alt="Pyomo.DoE Workshop and Tutorials - Home"/>
+    <script>document.write(`<img src="../_static/PyomoDoE-sm.png" class="logo__image only-dark" alt="Pyomo.DoE Workshop and Tutorials - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../Readme.html">
+                    Optimizing Experiments with Pyomo.DoE
+                </a>
+            </li>
+        </ul>
+        <ul class="current nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../tclab.html">Modeling Example: TCLab</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="tclab_model.html">TCLab Mathematical Model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="numpy_simulation.html">Modeling with Numpy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyomo_simulation.html">Modeling with Pyomo</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Experiment Abstraction</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../regression.html">Parameter Estimation</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-2"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="parmest.html">Nonlinear Regression with ParmEst</a></li>
+<li class="toctree-l2"><a class="reference internal" href="parmest_exercise.html">Exercise: ParmEst</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../mbdoe.html">Optimal Experiment Design</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-3"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="doe_exploratory_analysis.html">Pyomo.DoE: Exploratory Analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="doe_optimize.html">Pyomo.DoE: Optimization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="doe_exercise.html">Exercise: Pyomo.DoE</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../exercises.html">Exercise Solutions</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-4"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../exercise_solutions/parmest_exercise.html">Exercise: ParmEst</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../exercise_solutions/doe_exercise.html">Exercise: Pyomo.DoE</a></li>
+</ul>
+</li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</label></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-launch-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Launch interactive content">
+    <i class="fas fa-rocket"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://colab.research.google.com/github/dowlinglab/pyomo-doe/blob/main/notebooks/experiment_abstraction.ipynb" target="_blank"
+   class="btn btn-sm dropdown-item"
+   title="Launch onColab"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  
+    <img src="../_static/images/logo_colab.png">
+  </span>
+<span class="btn__text-container">Colab</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/dowlinglab/pyomo-doe" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/dowlinglab/pyomo-doe/issues/new?title=Issue%20on%20page%20%2Fnotebooks/experiment_abstraction.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../_sources/notebooks/experiment_abstraction.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</label>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Experiment Abstraction</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#data-helper-class">Data Helper Class</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-experiment-object">The Experiment Object</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#remaining-notebooks">Remaining Notebooks</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article" role="main">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="experiment-abstraction">
+<h1>Experiment Abstraction<a class="headerlink" href="#experiment-abstraction" title="Permalink to this heading">#</a></h1>
+<p>The fundamental basis to parameter estimation and to optimal, science-based design of experiments (SBDoE) is an experiment. This concept is also borrows from the concept of a physical experiment:</p>
+<p><img alt="physical_and_digital" src="../_images/physical_and_digital.png" /></p>
+<p>The physical experiment takes experimental design values and produces data. The digital experiment takes in the experimental design values and produces prediction of those measured data from the physical system. The comparison of these two (measured data and predicted data) allow unknown model parameters to be estimated (during parameter estimation) and leveraged to find more information (during SBDoE):</p>
+<p><img alt="parmest_and_doe" src="../_images/parmest_and_doe.png" /></p>
+<p>As a reminder, the physical system is shown below:</p>
+<p><img alt="TCLab schematic" src="../_images/tclab_schematic2.jpg" /></p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># standard imports</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+
+<span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span>
+
+<span class="c1"># Experiment object import</span>
+<span class="kn">from</span> <span class="nn">pyomo.contrib.parmest.experiment</span> <span class="kn">import</span> <span class="n">Experiment</span>
+
+<span class="c1"># pyomo imports</span>
+<span class="kn">from</span> <span class="nn">pyomo.environ</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">ConcreteModel</span><span class="p">,</span>
+    <span class="n">Var</span><span class="p">,</span>
+    <span class="n">Param</span><span class="p">,</span>
+    <span class="n">Constraint</span><span class="p">,</span>
+    <span class="n">TransformationFactory</span><span class="p">,</span>
+    <span class="n">SolverFactory</span><span class="p">,</span>
+    <span class="n">Objective</span><span class="p">,</span>
+    <span class="n">minimize</span><span class="p">,</span>
+    <span class="n">value</span> <span class="k">as</span> <span class="n">pyovalue</span><span class="p">,</span>
+    <span class="n">Suffix</span><span class="p">,</span>
+    <span class="n">Expression</span><span class="p">,</span>
+    <span class="n">sin</span><span class="p">,</span>
+    <span class="n">PositiveReals</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">pyomo.dae</span> <span class="kn">import</span> <span class="n">DerivativeVar</span><span class="p">,</span> <span class="n">ContinuousSet</span><span class="p">,</span> <span class="n">Simulator</span>
+</pre></div>
+</div>
+</div>
+</div>
+<section id="data-helper-class">
+<h2>Data Helper Class<a class="headerlink" href="#data-helper-class" title="Permalink to this heading">#</a></h2>
+<p>This class helps us organize the data coming from the physical device. We also define a helper function to initialize our pyomo model.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">TC_Lab_data</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Class for storing data from a TCLab experiment.&quot;&quot;&quot;</span>
+
+    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span>  <span class="c1"># Name of the experiment (optional)</span>
+    <span class="n">time</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span>  <span class="c1"># Time stamp for measurements, [seconds]</span>
+    <span class="n">T1</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span>  <span class="c1"># Temperature of heater 1, [degC]</span>
+    <span class="n">u1</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span>  <span class="c1"># Heater 1 power setting, [0-100]</span>
+    <span class="n">P1</span><span class="p">:</span> <span class="nb">float</span>  <span class="c1"># Power setting for heater 1, [W]</span>
+    <span class="n">TS1_data</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span>  <span class="c1"># Setpoint data for temperature of sensor 1, [degC]</span>
+    <span class="n">T2</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span>  <span class="c1"># Temperature of heater 2, [degC]</span>
+    <span class="n">u2</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span>  <span class="c1"># Heater 2 power setting, [0-100]</span>
+    <span class="n">P2</span><span class="p">:</span> <span class="nb">float</span>  <span class="c1"># Power setting for heater 2, [W]</span>
+    <span class="n">TS2_data</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span>  <span class="c1"># Setpoint data for temperature of sensor 1, [degC]</span>
+    <span class="n">Tamb</span><span class="p">:</span> <span class="nb">float</span>  <span class="c1"># Ambient temperature, [degC]</span>
+
+    <span class="k">def</span> <span class="nf">to_data_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert instance of this class to a pandas DataFrame.&quot;&quot;&quot;</span>
+
+        <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+            <span class="p">{</span>
+                <span class="s2">&quot;time&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">time</span><span class="p">,</span>
+                <span class="s2">&quot;T1&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">T1</span><span class="p">,</span>
+                <span class="s2">&quot;u1&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">u1</span><span class="p">,</span>
+                <span class="s2">&quot;P1&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">P1</span><span class="p">,</span>
+                <span class="s2">&quot;TS1_data&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">TS1_data</span><span class="p">,</span>
+                <span class="s2">&quot;T2&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">T2</span><span class="p">,</span>
+                <span class="s2">&quot;u2&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">u2</span><span class="p">,</span>
+                <span class="s2">&quot;P2&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">P2</span><span class="p">,</span>
+                <span class="s2">&quot;TS2_data&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">TS2_data</span><span class="p">,</span>
+                <span class="s2">&quot;Tamb&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">Tamb</span><span class="p">,</span>
+            <span class="p">}</span>
+        <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">df</span>
+
+<span class="k">def</span> <span class="nf">helper</span><span class="p">(</span><span class="n">my_array</span><span class="p">,</span> <span class="n">time</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Method that builds a dictionary to help initialization.</span>
+<span class="sd">    Arguments:</span>
+<span class="sd">        my_array: an array</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        data: a dict {time: array_value}</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="c1"># ensure that the dimensions of array and time data match</span>
+    <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">my_array</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">time</span><span class="p">),</span> <span class="s2">&quot;Dimension mismatch.&quot;</span>
+    <span class="n">data2</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">time</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">my_array</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">data2</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="o">=</span> <span class="n">my_array</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Replace None with 0</span>
+            <span class="n">data2</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">return</span> <span class="n">data2</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="the-experiment-object">
+<h2>The Experiment Object<a class="headerlink" href="#the-experiment-object" title="Permalink to this heading">#</a></h2>
+<p>To automate many tasks pertaining to experiments, we simply need a digital model of the system in pyomo and carefully label the model with important sets of variables. Those sets are:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">experiment_inputs</span></code> - The experimental design decisions (control variables <span class="math notranslate nohighlight">\(u_2\)</span> in this case)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">experiment_outputs</span></code> - The values measured during the experiment (temperature sensor data <span class="math notranslate nohighlight">\(T_{S1}\)</span> in this case)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">measurement_error</span></code> - The error associated with individual values measured during the experiment</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">unknown_parameters</span></code> - Those parameters in the model that are estimated using the measured values during the experiment (heat transfer coefficients (<span class="math notranslate nohighlight">\(U_a\)</span> and <span class="math notranslate nohighlight">\(U_b\)</span>) and heat capacities (<span class="math notranslate nohighlight">\(C^H_p\)</span> and <span class="math notranslate nohighlight">\(C^S_p\)</span>) in this case)</p></li>
+</ul>
+<p>Lastly, we need to make sure there is a function called <code class="docutils literal notranslate"><span class="pre">get_labeled_model</span></code> for an Experiment object. This will generate an instance of the digital model with the conditions we need to perform our analysis (parameter estimation or SBDoE)</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">TC_Lab_experiment</span><span class="p">(</span><span class="n">Experiment</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.00016</span><span class="p">,</span> <span class="n">theta_initial</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sine_amplitude</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sine_period</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">reparam</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Arguments</span>
+<span class="sd">        ---------</span>
+<span class="sd">        data: TC_Lab_Data object</span>
+<span class="sd">        alpha: float, Conversion factor for TCLab (fixed parameter)</span>
+<span class="sd">        theta_initial: dictionary, initial guesses for the unknown parameters</span>
+<span class="sd">        sine_amplitude: float, amplitude of the sine wave, default: None (do not use the sine wave)</span>
+<span class="sd">        sine_period: float, period of the sine wave, default: None (do not use the sine wave)</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">data</span>
+        
+        <span class="k">if</span> <span class="n">theta_initial</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">theta_initial</span><span class="o">=</span><span class="p">{</span>
+                <span class="s2">&quot;Ua&quot;</span><span class="p">:</span> <span class="mf">0.0535</span><span class="p">,</span>
+                <span class="s2">&quot;Ub&quot;</span><span class="p">:</span> <span class="mf">0.0148</span><span class="p">,</span>
+                <span class="s2">&quot;inv_CpH&quot;</span><span class="p">:</span> <span class="mi">1</span> <span class="o">/</span> <span class="mf">6.911</span><span class="p">,</span>
+                <span class="s2">&quot;inv_CpS&quot;</span><span class="p">:</span> <span class="mi">1</span> <span class="o">/</span> <span class="mf">0.318</span><span class="p">,</span>
+            <span class="p">}</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">theta_initial</span> <span class="o">=</span> <span class="n">theta_initial</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">alpha</span> <span class="o">=</span> <span class="n">alpha</span>
+        
+        <span class="c1"># Make sure that the sine amplitude and period are reasonable</span>
+        <span class="k">if</span> <span class="n">sine_amplitude</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">sine_period</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sine_period_max</span> <span class="o">=</span> <span class="mi">10</span>  <span class="c1"># minutes</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sine_period_min</span> <span class="o">=</span> <span class="mi">10</span> <span class="o">/</span> <span class="mi">60</span>  <span class="c1"># minutes</span>
+
+            <span class="k">assert</span> <span class="n">sine_amplitude</span> <span class="o">&lt;=</span> <span class="mi">50</span><span class="p">,</span> <span class="s2">&quot;Sine amplitude must be less than 50.&quot;</span>
+            <span class="k">assert</span> <span class="n">sine_amplitude</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;Sine amplitude must be greater than 0.&quot;</span>
+
+            <span class="k">assert</span> <span class="n">sine_period</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sine_period_max</span><span class="p">,</span> <span class="s2">&quot;Sine period must be less than &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">sine_period_max</span>
+            <span class="p">)</span>
+            <span class="k">assert</span> <span class="p">(</span>
+                <span class="n">sine_period</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sine_period_min</span>
+            <span class="p">),</span> <span class="s2">&quot;Sine period must be greater than &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sine_period_min</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">sine_amplitude</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">sine_period</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;If sine wave is used, both amplitude and period must be provided.&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sine_period_max</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sine_period_min</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sine_amplitude</span> <span class="o">=</span> <span class="n">sine_amplitude</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sine_period</span> <span class="o">=</span> <span class="n">sine_period</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">reparam</span> <span class="o">=</span> <span class="n">reparam</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="kc">None</span>
+    
+    <span class="k">def</span> <span class="nf">get_labeled_model</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">create_model</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">finalize_model</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">label_experiment</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span>
+    
+    <span class="k">def</span> <span class="nf">create_model</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Method to create an unlabled model of the TC Lab system.</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">m</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">ConcreteModel</span><span class="p">()</span>
+        
+        <span class="c1">#########################################</span>
+        <span class="c1"># Begin model constants definition</span>
+        <span class="n">m</span><span class="o">.</span><span class="n">Tamb</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">initialize</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">Tamb</span><span class="p">)</span>
+        <span class="n">m</span><span class="o">.</span><span class="n">P1</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">initialize</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">P1</span><span class="p">)</span>
+        <span class="n">m</span><span class="o">.</span><span class="n">alpha</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">initialize</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">alpha</span><span class="p">)</span>
+        <span class="n">m</span><span class="o">.</span><span class="n">P2</span> <span class="o">=</span> <span class="n">Param</span><span class="p">(</span><span class="n">initialize</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">P2</span><span class="p">)</span>
+        
+        <span class="n">m</span><span class="o">.</span><span class="n">Tmax</span> <span class="o">=</span> <span class="mi">85</span>  <span class="c1"># Maximum temparture (Deg C)</span>
+        
+        <span class="c1"># End model constants</span>
+        <span class="c1">#########################################</span>
+        
+        <span class="c1">################################</span>
+        <span class="c1"># Defining state variables</span>
+        <span class="n">m</span><span class="o">.</span><span class="n">t</span> <span class="o">=</span> <span class="n">ContinuousSet</span><span class="p">(</span><span class="n">initialize</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">time</span><span class="p">)</span>
+        
+        <span class="c1"># Temperature states for the fins</span>
+        <span class="n">m</span><span class="o">.</span><span class="n">Th1</span> <span class="o">=</span> <span class="n">Var</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">t</span><span class="p">,</span> <span class="n">bounds</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">m</span><span class="o">.</span><span class="n">Tmax</span><span class="p">],</span> <span class="n">initialize</span><span class="o">=</span><span class="n">m</span><span class="o">.</span><span class="n">Tamb</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+        <span class="n">m</span><span class="o">.</span><span class="n">Ts1</span> <span class="o">=</span> <span class="n">Var</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">t</span><span class="p">,</span> <span class="n">bounds</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">m</span><span class="o">.</span><span class="n">Tmax</span><span class="p">],</span> <span class="n">initialize</span><span class="o">=</span><span class="n">m</span><span class="o">.</span><span class="n">Tamb</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+
+        <span class="c1"># Derivatives of the temperature state variables</span>
+        <span class="n">m</span><span class="o">.</span><span class="n">Th1dot</span> <span class="o">=</span> <span class="n">DerivativeVar</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">Th1</span><span class="p">,</span> <span class="n">wrt</span><span class="o">=</span><span class="n">m</span><span class="o">.</span><span class="n">t</span><span class="p">)</span>
+        <span class="n">m</span><span class="o">.</span><span class="n">Ts1dot</span> <span class="o">=</span> <span class="n">DerivativeVar</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">Ts1</span><span class="p">,</span> <span class="n">wrt</span><span class="o">=</span><span class="n">m</span><span class="o">.</span><span class="n">t</span><span class="p">)</span>
+
+        <span class="c1"># End state variable definition</span>
+        <span class="c1">################################</span>
+
+        <span class="c1">####################################</span>
+        <span class="c1"># Defining experimental inputs</span>
+        
+        <span class="c1"># Add control variables (experimental design decisions)</span>
+        <span class="n">m</span><span class="o">.</span><span class="n">U1</span> <span class="o">=</span> <span class="n">Var</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">t</span><span class="p">,</span> <span class="n">bounds</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">),</span> <span class="n">initialize</span><span class="o">=</span><span class="n">helper</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">u1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">time</span><span class="p">))</span>
+        <span class="n">m</span><span class="o">.</span><span class="n">U1</span><span class="o">.</span><span class="n">fix</span><span class="p">()</span>  <span class="c1"># Fixed for parameter estimation</span>
+        
+        <span class="c1"># End experimental input definition</span>
+        <span class="c1">####################################</span>
+        
+        <span class="c1">####################################</span>
+        <span class="c1"># Defining unknown model parameters</span>
+        <span class="c1"># (estimated during parameter estimation)</span>
+        
+        <span class="c1"># Heat transfer coefficients</span>
+        <span class="n">m</span><span class="o">.</span><span class="n">Ua</span> <span class="o">=</span> <span class="n">Var</span><span class="p">(</span><span class="n">initialize</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">theta_initial</span><span class="p">[</span><span class="s2">&quot;Ua&quot;</span><span class="p">],</span> <span class="n">bounds</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">1e4</span><span class="p">))</span>
+        <span class="n">m</span><span class="o">.</span><span class="n">Ua</span><span class="o">.</span><span class="n">fix</span><span class="p">()</span>
+        <span class="n">m</span><span class="o">.</span><span class="n">Ub</span> <span class="o">=</span> <span class="n">Var</span><span class="p">(</span><span class="n">initialize</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">theta_initial</span><span class="p">[</span><span class="s2">&quot;Ub&quot;</span><span class="p">],</span> <span class="n">bounds</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">1e4</span><span class="p">))</span>
+        <span class="n">m</span><span class="o">.</span><span class="n">Ub</span><span class="o">.</span><span class="n">fix</span><span class="p">()</span>
+        
+        <span class="c1"># Inverse of the heat capacity coefficients (1/CpH and 1/CpS)</span>
+        <span class="n">m</span><span class="o">.</span><span class="n">inv_CpH</span> <span class="o">=</span> <span class="n">Var</span><span class="p">(</span><span class="n">initialize</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">theta_initial</span><span class="p">[</span><span class="s2">&quot;inv_CpH&quot;</span><span class="p">],</span> <span class="n">bounds</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">1e6</span><span class="p">))</span>
+        <span class="n">m</span><span class="o">.</span><span class="n">inv_CpH</span><span class="o">.</span><span class="n">fix</span><span class="p">()</span>
+        <span class="n">m</span><span class="o">.</span><span class="n">inv_CpS</span> <span class="o">=</span> <span class="n">Var</span><span class="p">(</span><span class="n">initialize</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">theta_initial</span><span class="p">[</span><span class="s2">&quot;inv_CpS&quot;</span><span class="p">],</span> <span class="n">bounds</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">1e3</span><span class="p">))</span>
+        <span class="n">m</span><span class="o">.</span><span class="n">inv_CpS</span><span class="o">.</span><span class="n">fix</span><span class="p">()</span>
+
+        <span class="c1"># End unknown parameter definition</span>
+        <span class="c1">####################################</span>
+        
+        <span class="c1">################################</span>
+        <span class="c1"># Defining model equations</span>
+        
+        <span class="c1"># First fin energy balance</span>
+        <span class="nd">@m</span><span class="o">.</span><span class="n">Constraint</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">t</span><span class="p">)</span>
+        <span class="k">def</span> <span class="nf">Th1_ode</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">m</span><span class="o">.</span><span class="n">Th1dot</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="o">==</span> <span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">Ua</span> <span class="o">*</span> <span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">Tamb</span> <span class="o">-</span> <span class="n">m</span><span class="o">.</span><span class="n">Th1</span><span class="p">[</span><span class="n">t</span><span class="p">])</span> <span class="o">+</span> <span class="n">m</span><span class="o">.</span><span class="n">Ub</span> <span class="o">*</span> <span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">Ts1</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="o">-</span> <span class="n">m</span><span class="o">.</span><span class="n">Th1</span><span class="p">[</span><span class="n">t</span><span class="p">])</span> <span class="o">+</span> <span class="n">m</span><span class="o">.</span><span class="n">alpha</span> <span class="o">*</span> <span class="n">m</span><span class="o">.</span><span class="n">P1</span> <span class="o">*</span> <span class="n">m</span><span class="o">.</span><span class="n">U1</span><span class="p">[</span><span class="n">t</span><span class="p">])</span> <span class="o">*</span> <span class="n">m</span><span class="o">.</span><span class="n">inv_CpH</span>
+        
+        <span class="c1"># First sensor energy balance</span>
+        <span class="nd">@m</span><span class="o">.</span><span class="n">Constraint</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">t</span><span class="p">)</span>
+        <span class="k">def</span> <span class="nf">Ts1_ode</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">m</span><span class="o">.</span><span class="n">Ts1dot</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="o">==</span> <span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">Ub</span> <span class="o">*</span> <span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">Th1</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="o">-</span> <span class="n">m</span><span class="o">.</span><span class="n">Ts1</span><span class="p">[</span><span class="n">t</span><span class="p">]))</span> <span class="o">*</span> <span class="n">m</span><span class="o">.</span><span class="n">inv_CpS</span>
+
+        <span class="c1"># End model equation definition</span>
+        <span class="c1">################################</span>
+        
+        <span class="k">return</span> <span class="n">m</span>
+    
+    <span class="k">def</span> <span class="nf">finalize_model</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Finalizing the TC Lab model. Here, we will set the </span>
+<span class="sd">        experimental conditions and discretize the dae model.</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">m</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span>
+        
+        <span class="c1">####################################</span>
+        <span class="c1"># Set initial conditions</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">time</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">TS1_data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">TS1_data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="c1"># Initialize with first temperature measurement</span>
+                <span class="n">m</span><span class="o">.</span><span class="n">Th1</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">fix</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">TS1_data</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                <span class="n">m</span><span class="o">.</span><span class="n">Ts1</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">fix</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">TS1_data</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># Initialize with ambient temperature</span>
+                <span class="n">m</span><span class="o">.</span><span class="n">Th1</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">fix</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">Tamb</span><span class="p">)</span>
+                <span class="n">m</span><span class="o">.</span><span class="n">Ts1</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">fix</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">Tamb</span><span class="p">)</span>
+
+        <span class="c1"># End initial conditions definition</span>
+        <span class="c1">####################################</span>
+        
+        <span class="c1">########################################</span>
+        <span class="c1"># Defining optional sine wave equations</span>
+        <span class="c1"># (only when sine wave control is used)</span>
+        
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">sine_amplitude</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">sine_period</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># Add measurement control decision variables</span>
+            <span class="n">m</span><span class="o">.</span><span class="n">u1_period</span> <span class="o">=</span> <span class="n">Var</span><span class="p">(</span>
+                <span class="n">initialize</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">sine_period</span><span class="p">,</span> <span class="n">bounds</span><span class="o">=</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sine_period_min</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">sine_period_max</span><span class="p">)</span>
+            <span class="p">)</span>  <span class="c1"># minutes</span>
+            <span class="n">m</span><span class="o">.</span><span class="n">u1_amplitude</span> <span class="o">=</span> <span class="n">Var</span><span class="p">(</span><span class="n">initialize</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">sine_amplitude</span><span class="p">,</span> <span class="n">bounds</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">50</span><span class="p">))</span>  <span class="c1"># % power</span>
+            
+            <span class="c1"># Fixed for parameter estimation</span>
+            <span class="n">m</span><span class="o">.</span><span class="n">u1_period</span><span class="o">.</span><span class="n">fix</span><span class="p">()</span>
+            <span class="n">m</span><span class="o">.</span><span class="n">u1_amplitude</span><span class="o">.</span><span class="n">fix</span><span class="p">()</span>
+
+            <span class="c1"># Add constraint to calculate u1</span>
+            <span class="nd">@m</span><span class="o">.</span><span class="n">Constraint</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">t</span><span class="p">)</span>
+            <span class="k">def</span> <span class="nf">u1_constraint</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">m</span><span class="o">.</span><span class="n">U1</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="o">==</span> <span class="mi">50</span> <span class="o">+</span> <span class="n">m</span><span class="o">.</span><span class="n">u1_amplitude</span> <span class="o">*</span> <span class="n">sin</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">u1_period</span> <span class="o">*</span> <span class="mi">60</span><span class="p">)</span> <span class="o">*</span> <span class="n">t</span><span class="p">)</span>
+            
+            <span class="n">m</span><span class="o">.</span><span class="n">U1</span><span class="o">.</span><span class="n">unfix</span><span class="p">()</span>  <span class="c1"># Unfixed for above constraints</span>
+        
+        <span class="c1"># End optional sine wave constraints</span>
+        <span class="c1">########################################</span>
+        
+        <span class="c1">#########################################</span>
+        <span class="c1"># Initialize the model using integration</span>
+        <span class="n">m</span><span class="o">.</span><span class="n">var_input</span> <span class="o">=</span> <span class="n">Suffix</span><span class="p">(</span><span class="n">direction</span><span class="o">=</span><span class="n">Suffix</span><span class="o">.</span><span class="n">LOCAL</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">u1</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># initialize with data</span>
+            <span class="n">m</span><span class="o">.</span><span class="n">var_input</span><span class="p">[</span><span class="n">m</span><span class="o">.</span><span class="n">U1</span><span class="p">]</span> <span class="o">=</span> <span class="n">helper</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">u1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">time</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># otherwise initialize control decision of 0</span>
+            <span class="n">m</span><span class="o">.</span><span class="n">var_input</span><span class="p">[</span><span class="n">m</span><span class="o">.</span><span class="n">U1</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="mi">0</span><span class="p">}</span>
+
+        <span class="c1"># Simulate to initialize</span>
+        <span class="c1"># Makes the solver more efficient</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">sine_amplitude</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">sine_period</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">sim</span> <span class="o">=</span> <span class="n">Simulator</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">package</span><span class="o">=</span><span class="s1">&#39;scipy&#39;</span><span class="p">)</span>
+            <span class="n">tsim</span><span class="p">,</span> <span class="n">profiles</span> <span class="o">=</span> <span class="n">sim</span><span class="o">.</span><span class="n">simulate</span><span class="p">(</span>
+                <span class="n">numpoints</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">integrator</span><span class="o">=</span><span class="s1">&#39;vode&#39;</span><span class="p">,</span> <span class="n">varying_inputs</span><span class="o">=</span><span class="n">m</span><span class="o">.</span><span class="n">var_input</span>
+            <span class="p">)</span>
+            <span class="n">sim</span><span class="o">.</span><span class="n">initialize_model</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">sim</span> <span class="o">=</span> <span class="n">Simulator</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">package</span><span class="o">=</span><span class="s1">&#39;casadi&#39;</span><span class="p">)</span>
+            <span class="n">tsim</span><span class="p">,</span> <span class="n">profiles</span> <span class="o">=</span> <span class="n">sim</span><span class="o">.</span><span class="n">simulate</span><span class="p">(</span>
+                <span class="n">numpoints</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">integrator</span><span class="o">=</span><span class="s1">&#39;idas&#39;</span><span class="p">,</span> <span class="n">varying_inputs</span><span class="o">=</span><span class="n">m</span><span class="o">.</span><span class="n">var_input</span>
+            <span class="p">)</span>
+            <span class="n">sim</span><span class="o">.</span><span class="n">initialize_model</span><span class="p">()</span>
+            <span class="k">pass</span>
+        
+        <span class="n">TransformationFactory</span><span class="p">(</span><span class="s1">&#39;dae.finite_difference&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">apply_to</span><span class="p">(</span>
+            <span class="n">m</span><span class="p">,</span> <span class="n">scheme</span><span class="o">=</span><span class="s1">&#39;BACKWARD&#39;</span><span class="p">,</span> <span class="n">nfe</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">time</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
+        <span class="p">)</span>
+            
+        <span class="c1"># End dynamic model initialization</span>
+        <span class="c1">#########################################</span>
+    
+    <span class="k">def</span> <span class="nf">label_experiment</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Annotating (labeling) the model with experimental </span>
+<span class="sd">        data, associated measurement error, experimental </span>
+<span class="sd">        design decisions, and unknown model parameters.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">m</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span>
+        
+        <span class="c1">#################################</span>
+        <span class="c1"># Labeling experiment outputs</span>
+        <span class="c1"># (experiment measurements)</span>
+        
+        <span class="n">m</span><span class="o">.</span><span class="n">experiment_outputs</span> <span class="o">=</span> <span class="n">Suffix</span><span class="p">(</span><span class="n">direction</span><span class="o">=</span><span class="n">Suffix</span><span class="o">.</span><span class="n">LOCAL</span><span class="p">)</span>
+        <span class="c1"># Add sensor 1 temperature (m.Ts1) to experiment outputs</span>
+        <span class="n">m</span><span class="o">.</span><span class="n">experiment_outputs</span><span class="o">.</span><span class="n">update</span><span class="p">((</span><span class="n">m</span><span class="o">.</span><span class="n">Ts1</span><span class="p">[</span><span class="n">t</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">T1</span><span class="p">[</span><span class="n">ind</span><span class="p">])</span> <span class="k">for</span> <span class="n">ind</span><span class="p">,</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">time</span><span class="p">))</span>
+        
+        <span class="c1"># End experiment outputs</span>
+        <span class="c1">#################################</span>
+        
+        <span class="c1">#################################</span>
+        <span class="c1"># Labeling unknown parameters</span>
+        
+        <span class="n">m</span><span class="o">.</span><span class="n">unknown_parameters</span> <span class="o">=</span> <span class="n">Suffix</span><span class="p">(</span><span class="n">direction</span><span class="o">=</span><span class="n">Suffix</span><span class="o">.</span><span class="n">LOCAL</span><span class="p">)</span>
+        <span class="c1"># Add labels to all unknown parameters with nominal value as the value</span>
+        <span class="n">m</span><span class="o">.</span><span class="n">unknown_parameters</span><span class="o">.</span><span class="n">update</span><span class="p">((</span><span class="n">k</span><span class="p">,</span> <span class="n">k</span><span class="o">.</span><span class="n">value</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="p">[</span><span class="n">m</span><span class="o">.</span><span class="n">Ua</span><span class="p">,</span> <span class="n">m</span><span class="o">.</span><span class="n">Ub</span><span class="p">,</span> <span class="n">m</span><span class="o">.</span><span class="n">inv_CpH</span><span class="p">,</span> <span class="n">m</span><span class="o">.</span><span class="n">inv_CpS</span><span class="p">])</span>
+        
+        <span class="c1"># End unknown parameters</span>
+        <span class="c1">#################################</span>
+        
+        <span class="c1">#################################</span>
+        <span class="c1"># Labeling experiment inputs</span>
+        <span class="c1"># (experiment design decisions)</span>
+        
+        <span class="n">m</span><span class="o">.</span><span class="n">experiment_inputs</span> <span class="o">=</span> <span class="n">Suffix</span><span class="p">(</span><span class="n">direction</span><span class="o">=</span><span class="n">Suffix</span><span class="o">.</span><span class="n">LOCAL</span><span class="p">)</span>
+        <span class="c1"># Add experimental input label for control variable (m.U1)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">sine_amplitude</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">sine_period</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">m</span><span class="o">.</span><span class="n">experiment_inputs</span><span class="p">[</span><span class="n">m</span><span class="o">.</span><span class="n">u1_period</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">m</span><span class="o">.</span><span class="n">experiment_inputs</span><span class="p">[</span><span class="n">m</span><span class="o">.</span><span class="n">u1_amplitude</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">else</span><span class="p">:</span>    
+            <span class="n">m</span><span class="o">.</span><span class="n">experiment_inputs</span><span class="o">.</span><span class="n">update</span><span class="p">((</span><span class="n">m</span><span class="o">.</span><span class="n">U1</span><span class="p">[</span><span class="n">t</span><span class="p">],</span> <span class="kc">None</span><span class="p">)</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">time</span><span class="p">)</span>
+        
+        <span class="c1"># End experiment inputs</span>
+        <span class="c1">#################################</span>
+        
+        <span class="c1">#################################</span>
+        <span class="c1"># Labeling measurement error</span>
+        <span class="c1"># (for experiment outputs)</span>
+        
+        <span class="n">m</span><span class="o">.</span><span class="n">measurement_error</span> <span class="o">=</span> <span class="n">Suffix</span><span class="p">(</span><span class="n">direction</span><span class="o">=</span><span class="n">Suffix</span><span class="o">.</span><span class="n">LOCAL</span><span class="p">)</span>
+        <span class="c1"># Add sensor 1 temperature (m.Ts1) measurement error (assuming constant error of 0.25 deg C)</span>
+        <span class="n">m</span><span class="o">.</span><span class="n">measurement_error</span><span class="o">.</span><span class="n">update</span><span class="p">((</span><span class="n">m</span><span class="o">.</span><span class="n">Ts1</span><span class="p">[</span><span class="n">t</span><span class="p">],</span> <span class="mf">0.25</span><span class="p">)</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">time</span><span class="p">)</span>
+
+        <span class="c1"># End measurement error</span>
+        <span class="c1">#################################</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="remaining-notebooks">
+<h2>Remaining Notebooks<a class="headerlink" href="#remaining-notebooks" title="Permalink to this heading">#</a></h2>
+<p>For the remaining notebooks, we will import that above experiment class from a python file that contains a few helper functions.</p>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./notebooks"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="pyomo_simulation.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Modeling with Pyomo</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="../regression.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Parameter Estimation</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#data-helper-class">Data Helper Class</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-experiment-object">The Experiment Object</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#remaining-notebooks">Remaining Notebooks</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Alexander Dowling
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2022.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/bootstrap.js?digest=5b4479735964841361fd"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=5b4479735964841361fd"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

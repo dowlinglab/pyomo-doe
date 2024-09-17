@@ -175,11 +175,10 @@ const thebe_selector_output = ".output, .cell_output"
 <li class="toctree-l2"><a class="reference internal" href="pyomo_simulation.html">Modeling with Pyomo</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="experiment_abstraction.html">Experiment Abstraction</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../regression.html">Parameter Estimation</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-2"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="parmest.html">Nonlinear Regression with ParmEst</a></li>
 <li class="toctree-l2"><a class="reference internal" href="parmest_exercise.html">Exercise: ParmEst</a></li>
-<li class="toctree-l2"><a class="reference internal" href="parmest_bonus.html">Bonus: ParmEst with Two Datasets</a></li>
-<li class="toctree-l2"><a class="reference internal" href="parmest_four_states.html">Bonus: ParmEst for Four State Model</a></li>
 </ul>
 </li>
 <li class="toctree-l1 current active has-children"><a class="reference internal" href="../mbdoe.html">Optimal Experiment Design</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-3"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
@@ -457,8 +456,8 @@ document.write(`
 
 <span class="c1"># import TCLab model, simulation, and data analysis functions</span>
 <span class="kn">from</span> <span class="nn">tclab_pyomo</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">TCLabExperiment</span><span class="p">,</span>
-    <span class="n">create_model</span><span class="p">,</span>
+    <span class="n">TC_Lab_data</span><span class="p">,</span>
+    <span class="n">TC_Lab_experiment</span><span class="p">,</span>
     <span class="n">extract_results</span><span class="p">,</span>
     <span class="n">extract_plot_results</span><span class="p">,</span>
     <span class="n">results_summary</span><span class="p">,</span>
@@ -505,15 +504,20 @@ document.write(`
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">tc_data</span> <span class="o">=</span> <span class="n">TCLabExperiment</span><span class="p">(</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Here, we will induce a step size of 10 seconds, as to not give too many </span>
+<span class="c1"># degrees of freedom for experimental design.</span>
+<span class="n">skip</span> <span class="o">=</span> <span class="mi">10</span>
+
+<span class="c1"># Create the data object considering the new control points every 6 seconds</span>
+<span class="n">tc_data</span> <span class="o">=</span> <span class="n">TC_Lab_data</span><span class="p">(</span>
     <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Sine Wave Test for Heater 1&quot;</span><span class="p">,</span>
-    <span class="n">time</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
-    <span class="n">T1</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;T1&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
-    <span class="n">u1</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Q1&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
+    <span class="n">time</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[::</span><span class="n">skip</span><span class="p">],</span>
+    <span class="n">T1</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;T1&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[::</span><span class="n">skip</span><span class="p">],</span>
+    <span class="n">u1</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Q1&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[::</span><span class="n">skip</span><span class="p">],</span>
     <span class="n">P1</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span>
     <span class="n">TS1_data</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-    <span class="n">T2</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;T2&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
-    <span class="n">u2</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Q2&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
+    <span class="n">T2</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;T2&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[::</span><span class="n">skip</span><span class="p">],</span>
+    <span class="n">u2</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Q2&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[::</span><span class="n">skip</span><span class="p">],</span>
     <span class="n">P2</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span>
     <span class="n">TS2_data</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">Tamb</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;T1&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
@@ -528,15 +532,17 @@ document.write(`
 <p>To get started, compute and analyze the FIM of the step test experiment.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Load Pyomo.DoE functions</span>
-<span class="c1"># Add your solution here</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Load Pyomo.DoE class</span>
+<span class="kn">from</span> <span class="nn">pyomo.contrib.doe</span> <span class="kn">import</span> <span class="n">DesignOfExperiments</span>
+
+<span class="kn">from</span> <span class="nn">pyomo.environ</span> <span class="kn">import</span> <span class="n">SolverFactory</span>
 
 <span class="c1"># Copied from previous notebook</span>
 <span class="n">theta_values</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s1">&#39;Ua&#39;</span><span class="p">:</span> <span class="mf">0.05147278733764012</span><span class="p">,</span>
-    <span class="s1">&#39;Ub&#39;</span><span class="p">:</span> <span class="mf">0.0005342082856927798</span><span class="p">,</span>
-    <span class="s1">&#39;inv_CpH&#39;</span><span class="p">:</span> <span class="mf">0.14622879403418604</span><span class="p">,</span>
-    <span class="s1">&#39;inv_CpS&#39;</span><span class="p">:</span> <span class="mf">99.99999754623846</span><span class="p">,</span>
+    <span class="s1">&#39;Ua&#39;</span><span class="p">:</span> <span class="mf">0.0417051733576387</span><span class="p">,</span>
+    <span class="s1">&#39;Ub&#39;</span><span class="p">:</span> <span class="mf">0.009440714239773074</span><span class="p">,</span>
+    <span class="s1">&#39;inv_CpH&#39;</span><span class="p">:</span> <span class="mf">0.1659093525658045</span><span class="p">,</span>
+    <span class="s1">&#39;inv_CpS&#39;</span><span class="p">:</span> <span class="mf">5.8357556063605465</span><span class="p">,</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -544,47 +550,17 @@ document.write(`
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Get time points for control decisions</span>
-<span class="c1"># Add your solution here</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create experiment object for design of experiments</span>
+<span class="n">doe_experiment</span> <span class="o">=</span> <span class="n">TC_Lab_experiment</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">tc_data</span><span class="p">,</span> <span class="n">theta_initial</span><span class="o">=</span><span class="n">theta_values</span><span class="p">,</span> <span class="n">number_of_states</span><span class="o">=</span><span class="n">number_tclab_states</span><span class="p">)</span>
 
-<span class="c1"># Define the measurement variables</span>
-<span class="n">measurements</span> <span class="o">=</span> <span class="n">MeasurementVariables</span><span class="p">()</span>
-<span class="c1"># Add your solution here</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">measurements</span><span class="o">.</span><span class="n">variable_names</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Define the design variables</span>
-<span class="n">decisions</span> <span class="o">=</span> <span class="n">DesignVariables</span><span class="p">()</span>
+<span class="c1"># Create the design of experiments object using our experiment instance from above</span>
+<span class="n">TC_Lab_DoE</span> <span class="o">=</span> <span class="n">DesignOfExperiments</span><span class="p">(</span><span class="n">experiment</span><span class="o">=</span><span class="n">doe_experiment</span><span class="p">,</span> 
+                                 <span class="n">step</span><span class="o">=</span><span class="mf">1e-2</span><span class="p">,</span>
+                                 <span class="n">scale_constant_value</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                                 <span class="n">scale_nominal_param_value</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> 
+                                 <span class="n">tee</span><span class="o">=</span><span class="kc">True</span><span class="p">,)</span>
 
-<span class="c1"># Add your solution here</span>
-
-<span class="nb">print</span><span class="p">(</span><span class="n">decisions</span><span class="o">.</span><span class="n">variable_names</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Define create_model function for Pyomo.DoE</span>
-
-
-<span class="c1"># Add your solution here</span>
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create doe_object using DesignOfExperiments</span>
-
-<span class="c1"># Add your solution here</span>
-
-<span class="c1"># Compute and print the FIM at this point</span>
-<span class="c1"># Add your solution here</span>
+<span class="n">FIM</span> <span class="o">=</span> <span class="n">TC_Lab_DoE</span><span class="o">.</span><span class="n">compute_FIM</span><span class="p">(</span><span class="n">method</span><span class="o">=</span><span class="s1">&#39;sequential&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -594,7 +570,7 @@ document.write(`
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Call our custom function to summarize the results</span>
 <span class="c1"># and compute the eigendecomposition of the FIM</span>
 
-<span class="n">results_summary</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+<span class="n">results_summary</span><span class="p">(</span><span class="n">FIM</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -606,24 +582,19 @@ document.write(`
 <p>Now we are ready to compute the A-optimal next best experiment. Why are we starting with A-optimality? It runs faster so it is better for debugging syntax.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Extract the prior FIM and Jacobian information from the previous</span>
-<span class="c1"># result to use for initialization.</span>
-<span class="c1"># Add your solution here</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create experiment object for design of experiments</span>
+<span class="n">doe_experiment</span> <span class="o">=</span> <span class="n">TC_Lab_experiment</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">tc_data</span><span class="p">,</span> <span class="n">theta_initial</span><span class="o">=</span><span class="n">theta_values</span><span class="p">,</span> <span class="n">number_of_states</span><span class="o">=</span><span class="n">number_tclab_states</span><span class="p">)</span>
 
-<span class="c1"># Set Ipopt options</span>
-<span class="n">solver</span> <span class="o">=</span> <span class="n">SolverFactory</span><span class="p">(</span><span class="s1">&#39;ipopt&#39;</span><span class="p">)</span>
-<span class="c1"># solver.options[&#39;bound_push&#39;] = 1E-10</span>
-<span class="n">solver</span><span class="o">.</span><span class="n">options</span><span class="p">[</span><span class="s1">&#39;halt_on_ampl_error&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;yes&#39;</span>
-<span class="c1"># solver.options[&#39;tol&#39;] = 1E-5</span>
-<span class="c1"># solver.options[&#39;acceptable_tol&#39;] = 1E-4</span>
-<span class="c1"># solver.options[&#39;max_iter&#39;] = 100</span>
-<span class="n">solver</span><span class="o">.</span><span class="n">options</span><span class="p">[</span><span class="s1">&#39;linear_solver&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;ma57&#39;</span>
+<span class="c1"># Create the design of experiments object using our experiment instance from above</span>
+<span class="n">TC_Lab_DoE_A</span> <span class="o">=</span> <span class="n">DesignOfExperiments</span><span class="p">(</span><span class="n">experiment</span><span class="o">=</span><span class="n">doe_experiment</span><span class="p">,</span> 
+                                 <span class="n">step</span><span class="o">=</span><span class="mf">1e-2</span><span class="p">,</span>
+                                 <span class="n">scale_constant_value</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                                 <span class="n">scale_nominal_param_value</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                 <span class="n">objective_option</span><span class="o">=</span><span class="s2">&quot;trace&quot;</span><span class="p">,</span>  <span class="c1"># Now we specify a type of objective, A-opt = &quot;trace&quot;</span>
+                                 <span class="n">prior_FIM</span><span class="o">=</span><span class="n">FIM</span><span class="p">,</span>  <span class="c1"># We use the prior information from the same existing experiment as in the D-optimal case!</span>
+                                 <span class="n">tee</span><span class="o">=</span><span class="kc">True</span><span class="p">,)</span>
 
-<span class="c1"># Create a new DoE object</span>
-<span class="c1"># Add your solution here</span>
-
-<span class="c1"># Solve the DoE problem</span>
-<span class="c1"># Add your solution here</span>
+<span class="n">TC_Lab_DoE_A</span><span class="o">.</span><span class="n">run_doe</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -651,11 +622,19 @@ document.write(`
 <p>Finally, we are ready to solve the D-optimality problem. This may take 2 minutes to run.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create a new DoE object</span>
-<span class="c1"># Add your solution here</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create experiment object for design of experiments</span>
+<span class="n">doe_experiment</span> <span class="o">=</span> <span class="n">TC_Lab_experiment</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">tc_data</span><span class="p">,</span> <span class="n">theta_initial</span><span class="o">=</span><span class="n">theta_values</span><span class="p">,</span> <span class="n">number_of_states</span><span class="o">=</span><span class="n">number_tclab_states</span><span class="p">)</span>
 
-<span class="c1"># Solve the DoE problem</span>
-<span class="c1"># Add your solution here</span>
+<span class="c1"># Create the design of experiments object using our experiment instance from above</span>
+<span class="n">TC_Lab_DoE_D</span> <span class="o">=</span> <span class="n">DesignOfExperiments</span><span class="p">(</span><span class="n">experiment</span><span class="o">=</span><span class="n">doe_experiment</span><span class="p">,</span> 
+                                 <span class="n">step</span><span class="o">=</span><span class="mf">1e-2</span><span class="p">,</span>
+                                 <span class="n">scale_constant_value</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                                 <span class="n">scale_nominal_param_value</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                 <span class="n">objective_option</span><span class="o">=</span><span class="s2">&quot;determinant&quot;</span><span class="p">,</span>  <span class="c1"># Now we specify a type of objective, D-opt = &quot;determinant&quot;</span>
+                                 <span class="n">prior_FIM</span><span class="o">=</span><span class="n">FIM</span><span class="p">,</span>  <span class="c1"># We use the prior information from the existing experiment!</span>
+                                 <span class="n">tee</span><span class="o">=</span><span class="kc">True</span><span class="p">,)</span>
+
+<span class="n">TC_Lab_DoE_D</span><span class="o">.</span><span class="n">run_doe</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>

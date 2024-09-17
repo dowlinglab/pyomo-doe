@@ -177,11 +177,10 @@ const thebe_selector_output = ".output, .cell_output"
 <li class="toctree-l2"><a class="reference internal" href="pyomo_simulation.html">Modeling with Pyomo</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="experiment_abstraction.html">Experiment Abstraction</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../regression.html">Parameter Estimation</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-2"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="parmest.html">Nonlinear Regression with ParmEst</a></li>
 <li class="toctree-l2"><a class="reference internal" href="parmest_exercise.html">Exercise: ParmEst</a></li>
-<li class="toctree-l2"><a class="reference internal" href="parmest_bonus.html">Bonus: ParmEst with Two Datasets</a></li>
-<li class="toctree-l2"><a class="reference internal" href="parmest_four_states.html">Bonus: ParmEst for Four State Model</a></li>
 </ul>
 </li>
 <li class="toctree-l1 current active has-children"><a class="reference internal" href="../mbdoe.html">Optimal Experiment Design</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-3"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
@@ -445,8 +444,8 @@ document.write(`
 \[\begin{split}
 \begin{align*}
 \max_{u} \quad &amp; \psi(\mathbf{M}(u) + \mathbf{M}_0) \\
-\mathrm{s.t.} \quad &amp; C_p^H \frac{dT_H}{dt} = U_a (T_{amb} - T_H) + U_c (T_S - T_H) + \alpha P u(t)\\
-&amp; C_p^S \frac{dT_S}{dt} = - U_b (T_S - T_H)  \\
+\mathrm{s.t.} \quad &amp; C_p^H \frac{dT_H}{dt} = U_a (T_{amb} - T_H) + U_b (T_S - T_H) + \alpha P u(t)\\
+&amp; C_p^S \frac{dT_S}{dt} = U_b (T_H - T_S)  \\
 &amp; 0\% \leq u(t) \leq 100 \% \\
 &amp; T_H(t_0) = T_{amb} \\
 &amp; T_S(t_0) = T_{amb}
@@ -464,8 +463,8 @@ document.write(`
 
 <span class="c1"># import TCLab model, simulation, and data analysis functions</span>
 <span class="kn">from</span> <span class="nn">tclab_pyomo</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">TCLabExperiment</span><span class="p">,</span>
-    <span class="n">create_model</span><span class="p">,</span>
+    <span class="n">TC_Lab_data</span><span class="p">,</span>
+    <span class="n">TC_Lab_experiment</span><span class="p">,</span>
     <span class="n">extract_results</span><span class="p">,</span>
     <span class="n">extract_plot_results</span><span class="p">,</span>
     <span class="n">results_summary</span><span class="p">,</span>
@@ -485,9 +484,9 @@ document.write(`
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 
 <span class="k">if</span> <span class="n">on_colab</span><span class="p">:</span>
-    <span class="n">file</span> <span class="o">=</span> <span class="s2">&quot;https://raw.githubusercontent.com/dowlinglab/pyomo-doe/main/data/tclab_sine_test.csv&quot;</span>
+    <span class="n">file</span> <span class="o">=</span> <span class="s2">&quot;https://raw.githubusercontent.com/dowlinglab/pyomo-doe/main/data/tclab_sine_test_5min_period.csv&quot;</span>
 <span class="k">else</span><span class="p">:</span>
-    <span class="n">file</span> <span class="o">=</span> <span class="s1">&#39;../data/tclab_sine_test.csv&#39;</span>
+    <span class="n">file</span> <span class="o">=</span> <span class="s1">&#39;../data/tclab_sine_test_5min_period.csv&#39;</span>
 <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
 <span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
 </pre></div>
@@ -523,42 +522,42 @@ document.write(`
     <tr>
       <th>0</th>
       <td>0.00</td>
-      <td>24.45</td>
-      <td>24.13</td>
-      <td>50.0</td>
-      <td>0.0</td>
+      <td>22.2</td>
+      <td>22.2</td>
+      <td>50</td>
+      <td>0</td>
     </tr>
     <tr>
       <th>1</th>
-      <td>1.00</td>
-      <td>24.45</td>
-      <td>24.13</td>
-      <td>55.0</td>
-      <td>0.0</td>
+      <td>1.01</td>
+      <td>22.2</td>
+      <td>22.2</td>
+      <td>51</td>
+      <td>0</td>
     </tr>
     <tr>
       <th>2</th>
       <td>2.01</td>
-      <td>24.45</td>
-      <td>24.13</td>
-      <td>60.0</td>
-      <td>0.0</td>
+      <td>22.2</td>
+      <td>22.2</td>
+      <td>52</td>
+      <td>0</td>
     </tr>
     <tr>
       <th>3</th>
-      <td>3.01</td>
-      <td>24.45</td>
-      <td>24.13</td>
-      <td>65.0</td>
-      <td>0.0</td>
+      <td>3.00</td>
+      <td>22.2</td>
+      <td>22.2</td>
+      <td>53</td>
+      <td>0</td>
     </tr>
     <tr>
       <th>4</th>
       <td>4.01</td>
-      <td>24.77</td>
-      <td>23.81</td>
-      <td>70.0</td>
-      <td>0.0</td>
+      <td>22.2</td>
+      <td>22.2</td>
+      <td>54</td>
+      <td>0</td>
     </tr>
   </tbody>
 </table>
@@ -572,7 +571,7 @@ document.write(`
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/b724d863e93f2fad889b9ce9294890583295b6978279f7f13f29e5070cbad786.png" src="../_images/b724d863e93f2fad889b9ce9294890583295b6978279f7f13f29e5070cbad786.png" />
+<img alt="../_images/fbf2644f6f803238293870aec0099c1bb77225c820bcc42071fca6f36db6f2e6.png" src="../_images/fbf2644f6f803238293870aec0099c1bb77225c820bcc42071fca6f36db6f2e6.png" />
 </div>
 </div>
 <div class="cell docutils container">
@@ -582,21 +581,26 @@ document.write(`
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/29a4ce3fe8920e28b94e4400b1cbc886ddd011db0d4c8b1b89de62826a399ada.png" src="../_images/29a4ce3fe8920e28b94e4400b1cbc886ddd011db0d4c8b1b89de62826a399ada.png" />
+<img alt="../_images/ab15113c9ac37b32ee9820b6e12aa73656cb2294c8fbe7117425cffc67afcbcb.png" src="../_images/ab15113c9ac37b32ee9820b6e12aa73656cb2294c8fbe7117425cffc67afcbcb.png" />
 </div>
 </div>
-<p>And then we will store the data in an instance of our <code class="docutils literal notranslate"><span class="pre">TCLabExperiment</span></code> dataclass.</p>
+<p>And then we will store the data in an instance of our <code class="docutils literal notranslate"><span class="pre">TC_Lab_data</span></code> dataclass.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">tc_data</span> <span class="o">=</span> <span class="n">TCLabExperiment</span><span class="p">(</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Here, we will induce a step size of 6 seconds, as to not give too many </span>
+<span class="c1"># degrees of freedom for experimental design.</span>
+<span class="n">skip</span> <span class="o">=</span> <span class="mi">6</span>
+
+<span class="c1"># Create the data object considering the new control points every 6 seconds</span>
+<span class="n">tc_data</span> <span class="o">=</span> <span class="n">TC_Lab_data</span><span class="p">(</span>
     <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Sine Wave Test for Heater 1&quot;</span><span class="p">,</span>
-    <span class="n">time</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
-    <span class="n">T1</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;T1&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
-    <span class="n">u1</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Q1&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
+    <span class="n">time</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[::</span><span class="n">skip</span><span class="p">],</span>
+    <span class="n">T1</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;T1&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[::</span><span class="n">skip</span><span class="p">],</span>
+    <span class="n">u1</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Q1&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[::</span><span class="n">skip</span><span class="p">],</span>
     <span class="n">P1</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span>
     <span class="n">TS1_data</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-    <span class="n">T2</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;T2&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
-    <span class="n">u2</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Q2&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
+    <span class="n">T2</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;T2&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[::</span><span class="n">skip</span><span class="p">],</span>
+    <span class="n">u2</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Q2&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[::</span><span class="n">skip</span><span class="p">],</span>
     <span class="n">P2</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span>
     <span class="n">TS2_data</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">Tamb</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;T1&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
@@ -611,143 +615,35 @@ document.write(`
 <p>We will start computing the FIM of the sine test experiment.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Load Pyomo.DoE functions</span>
-<span class="kn">from</span> <span class="nn">pyomo.contrib.doe</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">ModelOptionLib</span><span class="p">,</span>
-    <span class="n">DesignOfExperiments</span><span class="p">,</span>
-    <span class="n">MeasurementVariables</span><span class="p">,</span>
-    <span class="n">DesignVariables</span><span class="p">,</span>
-<span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Load Pyomo.DoE class</span>
+<span class="kn">from</span> <span class="nn">pyomo.contrib.doe</span> <span class="kn">import</span> <span class="n">DesignOfExperiments</span>
 
 <span class="kn">from</span> <span class="nn">pyomo.environ</span> <span class="kn">import</span> <span class="n">SolverFactory</span>
 
 <span class="c1"># Copied from previous notebook</span>
 <span class="n">theta_values</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s1">&#39;Ua&#39;</span><span class="p">:</span> <span class="mf">0.05147278733764012</span><span class="p">,</span>
-    <span class="s1">&#39;Ub&#39;</span><span class="p">:</span> <span class="mf">0.0005342082856927798</span><span class="p">,</span>
-    <span class="s1">&#39;inv_CpH&#39;</span><span class="p">:</span> <span class="mf">0.14622879403418604</span><span class="p">,</span>
-    <span class="s1">&#39;inv_CpS&#39;</span><span class="p">:</span> <span class="mf">99.99999754623846</span><span class="p">,</span>
+    <span class="s1">&#39;Ua&#39;</span><span class="p">:</span> <span class="mf">0.0417051733576387</span><span class="p">,</span>
+    <span class="s1">&#39;Ub&#39;</span><span class="p">:</span> <span class="mf">0.009440714239773074</span><span class="p">,</span>
+    <span class="s1">&#39;inv_CpH&#39;</span><span class="p">:</span> <span class="mf">0.1659093525658045</span><span class="p">,</span>
+    <span class="s1">&#39;inv_CpS&#39;</span><span class="p">:</span> <span class="mf">5.8357556063605465</span><span class="p">,</span>
 <span class="p">}</span>
 </pre></div>
 </div>
 </div>
 </div>
-<p>As before in our <a class="reference internal" href="doe_exploratory_analysis.html"><span class="doc std std-doc">explorator analysis</span></a>, we need to specify the measurement variables.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Get time points for control decisions</span>
-<span class="n">t_control</span> <span class="o">=</span> <span class="n">tc_data</span><span class="o">.</span><span class="n">time</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create experiment object for design of experiments</span>
+<span class="n">doe_experiment</span> <span class="o">=</span> <span class="n">TC_Lab_experiment</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">tc_data</span><span class="p">,</span> <span class="n">theta_initial</span><span class="o">=</span><span class="n">theta_values</span><span class="p">,</span> <span class="n">number_of_states</span><span class="o">=</span><span class="n">number_tclab_states</span><span class="p">)</span>
 
-<span class="n">measurements</span> <span class="o">=</span> <span class="n">MeasurementVariables</span><span class="p">()</span>
-<span class="n">measurements</span><span class="o">.</span><span class="n">add_variables</span><span class="p">(</span>
-    <span class="s1">&#39;Ts1&#39;</span><span class="p">,</span> 
-    <span class="n">indices</span><span class="o">=</span><span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="n">t_control</span><span class="p">},</span> 
-    <span class="n">time_index_position</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-</div>
-<p>We also need to specify the decision variables. Notice in our <a class="reference internal" href="doe_exploratory_analysis.html"><span class="doc std std-doc">exploratory analysis</span></a>, our decision variables were the sine wave parameters <span class="math notranslate nohighlight">\(a\)</span> and <span class="math notranslate nohighlight">\(p\)</span>. Now we are defining the decision variables as the heater power directly. In other words, we do not need to specify a form for the control signal, which is more general. On the flip side, the optimization problem goes from two variables in <a class="reference internal" href="doe_exploratory_analysis.html"><span class="doc std std-doc">exploratory analysis</span></a> (period and amplitude) to 900 variables because our model considers 900 timesteps. But do not worry; Pyomo excels at optimization.</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">decisions</span> <span class="o">=</span> <span class="n">DesignVariables</span><span class="p">()</span>
+<span class="c1"># Create the design of experiments object using our experiment instance from above</span>
+<span class="n">TC_Lab_DoE</span> <span class="o">=</span> <span class="n">DesignOfExperiments</span><span class="p">(</span><span class="n">experiment</span><span class="o">=</span><span class="n">doe_experiment</span><span class="p">,</span> 
+                                 <span class="n">step</span><span class="o">=</span><span class="mf">1e-2</span><span class="p">,</span>
+                                 <span class="n">scale_constant_value</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                                 <span class="n">scale_nominal_param_value</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> 
+                                 <span class="n">tee</span><span class="o">=</span><span class="kc">True</span><span class="p">,)</span>
 
-<span class="n">decisions</span><span class="o">.</span><span class="n">add_variables</span><span class="p">(</span>
-    <span class="s1">&#39;U1&#39;</span><span class="p">,</span>
-    <span class="n">indices</span><span class="o">=</span><span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="n">t_control</span><span class="p">},</span>
-    <span class="n">time_index_position</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-    <span class="n">lower_bounds</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-    <span class="n">upper_bounds</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
-    <span class="n">values</span><span class="o">=</span><span class="n">tc_data</span><span class="o">.</span><span class="n">u1</span><span class="p">,</span>
-<span class="p">)</span>
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">create_model_doe</span><span class="p">(</span><span class="n">theta</span><span class="o">=</span><span class="n">theta_values</span><span class="p">):</span>
-    <span class="k">return</span> <span class="n">create_model</span><span class="p">(</span>
-        <span class="n">data</span><span class="o">=</span><span class="n">tc_data</span><span class="p">,</span>
-        <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;doe&#39;</span><span class="p">,</span>
-        <span class="n">theta</span><span class="o">=</span><span class="n">theta</span><span class="p">,</span>
-        <span class="n">integrate_to_initialize</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-        <span class="n">number_of_states</span><span class="o">=</span><span class="n">number_tclab_states</span><span class="p">,</span>
-    <span class="p">)</span>
-</pre></div>
-</div>
-</div>
-</div>
-<p>We are now ready to construct a <code class="docutils literal notranslate"><span class="pre">DesignOfExperiments</span></code> object and compute the FIM.</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create doe_object using DesignOfExperiments</span>
-<span class="n">doe_object1</span> <span class="o">=</span> <span class="n">DesignOfExperiments</span><span class="p">(</span>
-    <span class="n">theta_values</span><span class="p">,</span>  <span class="c1"># dictionary of parameters</span>
-    <span class="n">decisions</span><span class="p">,</span>  <span class="c1"># design variable</span>
-    <span class="n">measurements</span><span class="p">,</span>  <span class="c1"># measurement variable</span>
-    <span class="n">create_model_doe</span><span class="p">,</span>  <span class="c1"># model</span>
-    <span class="n">solver</span><span class="o">=</span><span class="n">SolverFactory</span><span class="p">(</span><span class="s1">&#39;ipopt&#39;</span><span class="p">),</span>
-<span class="p">)</span>
-
-<span class="n">result</span> <span class="o">=</span> <span class="n">doe_object1</span><span class="o">.</span><span class="n">compute_FIM</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s1">&#39;sequential_finite&#39;</span><span class="p">,</span> <span class="n">formula</span><span class="o">=</span><span class="s1">&#39;central&#39;</span><span class="p">)</span>
-<span class="n">result</span><span class="o">.</span><span class="n">result_analysis</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Ipopt 3.13.2: 
-
-******************************************************************************
-This program contains Ipopt, a library for large-scale nonlinear optimization.
- Ipopt is released as open source code under the Eclipse Public License (EPL).
-         For more information visit http://projects.coin-or.org/Ipopt
-******************************************************************************
-
-This is Ipopt version 3.13.2, running with linear solver ma27.
-
-Number of nonzeros in equality constraint Jacobian...:   111616
-Number of nonzeros in inequality constraint Jacobian.:        0
-Number of nonzeros in Lagrangian Hessian.............:        0
-
-Total number of variables............................:    39626
-                     variables with only lower bounds:        0
-                variables with lower and upper bounds:    23408
-                     variables with only upper bounds:        0
-Total number of equality constraints.................:    39626
-Total number of inequality constraints...............:        0
-        inequality constraints with only lower bounds:        0
-   inequality constraints with lower and upper bounds:        0
-        inequality constraints with only upper bounds:        0
-
-iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
-   0  0.0000000e+00 1.00e+00 0.00e+00  -1.0 0.00e+00    -  0.00e+00 0.00e+00   0
-   1  0.0000000e+00 1.00e-02 1.12e-01  -1.0 1.00e+00    -  9.80e-01 9.90e-01h  1
-   2  0.0000000e+00 9.90e-05 9.90e+00  -1.0 1.00e-02    -  1.00e+00 9.90e-01h  1
-   3  0.0000000e+00 2.13e-14 1.26e-05  -1.0 9.90e-05    -  1.00e+00 1.00e+00h  1
-
-Number of Iterations....: 3
-
-                                   (scaled)                 (unscaled)
-Objective...............:   0.0000000000000000e+00    0.0000000000000000e+00
-Dual infeasibility......:   0.0000000000000000e+00    0.0000000000000000e+00
-Constraint violation....:   2.1316282072803006e-14    2.1316282072803006e-14
-Complementarity.........:   0.0000000000000000e+00    0.0000000000000000e+00
-Overall NLP error.......:   2.1316282072803006e-14    2.1316282072803006e-14
-
-
-Number of objective function evaluations             = 4
-Number of objective gradient evaluations             = 4
-Number of equality constraint evaluations            = 4
-Number of inequality constraint evaluations          = 0
-Number of equality constraint Jacobian evaluations   = 4
-Number of inequality constraint Jacobian evaluations = 0
-Number of Lagrangian Hessian evaluations             = 3
-Total CPU secs in IPOPT (w/o function evaluations)   =      0.074
-Total CPU secs in NLP function evaluations           =      0.006
-
-EXIT: Optimal Solution Found.
-INFO: elapsed time: 8.1 seconds
+<span class="n">FIM</span> <span class="o">=</span> <span class="n">TC_Lab_DoE</span><span class="o">.</span><span class="n">compute_FIM</span><span class="p">(</span><span class="n">method</span><span class="o">=</span><span class="s1">&#39;sequential&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -755,40 +651,32 @@ INFO: elapsed time: 8.1 seconds
 <p>Finally, we will look at the eigendecomposition using the helper function <code class="docutils literal notranslate"><span class="pre">results_summary</span></code> defined in <code class="docutils literal notranslate"><span class="pre">tclab_pyomo.py</span></code>.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">results_summary</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">results_summary</span><span class="p">(</span><span class="n">FIM</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>======Results Summary======
 Four design criteria log10() value:
-A-optimality: 9.698903678286175
-D-optimality: nan
-E-optimality: nan
-Modified E-optimality: nan
+A-optimality: 5.773228885932493
+D-optimality: 12.308607163946094
+E-optimality: -1.793074158088514
+Modified E-optimality: 7.514721752736364
 
 FIM:
- [[ 1.88459415e+08 -1.91393890e+08 -8.24201918e+06 -1.04121590e+03]
- [-1.91393890e+08  4.80931030e+09  6.51658566e+07  2.58102008e+04]
- [-8.24201918e+06  6.51658566e+07  1.46673544e+06  3.51179540e+02]
- [-1.04121590e+03  2.58102008e+04  3.51179540e+02  1.38519624e-01]]
+ [[517225.40941304   1360.01262476 -66404.72541298  -1002.47319402]
+ [  1360.01262476   5004.3737258   12379.2662576    5238.40389773]
+ [-66404.72541298  12379.2662576   65481.16908635  14190.01468139]
+ [ -1002.47319402   5238.40389773  14190.01468139   5526.94375493]]
 
 eigenvalues:
- [ 4.81811358e+09  1.80716021e+08  4.06846518e+05 -2.41067013e-16]
+ [5.26802218e+05 6.26035823e+04 3.83207978e+03 1.61037063e-02]
 
 eigenvectors:
- [[ 4.13259139e-02 -9.98655750e-01  3.12867703e-02 -1.00570603e-13]
- [-9.99053330e-01 -4.17276557e-02 -1.22982147e-02 -5.33299017e-06]
- [-1.35872064e-02  3.07489171e-02  9.99434786e-01 -2.48897567e-06]
- [-5.36175981e-06 -1.45999972e-07  2.42198261e-06  1.00000000e+00]]
-</pre></div>
-</div>
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/Users/adowling/DowlingLab/pyomo-doe/notebooks/tclab_pyomo.py:640: RuntimeWarning: invalid value encountered in log10
-  print(&quot;D-optimality:&quot;, np.log10(result.det))
-/Users/adowling/DowlingLab/pyomo-doe/notebooks/tclab_pyomo.py:641: RuntimeWarning: invalid value encountered in log10
-  print(&quot;E-optimality:&quot;, np.log10(result.min_eig))
-/Users/adowling/DowlingLab/pyomo-doe/notebooks/tclab_pyomo.py:642: RuntimeWarning: invalid value encountered in log10
-  print(&quot;Modified E-optimality:&quot;, np.log10(result.cond))
+ [[-9.89752804e-01 -1.35949591e-01  4.36702406e-02 -7.52086327e-05]
+ [ 8.63262440e-04 -2.26164575e-01 -6.85698047e-01 -6.91857665e-01]
+ [ 1.42671125e-01 -9.31600001e-01  3.33329462e-01 -2.56487437e-02]
+ [ 5.79584008e-03 -2.49977462e-01 -6.45602485e-01  7.21578207e-01]]
 </pre></div>
 </div>
 </div>
@@ -797,390 +685,860 @@ eigenvectors:
 <section id="optimize-next-experiment-d-optimality">
 <h2>Optimize next experiment (D-optimality)<a class="headerlink" href="#optimize-next-experiment-d-optimality" title="Permalink to this heading">#</a></h2>
 <p>We are now ready to solve the optimization problem! Notice we create a new <code class="docutils literal notranslate"><span class="pre">DesignOfExperiments</span></code> object and specify the <code class="docutils literal notranslate"><span class="pre">prior_FIM</span></code> as result for the sine wave test. Thus we are decided what is the next best experiment to conduct. We already completed to sine test; we should use the data!</p>
-<p>Some of the solver options below are commented out. These options are helpful for debugging the optimization problem. Likewise, relaxing the <code class="docutils literal notranslate"><span class="pre">tol</span></code> and <code class="docutils literal notranslate"><span class="pre">acceptable_tol</span></code> helps speed up sensitivity analyses where we resolve the optimization problem many times. We left these options commented out as a quick reference.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Extract the prior FIM and Jacobian information from the previous</span>
-<span class="c1"># result to use for initialization.</span>
-<span class="n">prior</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">FIM</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-<span class="n">jac_for_initialization</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">jaco_information</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create experiment object for design of experiments</span>
+<span class="n">doe_experiment</span> <span class="o">=</span> <span class="n">TC_Lab_experiment</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">tc_data</span><span class="p">,</span> <span class="n">theta_initial</span><span class="o">=</span><span class="n">theta_values</span><span class="p">,</span> <span class="n">number_of_states</span><span class="o">=</span><span class="n">number_tclab_states</span><span class="p">)</span>
 
-<span class="c1"># Set Ipopt options</span>
-<span class="n">solver</span> <span class="o">=</span> <span class="n">SolverFactory</span><span class="p">(</span><span class="s1">&#39;ipopt&#39;</span><span class="p">)</span>
-<span class="c1"># solver.options[&#39;bound_push&#39;] = 1E-10</span>
-<span class="n">solver</span><span class="o">.</span><span class="n">options</span><span class="p">[</span><span class="s1">&#39;halt_on_ampl_error&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;yes&#39;</span>
-<span class="c1"># solver.options[&#39;tol&#39;] = 1E-5</span>
-<span class="c1"># solver.options[&#39;acceptable_tol&#39;] = 1E-4</span>
-<span class="c1"># solver.options[&#39;max_iter&#39;] = 100</span>
-<span class="n">solver</span><span class="o">.</span><span class="n">options</span><span class="p">[</span><span class="s1">&#39;linear_solver&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;ma57&#39;</span>
+<span class="c1"># Create the design of experiments object using our experiment instance from above</span>
+<span class="n">TC_Lab_DoE_D</span> <span class="o">=</span> <span class="n">DesignOfExperiments</span><span class="p">(</span><span class="n">experiment</span><span class="o">=</span><span class="n">doe_experiment</span><span class="p">,</span> 
+                                 <span class="n">step</span><span class="o">=</span><span class="mf">1e-2</span><span class="p">,</span>
+                                 <span class="n">scale_constant_value</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                                 <span class="n">scale_nominal_param_value</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                 <span class="n">objective_option</span><span class="o">=</span><span class="s2">&quot;determinant&quot;</span><span class="p">,</span>  <span class="c1"># Now we specify a type of objective, D-opt = &quot;determinant&quot;</span>
+                                 <span class="n">prior_FIM</span><span class="o">=</span><span class="n">FIM</span><span class="p">,</span>  <span class="c1"># We use the prior information from the existing experiment!</span>
+                                 <span class="n">tee</span><span class="o">=</span><span class="kc">True</span><span class="p">,)</span>
 
-<span class="c1"># Create a new DoE object</span>
-<span class="n">doe_object2</span> <span class="o">=</span> <span class="n">DesignOfExperiments</span><span class="p">(</span>
-    <span class="n">theta_values</span><span class="p">,</span>  <span class="c1"># dictionary of parameters</span>
-    <span class="n">decisions</span><span class="p">,</span>  <span class="c1"># design variable</span>
-    <span class="n">measurements</span><span class="p">,</span>  <span class="c1"># measurement variable</span>
-    <span class="n">create_model_doe</span><span class="p">,</span>  <span class="c1"># model</span>
-    <span class="n">solver</span><span class="o">=</span><span class="n">solver</span><span class="p">,</span>
-    <span class="n">prior_FIM</span><span class="o">=</span><span class="n">prior</span><span class="p">,</span>  <span class="c1"># use previous experiment as prior</span>
-<span class="p">)</span>
-
-<span class="c1"># Solve the DoE problem</span>
-<span class="n">square_result2</span><span class="p">,</span> <span class="n">optimize_result2</span> <span class="o">=</span> <span class="n">doe_object2</span><span class="o">.</span><span class="n">stochastic_program</span><span class="p">(</span>
-    <span class="n">if_optimize</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>  <span class="c1"># optimize</span>
-    <span class="n">if_Cholesky</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>  <span class="c1"># use Cholesky decomposition</span>
-    <span class="n">scale_nominal_param_value</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>  <span class="c1"># scale model parameter value</span>
-    <span class="n">objective_option</span><span class="o">=</span><span class="s2">&quot;det&quot;</span><span class="p">,</span>  <span class="c1"># objective option (need to debug/improve initialization)</span>
-    <span class="n">jac_initial</span><span class="o">=</span><span class="n">jac_for_initialization</span><span class="p">,</span>  <span class="c1"># initialize Jacobian with prior solution</span>
-    <span class="n">step</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span>  <span class="c1"># step size</span>
-<span class="p">)</span>
+<span class="n">TC_Lab_DoE_D</span><span class="o">.</span><span class="n">run_doe</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Ipopt 3.13.2: halt_on_ampl_error=yes
-linear_solver=ma57
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Ipopt 3.13.2: linear_solver=ma57
+halt_on_ampl_error=yes
+max_iter=3000
 
 
 ******************************************************************************
 This program contains Ipopt, a library for large-scale nonlinear optimization.
  Ipopt is released as open source code under the Eclipse Public License (EPL).
          For more information visit http://projects.coin-or.org/Ipopt
+
+This version of Ipopt was compiled from source code available at
+    https://github.com/IDAES/Ipopt as part of the Institute for the Design of
+    Advanced Energy Systems Process Systems Engineering Framework (IDAES PSE
+    Framework) Copyright (c) 2018-2019. See https://github.com/IDAES/idaes-pse.
+
+This version of Ipopt was compiled using HSL, a collection of Fortran codes
+    for large-scale scientific computation.  All technical papers, sales and
+    publicity material resulting from use of the HSL codes within IPOPT must
+    contain the following acknowledgement:
+        HSL, a collection of Fortran codes for large-scale scientific
+        computation. See http://www.hsl.rl.ac.uk.
 ******************************************************************************
 
 This is Ipopt version 3.13.2, running with linear solver ma57.
 
-Number of nonzeros in equality constraint Jacobian...:   136846
+Number of nonzeros in equality constraint Jacobian...:     1800
 Number of nonzeros in inequality constraint Jacobian.:        0
-Number of nonzeros in Lagrangian Hessian.............:     9010
+Number of nonzeros in Lagrangian Hessian.............:        0
 
-Total number of variables............................:    43240
+Total number of variables............................:      602
                      variables with only lower bounds:        0
-                variables with lower and upper bounds:    23408
+                variables with lower and upper bounds:      300
                      variables with only upper bounds:        0
-Total number of equality constraints.................:    43240
+Total number of equality constraints.................:      602
 Total number of inequality constraints...............:        0
         inequality constraints with only lower bounds:        0
    inequality constraints with lower and upper bounds:        0
         inequality constraints with only upper bounds:        0
 
 iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
-   0  0.0000000e+00 9.62e+09 0.00e+00  -1.0 0.00e+00    -  0.00e+00 0.00e+00   0
-Reallocating memory for MA57: lfact (1796418)
-   1  0.0000000e+00 4.80e+09 1.14e-01  -1.0 1.94e+07    -  9.80e-01 9.90e-01h  1
-   2  0.0000000e+00 4.80e+07 9.90e+00  -1.0 4.80e+09    -  1.00e+00 9.90e-01h  1
-   3  0.0000000e+00 4.71e+01 1.26e-05  -1.0 4.80e+07    -  1.00e+00 1.00e+00h  1
-   4  0.0000000e+00 1.91e-11 3.61e-10  -1.7 4.71e+01    -  1.00e+00 1.00e+00h  1
+   0  0.0000000e+00 3.76e-01 0.00e+00  -1.0 0.00e+00    -  0.00e+00 0.00e+00   0
+   1  0.0000000e+00 3.55e-15 1.04e-02  -1.0 2.21e+00    -  9.11e-01 1.00e+00h  1
 
-Number of Iterations....: 4
+Number of Iterations....: 1
 
                                    (scaled)                 (unscaled)
 Objective...............:   0.0000000000000000e+00    0.0000000000000000e+00
 Dual infeasibility......:   0.0000000000000000e+00    0.0000000000000000e+00
-Constraint violation....:   3.4674485505092889e-12    1.9099388737231493e-11
+Constraint violation....:   3.5527136788005009e-15    3.5527136788005009e-15
 Complementarity.........:   0.0000000000000000e+00    0.0000000000000000e+00
-Overall NLP error.......:   3.4674485505092889e-12    1.9099388737231493e-11
+Overall NLP error.......:   3.5527136788005009e-15    3.5527136788005009e-15
 
 
-Number of objective function evaluations             = 5
-Number of objective gradient evaluations             = 5
-Number of equality constraint evaluations            = 5
+Number of objective function evaluations             = 2
+Number of objective gradient evaluations             = 2
+Number of equality constraint evaluations            = 2
 Number of inequality constraint evaluations          = 0
-Number of equality constraint Jacobian evaluations   = 5
+Number of equality constraint Jacobian evaluations   = 2
 Number of inequality constraint Jacobian evaluations = 0
-Number of Lagrangian Hessian evaluations             = 4
-Total CPU secs in IPOPT (w/o function evaluations)   =      0.344
-Total CPU secs in NLP function evaluations           =      0.021
+Number of Lagrangian Hessian evaluations             = 1
+Total CPU secs in IPOPT (w/o function evaluations)   =      0.002
+Total CPU secs in NLP function evaluations           =      0.000
 
 EXIT: Optimal Solution Found.
-Ipopt 3.13.2: halt_on_ampl_error=yes
-linear_solver=ma57
+Ipopt 3.13.2: linear_solver=ma57
+halt_on_ampl_error=yes
+max_iter=3000
 
 
 ******************************************************************************
 This program contains Ipopt, a library for large-scale nonlinear optimization.
  Ipopt is released as open source code under the Eclipse Public License (EPL).
          For more information visit http://projects.coin-or.org/Ipopt
+
+This version of Ipopt was compiled from source code available at
+    https://github.com/IDAES/Ipopt as part of the Institute for the Design of
+    Advanced Energy Systems Process Systems Engineering Framework (IDAES PSE
+    Framework) Copyright (c) 2018-2019. See https://github.com/IDAES/idaes-pse.
+
+This version of Ipopt was compiled using HSL, a collection of Fortran codes
+    for large-scale scientific computation.  All technical papers, sales and
+    publicity material resulting from use of the HSL codes within IPOPT must
+    contain the following acknowledgement:
+        HSL, a collection of Fortran codes for large-scale scientific
+        computation. See http://www.hsl.rl.ac.uk.
 ******************************************************************************
 
 This is Ipopt version 3.13.2, running with linear solver ma57.
 
-Number of nonzeros in equality constraint Jacobian...:   144989
+Number of nonzeros in equality constraint Jacobian...:     1951
 Number of nonzeros in inequality constraint Jacobian.:        0
-Number of nonzeros in Lagrangian Hessian.............:     9030
+Number of nonzeros in Lagrangian Hessian.............:        0
 
-Reallocating memory for MA57: lfact (2309029)
-Total number of variables............................:    44151
-                     variables with only lower bounds:        4
-                variables with lower and upper bounds:    24309
+Total number of variables............................:      753
+                     variables with only lower bounds:        0
+                variables with lower and upper bounds:      451
                      variables with only upper bounds:        0
-Total number of equality constraints.................:    43250
+Total number of equality constraints.................:      602
 Total number of inequality constraints...............:        0
         inequality constraints with only lower bounds:        0
    inequality constraints with lower and upper bounds:        0
         inequality constraints with only upper bounds:        0
 
 iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
-   0 -2.7275601e+01 4.73e-03 1.23e-03  -1.0 0.00e+00    -  0.00e+00 0.00e+00   0
-   1 -2.7275050e+01 3.60e-02 1.00e-02  -1.0 2.64e+02    -  9.90e-01 1.00e+00f  1
-   2 -2.7227492e+01 3.24e+02 2.79e-04  -1.0 2.52e+04    -  9.90e-01 1.00e+00f  1
-   3 -2.7031921e+01 4.90e+01 3.36e-03  -1.0 1.90e+05    -  1.00e+00 1.00e+00F  1
-   4 -2.7069801e+01 1.34e+03 3.54e-05  -1.0 3.85e+04    -  1.00e+00 1.00e+00f  1
-   5 -2.7071337e+01 1.33e+00 1.21e-06  -1.0 2.50e+03    -  1.00e+00 1.00e+00h  1
-   6 -2.7071367e+01 1.63e-03 1.00e-06  -1.0 4.26e+01    -  1.00e+00 1.00e+00h  1
-   7 -2.7072678e+01 1.27e-01 5.16e-06  -2.5 2.80e+02    -  1.00e+00 1.00e+00h  1
-   8 -2.7117076e+01 1.44e+02 2.34e-04  -2.5 9.00e+03    -  1.00e+00 1.00e+00h  1
-   9 -2.7117869e+01 1.33e-02 1.14e-07  -2.5 1.38e+02    -  1.00e+00 1.00e+00h  1
-iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
-  10 -2.7161922e+01 1.35e+02 2.26e-04  -3.8 8.69e+03    -  9.73e-01 1.00e+00h  1
-  11 -2.7161157e+01 3.28e-01 7.06e-05  -3.8 7.06e-01  -4.0 1.00e+00 1.00e+00h  1
-  12 -2.7297414e+01 4.66e+03 2.12e-03  -3.8 8.13e+04    -  1.00e+00 1.00e+00h  1
-  13 -2.7290573e+01 1.42e+01 2.32e-04  -3.8 6.96e+00  -4.5 1.00e+00 1.00e+00h  1
-  14 -2.7360227e+01 5.83e+02 5.40e-04  -3.8 3.65e+03    -  1.00e+00 1.00e+00h  1
-  15 -2.7357760e+01 4.82e+00 3.13e-05  -3.8 2.82e+00  -5.0 1.00e+00 1.00e+00h  1
-  16 -2.7454851e+01 8.97e+02 8.39e-04  -3.8 4.04e+03    -  1.00e+00 1.00e+00h  1
-  17 -2.7455402e+01 3.88e+01 1.02e-04  -3.8 2.75e+01  -5.4 1.00e+00 1.00e+00h  1
-  18 -2.7506118e+01 1.01e+03 2.37e-04  -3.8 2.52e+04    -  1.00e+00 1.00e+00h  1
-  19 -2.7504999e+01 6.67e+00 4.03e-06  -3.8 3.27e+00  -5.9 1.00e+00 1.00e+00h  1
-iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
-  20 -2.7506854e+01 1.19e+01 4.11e-06  -3.8 9.99e+00  -6.4 1.00e+00 1.00e+00h  1
-  21 -2.7512592e+01 1.01e+02 4.26e-06  -3.8 3.11e+01  -6.9 1.00e+00 1.00e+00h  1
-  22 -2.7526279e+01 5.39e+02 1.34e-05  -3.8 7.55e+01  -7.3 1.00e+00 1.00e+00h  1
-  23 -2.7549656e+01 6.90e+02 3.83e-05  -3.8 1.78e+02  -7.8 1.00e+00 1.00e+00H  1
-  24 -2.7559387e+01 1.33e+02 5.84e-06  -3.8 5.61e+02  -8.3 1.00e+00 1.00e+00h  1
-  25 -2.7655095e+01 3.92e+03 6.43e-04  -3.8 5.86e+03    -  1.00e+00 1.00e+00H  1
-  26 -2.7636506e+01 1.79e+03 3.49e-04  -3.8 1.13e+04    -  1.00e+00 5.00e-01h  2
-  27 -2.7618420e+01 9.92e+01 2.70e-05  -3.8 5.43e+03    -  1.00e+00 1.00e+00h  1
-  28 -2.7620099e+01 2.38e+01 1.25e-07  -3.8 3.33e+02    -  1.00e+00 1.00e+00h  1
-  29 -2.7620107e+01 4.03e-02 1.51e-09  -3.8 6.76e+00    -  1.00e+00 1.00e+00h  1
-iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
-  30 -2.7620107e+01 9.54e-07 1.50e-09  -3.8 1.75e-01    -  1.00e+00 1.00e+00h  1
-  31 -2.7911402e+01 2.67e+03 6.43e-03  -5.7 4.10e+04    -  6.82e-01 1.00e+00F  1
-  32 -2.8105224e+01 3.14e+02 9.10e-05  -5.7 5.92e+04    -  6.85e-01 1.00e+00H  1
-  33 -2.8113150e+01 8.53e+02 1.89e-05  -5.7 2.05e+02  -7.9 6.13e-01 1.00e+00h  1
-  34 -2.8121218e+01 9.99e+02 1.89e-05  -5.7 7.82e+05    -  3.32e-02 3.52e-02h  1
-  35 -2.8133864e+01 1.03e+03 1.75e-05  -5.7 2.43e+05    -  1.06e-01 8.71e-02h  1
-  36 -2.8146579e+01 1.03e+03 1.57e-05  -5.7 1.49e+05    -  1.24e-01 1.10e-01h  1
-  37 -2.8160109e+01 9.76e+02 1.70e-05  -5.7 1.00e+05    -  1.51e-01 1.49e-01h  1
-  38 -2.8171307e+01 8.67e+02 1.79e-05  -5.7 6.66e+04    -  1.64e-01 1.65e-01h  1
-  39 -2.8178662e+01 7.61e+02 1.68e-05  -5.7 4.71e+04    -  1.57e-01 1.48e-01h  1
-iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
-  40 -2.8184474e+01 6.63e+02 1.53e-05  -5.7 3.91e+04    -  1.36e-01 1.51e-01h  1
-  41 -2.8189912e+01 5.58e+02 1.33e-05  -5.7 2.81e+04    -  1.58e-01 1.81e-01h  1
-  42 -2.8193523e+01 4.75e+02 1.16e-05  -5.7 2.02e+04    -  1.90e-01 1.60e-01h  1
-  43 -2.8193980e+01 4.70e+02 1.13e-05  -5.7 1.15e+05    -  2.53e-02 1.99e-02h  1
-  44 -2.8197045e+01 3.77e+01 1.64e-06  -5.7 3.73e+02  -8.3 8.09e-01 9.56e-01h  1
-  45 -2.8199715e+01 3.15e+01 1.44e-06  -5.7 8.39e+02  -8.8 8.85e-01 5.37e-01h  1
-  46 -2.8201497e+01 3.07e+00 1.29e-06  -5.7 3.22e+02  -8.4 1.00e+00 1.00e+00h  1
-  47 -2.8204582e+01 2.61e+00 8.89e-07  -5.7 6.64e+02  -8.9 1.00e+00 1.00e+00h  1
-  48 -2.8204962e+01 5.50e+00 8.17e-07  -5.7 8.64e+02  -9.4 2.93e-01 1.42e-01h  2
-  49 -2.8206469e+01 1.14e+01 4.73e-07  -5.7 3.98e+02  -8.9 1.00e+00 1.00e+00h  1
-iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
-  50 -2.8206527e+01 1.43e+01 4.67e-07  -5.7 3.04e+04    -  2.40e-02 1.18e-02h  2
-  51 -2.8206953e+01 6.83e-01 3.50e-07  -5.7 1.10e+02  -8.5 1.00e+00 1.00e+00h  1
-  52 -2.8207038e+01 4.08e+00 3.40e-07  -5.7 2.84e+04    -  6.80e-02 2.87e-02h  2
-  53 -2.8207072e+01 7.42e+00 3.36e-07  -5.7 3.00e+02  -9.0 4.30e-01 1.69e-01h  2
-  54 -2.8207320e+01 3.83e+00 2.85e-07  -5.7 1.01e+02  -8.5 1.00e+00 1.00e+00h  1
-  55 -2.8207487e+01 4.47e+00 2.50e-07  -5.7 1.99e+02  -9.0 7.83e-01 3.57e-01h  2
-  56 -2.8207666e+01 3.49e+00 2.13e-07  -5.7 8.49e+01  -8.6 1.00e+00 1.00e+00h  1
-  57 -2.8207764e+01 4.52e+00 1.93e-07  -5.7 1.82e+02  -9.1 6.88e-01 3.20e-01h  2
-  58 -2.8207873e+01 4.56e+00 1.73e-07  -5.7 7.78e+01  -8.7 1.00e+00 1.00e+00h  1
-  59 -2.8207957e+01 5.66e+00 1.57e-07  -5.7 1.71e+02  -9.1 6.46e-01 3.47e-01h  2
-iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
-  60 -2.8208027e+01 5.65e+00 1.49e-07  -5.7 7.51e+01  -8.7 1.00e+00 1.00e+00h  1
-  61 -2.8208095e+01 6.10e+00 1.35e-07  -5.7 1.63e+02  -9.2 6.94e-01 3.33e-01h  2
-  62 -2.8208128e+01 7.66e+00 1.36e-07  -5.7 7.75e+01  -8.8 1.00e+00 1.00e+00h  1
-  63 -2.8208190e+01 7.18e+00 1.24e-07  -5.7 1.58e+02  -9.2 6.34e-01 2.90e-01h  2
-  64 -2.8208231e+01 7.53e+00 1.22e-07  -5.7 7.78e+01  -8.8 1.00e+00 1.00e+00h  1
-  65 -2.8208480e+01 2.11e+00 8.62e-08  -5.7 1.50e+02  -9.3 6.43e-01 9.10e-01H  1
-  66 -2.8208557e+01 4.56e+00 6.61e-08  -5.7 2.71e+02  -9.8 3.42e-01 4.29e-01F  1
-  67 -2.8208624e+01 5.90e+00 6.31e-08  -5.7 3.48e+04    -  9.58e-02 4.49e-02h  2
-  68 -2.8208615e+01 7.28e+00 6.58e-08  -5.7 1.61e+02  -9.3 4.27e-01 2.29e-01h  2
-  69 -2.8208595e+01 3.39e-01 9.02e-08  -5.7 6.89e+01  -8.9 1.00e+00 1.00e+00H  1
-iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
-  70 -2.8208624e+01 1.16e+00 8.07e-08  -5.7 1.37e+02  -9.4 7.10e-01 2.82e-01h  2
-  71 -2.8208584e+01 4.33e+00 9.16e-08  -5.7 9.81e+01  -9.0 1.00e+00 4.01e-01h  2
-  72 -2.8208550e+01 5.88e+00 9.90e-08  -5.7 3.08e+04  -9.4 1.15e-03 6.59e-04h  3
-  73 -2.8208504e+01 6.90e+00 1.16e-07  -5.7 3.60e+02  -9.0 1.45e-01 4.74e-02h  3
-  74 -2.8208574e+01 8.31e-01 9.40e-08  -5.7 3.61e+01  -8.6 1.00e+00 1.00e+00h  1
-  75 -2.8208712e+01 8.91e-02 7.33e-08  -5.7 8.22e+01  -9.1 1.00e+00 1.00e+00H  1
-  76 -2.8208706e+01 6.58e-01 7.66e-08  -5.7 6.92e+02  -9.5 9.90e-02 2.58e-02h  3
-  77 -2.8208675e+01 1.83e+00 9.29e-08  -5.7 2.31e+02  -9.1 2.88e-01 7.89e-02h  3
-  78 -2.8208686e+01 1.73e+00 7.61e-08  -5.7 3.70e+01  -8.7 1.00e+00 1.00e+00h  1
-  79 -2.8208741e+01 6.89e+00 7.33e-08  -5.7 2.59e+04    -  6.53e-02 3.72e-02h  2
-iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
-  80 -2.8208732e+01 8.24e+00 7.83e-08  -5.7 1.29e+02  -9.2 8.01e-01 3.34e-01h  2
-  81 -2.8208778e+01 1.23e+00 7.25e-08  -5.7 3.96e+01  -8.7 1.00e+00 1.00e+00h  1
-  82 -2.8208816e+01 3.59e+00 7.11e-08  -5.7 3.76e+04    -  4.79e-02 1.90e-02h  2
-  83 -2.8208847e+01 6.00e-02 6.52e-08  -5.7 1.34e+01  -8.3 1.00e+00 1.00e+00h  1
-  84 -2.8208924e+01 3.48e+00 5.98e-08  -5.7 2.06e+04    -  1.36e-01 8.37e-02h  2
-  85 -2.8208952e+01 9.15e-01 5.50e-08  -5.7 3.38e+01  -8.8 1.00e+00 1.00e+00h  1
-  86 -2.8209006e+01 3.75e+00 5.21e-08  -5.7 2.17e+04    -  1.15e-01 5.27e-02h  2
-  87 -2.8209024e+01 7.04e-02 4.90e-08  -5.7 1.13e+01  -8.4 1.00e+00 1.00e+00h  1
-  88 -2.8209085e+01 3.40e+00 4.56e-08  -5.7 2.11e+04    -  1.18e-01 7.02e-02h  2
-  89 -2.8209097e+01 9.30e-01 4.39e-08  -5.7 3.04e+01  -8.8 1.00e+00 1.00e+00h  1
-iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
-  90 -2.8209154e+01 1.40e-01 4.21e-08  -5.7 8.42e+01  -9.3 1.00e+00 1.00e+00H  1
-  91 -2.8209178e+01 2.86e-01 2.69e-08  -5.7 2.10e+01  -8.9 1.00e+00 1.00e+00h  1
-  92 -2.8209207e+01 1.63e-01 3.37e-08  -5.7 7.48e+01  -9.4 1.00e+00 1.00e+00H  1
-  93 -2.8209206e+01 5.65e-01 4.02e-08  -5.7 2.26e+02  -9.8 3.05e-01 9.14e-02h  3
-  94 -2.8209200e+01 7.32e-02 2.81e-08  -5.7 9.23e+00  -8.5 1.00e+00 1.00e+00h  1
-  95 -2.8209236e+01 2.57e+00 4.28e-08  -5.7 3.73e+04    -  6.39e-02 2.96e-02h  2
-  96 -2.8209212e+01 1.41e+00 3.36e-08  -5.7 3.31e+01  -9.0 1.00e+00 1.00e+00h  1
-  97 -2.8209252e+01 5.11e+00 3.20e-08  -5.7 2.20e+04    -  6.96e-02 4.77e-02h  2
-  98 -2.8209244e+01 5.30e+00 6.77e-08  -5.7 2.53e+02  -9.5 2.26e-01 4.96e-02h  3
-  99 -2.8209213e+01 4.51e-01 6.34e-08  -5.7 7.15e+01  -9.0 1.00e+00 1.00e+00H  1
-iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
- 100 -2.8209246e+01 1.28e+00 6.13e-08  -5.7 2.65e+04    -  7.88e-02 3.30e-02h  2
- 101 -2.8209291e+01 2.71e-01 5.25e-08  -5.7 2.18e+01  -8.6 1.00e+00 1.00e+00h  1
- 102 -2.8209381e+01 3.98e+00 6.24e-08  -5.7 1.44e+04    -  2.90e-01 1.73e-01h  2
- 103 -2.8209393e+01 1.14e+00 2.78e-08  -5.7 3.46e+01  -9.1 1.00e+00 1.00e+00h  1
- 104 -2.8209443e+01 2.36e+00 5.94e-08  -5.7 1.88e+04    -  2.31e-01 8.45e-02h  2
- 105 -2.8209451e+01 7.64e-02 2.41e-08  -5.7 1.13e+01  -8.7 1.00e+00 1.00e+00h  1
- 106 -2.8209525e+01 3.82e+00 2.05e-08  -5.7 1.27e+04    -  2.63e-01 1.83e-01h  2
- 107 -2.8209519e+01 1.27e+00 2.21e-08  -5.7 3.09e+01  -9.1 1.00e+00 1.00e+00h  1
- 108 -2.8209568e+01 1.49e-02 2.39e-08  -5.7 9.59e+01  -9.6 1.00e+00 1.00e+00H  1
- 109 -2.8209586e+01 2.99e-01 1.44e-08  -5.7 2.26e+01  -9.2 1.00e+00 1.00e+00f  1
-iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
- 110 -2.8209595e+01 2.03e-01 1.60e-08  -5.7 7.15e+01  -9.7 1.00e+00 1.00e+00H  1
- 111 -2.8209624e+01 1.59e+00 2.72e-08  -5.7 4.50e+04    -  5.43e-02 3.09e-02h  2
- 112 -2.8209606e+01 3.59e-01 1.10e-08  -5.7 1.96e+01  -9.2 1.00e+00 1.00e+00h  1
- 113 -2.8209641e+01 1.62e-01 1.31e-08  -5.7 6.63e+01  -9.7 1.00e+00 1.00e+00H  1
- 114 -2.8209701e+01 3.28e+00 2.44e-08  -5.7 1.15e+04    -  3.66e-01 2.32e-01h  2
- 115 -2.8209681e+01 3.62e-01 8.69e-09  -5.7 1.74e+01  -9.3 1.00e+00 1.00e+00h  1
- 116 -2.8209691e+01 7.90e-01 6.75e-08  -5.7 1.78e+04    -  1.09e-01 2.23e-02h  3
- 117 -2.8209684e+01 1.20e-01 1.02e-08  -5.7 7.67e+00  -8.9 1.00e+00 1.00e+00h  1
- 118 -2.8209748e+01 2.96e+00 4.54e-08  -5.7 9.58e+03    -  5.99e-01 2.62e-01h  2
- 119 -2.8209752e+01 1.65e-03 8.47e-09  -5.7 2.38e+00  -8.4 1.00e+00 1.00e+00h  1
-iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
- 120 -2.8210001e+01 5.06e-04 3.61e-08  -5.7 7.05e+03    -  6.55e-01 1.00e+00H  1
- 121 -2.8209876e+01 9.23e-04 1.21e-09  -5.7 1.55e+03    -  1.00e+00 1.00e+00H  1
- 122 -2.8209848e+01 1.89e-01 1.09e-08  -5.7 9.18e+00  -8.9 1.00e+00 1.00e+00h  1
- 123 -2.8209855e+01 3.71e-01 5.81e-08  -5.7 4.81e+03    -  5.15e-01 7.00e-02h  4
- 124 -2.8209852e+01 3.86e-01 1.03e-07  -5.7 1.75e+03  -9.4 2.46e-02 1.06e-03h  6
- 125 -2.8209724e+01 8.19e-01 4.34e-08  -5.7 4.14e+01  -9.0 1.00e+00 1.00e+00H  1
- 126 -2.8209772e+01 2.50e-01 4.42e-08  -5.7 3.86e+03    -  6.97e-01 2.21e-01h  3
- 127 -2.8209806e+01 1.08e-02 2.31e-08  -5.7 8.23e+00  -8.6 1.00e+00 1.00e+00h  1
- 128 -2.8209846e+01 7.03e-02 1.32e-08  -5.7 1.41e+01  -9.0 1.00e+00 1.00e+00h  1
- 129 -2.8209873e+01 5.24e-03 7.51e-09  -5.7 2.35e+01  -9.5 1.00e+00 1.00e+00H  1
-iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
- 130 -2.8209876e+01 2.75e-02 6.60e-08  -5.7 2.34e+03    -  1.00e+00 5.97e-02h  5
- 131 -2.8209854e+01 1.33e-02 1.58e-08  -5.7 1.90e+01  -9.1 1.00e+00 1.00e+00H  1
- 132 -2.8209956e+01 2.37e-03 3.08e-09  -5.7 2.11e+03    -  1.00e+00 1.00e+00H  1
- 133 -2.8209917e+01 2.01e-02 6.53e-09  -5.7 2.28e+01  -9.6 1.00e+00 1.00e+00H  1
- 134 -2.8209918e+01 6.51e-03 8.07e-08  -5.7 5.73e+02    -  7.15e-01 3.10e-02h  5
- 135 -2.8209914e+01 3.41e-03 6.55e-09  -5.7 1.10e+00  -8.2 1.00e+00 1.00e+00h  1
- 136 -2.8209946e+01 1.29e-04 9.37e-10  -5.7 5.55e+02    -  1.00e+00 1.00e+00H  1
- 137 -2.8209945e+01 1.01e-04 3.92e-11  -5.7 1.55e+02    -  1.00e+00 1.00e+00H  1
- 138 -2.8209943e+01 1.86e-04 9.03e-10  -5.7 4.57e-01  -8.7 1.00e+00 1.00e+00h  1
- 139 -2.8209941e+01 9.54e-07 6.46e-10  -5.7 9.81e-01  -9.2 1.00e+00 1.00e+00H  1
-iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
- 140 -2.8212733e+01 1.16e+01 2.32e-07  -8.6 2.15e+03  -9.7 2.33e-01 2.20e-01f  1
- 141 -2.8213753e+01 1.78e+01 2.40e-07  -8.6 1.22e+03  -9.2 7.09e-02 1.06e-01h  1
- 142 -2.8216088e+01 1.58e+01 3.41e-07  -8.6 2.02e+03  -9.7 3.94e-01 2.33e-01h  1
- 143 -2.8217841e+01 1.11e+01 1.27e-06  -8.6 5.61e+02  -8.4 3.86e-01 4.95e-01h  1
- 144 -2.8219275e+01 1.64e+01 1.27e-06  -8.6 9.20e+02  -8.9 1.65e-01 2.47e-01h  1
- 145 -2.8220364e+01 1.25e+01 1.53e-06  -8.6 5.51e+02  -8.4 3.23e-01 3.37e-01h  1
- 146 -2.8221012e+01 1.43e+01 1.44e-06  -8.6 7.07e+02  -8.9 1.40e-01 1.33e-01h  1
- 147 -2.8221845e+01 1.11e+01 1.52e-06  -8.6 5.16e+02  -8.5 3.58e-01 2.94e-01h  1
- 148 -2.8221949e+01 1.36e+01 1.46e-06  -8.6 8.29e+02  -9.0 2.08e-02 2.39e-02h  1
- 149 -2.8222691e+01 1.05e+01 1.43e-06  -8.6 4.66e+02  -8.5 4.23e-01 2.95e-01h  1
-iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
- 150 -2.8223735e+01 3.10e+00 1.82e-06  -8.6 2.45e+02  -8.1 5.61e-01 7.98e-01h  1
- 151 -2.8223915e+01 2.67e+00 1.66e-06  -8.6 2.90e+02  -8.6 8.56e-01 1.45e-01h  1
-Reallocating memory for MA57: lfact (2427505)
- 152 -2.8224243e+01 1.19e+00 1.19e-06  -8.6 1.22e+02  -8.2 1.00e+00 5.74e-01h  1
- 153 -2.8224250e+01 1.16e+00 1.18e-06  -8.6 1.10e+02  -8.6 1.00e+00 1.79e-02h  1
- 154 -2.8224483e+01 1.55e-02 3.26e-07  -8.6 5.30e+01  -8.2 1.00e+00 1.00e+00h  1
- 155 -2.8224489e+01 2.73e-02 3.03e-07  -8.6 4.43e+01  -8.7 1.00e+00 9.85e-02h  1
- 156 -2.8224500e+01 1.70e-02 1.71e-07  -8.6 8.35e+00  -8.3 1.00e+00 4.99e-01f  1
- 157 -2.8224506e+01 1.97e-02 1.55e-07  -8.6 2.52e+01  -8.7 1.00e+00 1.76e-01f  1
- 158 -2.8224514e+01 2.72e-02 5.34e-08  -8.6 7.85e+00  -8.3 1.00e+00 6.86e-01f  1
- 159 -2.8224525e+01 2.76e-01 4.36e-08  -8.6 3.55e+01  -8.8 1.00e+00 3.81e-01f  1
-iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
- 160 -2.8224531e+01 1.37e-01 4.34e-08  -8.6 1.11e+01  -8.4 1.00e+00 7.11e-01f  1
- 161 -2.8224531e+01 6.84e-02 1.57e-08  -8.6 1.80e+01  -8.8 9.19e-01 5.13e-01f  1
- 162 -2.8224532e+01 4.23e-02 1.63e-08  -8.6 4.46e+00  -8.4 1.00e+00 3.92e-01f  1
- 163 -2.8224534e+01 1.80e-03 1.84e-08  -8.6 1.43e+01  -8.9 1.00e+00 1.00e+00f  1
- 164 -2.8224536e+01 2.32e-03 1.89e-08  -8.6 4.43e+01  -9.4 1.00e+00 1.00e+00h  1
- 165 -2.8224536e+01 6.53e-03 1.88e-08  -8.6 1.65e+01  -8.9 1.00e+00 1.00e+00h  1
- 166 -2.8224537e+01 9.00e-04 1.90e-08  -8.6 6.24e+00  -8.5 1.00e+00 9.92e-01h  1
- 167 -2.8224537e+01 4.82e-02 1.90e-08  -8.6 1.88e+01  -9.0 1.00e+00 1.00e+00f  1
- 168 -2.8224538e+01 1.17e-02 1.90e-08  -8.6 7.04e+00  -8.6 1.00e+00 1.00e+00h  1
- 169 -2.8224541e+01 3.52e-01 2.25e-08  -8.6 3.56e+01  -9.0 4.16e-01 5.76e-01h  1
-iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
- 170 -2.8224540e+01 1.44e-01 1.42e-08  -8.6 4.74e+01  -9.5 1.00e+00 1.00e+00h  1
- 171 -2.8224545e+01 9.50e-02 1.41e-08  -8.6 1.41e+02 -10.0 1.00e+00 9.25e-01h  1
- 172 -2.8224553e+01 1.58e-01 1.66e-08  -8.6 4.97e+02 -10.5 1.00e+00 1.00e+00h  1
- 173 -2.8224558e+01 2.11e-01 1.88e-08  -8.6 2.87e+03 -11.0 3.97e-01 1.16e-01h  1
- 174 -2.8224558e+01 2.10e-01 1.90e-08  -8.6 9.12e+02 -10.5 1.96e-02 3.56e-03h  1
- 175 -2.8224558e+01 2.10e-01 5.49e-08  -8.6 8.83e+03 -11.0 1.61e-01 2.14e-03f  3
- 176 -2.8224563e+01 4.70e-01 3.06e-08  -8.6 9.01e+02 -10.6 6.12e-01 1.00e+00h  1
- 177 -2.8224563e+01 4.54e-01 4.35e-08  -8.6 3.68e+01  -9.3 1.00e+00 3.51e-02h  1
- 178 -2.8224566e+01 4.08e-01 1.54e-03  -8.6 1.40e+03    -  4.62e-07 1.91e-01f  1
- 179 -2.8224567e+01 3.99e-01 1.47e-03  -8.6 2.84e+03    -  2.02e-03 4.63e-02f  1
-iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
- 180 -2.8224592e+01 3.02e+00 4.12e+00  -8.6 3.79e+03    -  9.16e-10 5.91e-01f  1
- 181 -2.8224590e+01 2.92e+00 3.97e+00  -8.6 3.27e+03    -  9.62e-01 3.59e-02h  1
- 182 -2.8224590e+01 2.85e+00 3.84e+00  -8.6 5.23e+01  -9.7 1.19e-07 2.45e-02h  1
- 183 -2.8224600e+01 1.13e+00 1.50e+00  -8.6 2.69e+02    -  3.85e-02 6.09e-01f  1
- 184 -2.8224601e+01 9.18e-01 1.22e+00  -8.6 1.28e+02    -  9.00e-01 1.87e-01h  1
- 185 -2.8224603e+01 3.95e-01 5.15e-01  -8.6 1.83e+02 -10.2 6.92e-01 5.77e-01f  1
- 186 -2.8224605e+01 1.54e-03 1.70e-08  -8.6 5.50e+01    -  7.08e-01 1.00e+00f  1
-Reallocating memory for MA57: lfact (2581681)
- 187 -2.8224606e+01 1.55e-02 3.43e-09  -8.6 1.65e+02 -10.7 1.00e+00 1.00e+00h  1
- 188 -2.8224610e+01 9.39e-01 2.18e-08  -8.6 1.29e+03 -11.2 2.24e-01 1.00e+00h  1
- 189 -2.8224620e+01 2.62e-01 1.26e-08  -8.6 6.82e+02 -10.7 1.00e+00 1.00e+00h  1
-iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
- 190 -2.8224636e+01 1.09e+00 1.85e-08  -8.6 8.80e+03 -11.2 6.44e-02 1.40e-01h  1
- 191 -2.8224636e+01 1.08e+00 1.85e-08  -8.6 1.32e+03 -10.8 2.29e-03 5.18e-03h  1
- 192 -2.8224636e+01 1.08e+00 1.96e-04  -8.6 2.03e+04 -11.3 4.80e-10 2.67e-04h  1
- 193 -2.8224636e+01 6.31e-01 1.11e-04  -8.6 4.06e+02    -  4.21e-03 4.33e-01h  1
- 194 -2.8224636e+01 5.30e-01 7.34e-03  -8.6 1.66e+01  -9.0 8.25e-07 1.63e-01f  1
- 195 -2.8224639e+01 1.56e-02 1.67e-07  -8.6 4.56e+01  -9.5 2.48e-01 1.00e+00f  1
- 196 -2.8224640e+01 1.90e-02 1.30e-07  -8.6 1.35e+02 -10.0 1.07e-01 2.08e-01h  1
- 197 -2.8224641e+01 2.02e-02 4.20e-03  -8.6 4.75e+02 -10.5 3.63e-07 2.09e-01f  1
- 198 -2.8224640e+01 1.88e-02 4.58e-02  -8.6 3.51e+02    -  6.99e-09 1.66e-01h  1
- 199 -2.8224641e+01 2.02e-02 3.32e-01  -8.6 2.01e+03 -10.9 1.42e-09 3.11e-02f  1
-iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
- 200 -2.8224640e+01 1.84e-02 9.41e-01  -8.6 3.12e+02    -  5.84e-10 2.90e-01h  2
- 201 -2.8224641e+01 1.95e-02 7.87e-01  -8.6 5.43e+02 -10.5 3.80e-01 1.63e-01h  1
- 202 -2.8224641e+01 1.71e-02 6.58e-01  -8.6 3.03e+01    -  3.88e-08 1.25e-01h  1
- 203 -2.8224641e+01 1.68e-02 6.44e-01  -8.6 4.47e+02    -  2.08e-09 2.03e-02f  1
- 204 -2.8224640e+01 2.20e-03 2.16e+01  -8.6 6.15e+01    -  4.68e-10 1.00e+00h  1
- 205 -2.8224641e+01 4.28e-03 2.15e+01  -8.6 1.06e+04    -  2.85e-01 5.48e-03h  1
- 206 -2.8224641e+01 5.38e-03 2.00e+01  -8.6 6.75e+02 -11.0 1.20e-06 7.06e-02h  4
- 207 -2.8224641e+01 5.23e-03 1.82e+01  -8.6 2.36e+02 -10.6 7.92e-02 8.80e-02h  2
- 208 -2.8224641e+01 5.25e-03 1.80e+01  -8.6 8.73e+02 -11.0 6.23e-01 1.36e-02h  2
- 209 -2.8224641e+01 5.20e-03 1.68e+01  -8.6 3.08e+02 -10.6 1.74e-01 6.42e-02h  2
-iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
- 210 -2.8224641e+01 3.45e-05 1.75e-13  -8.6 3.27e+00    -  1.00e+00 1.00e+00h  1
- 211 -2.8224641e+01 6.77e-06 2.52e-14  -8.6 3.79e+00    -  1.00e+00 1.00e+00h  1
- 212 -2.8224641e+01 9.54e-07 2.51e-14  -8.6 6.78e-02    -  1.00e+00 1.00e+00h  1
- 213 -2.8224641e+01 9.54e-07 2.51e-14  -8.6 4.50e-05    -  1.00e+00 1.00e+00h  1
- 214 -2.8224641e+01 9.54e-07 2.51e-14  -8.6 8.28e-08    -  1.00e+00 1.00e+00h  1
+   0  0.0000000e+00 3.41e-03 0.00e+00  -1.0 0.00e+00    -  0.00e+00 0.00e+00   0
+Reallocating memory for MA57: lfact (18093)
+   1  0.0000000e+00 3.55e-15 3.98e-04  -1.0 3.89e-01    -  9.78e-01 1.00e+00f  1
+   2  0.0000000e+00 3.55e-15 1.33e-03  -1.0 9.68e+00    -  9.40e-01 1.00e+00f  1
+   3  0.0000000e+00 3.55e-15 5.56e-04  -1.7 3.29e+01    -  8.81e-01 1.00e+00f  1
+   4  0.0000000e+00 3.55e-15 6.40e-18  -2.5 3.16e+00    -  1.00e+00 1.00e+00f  1
+   5  0.0000000e+00 3.55e-15 5.32e-19  -3.8 3.68e+00    -  1.00e+00 1.00e+00f  1
+   6  0.0000000e+00 3.55e-15 7.31e-21  -5.7 4.29e-01    -  1.00e+00 1.00e+00f  1
+   7  0.0000000e+00 3.76e-15 3.85e-22  -8.6 6.23e-02    -  1.00e+00 1.00e+00h  1
 
-Number of Iterations....: 214
+Number of Iterations....: 7
 
                                    (scaled)                 (unscaled)
-Objective...............:  -2.8224641193042373e+01   -2.8224641193042373e+01
-Dual infeasibility......:   2.5059166583718202e-14    2.5059166583718202e-14
-Constraint violation....:   7.4505805969238281e-09    9.5367431640625000e-07
-Complementarity.........:   2.5059035597005477e-09    2.5059035597005477e-09
-Overall NLP error.......:   7.4505805969238281e-09    9.5367431640625000e-07
+Objective...............:   0.0000000000000000e+00    0.0000000000000000e+00
+Dual infeasibility......:   3.8463898483715787e-22    3.8463898483715787e-22
+Constraint violation....:   3.7608804959177178e-15    3.7608804959177178e-15
+Complementarity.........:   5.3526636694796017e-09    5.3526636694796017e-09
+Overall NLP error.......:   5.3526636694796017e-09    5.3526636694796017e-09
 
 
-Number of objective function evaluations             = 396
-Number of objective gradient evaluations             = 215
-Number of equality constraint evaluations            = 400
+Number of objective function evaluations             = 8
+Number of objective gradient evaluations             = 8
+Number of equality constraint evaluations            = 8
 Number of inequality constraint evaluations          = 0
-Number of equality constraint Jacobian evaluations   = 215
+Number of equality constraint Jacobian evaluations   = 8
 Number of inequality constraint Jacobian evaluations = 0
-Number of Lagrangian Hessian evaluations             = 214
-Total CPU secs in IPOPT (w/o function evaluations)   =     36.348
-Total CPU secs in NLP function evaluations           =      1.334
+Number of Lagrangian Hessian evaluations             = 7
+Total CPU secs in IPOPT (w/o function evaluations)   =      0.006
+Total CPU secs in NLP function evaluations           =      0.000
 
 EXIT: Optimal Solution Found.
-INFO: elapsed time: 49.7 seconds
+Ipopt 3.13.2: linear_solver=ma57
+halt_on_ampl_error=yes
+max_iter=3000
+
+
+******************************************************************************
+This program contains Ipopt, a library for large-scale nonlinear optimization.
+ Ipopt is released as open source code under the Eclipse Public License (EPL).
+         For more information visit http://projects.coin-or.org/Ipopt
+
+This version of Ipopt was compiled from source code available at
+    https://github.com/IDAES/Ipopt as part of the Institute for the Design of
+    Advanced Energy Systems Process Systems Engineering Framework (IDAES PSE
+    Framework) Copyright (c) 2018-2019. See https://github.com/IDAES/idaes-pse.
+
+This version of Ipopt was compiled using HSL, a collection of Fortran codes
+    for large-scale scientific computation.  All technical papers, sales and
+    publicity material resulting from use of the HSL codes within IPOPT must
+    contain the following acknowledgement:
+        HSL, a collection of Fortran codes for large-scale scientific
+        computation. See http://www.hsl.rl.ac.uk.
+******************************************************************************
+
+This is Ipopt version 3.13.2, running with linear solver ma57.
+
+Number of nonzeros in equality constraint Jacobian...:     1951
+Number of nonzeros in inequality constraint Jacobian.:        0
+Number of nonzeros in Lagrangian Hessian.............:        0
+
+Total number of variables............................:      753
+                     variables with only lower bounds:        0
+                variables with lower and upper bounds:      451
+                     variables with only upper bounds:        0
+Total number of equality constraints.................:      602
+Total number of inequality constraints...............:        0
+        inequality constraints with only lower bounds:        0
+   inequality constraints with lower and upper bounds:        0
+        inequality constraints with only upper bounds:        0
+
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+   0  0.0000000e+00 3.41e-03 0.00e+00  -1.0 0.00e+00    -  0.00e+00 0.00e+00   0
+Reallocating memory for MA57: lfact (18093)
+   1  0.0000000e+00 3.55e-15 6.51e-04  -1.0 5.04e-01    -  9.72e-01 1.00e+00f  1
+   2  0.0000000e+00 3.55e-15 6.27e-04  -1.0 9.47e+00    -  9.75e-01 1.00e+00f  1
+   3  0.0000000e+00 3.55e-15 9.84e-05  -1.7 6.36e+00    -  9.69e-01 1.00e+00f  1
+   4  0.0000000e+00 3.55e-15 3.43e-05  -2.5 1.28e+01    -  9.59e-01 1.00e+00f  1
+   5  0.0000000e+00 3.55e-15 2.57e-19  -3.8 1.40e+00    -  1.00e+00 1.00e+00f  1
+   6  0.0000000e+00 3.55e-15 2.83e-20  -5.7 5.96e-01    -  1.00e+00 1.00e+00f  1
+   7  0.0000000e+00 3.55e-15 1.41e-22  -8.6 4.56e-02    -  1.00e+00 1.00e+00h  1
+
+Number of Iterations....: 7
+
+                                   (scaled)                 (unscaled)
+Objective...............:   0.0000000000000000e+00    0.0000000000000000e+00
+Dual infeasibility......:   1.4082749928715296e-22    1.4082749928715296e-22
+Constraint violation....:   3.5527136788005009e-15    3.5527136788005009e-15
+Complementarity.........:   4.7026222762342791e-09    4.7026222762342791e-09
+Overall NLP error.......:   4.7026222762342791e-09    4.7026222762342791e-09
+
+
+Number of objective function evaluations             = 8
+Number of objective gradient evaluations             = 8
+Number of equality constraint evaluations            = 8
+Number of inequality constraint evaluations          = 0
+Number of equality constraint Jacobian evaluations   = 8
+Number of inequality constraint Jacobian evaluations = 0
+Number of Lagrangian Hessian evaluations             = 7
+Total CPU secs in IPOPT (w/o function evaluations)   =      0.016
+Total CPU secs in NLP function evaluations           =      0.000
+
+EXIT: Optimal Solution Found.
+Ipopt 3.13.2: linear_solver=ma57
+halt_on_ampl_error=yes
+max_iter=3000
+
+
+******************************************************************************
+This program contains Ipopt, a library for large-scale nonlinear optimization.
+ Ipopt is released as open source code under the Eclipse Public License (EPL).
+         For more information visit http://projects.coin-or.org/Ipopt
+
+This version of Ipopt was compiled from source code available at
+    https://github.com/IDAES/Ipopt as part of the Institute for the Design of
+    Advanced Energy Systems Process Systems Engineering Framework (IDAES PSE
+    Framework) Copyright (c) 2018-2019. See https://github.com/IDAES/idaes-pse.
+
+This version of Ipopt was compiled using HSL, a collection of Fortran codes
+    for large-scale scientific computation.  All technical papers, sales and
+    publicity material resulting from use of the HSL codes within IPOPT must
+    contain the following acknowledgement:
+        HSL, a collection of Fortran codes for large-scale scientific
+        computation. See http://www.hsl.rl.ac.uk.
+******************************************************************************
+
+This is Ipopt version 3.13.2, running with linear solver ma57.
+
+Number of nonzeros in equality constraint Jacobian...:     1951
+Number of nonzeros in inequality constraint Jacobian.:        0
+Number of nonzeros in Lagrangian Hessian.............:        0
+
+Total number of variables............................:      753
+                     variables with only lower bounds:        0
+                variables with lower and upper bounds:      451
+                     variables with only upper bounds:        0
+Total number of equality constraints.................:      602
+Total number of inequality constraints...............:        0
+        inequality constraints with only lower bounds:        0
+   inequality constraints with lower and upper bounds:        0
+        inequality constraints with only upper bounds:        0
+
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+   0  0.0000000e+00 3.43e-03 0.00e+00  -1.0 0.00e+00    -  0.00e+00 0.00e+00   0
+Reallocating memory for MA57: lfact (18093)
+   1  0.0000000e+00 3.55e-15 4.62e-05  -1.0 1.03e-01    -  9.89e-01 1.00e+00f  1
+   2  0.0000000e+00 3.65e-15 2.43e-17  -1.0 9.93e+00    -  1.00e+00 1.00e+00f  1
+   3  0.0000000e+00 5.33e-15 1.82e-17  -2.5 2.66e+00    -  1.00e+00 1.00e+00f  1
+   4  0.0000000e+00 3.55e-15 1.74e-08  -3.8 2.04e+00    -  1.00e+00 1.00e+00f  1
+   5  0.0000000e+00 3.55e-15 1.94e-08  -5.7 1.85e+00    -  9.96e-01 1.00e+00f  1
+   6  0.0000000e+00 3.55e-15 4.73e-14  -8.6 3.85e-02    -  1.00e+00 1.00e+00h  1
+
+Number of Iterations....: 6
+
+                                   (scaled)                 (unscaled)
+Objective...............:   0.0000000000000000e+00    0.0000000000000000e+00
+Dual infeasibility......:   4.7326499001393032e-14    4.7326499001393032e-14
+Constraint violation....:   3.5527136788005009e-15    3.5527136788005009e-15
+Complementarity.........:   4.8319883555020095e-09    4.8319883555020095e-09
+Overall NLP error.......:   4.8319883555020095e-09    4.8319883555020095e-09
+
+
+Number of objective function evaluations             = 7
+Number of objective gradient evaluations             = 7
+Number of equality constraint evaluations            = 7
+Number of inequality constraint evaluations          = 0
+Number of equality constraint Jacobian evaluations   = 7
+Number of inequality constraint Jacobian evaluations = 0
+Number of Lagrangian Hessian evaluations             = 6
+Total CPU secs in IPOPT (w/o function evaluations)   =      0.016
+Total CPU secs in NLP function evaluations           =      0.000
+
+EXIT: Optimal Solution Found.
+Ipopt 3.13.2: linear_solver=ma57
+halt_on_ampl_error=yes
+max_iter=3000
+
+
+******************************************************************************
+This program contains Ipopt, a library for large-scale nonlinear optimization.
+ Ipopt is released as open source code under the Eclipse Public License (EPL).
+         For more information visit http://projects.coin-or.org/Ipopt
+
+This version of Ipopt was compiled from source code available at
+    https://github.com/IDAES/Ipopt as part of the Institute for the Design of
+    Advanced Energy Systems Process Systems Engineering Framework (IDAES PSE
+    Framework) Copyright (c) 2018-2019. See https://github.com/IDAES/idaes-pse.
+
+This version of Ipopt was compiled using HSL, a collection of Fortran codes
+    for large-scale scientific computation.  All technical papers, sales and
+    publicity material resulting from use of the HSL codes within IPOPT must
+    contain the following acknowledgement:
+        HSL, a collection of Fortran codes for large-scale scientific
+        computation. See http://www.hsl.rl.ac.uk.
+******************************************************************************
+
+This is Ipopt version 3.13.2, running with linear solver ma57.
+
+Number of nonzeros in equality constraint Jacobian...:     1951
+Number of nonzeros in inequality constraint Jacobian.:        0
+Number of nonzeros in Lagrangian Hessian.............:        0
+
+Total number of variables............................:      753
+                     variables with only lower bounds:        0
+                variables with lower and upper bounds:      451
+                     variables with only upper bounds:        0
+Total number of equality constraints.................:      602
+Total number of inequality constraints...............:        0
+        inequality constraints with only lower bounds:        0
+   inequality constraints with lower and upper bounds:        0
+        inequality constraints with only upper bounds:        0
+
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+   0  0.0000000e+00 3.43e-03 0.00e+00  -1.0 0.00e+00    -  0.00e+00 0.00e+00   0
+Reallocating memory for MA57: lfact (18093)
+   1  0.0000000e+00 3.55e-15 3.50e-05  -1.0 1.00e-01    -  9.90e-01 1.00e+00f  1
+   2  0.0000000e+00 3.80e-15 2.43e-17  -1.0 9.94e+00    -  1.00e+00 1.00e+00f  1
+   3  0.0000000e+00 3.55e-15 1.77e-17  -2.5 3.12e+00    -  1.00e+00 1.00e+00f  1
+   4  0.0000000e+00 3.55e-15 2.57e-07  -3.8 1.95e+00    -  9.97e-01 1.00e+00f  1
+   5  0.0000000e+00 3.77e-15 1.36e-08  -5.7 1.65e+00    -  9.97e-01 1.00e+00f  1
+   6  0.0000000e+00 3.55e-15 1.44e-12  -8.6 3.95e-02    -  1.00e+00 1.00e+00h  1
+
+Number of Iterations....: 6
+
+                                   (scaled)                 (unscaled)
+Objective...............:   0.0000000000000000e+00    0.0000000000000000e+00
+Dual infeasibility......:   1.4351761207895442e-12    1.4351761207895442e-12
+Constraint violation....:   3.5527136788005009e-15    3.5527136788005009e-15
+Complementarity.........:   4.9764826151987226e-09    4.9764826151987226e-09
+Overall NLP error.......:   4.9764826151987226e-09    4.9764826151987226e-09
+
+
+Number of objective function evaluations             = 7
+Number of objective gradient evaluations             = 7
+Number of equality constraint evaluations            = 7
+Number of inequality constraint evaluations          = 0
+Number of equality constraint Jacobian evaluations   = 7
+Number of inequality constraint Jacobian evaluations = 0
+Number of Lagrangian Hessian evaluations             = 6
+Total CPU secs in IPOPT (w/o function evaluations)   =      0.015
+Total CPU secs in NLP function evaluations           =      0.000
+
+EXIT: Optimal Solution Found.
+Ipopt 3.13.2: linear_solver=ma57
+halt_on_ampl_error=yes
+max_iter=3000
+
+
+******************************************************************************
+This program contains Ipopt, a library for large-scale nonlinear optimization.
+ Ipopt is released as open source code under the Eclipse Public License (EPL).
+         For more information visit http://projects.coin-or.org/Ipopt
+
+This version of Ipopt was compiled from source code available at
+    https://github.com/IDAES/Ipopt as part of the Institute for the Design of
+    Advanced Energy Systems Process Systems Engineering Framework (IDAES PSE
+    Framework) Copyright (c) 2018-2019. See https://github.com/IDAES/idaes-pse.
+
+This version of Ipopt was compiled using HSL, a collection of Fortran codes
+    for large-scale scientific computation.  All technical papers, sales and
+    publicity material resulting from use of the HSL codes within IPOPT must
+    contain the following acknowledgement:
+        HSL, a collection of Fortran codes for large-scale scientific
+        computation. See http://www.hsl.rl.ac.uk.
+******************************************************************************
+
+This is Ipopt version 3.13.2, running with linear solver ma57.
+
+Number of nonzeros in equality constraint Jacobian...:     1951
+Number of nonzeros in inequality constraint Jacobian.:        0
+Number of nonzeros in Lagrangian Hessian.............:        0
+
+Total number of variables............................:      753
+                     variables with only lower bounds:        0
+                variables with lower and upper bounds:      451
+                     variables with only upper bounds:        0
+Total number of equality constraints.................:      602
+Total number of inequality constraints...............:        0
+        inequality constraints with only lower bounds:        0
+   inequality constraints with lower and upper bounds:        0
+        inequality constraints with only upper bounds:        0
+
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+   0  0.0000000e+00 3.69e-03 0.00e+00  -1.0 0.00e+00    -  0.00e+00 0.00e+00   0
+Reallocating memory for MA57: lfact (18093)
+   1  0.0000000e+00 3.55e-15 2.03e-04  -1.0 2.05e-01    -  9.83e-01 1.00e+00f  1
+   2  0.0000000e+00 3.55e-15 8.33e-17  -1.0 9.63e+00    -  1.00e+00 1.00e+00f  1
+   3  0.0000000e+00 3.55e-15 1.37e-17  -1.7 1.29e+01    -  1.00e+00 1.00e+00f  1
+   4  0.0000000e+00 3.55e-15 3.52e-18  -2.5 8.06e+00    -  1.00e+00 1.00e+00f  1
+   5  0.0000000e+00 3.55e-15 4.40e-19  -3.8 2.21e+00    -  1.00e+00 1.00e+00f  1
+   6  0.0000000e+00 3.55e-15 1.91e-20  -5.7 4.75e-01    -  1.00e+00 1.00e+00f  1
+   7  0.0000000e+00 3.55e-15 2.77e-22  -8.6 4.85e-02    -  1.00e+00 1.00e+00h  1
+
+Number of Iterations....: 7
+
+                                   (scaled)                 (unscaled)
+Objective...............:   0.0000000000000000e+00    0.0000000000000000e+00
+Dual infeasibility......:   2.7710550520526427e-22    2.7710550520526427e-22
+Constraint violation....:   3.5527136788005009e-15    3.5527136788005009e-15
+Complementarity.........:   4.8792798895046795e-09    4.8792798895046795e-09
+Overall NLP error.......:   4.8792798895046795e-09    4.8792798895046795e-09
+
+
+Number of objective function evaluations             = 8
+Number of objective gradient evaluations             = 8
+Number of equality constraint evaluations            = 8
+Number of inequality constraint evaluations          = 0
+Number of equality constraint Jacobian evaluations   = 8
+Number of inequality constraint Jacobian evaluations = 0
+Number of Lagrangian Hessian evaluations             = 7
+Total CPU secs in IPOPT (w/o function evaluations)   =      0.016
+Total CPU secs in NLP function evaluations           =      0.000
+
+EXIT: Optimal Solution Found.
+Ipopt 3.13.2: linear_solver=ma57
+halt_on_ampl_error=yes
+max_iter=3000
+
+
+******************************************************************************
+This program contains Ipopt, a library for large-scale nonlinear optimization.
+ Ipopt is released as open source code under the Eclipse Public License (EPL).
+         For more information visit http://projects.coin-or.org/Ipopt
+
+This version of Ipopt was compiled from source code available at
+    https://github.com/IDAES/Ipopt as part of the Institute for the Design of
+    Advanced Energy Systems Process Systems Engineering Framework (IDAES PSE
+    Framework) Copyright (c) 2018-2019. See https://github.com/IDAES/idaes-pse.
+
+This version of Ipopt was compiled using HSL, a collection of Fortran codes
+    for large-scale scientific computation.  All technical papers, sales and
+    publicity material resulting from use of the HSL codes within IPOPT must
+    contain the following acknowledgement:
+        HSL, a collection of Fortran codes for large-scale scientific
+        computation. See http://www.hsl.rl.ac.uk.
+******************************************************************************
+
+This is Ipopt version 3.13.2, running with linear solver ma57.
+
+Number of nonzeros in equality constraint Jacobian...:     1951
+Number of nonzeros in inequality constraint Jacobian.:        0
+Number of nonzeros in Lagrangian Hessian.............:        0
+
+Total number of variables............................:      753
+                     variables with only lower bounds:        0
+                variables with lower and upper bounds:      451
+                     variables with only upper bounds:        0
+Total number of equality constraints.................:      602
+Total number of inequality constraints...............:        0
+        inequality constraints with only lower bounds:        0
+   inequality constraints with lower and upper bounds:        0
+        inequality constraints with only upper bounds:        0
+
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+   0  0.0000000e+00 3.69e-03 0.00e+00  -1.0 0.00e+00    -  0.00e+00 0.00e+00   0
+Reallocating memory for MA57: lfact (18093)
+   1  0.0000000e+00 3.55e-15 1.71e-04  -1.0 2.41e-01    -  9.85e-01 1.00e+00f  1
+   2  0.0000000e+00 3.55e-15 5.53e-04  -1.0 5.81e+00    -  9.54e-01 1.00e+00f  1
+   3  0.0000000e+00 3.55e-15 4.71e-04  -1.7 4.04e+01    -  8.75e-01 1.00e+00f  1
+   4  0.0000000e+00 3.55e-15 5.31e-18  -2.5 3.18e+00    -  1.00e+00 1.00e+00f  1
+   5  0.0000000e+00 3.55e-15 5.42e-19  -3.8 3.31e+00    -  1.00e+00 1.00e+00f  1
+   6  0.0000000e+00 3.55e-15 9.85e-21  -5.7 3.88e-01    -  1.00e+00 1.00e+00f  1
+   7  0.0000000e+00 2.76e-15 2.34e-22  -8.6 5.49e-02    -  1.00e+00 1.00e+00h  1
+
+Number of Iterations....: 7
+
+                                   (scaled)                 (unscaled)
+Objective...............:   0.0000000000000000e+00    0.0000000000000000e+00
+Dual infeasibility......:   2.3409211335250683e-22    2.3409211335250683e-22
+Constraint violation....:   2.7616797737550769e-15    2.7616797737550769e-15
+Complementarity.........:   5.1165889275871179e-09    5.1165889275871179e-09
+Overall NLP error.......:   5.1165889275871179e-09    5.1165889275871179e-09
+
+
+Number of objective function evaluations             = 8
+Number of objective gradient evaluations             = 8
+Number of equality constraint evaluations            = 8
+Number of inequality constraint evaluations          = 0
+Number of equality constraint Jacobian evaluations   = 8
+Number of inequality constraint Jacobian evaluations = 0
+Number of Lagrangian Hessian evaluations             = 7
+Total CPU secs in IPOPT (w/o function evaluations)   =      0.016
+Total CPU secs in NLP function evaluations           =      0.000
+
+EXIT: Optimal Solution Found.
+Ipopt 3.13.2: linear_solver=ma57
+halt_on_ampl_error=yes
+max_iter=3000
+
+
+******************************************************************************
+This program contains Ipopt, a library for large-scale nonlinear optimization.
+ Ipopt is released as open source code under the Eclipse Public License (EPL).
+         For more information visit http://projects.coin-or.org/Ipopt
+
+This version of Ipopt was compiled from source code available at
+    https://github.com/IDAES/Ipopt as part of the Institute for the Design of
+    Advanced Energy Systems Process Systems Engineering Framework (IDAES PSE
+    Framework) Copyright (c) 2018-2019. See https://github.com/IDAES/idaes-pse.
+
+This version of Ipopt was compiled using HSL, a collection of Fortran codes
+    for large-scale scientific computation.  All technical papers, sales and
+    publicity material resulting from use of the HSL codes within IPOPT must
+    contain the following acknowledgement:
+        HSL, a collection of Fortran codes for large-scale scientific
+        computation. See http://www.hsl.rl.ac.uk.
+******************************************************************************
+
+This is Ipopt version 3.13.2, running with linear solver ma57.
+
+Number of nonzeros in equality constraint Jacobian...:     1951
+Number of nonzeros in inequality constraint Jacobian.:        0
+Number of nonzeros in Lagrangian Hessian.............:        0
+
+Total number of variables............................:      753
+                     variables with only lower bounds:        0
+                variables with lower and upper bounds:      451
+                     variables with only upper bounds:        0
+Total number of equality constraints.................:      602
+Total number of inequality constraints...............:        0
+        inequality constraints with only lower bounds:        0
+   inequality constraints with lower and upper bounds:        0
+        inequality constraints with only upper bounds:        0
+
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+   0  0.0000000e+00 3.43e-03 0.00e+00  -1.0 0.00e+00    -  0.00e+00 0.00e+00   0
+Reallocating memory for MA57: lfact (18093)
+   1  0.0000000e+00 3.55e-15 4.84e-05  -1.0 1.05e-01    -  9.89e-01 1.00e+00f  1
+   2  0.0000000e+00 3.55e-15 2.08e-17  -1.0 9.92e+00    -  1.00e+00 1.00e+00f  1
+   3  0.0000000e+00 3.55e-15 1.47e-17  -2.5 2.55e+00    -  1.00e+00 1.00e+00f  1
+   4  0.0000000e+00 3.55e-15 1.76e-19  -3.8 2.09e+00    -  1.00e+00 1.00e+00f  1
+   5  0.0000000e+00 3.55e-15 1.74e-08  -5.7 1.71e+00    -  9.96e-01 1.00e+00f  1
+   6  0.0000000e+00 3.55e-15 2.26e-13  -8.6 3.95e-02    -  1.00e+00 1.00e+00h  1
+
+Number of Iterations....: 6
+
+                                   (scaled)                 (unscaled)
+Objective...............:   0.0000000000000000e+00    0.0000000000000000e+00
+Dual infeasibility......:   2.2587528186040976e-13    2.2587528186040976e-13
+Constraint violation....:   3.5527136788005009e-15    3.5527136788005009e-15
+Complementarity.........:   4.8736431340332237e-09    4.8736431340332237e-09
+Overall NLP error.......:   4.8736431340332237e-09    4.8736431340332237e-09
+
+
+Number of objective function evaluations             = 7
+Number of objective gradient evaluations             = 7
+Number of equality constraint evaluations            = 7
+Number of inequality constraint evaluations          = 0
+Number of equality constraint Jacobian evaluations   = 7
+Number of inequality constraint Jacobian evaluations = 0
+Number of Lagrangian Hessian evaluations             = 6
+Total CPU secs in IPOPT (w/o function evaluations)   =      0.015
+Total CPU secs in NLP function evaluations           =      0.000
+
+EXIT: Optimal Solution Found.
+Ipopt 3.13.2: linear_solver=ma57
+halt_on_ampl_error=yes
+max_iter=3000
+
+
+******************************************************************************
+This program contains Ipopt, a library for large-scale nonlinear optimization.
+ Ipopt is released as open source code under the Eclipse Public License (EPL).
+         For more information visit http://projects.coin-or.org/Ipopt
+
+This version of Ipopt was compiled from source code available at
+    https://github.com/IDAES/Ipopt as part of the Institute for the Design of
+    Advanced Energy Systems Process Systems Engineering Framework (IDAES PSE
+    Framework) Copyright (c) 2018-2019. See https://github.com/IDAES/idaes-pse.
+
+This version of Ipopt was compiled using HSL, a collection of Fortran codes
+    for large-scale scientific computation.  All technical papers, sales and
+    publicity material resulting from use of the HSL codes within IPOPT must
+    contain the following acknowledgement:
+        HSL, a collection of Fortran codes for large-scale scientific
+        computation. See http://www.hsl.rl.ac.uk.
+******************************************************************************
+
+This is Ipopt version 3.13.2, running with linear solver ma57.
+
+Number of nonzeros in equality constraint Jacobian...:     1951
+Number of nonzeros in inequality constraint Jacobian.:        0
+Number of nonzeros in Lagrangian Hessian.............:        0
+
+Total number of variables............................:      753
+                     variables with only lower bounds:        0
+                variables with lower and upper bounds:      451
+                     variables with only upper bounds:        0
+Total number of equality constraints.................:      602
+Total number of inequality constraints...............:        0
+        inequality constraints with only lower bounds:        0
+   inequality constraints with lower and upper bounds:        0
+        inequality constraints with only upper bounds:        0
+
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+   0  0.0000000e+00 3.43e-03 0.00e+00  -1.0 0.00e+00    -  0.00e+00 0.00e+00   0
+Reallocating memory for MA57: lfact (18093)
+   1  0.0000000e+00 3.55e-15 3.51e-05  -1.0 1.00e-01    -  9.90e-01 1.00e+00f  1
+   2  0.0000000e+00 3.55e-15 2.08e-17  -1.0 9.93e+00    -  1.00e+00 1.00e+00f  1
+   3  0.0000000e+00 3.55e-15 1.31e-17  -2.5 3.29e+00    -  1.00e+00 1.00e+00f  1
+   4  0.0000000e+00 3.55e-15 3.09e-07  -3.8 1.98e+00    -  9.96e-01 1.00e+00f  1
+   5  0.0000000e+00 3.55e-15 1.30e-08  -5.7 1.60e+00    -  9.97e-01 1.00e+00f  1
+   6  0.0000000e+00 3.55e-15 1.66e-12  -8.6 3.95e-02    -  1.00e+00 1.00e+00h  1
+
+Number of Iterations....: 6
+
+                                   (scaled)                 (unscaled)
+Objective...............:   0.0000000000000000e+00    0.0000000000000000e+00
+Dual infeasibility......:   1.6640804565696806e-12    1.6640804565696806e-12
+Constraint violation....:   3.5527136788005009e-15    3.5527136788005009e-15
+Complementarity.........:   4.9986864279830130e-09    4.9986864279830130e-09
+Overall NLP error.......:   4.9986864279830130e-09    4.9986864279830130e-09
+
+
+Number of objective function evaluations             = 7
+Number of objective gradient evaluations             = 7
+Number of equality constraint evaluations            = 7
+Number of inequality constraint evaluations          = 0
+Number of equality constraint Jacobian evaluations   = 7
+Number of inequality constraint Jacobian evaluations = 0
+Number of Lagrangian Hessian evaluations             = 6
+Total CPU secs in IPOPT (w/o function evaluations)   =      0.000
+Total CPU secs in NLP function evaluations           =      0.000
+
+EXIT: Optimal Solution Found.
+Ipopt 3.13.2: linear_solver=ma57
+halt_on_ampl_error=yes
+max_iter=3000
+
+
+******************************************************************************
+This program contains Ipopt, a library for large-scale nonlinear optimization.
+ Ipopt is released as open source code under the Eclipse Public License (EPL).
+         For more information visit http://projects.coin-or.org/Ipopt
+
+This version of Ipopt was compiled from source code available at
+    https://github.com/IDAES/Ipopt as part of the Institute for the Design of
+    Advanced Energy Systems Process Systems Engineering Framework (IDAES PSE
+    Framework) Copyright (c) 2018-2019. See https://github.com/IDAES/idaes-pse.
+
+This version of Ipopt was compiled using HSL, a collection of Fortran codes
+    for large-scale scientific computation.  All technical papers, sales and
+    publicity material resulting from use of the HSL codes within IPOPT must
+    contain the following acknowledgement:
+        HSL, a collection of Fortran codes for large-scale scientific
+        computation. See http://www.hsl.rl.ac.uk.
+******************************************************************************
+
+This is Ipopt version 3.13.2, running with linear solver ma57.
+
+Number of nonzeros in equality constraint Jacobian...:    20744
+Number of nonzeros in inequality constraint Jacobian.:        0
+Number of nonzeros in Lagrangian Hessian.............:     1510
+
+Total number of variables............................:     6487
+                     variables with only lower bounds:        0
+                variables with lower and upper bounds:     3457
+                     variables with only upper bounds:        0
+Total number of equality constraints.................:     6487
+Total number of inequality constraints...............:        0
+        inequality constraints with only lower bounds:        0
+   inequality constraints with lower and upper bounds:        0
+        inequality constraints with only upper bounds:        0
+
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+   0  0.0000000e+00 5.54e+01 0.00e+00  -1.0 0.00e+00    -  0.00e+00 0.00e+00   0
+Reallocating memory for MA57: lfact (330773)
+   1  0.0000000e+00 4.31e+05 9.28e-01  -1.0 3.58e+01    -  4.23e-01 1.00e+00h  1
+   2  0.0000000e+00 1.16e-10 5.50e-03  -1.0 4.31e+05    -  9.92e-01 1.00e+00h  1
+
+Number of Iterations....: 2
+
+                                   (scaled)                 (unscaled)
+Objective...............:   0.0000000000000000e+00    0.0000000000000000e+00
+Dual infeasibility......:   0.0000000000000000e+00    0.0000000000000000e+00
+Constraint violation....:   1.1641532182693481e-10    1.1641532182693481e-10
+Complementarity.........:   0.0000000000000000e+00    0.0000000000000000e+00
+Overall NLP error.......:   1.1641532182693481e-10    1.1641532182693481e-10
+
+
+Number of objective function evaluations             = 3
+Number of objective gradient evaluations             = 3
+Number of equality constraint evaluations            = 3
+Number of inequality constraint evaluations          = 0
+Number of equality constraint Jacobian evaluations   = 3
+Number of inequality constraint Jacobian evaluations = 0
+Number of Lagrangian Hessian evaluations             = 2
+Total CPU secs in IPOPT (w/o function evaluations)   =      0.104
+Total CPU secs in NLP function evaluations           =      0.001
+
+EXIT: Optimal Solution Found.
+Ipopt 3.13.2: linear_solver=ma57
+halt_on_ampl_error=yes
+max_iter=3000
+
+
+******************************************************************************
+This program contains Ipopt, a library for large-scale nonlinear optimization.
+ Ipopt is released as open source code under the Eclipse Public License (EPL).
+         For more information visit http://projects.coin-or.org/Ipopt
+
+This version of Ipopt was compiled from source code available at
+    https://github.com/IDAES/Ipopt as part of the Institute for the Design of
+    Advanced Energy Systems Process Systems Engineering Framework (IDAES PSE
+    Framework) Copyright (c) 2018-2019. See https://github.com/IDAES/idaes-pse.
+
+This version of Ipopt was compiled using HSL, a collection of Fortran codes
+    for large-scale scientific computation.  All technical papers, sales and
+    publicity material resulting from use of the HSL codes within IPOPT must
+    contain the following acknowledgement:
+        HSL, a collection of Fortran codes for large-scale scientific
+        computation. See http://www.hsl.rl.ac.uk.
+******************************************************************************
+
+This is Ipopt version 3.13.2, running with linear solver ma57.
+
+Number of nonzeros in equality constraint Jacobian...:    21992
+Number of nonzeros in inequality constraint Jacobian.:        0
+Number of nonzeros in Lagrangian Hessian.............:     1530
+
+Reallocating memory for MA57: lfact (395831)
+Total number of variables............................:     6648
+                     variables with only lower bounds:        4
+                variables with lower and upper bounds:     3608
+                     variables with only upper bounds:        0
+Total number of equality constraints.................:     6497
+Total number of inequality constraints...............:        0
+        inequality constraints with only lower bounds:        0
+   inequality constraints with lower and upper bounds:        0
+        inequality constraints with only upper bounds:        0
+
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+   0 -1.3596140e+01 1.16e-10 3.35e+00  -1.0 0.00e+00    -  0.00e+00 0.00e+00   0
+   1 -1.3594800e+01 7.48e-02 9.78e-03  -1.0 3.50e+02    -  9.90e-01 1.00e+00f  1
+   2 -1.3478717e+01 5.58e+02 2.19e-02  -1.0 3.02e+04    -  1.00e+00 1.00e+00f  1
+   3 -1.3012587e+01 7.38e+02 4.40e-01  -1.0 1.41e+05    -  1.00e+00 1.00e+00F  1
+   4 -1.3091923e+01 8.43e+01 1.23e-02  -1.0 9.36e+03    -  1.00e+00 1.00e+00h  1
+   5 -1.3090005e+01 1.35e-02 9.82e-05  -1.0 1.38e+02    -  1.00e+00 1.00e+00h  1
+   6 -1.3096572e+01 4.71e+00 1.77e-03  -2.5 1.90e+03    -  1.00e+00 1.00e+00h  1
+   7 -1.3354298e+01 6.94e+03 2.38e-01  -2.5 6.42e+04    -  1.00e+00 1.00e+00h  1
+   8 -1.3336877e+01 1.63e+02 1.03e-02  -2.5 1.72e+03    -  1.00e+00 1.00e+00h  1
+   9 -1.3335937e+01 2.25e+00 2.84e-05  -2.5 3.64e+01    -  1.00e+00 1.00e+00h  1
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+  10 -1.3335958e+01 4.89e-05 2.94e-08  -2.5 1.23e+00    -  1.00e+00 1.00e+00h  1
+  11 -1.3554642e+01 4.41e+03 1.34e-01  -3.8 6.22e+04    -  8.17e-01 1.00e+00f  1
+  12 -1.3537124e+01 6.08e+01 3.08e-03  -3.8 2.39e+00  -4.0 1.00e+00 1.00e+00h  1
+  13 -1.3537055e+01 1.13e-01 2.83e-05  -3.8 6.18e-01  -4.5 1.00e+00 1.00e+00h  1
+  14 -1.3953722e+01 1.02e+04 3.01e-01  -3.8 3.28e+05    -  1.00e+00 6.55e-01F  1
+  15 -1.3934900e+01 5.53e+01 5.96e-03  -3.8 9.08e+00  -5.0 1.00e+00 1.00e+00h  1
+  16 -1.3934975e+01 5.19e+00 6.59e-05  -3.8 2.31e+00  -5.4 1.00e+00 1.00e+00h  1
+  17 -1.3935744e+01 2.89e+01 3.38e-05  -3.8 7.27e+00  -5.9 1.00e+00 1.00e+00h  1
+  18 -1.3938862e+01 2.27e+02 2.38e-04  -3.8 2.94e+01  -6.4 1.00e+00 1.00e+00h  1
+  19 -1.3950788e+01 3.53e+03 3.78e-03  -3.8 1.14e+02  -6.9 1.00e+00 1.00e+00h  1
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+  20 -1.3974227e+01 5.77e+02 2.11e-03  -3.8 2.32e+02  -7.3 1.00e+00 1.00e+00h  1
+  21 -1.4153177e+01 5.16e+03 4.44e-02  -3.8 1.62e+05    -  4.54e-01 3.79e-01h  1
+  22 -1.4388656e+01 3.11e+03 5.58e-02  -3.8 7.86e+04    -  1.00e+00 9.88e-01h  1
+  23 -1.4333584e+01 4.91e+02 5.18e-03  -3.8 1.27e+04    -  1.00e+00 1.00e+00h  1
+  24 -1.4342298e+01 5.26e+02 3.99e-04  -3.8 4.26e+03    -  9.44e-01 9.31e-01h  1
+  25 -1.4341697e+01 1.11e+01 2.79e-05  -3.8 2.82e+01  -7.8 1.00e+00 1.00e+00h  1
+  26 -1.4343016e+01 1.29e+00 4.58e-06  -3.8 2.22e+02    -  1.00e+00 1.00e+00h  1
+  27 -1.4343013e+01 4.11e-02 3.03e-08  -3.8 2.07e+01    -  1.00e+00 1.00e+00h  1
+  28 -1.4343013e+01 3.47e-05 1.50e-09  -3.8 6.31e-01    -  1.00e+00 1.00e+00h  1
+  29 -1.4449436e+01 2.45e+03 7.92e-03  -5.7 1.66e+05    -  4.00e-01 4.95e-01f  1
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+  30 -1.4487521e+01 2.12e+03 6.34e-03  -5.7 1.19e+05    -  2.72e-01 3.01e-01h  1
+  31 -1.4495022e+01 1.94e+03 5.79e-03  -5.7 7.35e+04    -  3.65e-01 9.17e-02h  1
+  32 -1.4498859e+01 8.40e+01 1.49e-04  -5.7 1.22e+02  -7.4 6.92e-01 1.00e+00h  1
+  33 -1.4503714e+01 8.38e+01 3.12e-04  -5.7 1.76e+05    -  1.10e-01 2.67e-02h  1
+  34 -1.4515382e+01 8.74e+01 2.95e-04  -5.7 1.37e+05    -  1.15e-01 7.83e-02h  1
+  35 -1.4519265e+01 1.10e+02 2.58e-04  -5.7 1.92e+05    -  1.04e-01 3.15e-02h  1
+  36 -1.4525395e+01 1.04e+02 2.55e-04  -5.7 7.36e+04    -  1.28e-01 7.34e-02h  1
+  37 -1.4532462e+01 9.72e+01 2.37e-04  -5.7 6.75e+04    -  1.49e-01 1.12e-01h  1
+  38 -1.4538538e+01 1.31e+02 2.03e-04  -5.7 9.53e+04    -  1.14e-01 1.30e-01h  1
+  39 -1.4540567e+01 1.47e+02 1.79e-04  -5.7 1.60e+05    -  1.24e-01 4.76e-02h  1
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+  40 -1.4541394e+01 1.44e+02 1.91e-04  -5.7 5.19e+04    -  7.57e-02 2.85e-02h  1
+  41 -1.4543822e+01 1.32e+02 2.39e-04  -5.7 2.09e+04    -  3.29e-01 9.72e-02h  1
+  42 -1.4548414e+01 9.85e+01 4.46e-04  -5.7 2.42e+03    -  8.26e-01 2.61e-01h  1
+  43 -1.4552233e+01 4.34e+00 2.83e-04  -5.7 2.80e+02  -7.9 4.00e-01 1.00e+00h  1
+  44 -1.4553895e+01 4.38e+00 2.08e-04  -5.7 4.02e+02  -8.3 1.00e+00 3.44e-01h  1
+  45 -1.4555327e+01 3.39e+00 2.19e-04  -5.7 5.22e+02  -8.8 6.01e-01 3.27e-01f  1
+  46 -1.4558214e+01 1.53e+00 8.13e-06  -5.7 4.82e+02  -9.3 1.00e+00 1.00e+00h  1
+  47 -1.4558149e+01 5.09e+00 2.28e-04  -5.7 8.52e+02  -9.8 1.51e-01 4.75e-01H  1
+  48 -1.4557901e+01 4.77e+00 3.70e-06  -5.7 2.38e+02 -10.3 1.00e+00 1.00e+00f  1
+  49 -1.4558056e+01 3.28e+00 1.66e-05  -5.7 5.46e+02 -10.7 6.02e-01 6.92e-01H  1
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+  50 -1.4558138e+01 1.17e+01 2.03e-04  -5.7 1.49e+04 -11.2 7.25e-01 3.25e-01h  1
+  51 -1.4558141e+01 1.15e+01 8.01e-05  -5.7 2.88e+02  -9.9 1.00e+00 1.81e-02h  1
+  52 -1.4558171e+01 2.35e+00 9.10e-04  -5.7 2.39e+03    -  4.09e-01 1.00e+00h  1
+  53 -1.4558281e+01 3.87e-01 1.05e-06  -5.7 8.97e+02 -10.4 1.00e+00 1.00e+00h  1
+  54 -1.4558432e+01 6.58e+00 2.22e-05  -5.7 3.78e+03 -10.8 9.53e-01 9.88e-01h  1
+  55 -1.4558443e+01 1.78e-02 1.88e-07  -5.7 1.17e+00  -6.8 1.00e+00 1.00e+00h  1
+  56 -1.4558458e+01 8.45e-02 1.23e-07  -5.7 2.30e+00  -7.3 1.00e+00 1.00e+00h  1
+  57 -1.4558462e+01 1.08e-01 6.33e-05  -5.7 9.97e+00  -7.7 1.00e+00 1.50e-01h  2
+  58 -1.4558491e+01 3.31e-02 4.07e-08  -5.7 6.85e+00  -8.2 1.00e+00 1.00e+00h  1
+  59 -1.4558496e+01 3.92e-03 4.25e-08  -5.7 2.15e+01  -8.7 1.00e+00 1.00e+00h  1
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+  60 -1.4558500e+01 3.31e-03 4.30e-08  -5.7 6.51e+01  -9.2 1.00e+00 1.00e+00h  1
+  61 -1.4558511e+01 2.78e-02 6.92e-08  -5.7 1.99e+02  -9.7 1.00e+00 1.00e+00h  1
+  62 -1.4558547e+01 2.72e-01 6.76e-07  -5.7 6.28e+02 -10.1 1.00e+00 1.00e+00h  1
+  63 -1.4558583e+01 4.54e-01 4.84e-05  -5.7 2.47e+04    -  1.44e-01 2.28e-02h  2
+  64 -1.4558618e+01 3.21e-01 1.88e-04  -5.7 1.31e+03    -  1.00e+00 4.40e-01h  1
+  65 -1.4558616e+01 6.26e-02 1.28e-07  -5.7 4.15e+02    -  1.00e+00 1.00e+00h  1
+  66 -1.4558617e+01 2.12e-06 1.87e-11  -5.7 5.78e-01    -  1.00e+00 1.00e+00h  1
+  67 -1.4560214e+01 3.61e-01 1.17e-05  -8.6 2.63e+02    -  7.17e-01 8.18e-01h  1
+  68 -1.4560565e+01 3.94e-02 2.70e-07  -8.6 2.22e+02    -  9.95e-01 9.80e-01h  1
+  69 -1.4560572e+01 1.32e-04 3.98e-10  -8.6 1.88e+01    -  1.00e+00 1.00e+00h  1
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+  70 -1.4560572e+01 2.33e-10 7.27e-14  -8.6 1.28e-02    -  1.00e+00 1.00e+00h  1
+
+Number of Iterations....: 70
+
+                                   (scaled)                 (unscaled)
+Objective...............:  -1.4560571732274660e+01   -1.4560571732274660e+01
+Dual infeasibility......:   7.2676893022525018e-14    7.2676893022525018e-14
+Constraint violation....:   8.1238801465175856e-11    2.3283064365386963e-10
+Complementarity.........:   2.5059035653642695e-09    2.5059035653642695e-09
+Overall NLP error.......:   2.5059035653642695e-09    2.5059035653642695e-09
+
+
+Number of objective function evaluations             = 80
+Number of objective gradient evaluations             = 71
+Number of equality constraint evaluations            = 82
+Number of inequality constraint evaluations          = 0
+Number of equality constraint Jacobian evaluations   = 71
+Number of inequality constraint Jacobian evaluations = 0
+Number of Lagrangian Hessian evaluations             = 70
+Total CPU secs in IPOPT (w/o function evaluations)   =      2.831
+Total CPU secs in NLP function evaluations           =      0.032
+
+EXIT: Optimal Solution Found.
 </pre></div>
 </div>
 </div>
@@ -1188,53 +1546,49 @@ INFO: elapsed time: 49.7 seconds
 <p>Now let’s visualize the optimal experiment.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">dopt_pyomo_doe_results</span> <span class="o">=</span> <span class="n">extract_plot_results</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">optimize_result2</span><span class="o">.</span><span class="n">model</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">dopt_pyomo_doe_results</span> <span class="o">=</span> <span class="n">extract_plot_results</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">TC_Lab_DoE_D</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">scenario_blocks</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/3defa66d7916e0176e23a03c10fcf4831445eafd00ec78dc5466e49ccbc7e4e8.png" src="../_images/3defa66d7916e0176e23a03c10fcf4831445eafd00ec78dc5466e49ccbc7e4e8.png" />
+<img alt="../_images/224068907e434207263d4379b051dd793420fb08fbfc279fe62f2636a7160318.png" src="../_images/224068907e434207263d4379b051dd793420fb08fbfc279fe62f2636a7160318.png" />
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model parameters:
-Ua = 0.0515 Watts/degC
-Ub = 0.0005 Watts/degC
-CpH = 6.8386 Joules/degC
-CpS = 0.01 Joules/degC
+Ua = 0.0421 Watts/degC
+Ub = 0.0094 Watts/degC
+CpH = 6.0274 Joules/degC
+CpS = 0.1714 Joules/degC
  
 </pre></div>
 </div>
 </div>
 </div>
-<p>Fascinating. The D-optimal experiment is a square wave that fluctuates between maximum power and off. The square wave transitions from full power to off when the predicted sensor temperature reaches ~70 °C. Likewise, the heater turns back on when the sensor cools to ~40 °C.  This experiment captures two cooling cycles and almost three full heating events.</p>
+<p>Fascinating. The D-optimal experiment is close to a square wave that fluctuates between maximum power and off. The square wave transitions from full power to off when the predicted sensor temperature reaches ~85 °C. Likewise, the heater turns back on when the sensor cools to ~60 °C. Then the following cycle allows the sensor to return to 40 °C. This experiment captures two cooling cycles and almost three full heating events.</p>
 <p>Finally, let’s analyze the predicted FIM of the new optimized experiment plus the existing sine wave experiment.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">optimize_result2</span><span class="o">.</span><span class="n">result_analysis</span><span class="p">()</span>
-<span class="n">results_summary</span><span class="p">(</span><span class="n">optimize_result2</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">results_summary</span><span class="p">(</span><span class="n">TC_Lab_DoE_D</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="s1">&#39;FIM&#39;</span><span class="p">])</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>======Results Summary======
 Four design criteria log10() value:
-A-optimality: 9.698976151506269
-D-optimality: 27.677646709938845
-E-optimality: 4.002309075481948
-Modified E-optimality: 5.6805691372959775
+A-optimality: 6.2351532377339645
+D-optimality: 14.560571732277468
+E-optimality: -0.9421764209340528
+Modified E-optimality: 7.117191376655517
 
 FIM:
- [[ 1.89133734e+08 -1.91389901e+08 -8.29589669e+06  2.85001168e+03]
- [-1.91389901e+08  4.80932174e+09  6.51933835e+07  3.72808654e+04]
- [-8.29589669e+06  6.51933835e+07  1.60379575e+06  2.80645383e+04]
- [ 2.85001168e+03  3.72808654e+04  2.80645383e+04  1.14984501e+04]]
+ [[1484716.4838525357, 8385.314034614812, -122009.42885862324, 3986.746701916149], [8385.314034614812, 12166.088352713867, 35185.570312046, 12908.796397561779], [-122009.42885862324, 35185.570312046, 207816.22848146953, 40882.82329357158], [3986.746701916149, 12908.796397561779, 40882.82329357158, 13815.84523653591]]
 
 eigenvalues:
- [4.81812666e+09 1.81392256e+08 5.41802096e+05 1.00533100e+04]
+ [1.49628718e+06 2.12204805e+05 1.00225443e+04 1.14241416e-01]
 
 eigenvectors:
- [[ 4.13311134e-02  9.98649321e-01  3.14406802e-02 -1.66024141e-03]
- [-9.99053026e-01  4.17354883e-02 -1.22800530e-02  6.32368770e-04]
- [-1.35937330e-02 -3.09464432e-02  9.98069963e-01 -5.20948900e-02]
- [-7.78505034e-06  1.94816681e-05  5.21251707e-02  9.98640559e-01]]
+ [[-9.95549809e-01 -8.97389772e-02  2.87661991e-02  9.14210614e-06]
+ [-3.39311263e-03 -1.85444140e-01 -6.95720553e-01 -6.93953795e-01]
+ [ 9.41756501e-02 -9.55575881e-01  2.78256029e-01 -2.40679407e-02]
+ [-1.09708330e-04 -2.10789286e-01 -6.61603356e-01  7.19617165e-01]]
 </pre></div>
 </div>
 </div>
@@ -1246,221 +1600,878 @@ eigenvectors:
 <p>Next, we will consider A-optimality.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create a new DoE object</span>
-<span class="n">doe_object3</span> <span class="o">=</span> <span class="n">DesignOfExperiments</span><span class="p">(</span>
-    <span class="n">theta_values</span><span class="p">,</span>  <span class="c1"># dictionary of parameters</span>
-    <span class="n">decisions</span><span class="p">,</span>  <span class="c1"># design variable</span>
-    <span class="n">measurements</span><span class="p">,</span>  <span class="c1"># measurement variable</span>
-    <span class="n">create_model_doe</span><span class="p">,</span>  <span class="c1"># model</span>
-    <span class="n">solver</span><span class="o">=</span><span class="n">solver</span><span class="p">,</span>
-    <span class="n">prior_FIM</span><span class="o">=</span><span class="n">prior</span><span class="p">,</span>  <span class="c1"># use previous experiment as prior</span>
-<span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create experiment object for design of experiments</span>
+<span class="n">doe_experiment</span> <span class="o">=</span> <span class="n">TC_Lab_experiment</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">tc_data</span><span class="p">,</span> <span class="n">theta_initial</span><span class="o">=</span><span class="n">theta_values</span><span class="p">,</span> <span class="n">number_of_states</span><span class="o">=</span><span class="n">number_tclab_states</span><span class="p">)</span>
 
-<span class="c1"># Solve the DoE problem</span>
-<span class="n">square_result3</span><span class="p">,</span> <span class="n">optimize_result3</span> <span class="o">=</span> <span class="n">doe_object3</span><span class="o">.</span><span class="n">stochastic_program</span><span class="p">(</span>
-    <span class="n">if_optimize</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>  <span class="c1"># optimize</span>
-    <span class="n">if_Cholesky</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>  <span class="c1"># use Cholesky decomposition</span>
-    <span class="n">scale_nominal_param_value</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>  <span class="c1"># scale model parameter value</span>
-    <span class="n">objective_option</span><span class="o">=</span><span class="s2">&quot;trace&quot;</span><span class="p">,</span>  <span class="c1"># objective option (need to debug/improve initialization)</span>
-    <span class="n">jac_initial</span><span class="o">=</span><span class="n">jac_for_initialization</span><span class="p">,</span>  <span class="c1"># initialize Jacobian with prior solution</span>
-    <span class="n">step</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span>  <span class="c1"># step size</span>
-<span class="p">)</span>
+<span class="c1"># Create the design of experiments object using our experiment instance from above</span>
+<span class="n">TC_Lab_DoE_A</span> <span class="o">=</span> <span class="n">DesignOfExperiments</span><span class="p">(</span><span class="n">experiment</span><span class="o">=</span><span class="n">doe_experiment</span><span class="p">,</span> 
+                                 <span class="n">step</span><span class="o">=</span><span class="mf">1e-2</span><span class="p">,</span>
+                                 <span class="n">scale_constant_value</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                                 <span class="n">scale_nominal_param_value</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                 <span class="n">objective_option</span><span class="o">=</span><span class="s2">&quot;trace&quot;</span><span class="p">,</span>  <span class="c1"># Now we specify a type of objective, A-opt = &quot;trace&quot;</span>
+                                 <span class="n">prior_FIM</span><span class="o">=</span><span class="n">FIM</span><span class="p">,</span>  <span class="c1"># We use the prior information from the same existing experiment as in the D-optimal case!</span>
+                                 <span class="n">tee</span><span class="o">=</span><span class="kc">True</span><span class="p">,)</span>
+
+<span class="n">TC_Lab_DoE_A</span><span class="o">.</span><span class="n">run_doe</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Ipopt 3.13.2: halt_on_ampl_error=yes
-linear_solver=ma57
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Ipopt 3.13.2: linear_solver=ma57
+halt_on_ampl_error=yes
+max_iter=3000
 
 
 ******************************************************************************
 This program contains Ipopt, a library for large-scale nonlinear optimization.
  Ipopt is released as open source code under the Eclipse Public License (EPL).
          For more information visit http://projects.coin-or.org/Ipopt
+
+This version of Ipopt was compiled from source code available at
+    https://github.com/IDAES/Ipopt as part of the Institute for the Design of
+    Advanced Energy Systems Process Systems Engineering Framework (IDAES PSE
+    Framework) Copyright (c) 2018-2019. See https://github.com/IDAES/idaes-pse.
+
+This version of Ipopt was compiled using HSL, a collection of Fortran codes
+    for large-scale scientific computation.  All technical papers, sales and
+    publicity material resulting from use of the HSL codes within IPOPT must
+    contain the following acknowledgement:
+        HSL, a collection of Fortran codes for large-scale scientific
+        computation. See http://www.hsl.rl.ac.uk.
 ******************************************************************************
 
 This is Ipopt version 3.13.2, running with linear solver ma57.
 
-Number of nonzeros in equality constraint Jacobian...:   136846
+Number of nonzeros in equality constraint Jacobian...:     1800
 Number of nonzeros in inequality constraint Jacobian.:        0
-Number of nonzeros in Lagrangian Hessian.............:     9010
+Number of nonzeros in Lagrangian Hessian.............:        0
 
-Total number of variables............................:    43240
+Total number of variables............................:      602
                      variables with only lower bounds:        0
-                variables with lower and upper bounds:    23408
+                variables with lower and upper bounds:      300
                      variables with only upper bounds:        0
-Total number of equality constraints.................:    43240
+Total number of equality constraints.................:      602
 Total number of inequality constraints...............:        0
         inequality constraints with only lower bounds:        0
    inequality constraints with lower and upper bounds:        0
         inequality constraints with only upper bounds:        0
 
 iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
-   0  0.0000000e+00 9.62e+09 0.00e+00  -1.0 0.00e+00    -  0.00e+00 0.00e+00   0
-Reallocating memory for MA57: lfact (1796418)
-   1  0.0000000e+00 4.80e+09 1.14e-01  -1.0 1.94e+07    -  9.80e-01 9.90e-01h  1
-   2  0.0000000e+00 4.80e+07 9.90e+00  -1.0 4.80e+09    -  1.00e+00 9.90e-01h  1
-   3  0.0000000e+00 4.71e+01 1.26e-05  -1.0 4.80e+07    -  1.00e+00 1.00e+00h  1
-   4  0.0000000e+00 1.91e-11 3.61e-10  -1.7 4.71e+01    -  1.00e+00 1.00e+00h  1
+   0  0.0000000e+00 3.76e-01 0.00e+00  -1.0 0.00e+00    -  0.00e+00 0.00e+00   0
+   1  0.0000000e+00 3.55e-15 1.04e-02  -1.0 2.21e+00    -  9.11e-01 1.00e+00h  1
 
-Number of Iterations....: 4
+Number of Iterations....: 1
 
                                    (scaled)                 (unscaled)
 Objective...............:   0.0000000000000000e+00    0.0000000000000000e+00
 Dual infeasibility......:   0.0000000000000000e+00    0.0000000000000000e+00
-Constraint violation....:   3.4674485505092889e-12    1.9099388737231493e-11
+Constraint violation....:   3.5527136788005009e-15    3.5527136788005009e-15
 Complementarity.........:   0.0000000000000000e+00    0.0000000000000000e+00
-Overall NLP error.......:   3.4674485505092889e-12    1.9099388737231493e-11
+Overall NLP error.......:   3.5527136788005009e-15    3.5527136788005009e-15
 
 
-Number of objective function evaluations             = 5
-Number of objective gradient evaluations             = 5
-Number of equality constraint evaluations            = 5
+Number of objective function evaluations             = 2
+Number of objective gradient evaluations             = 2
+Number of equality constraint evaluations            = 2
 Number of inequality constraint evaluations          = 0
-Number of equality constraint Jacobian evaluations   = 5
+Number of equality constraint Jacobian evaluations   = 2
 Number of inequality constraint Jacobian evaluations = 0
-Number of Lagrangian Hessian evaluations             = 4
-Total CPU secs in IPOPT (w/o function evaluations)   =      0.340
-Total CPU secs in NLP function evaluations           =      0.019
+Number of Lagrangian Hessian evaluations             = 1
+Total CPU secs in IPOPT (w/o function evaluations)   =      0.002
+Total CPU secs in NLP function evaluations           =      0.000
 
 EXIT: Optimal Solution Found.
-Ipopt 3.13.2: halt_on_ampl_error=yes
-linear_solver=ma57
+Ipopt 3.13.2: linear_solver=ma57
+halt_on_ampl_error=yes
+max_iter=3000
 
 
 ******************************************************************************
 This program contains Ipopt, a library for large-scale nonlinear optimization.
  Ipopt is released as open source code under the Eclipse Public License (EPL).
          For more information visit http://projects.coin-or.org/Ipopt
+
+This version of Ipopt was compiled from source code available at
+    https://github.com/IDAES/Ipopt as part of the Institute for the Design of
+    Advanced Energy Systems Process Systems Engineering Framework (IDAES PSE
+    Framework) Copyright (c) 2018-2019. See https://github.com/IDAES/idaes-pse.
+
+This version of Ipopt was compiled using HSL, a collection of Fortran codes
+    for large-scale scientific computation.  All technical papers, sales and
+    publicity material resulting from use of the HSL codes within IPOPT must
+    contain the following acknowledgement:
+        HSL, a collection of Fortran codes for large-scale scientific
+        computation. See http://www.hsl.rl.ac.uk.
 ******************************************************************************
 
 This is Ipopt version 3.13.2, running with linear solver ma57.
 
-Number of nonzeros in equality constraint Jacobian...:   144960
+Number of nonzeros in equality constraint Jacobian...:     1951
 Number of nonzeros in inequality constraint Jacobian.:        0
-Number of nonzeros in Lagrangian Hessian.............:     9011
+Number of nonzeros in Lagrangian Hessian.............:        0
 
-Reallocating memory for MA57: lfact (2308819)
-Total number of variables............................:    44142
-                     variables with only lower bounds:        1
-                variables with lower and upper bounds:    24309
+Total number of variables............................:      753
+                     variables with only lower bounds:        0
+                variables with lower and upper bounds:      451
                      variables with only upper bounds:        0
-Total number of equality constraints.................:    43241
+Total number of equality constraints.................:      602
 Total number of inequality constraints...............:        0
         inequality constraints with only lower bounds:        0
    inequality constraints with lower and upper bounds:        0
         inequality constraints with only upper bounds:        0
 
 iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
-   0 -9.6989500e+00 4.73e-03 1.00e+00  -1.0 0.00e+00    -  0.00e+00 0.00e+00   0
-   1 -9.6989500e+00 3.62e-02 1.00e-02  -1.0 2.84e+02    -  9.90e-01 1.00e+00f  1
-   2 -9.6989476e+00 3.26e+02 1.01e-04  -1.0 2.71e+04    -  9.90e-01 1.00e+00f  1
-   3 -9.6989316e+00 9.02e+02 6.81e-01  -1.0 2.02e+05    -  9.90e-01 1.00e+00F  1
-   4 -9.6989355e+00 1.60e+03 4.42e-06  -1.0 4.41e+04    -  9.90e-01 1.00e+00f  1
-   5 -9.6989357e+00 1.23e+00 1.00e-06  -1.0 2.90e+03    -  9.92e-01 1.00e+00h  1
-   6 -9.6989357e+00 1.64e-03 1.00e-06  -1.0 4.42e+01    -  1.00e+00 1.00e+00h  1
-   7 -9.6989357e+00 4.82e-07 2.83e-08  -2.5 2.67e-02    -  1.00e+00 1.00e+00h  1
-   8 -9.6989357e+00 5.07e-07 1.50e-09  -3.8 8.70e-01    -  1.00e+00 1.00e+00h  1
-   9 -9.6989357e+00 3.77e-07 9.22e-11  -5.7 7.37e-07  -4.0 1.00e+00 1.00e+00h  1
-iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
-  10 -9.6989358e+00 1.15e+00 3.70e-11  -8.6 1.34e+03    -  9.99e-01 1.00e+00h  1
-  11 -9.6989358e+00 1.19e-06 3.14e-08  -8.6 9.43e-04  -4.5 1.00e+00 1.00e+00h  1
-  12 -9.6989402e+00 1.64e+03 4.73e-08  -8.6 5.04e+04    -  1.00e+00 1.00e+00h  1
-  13 -9.6989402e+00 1.73e+00 1.36e-05  -8.6 1.23e+00  -5.0 1.00e+00 1.00e+00h  1
-Reallocating memory for MA57: lfact (2666032)
-  14 -9.6989402e+00 1.97e-06 9.77e-09  -8.6 2.64e-03  -5.4 1.00e+00 1.00e+00h  1
-  15 -9.6989646e+00 6.21e-02 5.53e-08  -8.6 2.43e+05    -  1.00e+00 1.00e+00H  1
-  16 -9.6989646e+00 9.54e-07 7.10e-08  -8.6 5.75e-02  -5.9 1.00e+00 1.00e+00h  1
-  17 -9.6989646e+00 5.54e-07 1.07e-10  -8.6 2.61e-04  -6.4 1.00e+00 1.00e+00h  1
-  18 -9.6989731e+00 3.16e+03 1.37e-10  -8.6 1.65e+06    -  7.18e-01 5.94e-02h  4
-  19 -9.6989741e+00 3.16e+03 2.15e-10  -8.6 9.02e+05    -  1.00e+00 1.30e-02h  7
-iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
-  20 -9.6990339e+00 5.51e+00 1.59e-09  -8.6 5.83e+05    -  1.00e+00 1.00e+00H  1
-  21 -9.6990520e+00 8.04e-02 3.14e-14  -8.6 2.01e+05    -  1.00e+00 1.00e+00H  1
-  22 -9.6990471e+00 4.57e+02 2.51e-14  -8.6 5.73e+04    -  1.00e+00 1.00e+00h  1
-  23 -9.6990471e+00 9.96e-02 2.51e-14  -8.6 2.15e+02    -  1.00e+00 1.00e+00h  1
-  24 -9.6990471e+00 6.21e-07 2.51e-14  -8.6 1.25e-01    -  1.00e+00 1.00e+00h  1
-  25 -9.6990471e+00 4.08e-07 4.99e-14  -8.6 1.81e-07  -6.9 1.00e+00 1.00e+00h  1
-  26 -9.6990471e+00 3.41e-07 2.51e-14  -8.6 7.87e-07    -  1.00e+00 1.00e+00h  1
-  27 -9.6990471e+00 3.44e-07 2.51e-14  -8.6 2.19e-07    -  1.00e+00 1.00e+00h  1
-Reallocating memory for MA57: lfact (2956310)
-  28 -9.6990471e+00 2.24e-07 2.05e-14  -8.6 9.95e-08  -7.3 1.00e+00 1.00e+00h  1
-  29 -9.6990471e+00 2.79e-07 2.28e-14  -8.6 5.75e-07    -  1.00e+00 5.00e-01h  2
+   0  0.0000000e+00 3.41e-03 0.00e+00  -1.0 0.00e+00    -  0.00e+00 0.00e+00   0
+Reallocating memory for MA57: lfact (18093)
+   1  0.0000000e+00 3.55e-15 3.98e-04  -1.0 3.89e-01    -  9.78e-01 1.00e+00f  1
+   2  0.0000000e+00 3.55e-15 1.33e-03  -1.0 9.68e+00    -  9.40e-01 1.00e+00f  1
+   3  0.0000000e+00 3.55e-15 5.56e-04  -1.7 3.29e+01    -  8.81e-01 1.00e+00f  1
+   4  0.0000000e+00 3.55e-15 6.40e-18  -2.5 3.16e+00    -  1.00e+00 1.00e+00f  1
+   5  0.0000000e+00 3.55e-15 5.32e-19  -3.8 3.68e+00    -  1.00e+00 1.00e+00f  1
+   6  0.0000000e+00 3.55e-15 7.31e-21  -5.7 4.29e-01    -  1.00e+00 1.00e+00f  1
+   7  0.0000000e+00 3.76e-15 3.85e-22  -8.6 6.23e-02    -  1.00e+00 1.00e+00h  1
 
-Number of Iterations....: 29
+Number of Iterations....: 7
 
                                    (scaled)                 (unscaled)
-Objective...............:  -9.6990470606548804e+00   -9.6990470606548804e+00
-Dual infeasibility......:   2.2783287766776631e-14    2.2783287766776631e-14
-Constraint violation....:   2.7885425879503600e-07    2.7885425879503600e-07
-Complementarity.........:   2.5059035597178019e-09    2.5059035597178019e-09
-Overall NLP error.......:   2.7885425879503600e-07    2.7885425879503600e-07
+Objective...............:   0.0000000000000000e+00    0.0000000000000000e+00
+Dual infeasibility......:   3.8463898483715787e-22    3.8463898483715787e-22
+Constraint violation....:   3.7608804959177178e-15    3.7608804959177178e-15
+Complementarity.........:   5.3526636694796017e-09    5.3526636694796017e-09
+Overall NLP error.......:   5.3526636694796017e-09    5.3526636694796017e-09
 
 
-Number of objective function evaluations             = 60
-Number of objective gradient evaluations             = 31
-Number of equality constraint evaluations            = 73
+Number of objective function evaluations             = 8
+Number of objective gradient evaluations             = 8
+Number of equality constraint evaluations            = 8
 Number of inequality constraint evaluations          = 0
-Number of equality constraint Jacobian evaluations   = 31
+Number of equality constraint Jacobian evaluations   = 8
 Number of inequality constraint Jacobian evaluations = 0
-Number of Lagrangian Hessian evaluations             = 30
-Total CPU secs in IPOPT (w/o function evaluations)   =      4.213
-Total CPU secs in NLP function evaluations           =      0.209
+Number of Lagrangian Hessian evaluations             = 7
+Total CPU secs in IPOPT (w/o function evaluations)   =      0.009
+Total CPU secs in NLP function evaluations           =      0.000
 
-EXIT: Solved To Acceptable Level.
-INFO: elapsed time: 14.8 seconds
+EXIT: Optimal Solution Found.
+Ipopt 3.13.2: linear_solver=ma57
+halt_on_ampl_error=yes
+max_iter=3000
+
+
+******************************************************************************
+This program contains Ipopt, a library for large-scale nonlinear optimization.
+ Ipopt is released as open source code under the Eclipse Public License (EPL).
+         For more information visit http://projects.coin-or.org/Ipopt
+
+This version of Ipopt was compiled from source code available at
+    https://github.com/IDAES/Ipopt as part of the Institute for the Design of
+    Advanced Energy Systems Process Systems Engineering Framework (IDAES PSE
+    Framework) Copyright (c) 2018-2019. See https://github.com/IDAES/idaes-pse.
+
+This version of Ipopt was compiled using HSL, a collection of Fortran codes
+    for large-scale scientific computation.  All technical papers, sales and
+    publicity material resulting from use of the HSL codes within IPOPT must
+    contain the following acknowledgement:
+        HSL, a collection of Fortran codes for large-scale scientific
+        computation. See http://www.hsl.rl.ac.uk.
+******************************************************************************
+
+This is Ipopt version 3.13.2, running with linear solver ma57.
+
+Number of nonzeros in equality constraint Jacobian...:     1951
+Number of nonzeros in inequality constraint Jacobian.:        0
+Number of nonzeros in Lagrangian Hessian.............:        0
+
+Total number of variables............................:      753
+                     variables with only lower bounds:        0
+                variables with lower and upper bounds:      451
+                     variables with only upper bounds:        0
+Total number of equality constraints.................:      602
+Total number of inequality constraints...............:        0
+        inequality constraints with only lower bounds:        0
+   inequality constraints with lower and upper bounds:        0
+        inequality constraints with only upper bounds:        0
+
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+   0  0.0000000e+00 3.41e-03 0.00e+00  -1.0 0.00e+00    -  0.00e+00 0.00e+00   0
+Reallocating memory for MA57: lfact (18093)
+   1  0.0000000e+00 3.55e-15 6.51e-04  -1.0 5.04e-01    -  9.72e-01 1.00e+00f  1
+   2  0.0000000e+00 3.55e-15 6.27e-04  -1.0 9.47e+00    -  9.75e-01 1.00e+00f  1
+   3  0.0000000e+00 3.55e-15 9.84e-05  -1.7 6.36e+00    -  9.69e-01 1.00e+00f  1
+   4  0.0000000e+00 3.55e-15 3.43e-05  -2.5 1.28e+01    -  9.59e-01 1.00e+00f  1
+   5  0.0000000e+00 3.55e-15 2.57e-19  -3.8 1.40e+00    -  1.00e+00 1.00e+00f  1
+   6  0.0000000e+00 3.55e-15 2.83e-20  -5.7 5.96e-01    -  1.00e+00 1.00e+00f  1
+   7  0.0000000e+00 3.55e-15 1.41e-22  -8.6 4.56e-02    -  1.00e+00 1.00e+00h  1
+
+Number of Iterations....: 7
+
+                                   (scaled)                 (unscaled)
+Objective...............:   0.0000000000000000e+00    0.0000000000000000e+00
+Dual infeasibility......:   1.4082749928715296e-22    1.4082749928715296e-22
+Constraint violation....:   3.5527136788005009e-15    3.5527136788005009e-15
+Complementarity.........:   4.7026222762342791e-09    4.7026222762342791e-09
+Overall NLP error.......:   4.7026222762342791e-09    4.7026222762342791e-09
+
+
+Number of objective function evaluations             = 8
+Number of objective gradient evaluations             = 8
+Number of equality constraint evaluations            = 8
+Number of inequality constraint evaluations          = 0
+Number of equality constraint Jacobian evaluations   = 8
+Number of inequality constraint Jacobian evaluations = 0
+Number of Lagrangian Hessian evaluations             = 7
+Total CPU secs in IPOPT (w/o function evaluations)   =      0.010
+Total CPU secs in NLP function evaluations           =      0.000
+
+EXIT: Optimal Solution Found.
+Ipopt 3.13.2: linear_solver=ma57
+halt_on_ampl_error=yes
+max_iter=3000
+
+
+******************************************************************************
+This program contains Ipopt, a library for large-scale nonlinear optimization.
+ Ipopt is released as open source code under the Eclipse Public License (EPL).
+         For more information visit http://projects.coin-or.org/Ipopt
+
+This version of Ipopt was compiled from source code available at
+    https://github.com/IDAES/Ipopt as part of the Institute for the Design of
+    Advanced Energy Systems Process Systems Engineering Framework (IDAES PSE
+    Framework) Copyright (c) 2018-2019. See https://github.com/IDAES/idaes-pse.
+
+This version of Ipopt was compiled using HSL, a collection of Fortran codes
+    for large-scale scientific computation.  All technical papers, sales and
+    publicity material resulting from use of the HSL codes within IPOPT must
+    contain the following acknowledgement:
+        HSL, a collection of Fortran codes for large-scale scientific
+        computation. See http://www.hsl.rl.ac.uk.
+******************************************************************************
+
+This is Ipopt version 3.13.2, running with linear solver ma57.
+
+Number of nonzeros in equality constraint Jacobian...:     1951
+Number of nonzeros in inequality constraint Jacobian.:        0
+Number of nonzeros in Lagrangian Hessian.............:        0
+
+Total number of variables............................:      753
+                     variables with only lower bounds:        0
+                variables with lower and upper bounds:      451
+                     variables with only upper bounds:        0
+Total number of equality constraints.................:      602
+Total number of inequality constraints...............:        0
+        inequality constraints with only lower bounds:        0
+   inequality constraints with lower and upper bounds:        0
+        inequality constraints with only upper bounds:        0
+
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+   0  0.0000000e+00 3.43e-03 0.00e+00  -1.0 0.00e+00    -  0.00e+00 0.00e+00   0
+Reallocating memory for MA57: lfact (18093)
+   1  0.0000000e+00 3.55e-15 4.62e-05  -1.0 1.03e-01    -  9.89e-01 1.00e+00f  1
+   2  0.0000000e+00 3.65e-15 2.43e-17  -1.0 9.93e+00    -  1.00e+00 1.00e+00f  1
+   3  0.0000000e+00 5.33e-15 1.82e-17  -2.5 2.66e+00    -  1.00e+00 1.00e+00f  1
+   4  0.0000000e+00 3.55e-15 1.74e-08  -3.8 2.04e+00    -  1.00e+00 1.00e+00f  1
+   5  0.0000000e+00 3.55e-15 1.94e-08  -5.7 1.85e+00    -  9.96e-01 1.00e+00f  1
+   6  0.0000000e+00 3.55e-15 4.73e-14  -8.6 3.85e-02    -  1.00e+00 1.00e+00h  1
+
+Number of Iterations....: 6
+
+                                   (scaled)                 (unscaled)
+Objective...............:   0.0000000000000000e+00    0.0000000000000000e+00
+Dual infeasibility......:   4.7326499001393032e-14    4.7326499001393032e-14
+Constraint violation....:   3.5527136788005009e-15    3.5527136788005009e-15
+Complementarity.........:   4.8319883555020095e-09    4.8319883555020095e-09
+Overall NLP error.......:   4.8319883555020095e-09    4.8319883555020095e-09
+
+
+Number of objective function evaluations             = 7
+Number of objective gradient evaluations             = 7
+Number of equality constraint evaluations            = 7
+Number of inequality constraint evaluations          = 0
+Number of equality constraint Jacobian evaluations   = 7
+Number of inequality constraint Jacobian evaluations = 0
+Number of Lagrangian Hessian evaluations             = 6
+Total CPU secs in IPOPT (w/o function evaluations)   =      0.003
+Total CPU secs in NLP function evaluations           =      0.000
+
+EXIT: Optimal Solution Found.
+Ipopt 3.13.2: linear_solver=ma57
+halt_on_ampl_error=yes
+max_iter=3000
+
+
+******************************************************************************
+This program contains Ipopt, a library for large-scale nonlinear optimization.
+ Ipopt is released as open source code under the Eclipse Public License (EPL).
+         For more information visit http://projects.coin-or.org/Ipopt
+
+This version of Ipopt was compiled from source code available at
+    https://github.com/IDAES/Ipopt as part of the Institute for the Design of
+    Advanced Energy Systems Process Systems Engineering Framework (IDAES PSE
+    Framework) Copyright (c) 2018-2019. See https://github.com/IDAES/idaes-pse.
+
+This version of Ipopt was compiled using HSL, a collection of Fortran codes
+    for large-scale scientific computation.  All technical papers, sales and
+    publicity material resulting from use of the HSL codes within IPOPT must
+    contain the following acknowledgement:
+        HSL, a collection of Fortran codes for large-scale scientific
+        computation. See http://www.hsl.rl.ac.uk.
+******************************************************************************
+
+This is Ipopt version 3.13.2, running with linear solver ma57.
+
+Number of nonzeros in equality constraint Jacobian...:     1951
+Number of nonzeros in inequality constraint Jacobian.:        0
+Number of nonzeros in Lagrangian Hessian.............:        0
+
+Total number of variables............................:      753
+                     variables with only lower bounds:        0
+                variables with lower and upper bounds:      451
+                     variables with only upper bounds:        0
+Total number of equality constraints.................:      602
+Total number of inequality constraints...............:        0
+        inequality constraints with only lower bounds:        0
+   inequality constraints with lower and upper bounds:        0
+        inequality constraints with only upper bounds:        0
+
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+   0  0.0000000e+00 3.43e-03 0.00e+00  -1.0 0.00e+00    -  0.00e+00 0.00e+00   0
+Reallocating memory for MA57: lfact (18093)
+   1  0.0000000e+00 3.55e-15 3.50e-05  -1.0 1.00e-01    -  9.90e-01 1.00e+00f  1
+   2  0.0000000e+00 3.80e-15 2.43e-17  -1.0 9.94e+00    -  1.00e+00 1.00e+00f  1
+   3  0.0000000e+00 3.55e-15 1.77e-17  -2.5 3.12e+00    -  1.00e+00 1.00e+00f  1
+   4  0.0000000e+00 3.55e-15 2.57e-07  -3.8 1.95e+00    -  9.97e-01 1.00e+00f  1
+   5  0.0000000e+00 3.77e-15 1.36e-08  -5.7 1.65e+00    -  9.97e-01 1.00e+00f  1
+   6  0.0000000e+00 3.55e-15 1.44e-12  -8.6 3.95e-02    -  1.00e+00 1.00e+00h  1
+
+Number of Iterations....: 6
+
+                                   (scaled)                 (unscaled)
+Objective...............:   0.0000000000000000e+00    0.0000000000000000e+00
+Dual infeasibility......:   1.4351761207895442e-12    1.4351761207895442e-12
+Constraint violation....:   3.5527136788005009e-15    3.5527136788005009e-15
+Complementarity.........:   4.9764826151987226e-09    4.9764826151987226e-09
+Overall NLP error.......:   4.9764826151987226e-09    4.9764826151987226e-09
+
+
+Number of objective function evaluations             = 7
+Number of objective gradient evaluations             = 7
+Number of equality constraint evaluations            = 7
+Number of inequality constraint evaluations          = 0
+Number of equality constraint Jacobian evaluations   = 7
+Number of inequality constraint Jacobian evaluations = 0
+Number of Lagrangian Hessian evaluations             = 6
+Total CPU secs in IPOPT (w/o function evaluations)   =      0.006
+Total CPU secs in NLP function evaluations           =      0.000
+
+EXIT: Optimal Solution Found.
+Ipopt 3.13.2: linear_solver=ma57
+halt_on_ampl_error=yes
+max_iter=3000
+
+
+******************************************************************************
+This program contains Ipopt, a library for large-scale nonlinear optimization.
+ Ipopt is released as open source code under the Eclipse Public License (EPL).
+         For more information visit http://projects.coin-or.org/Ipopt
+
+This version of Ipopt was compiled from source code available at
+    https://github.com/IDAES/Ipopt as part of the Institute for the Design of
+    Advanced Energy Systems Process Systems Engineering Framework (IDAES PSE
+    Framework) Copyright (c) 2018-2019. See https://github.com/IDAES/idaes-pse.
+
+This version of Ipopt was compiled using HSL, a collection of Fortran codes
+    for large-scale scientific computation.  All technical papers, sales and
+    publicity material resulting from use of the HSL codes within IPOPT must
+    contain the following acknowledgement:
+        HSL, a collection of Fortran codes for large-scale scientific
+        computation. See http://www.hsl.rl.ac.uk.
+******************************************************************************
+
+This is Ipopt version 3.13.2, running with linear solver ma57.
+
+Number of nonzeros in equality constraint Jacobian...:     1951
+Number of nonzeros in inequality constraint Jacobian.:        0
+Number of nonzeros in Lagrangian Hessian.............:        0
+
+Total number of variables............................:      753
+                     variables with only lower bounds:        0
+                variables with lower and upper bounds:      451
+                     variables with only upper bounds:        0
+Total number of equality constraints.................:      602
+Total number of inequality constraints...............:        0
+        inequality constraints with only lower bounds:        0
+   inequality constraints with lower and upper bounds:        0
+        inequality constraints with only upper bounds:        0
+
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+   0  0.0000000e+00 3.69e-03 0.00e+00  -1.0 0.00e+00    -  0.00e+00 0.00e+00   0
+Reallocating memory for MA57: lfact (18093)
+   1  0.0000000e+00 3.55e-15 2.03e-04  -1.0 2.05e-01    -  9.83e-01 1.00e+00f  1
+   2  0.0000000e+00 3.55e-15 8.33e-17  -1.0 9.63e+00    -  1.00e+00 1.00e+00f  1
+   3  0.0000000e+00 3.55e-15 1.37e-17  -1.7 1.29e+01    -  1.00e+00 1.00e+00f  1
+   4  0.0000000e+00 3.55e-15 3.52e-18  -2.5 8.06e+00    -  1.00e+00 1.00e+00f  1
+   5  0.0000000e+00 3.55e-15 4.40e-19  -3.8 2.21e+00    -  1.00e+00 1.00e+00f  1
+   6  0.0000000e+00 3.55e-15 1.91e-20  -5.7 4.75e-01    -  1.00e+00 1.00e+00f  1
+   7  0.0000000e+00 3.55e-15 2.77e-22  -8.6 4.85e-02    -  1.00e+00 1.00e+00h  1
+
+Number of Iterations....: 7
+
+                                   (scaled)                 (unscaled)
+Objective...............:   0.0000000000000000e+00    0.0000000000000000e+00
+Dual infeasibility......:   2.7710550520526427e-22    2.7710550520526427e-22
+Constraint violation....:   3.5527136788005009e-15    3.5527136788005009e-15
+Complementarity.........:   4.8792798895046795e-09    4.8792798895046795e-09
+Overall NLP error.......:   4.8792798895046795e-09    4.8792798895046795e-09
+
+
+Number of objective function evaluations             = 8
+Number of objective gradient evaluations             = 8
+Number of equality constraint evaluations            = 8
+Number of inequality constraint evaluations          = 0
+Number of equality constraint Jacobian evaluations   = 8
+Number of inequality constraint Jacobian evaluations = 0
+Number of Lagrangian Hessian evaluations             = 7
+Total CPU secs in IPOPT (w/o function evaluations)   =      0.008
+Total CPU secs in NLP function evaluations           =      0.001
+
+EXIT: Optimal Solution Found.
+Ipopt 3.13.2: linear_solver=ma57
+halt_on_ampl_error=yes
+max_iter=3000
+
+
+******************************************************************************
+This program contains Ipopt, a library for large-scale nonlinear optimization.
+ Ipopt is released as open source code under the Eclipse Public License (EPL).
+         For more information visit http://projects.coin-or.org/Ipopt
+
+This version of Ipopt was compiled from source code available at
+    https://github.com/IDAES/Ipopt as part of the Institute for the Design of
+    Advanced Energy Systems Process Systems Engineering Framework (IDAES PSE
+    Framework) Copyright (c) 2018-2019. See https://github.com/IDAES/idaes-pse.
+
+This version of Ipopt was compiled using HSL, a collection of Fortran codes
+    for large-scale scientific computation.  All technical papers, sales and
+    publicity material resulting from use of the HSL codes within IPOPT must
+    contain the following acknowledgement:
+        HSL, a collection of Fortran codes for large-scale scientific
+        computation. See http://www.hsl.rl.ac.uk.
+******************************************************************************
+
+This is Ipopt version 3.13.2, running with linear solver ma57.
+
+Number of nonzeros in equality constraint Jacobian...:     1951
+Number of nonzeros in inequality constraint Jacobian.:        0
+Number of nonzeros in Lagrangian Hessian.............:        0
+
+Total number of variables............................:      753
+                     variables with only lower bounds:        0
+                variables with lower and upper bounds:      451
+                     variables with only upper bounds:        0
+Total number of equality constraints.................:      602
+Total number of inequality constraints...............:        0
+        inequality constraints with only lower bounds:        0
+   inequality constraints with lower and upper bounds:        0
+        inequality constraints with only upper bounds:        0
+
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+   0  0.0000000e+00 3.69e-03 0.00e+00  -1.0 0.00e+00    -  0.00e+00 0.00e+00   0
+Reallocating memory for MA57: lfact (18093)
+   1  0.0000000e+00 3.55e-15 1.71e-04  -1.0 2.41e-01    -  9.85e-01 1.00e+00f  1
+   2  0.0000000e+00 3.55e-15 5.53e-04  -1.0 5.81e+00    -  9.54e-01 1.00e+00f  1
+   3  0.0000000e+00 3.55e-15 4.71e-04  -1.7 4.04e+01    -  8.75e-01 1.00e+00f  1
+   4  0.0000000e+00 3.55e-15 5.31e-18  -2.5 3.18e+00    -  1.00e+00 1.00e+00f  1
+   5  0.0000000e+00 3.55e-15 5.42e-19  -3.8 3.31e+00    -  1.00e+00 1.00e+00f  1
+   6  0.0000000e+00 3.55e-15 9.85e-21  -5.7 3.88e-01    -  1.00e+00 1.00e+00f  1
+   7  0.0000000e+00 2.76e-15 2.34e-22  -8.6 5.49e-02    -  1.00e+00 1.00e+00h  1
+
+Number of Iterations....: 7
+
+                                   (scaled)                 (unscaled)
+Objective...............:   0.0000000000000000e+00    0.0000000000000000e+00
+Dual infeasibility......:   2.3409211335250683e-22    2.3409211335250683e-22
+Constraint violation....:   2.7616797737550769e-15    2.7616797737550769e-15
+Complementarity.........:   5.1165889275871179e-09    5.1165889275871179e-09
+Overall NLP error.......:   5.1165889275871179e-09    5.1165889275871179e-09
+
+
+Number of objective function evaluations             = 8
+Number of objective gradient evaluations             = 8
+Number of equality constraint evaluations            = 8
+Number of inequality constraint evaluations          = 0
+Number of equality constraint Jacobian evaluations   = 8
+Number of inequality constraint Jacobian evaluations = 0
+Number of Lagrangian Hessian evaluations             = 7
+Total CPU secs in IPOPT (w/o function evaluations)   =      0.010
+Total CPU secs in NLP function evaluations           =      0.000
+
+EXIT: Optimal Solution Found.
+Ipopt 3.13.2: linear_solver=ma57
+halt_on_ampl_error=yes
+max_iter=3000
+
+
+******************************************************************************
+This program contains Ipopt, a library for large-scale nonlinear optimization.
+ Ipopt is released as open source code under the Eclipse Public License (EPL).
+         For more information visit http://projects.coin-or.org/Ipopt
+
+This version of Ipopt was compiled from source code available at
+    https://github.com/IDAES/Ipopt as part of the Institute for the Design of
+    Advanced Energy Systems Process Systems Engineering Framework (IDAES PSE
+    Framework) Copyright (c) 2018-2019. See https://github.com/IDAES/idaes-pse.
+
+This version of Ipopt was compiled using HSL, a collection of Fortran codes
+    for large-scale scientific computation.  All technical papers, sales and
+    publicity material resulting from use of the HSL codes within IPOPT must
+    contain the following acknowledgement:
+        HSL, a collection of Fortran codes for large-scale scientific
+        computation. See http://www.hsl.rl.ac.uk.
+******************************************************************************
+
+This is Ipopt version 3.13.2, running with linear solver ma57.
+
+Number of nonzeros in equality constraint Jacobian...:     1951
+Number of nonzeros in inequality constraint Jacobian.:        0
+Number of nonzeros in Lagrangian Hessian.............:        0
+
+Total number of variables............................:      753
+                     variables with only lower bounds:        0
+                variables with lower and upper bounds:      451
+                     variables with only upper bounds:        0
+Total number of equality constraints.................:      602
+Total number of inequality constraints...............:        0
+        inequality constraints with only lower bounds:        0
+   inequality constraints with lower and upper bounds:        0
+        inequality constraints with only upper bounds:        0
+
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+   0  0.0000000e+00 3.43e-03 0.00e+00  -1.0 0.00e+00    -  0.00e+00 0.00e+00   0
+Reallocating memory for MA57: lfact (18093)
+   1  0.0000000e+00 3.55e-15 4.84e-05  -1.0 1.05e-01    -  9.89e-01 1.00e+00f  1
+   2  0.0000000e+00 3.55e-15 2.08e-17  -1.0 9.92e+00    -  1.00e+00 1.00e+00f  1
+   3  0.0000000e+00 3.55e-15 1.47e-17  -2.5 2.55e+00    -  1.00e+00 1.00e+00f  1
+   4  0.0000000e+00 3.55e-15 1.76e-19  -3.8 2.09e+00    -  1.00e+00 1.00e+00f  1
+   5  0.0000000e+00 3.55e-15 1.74e-08  -5.7 1.71e+00    -  9.96e-01 1.00e+00f  1
+   6  0.0000000e+00 3.55e-15 2.26e-13  -8.6 3.95e-02    -  1.00e+00 1.00e+00h  1
+
+Number of Iterations....: 6
+
+                                   (scaled)                 (unscaled)
+Objective...............:   0.0000000000000000e+00    0.0000000000000000e+00
+Dual infeasibility......:   2.2587528186040976e-13    2.2587528186040976e-13
+Constraint violation....:   3.5527136788005009e-15    3.5527136788005009e-15
+Complementarity.........:   4.8736431340332237e-09    4.8736431340332237e-09
+Overall NLP error.......:   4.8736431340332237e-09    4.8736431340332237e-09
+
+
+Number of objective function evaluations             = 7
+Number of objective gradient evaluations             = 7
+Number of equality constraint evaluations            = 7
+Number of inequality constraint evaluations          = 0
+Number of equality constraint Jacobian evaluations   = 7
+Number of inequality constraint Jacobian evaluations = 0
+Number of Lagrangian Hessian evaluations             = 6
+Total CPU secs in IPOPT (w/o function evaluations)   =      0.016
+Total CPU secs in NLP function evaluations           =      0.000
+
+EXIT: Optimal Solution Found.
+Ipopt 3.13.2: linear_solver=ma57
+halt_on_ampl_error=yes
+max_iter=3000
+
+
+******************************************************************************
+This program contains Ipopt, a library for large-scale nonlinear optimization.
+ Ipopt is released as open source code under the Eclipse Public License (EPL).
+         For more information visit http://projects.coin-or.org/Ipopt
+
+This version of Ipopt was compiled from source code available at
+    https://github.com/IDAES/Ipopt as part of the Institute for the Design of
+    Advanced Energy Systems Process Systems Engineering Framework (IDAES PSE
+    Framework) Copyright (c) 2018-2019. See https://github.com/IDAES/idaes-pse.
+
+This version of Ipopt was compiled using HSL, a collection of Fortran codes
+    for large-scale scientific computation.  All technical papers, sales and
+    publicity material resulting from use of the HSL codes within IPOPT must
+    contain the following acknowledgement:
+        HSL, a collection of Fortran codes for large-scale scientific
+        computation. See http://www.hsl.rl.ac.uk.
+******************************************************************************
+
+This is Ipopt version 3.13.2, running with linear solver ma57.
+
+Number of nonzeros in equality constraint Jacobian...:     1951
+Number of nonzeros in inequality constraint Jacobian.:        0
+Number of nonzeros in Lagrangian Hessian.............:        0
+
+Total number of variables............................:      753
+                     variables with only lower bounds:        0
+                variables with lower and upper bounds:      451
+                     variables with only upper bounds:        0
+Total number of equality constraints.................:      602
+Total number of inequality constraints...............:        0
+        inequality constraints with only lower bounds:        0
+   inequality constraints with lower and upper bounds:        0
+        inequality constraints with only upper bounds:        0
+
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+   0  0.0000000e+00 3.43e-03 0.00e+00  -1.0 0.00e+00    -  0.00e+00 0.00e+00   0
+Reallocating memory for MA57: lfact (18093)
+   1  0.0000000e+00 3.55e-15 3.51e-05  -1.0 1.00e-01    -  9.90e-01 1.00e+00f  1
+   2  0.0000000e+00 3.55e-15 2.08e-17  -1.0 9.93e+00    -  1.00e+00 1.00e+00f  1
+   3  0.0000000e+00 3.55e-15 1.31e-17  -2.5 3.29e+00    -  1.00e+00 1.00e+00f  1
+   4  0.0000000e+00 3.55e-15 3.09e-07  -3.8 1.98e+00    -  9.96e-01 1.00e+00f  1
+   5  0.0000000e+00 3.55e-15 1.30e-08  -5.7 1.60e+00    -  9.97e-01 1.00e+00f  1
+   6  0.0000000e+00 3.55e-15 1.66e-12  -8.6 3.95e-02    -  1.00e+00 1.00e+00h  1
+
+Number of Iterations....: 6
+
+                                   (scaled)                 (unscaled)
+Objective...............:   0.0000000000000000e+00    0.0000000000000000e+00
+Dual infeasibility......:   1.6640804565696806e-12    1.6640804565696806e-12
+Constraint violation....:   3.5527136788005009e-15    3.5527136788005009e-15
+Complementarity.........:   4.9986864279830130e-09    4.9986864279830130e-09
+Overall NLP error.......:   4.9986864279830130e-09    4.9986864279830130e-09
+
+
+Number of objective function evaluations             = 7
+Number of objective gradient evaluations             = 7
+Number of equality constraint evaluations            = 7
+Number of inequality constraint evaluations          = 0
+Number of equality constraint Jacobian evaluations   = 7
+Number of inequality constraint Jacobian evaluations = 0
+Number of Lagrangian Hessian evaluations             = 6
+Total CPU secs in IPOPT (w/o function evaluations)   =      0.008
+Total CPU secs in NLP function evaluations           =      0.000
+
+EXIT: Optimal Solution Found.
+Ipopt 3.13.2: linear_solver=ma57
+halt_on_ampl_error=yes
+max_iter=3000
+
+
+******************************************************************************
+This program contains Ipopt, a library for large-scale nonlinear optimization.
+ Ipopt is released as open source code under the Eclipse Public License (EPL).
+         For more information visit http://projects.coin-or.org/Ipopt
+
+This version of Ipopt was compiled from source code available at
+    https://github.com/IDAES/Ipopt as part of the Institute for the Design of
+    Advanced Energy Systems Process Systems Engineering Framework (IDAES PSE
+    Framework) Copyright (c) 2018-2019. See https://github.com/IDAES/idaes-pse.
+
+This version of Ipopt was compiled using HSL, a collection of Fortran codes
+    for large-scale scientific computation.  All technical papers, sales and
+    publicity material resulting from use of the HSL codes within IPOPT must
+    contain the following acknowledgement:
+        HSL, a collection of Fortran codes for large-scale scientific
+        computation. See http://www.hsl.rl.ac.uk.
+******************************************************************************
+
+This is Ipopt version 3.13.2, running with linear solver ma57.
+
+Number of nonzeros in equality constraint Jacobian...:    20744
+Number of nonzeros in inequality constraint Jacobian.:        0
+Number of nonzeros in Lagrangian Hessian.............:     1510
+
+Total number of variables............................:     6487
+                     variables with only lower bounds:        0
+                variables with lower and upper bounds:     3457
+                     variables with only upper bounds:        0
+Total number of equality constraints.................:     6487
+Total number of inequality constraints...............:        0
+        inequality constraints with only lower bounds:        0
+   inequality constraints with lower and upper bounds:        0
+        inequality constraints with only upper bounds:        0
+
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+   0  0.0000000e+00 5.54e+01 0.00e+00  -1.0 0.00e+00    -  0.00e+00 0.00e+00   0
+Reallocating memory for MA57: lfact (330773)
+   1  0.0000000e+00 4.31e+05 9.28e-01  -1.0 3.58e+01    -  4.23e-01 1.00e+00h  1
+   2  0.0000000e+00 1.16e-10 5.50e-03  -1.0 4.31e+05    -  9.92e-01 1.00e+00h  1
+
+Number of Iterations....: 2
+
+                                   (scaled)                 (unscaled)
+Objective...............:   0.0000000000000000e+00    0.0000000000000000e+00
+Dual infeasibility......:   0.0000000000000000e+00    0.0000000000000000e+00
+Constraint violation....:   1.1641532182693481e-10    1.1641532182693481e-10
+Complementarity.........:   0.0000000000000000e+00    0.0000000000000000e+00
+Overall NLP error.......:   1.1641532182693481e-10    1.1641532182693481e-10
+
+
+Number of objective function evaluations             = 3
+Number of objective gradient evaluations             = 3
+Number of equality constraint evaluations            = 3
+Number of inequality constraint evaluations          = 0
+Number of equality constraint Jacobian evaluations   = 3
+Number of inequality constraint Jacobian evaluations = 0
+Number of Lagrangian Hessian evaluations             = 2
+Total CPU secs in IPOPT (w/o function evaluations)   =      0.099
+Total CPU secs in NLP function evaluations           =      0.000
+
+EXIT: Optimal Solution Found.
+Ipopt 3.13.2: linear_solver=ma57
+halt_on_ampl_error=yes
+max_iter=3000
+
+
+******************************************************************************
+This program contains Ipopt, a library for large-scale nonlinear optimization.
+ Ipopt is released as open source code under the Eclipse Public License (EPL).
+         For more information visit http://projects.coin-or.org/Ipopt
+
+This version of Ipopt was compiled from source code available at
+    https://github.com/IDAES/Ipopt as part of the Institute for the Design of
+    Advanced Energy Systems Process Systems Engineering Framework (IDAES PSE
+    Framework) Copyright (c) 2018-2019. See https://github.com/IDAES/idaes-pse.
+
+This version of Ipopt was compiled using HSL, a collection of Fortran codes
+    for large-scale scientific computation.  All technical papers, sales and
+    publicity material resulting from use of the HSL codes within IPOPT must
+    contain the following acknowledgement:
+        HSL, a collection of Fortran codes for large-scale scientific
+        computation. See http://www.hsl.rl.ac.uk.
+******************************************************************************
+
+This is Ipopt version 3.13.2, running with linear solver ma57.
+
+Number of nonzeros in equality constraint Jacobian...:    21957
+Number of nonzeros in inequality constraint Jacobian.:        0
+Number of nonzeros in Lagrangian Hessian.............:     1511
+
+Reallocating memory for MA57: lfact (395598)
+Total number of variables............................:     6639
+                     variables with only lower bounds:        1
+                variables with lower and upper bounds:     3608
+                     variables with only upper bounds:        0
+Total number of equality constraints.................:     6488
+Total number of inequality constraints...............:        0
+        inequality constraints with only lower bounds:        0
+   inequality constraints with lower and upper bounds:        0
+        inequality constraints with only upper bounds:        0
+
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+   0 -5.7732318e+00 4.78e+05 1.00e+00  -1.0 0.00e+00    -  0.00e+00 0.00e+00   0
+   1 -5.8183289e+00 8.46e+04 1.38e+01  -1.0 3.78e+05    -  4.56e-01 1.00e+00h  1
+   2 -5.8492322e+00 2.91e+03 1.72e+00  -1.0 4.85e+04    -  8.36e-01 1.00e+00h  1
+   3 -5.8514044e+00 1.96e+00 3.18e-02  -1.0 3.54e+03    -  9.85e-01 1.00e+00h  1
+   4 -5.8761990e+00 5.55e+03 8.36e-03  -1.0 4.42e+04    -  9.35e-01 1.00e+00f  1
+   5 -5.9356123e+00 1.88e+04 1.88e-03  -1.0 1.10e+05    -  8.84e-01 1.00e+00h  1
+   6 -5.9517203e+00 7.35e+01 3.02e-06  -1.0 3.26e+04    -  1.00e+00 1.00e+00h  1
+   7 -5.9516866e+00 2.35e-02 1.00e-06  -1.0 7.72e+01    -  1.00e+00 1.00e+00h  1
+   8 -5.9519543e+00 2.37e-01 1.79e-07  -2.5 5.52e+02    -  1.00e+00 1.00e+00h  1
+   9 -5.9611275e+00 2.85e+02 1.07e-06  -2.5 1.91e+04    -  1.00e+00 1.00e+00h  1
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+  10 -5.9613477e+00 3.09e-02 3.01e-08  -2.5 4.64e+02    -  1.00e+00 1.00e+00h  1
+  11 -5.9708350e+00 2.98e+02 3.56e-07  -3.8 2.02e+04    -  1.00e+00 1.00e+00h  1
+  12 -6.1437890e+00 7.30e+04 1.96e-04  -3.8 4.48e+05    -  1.00e+00 1.00e+00H  1
+  13 -6.1192787e+00 2.92e+03 1.29e-04  -3.8 7.64e+04    -  1.00e+00 1.00e+00h  1
+  14 -6.1281208e+00 1.99e+03 2.24e-06  -3.8 2.71e+04    -  1.00e+00 1.00e+00h  1
+  15 -6.1248634e+00 1.29e+02 5.06e-07  -3.8 1.00e+04    -  1.00e+00 1.00e+00h  1
+  16 -6.1250529e+00 1.64e-01 3.00e-08  -3.8 5.82e+02    -  1.00e+00 1.00e+00h  1
+  17 -6.1250389e+00 9.88e-04 1.50e-09  -3.8 4.29e+01    -  1.00e+00 1.00e+00h  1
+  18 -6.2287130e+00 3.96e+04 7.35e-06  -5.7 3.60e+05    -  7.91e-01 1.00e+00f  1
+  19 -6.3103098e+00 2.78e+04 3.99e-06  -5.7 4.06e+05    -  6.59e-01 8.62e-01h  1
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+  20 -6.3248855e+00 1.04e+04 7.38e-06  -5.7 1.08e+05    -  6.23e-01 6.46e-01h  1
+  21 -6.3284025e+00 5.17e+03 6.84e-06  -5.7 3.36e+04    -  6.00e-01 5.11e-01h  1
+  22 -6.3284024e+00 4.21e+03 9.12e-03  -5.7 1.81e+01  -4.0 3.08e-04 1.86e-01h  1
+  23 -6.3294531e+00 1.06e+03 2.32e-03  -5.7 6.90e+03    -  1.00e+00 7.48e-01h  1
+  24 -6.3301892e+00 3.32e+02 7.15e-04  -5.7 5.25e+03    -  1.00e+00 6.90e-01h  1
+  25 -6.3305978e+00 2.69e+01 5.48e-05  -5.7 2.18e+03    -  1.00e+00 9.22e-01h  1
+  26 -6.3309354e+00 6.69e+01 1.56e-05  -5.7 4.30e+03    -  1.00e+00 7.12e-01h  1
+  27 -6.3310646e+00 8.46e+01 3.80e-06  -5.7 3.45e+03    -  1.00e+00 9.23e-01h  1
+  28 -6.3311316e+00 7.84e+01 2.86e-07  -5.7 2.91e+03    -  1.00e+00 1.00e+00h  1
+  29 -6.3311486e+00 4.37e+00 1.70e-08  -5.7 5.25e+02    -  1.00e+00 1.00e+00h  1
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+  30 -6.3311476e+00 5.40e-01 2.98e-09  -5.7 2.10e+02    -  1.00e+00 1.00e+00h  1
+  31 -6.3311472e+00 6.84e-03 1.84e-11  -5.7 2.54e+01    -  1.00e+00 1.00e+00h  1
+  32 -6.3311472e+00 2.83e-08 2.52e-08  -5.7 7.56e-04  -4.5 1.00e+00 1.00e+00h  1
+  33 -6.3317543e+00 2.49e+01 1.64e-05  -8.6 1.04e+04    -  4.92e-01 2.90e-01f  1
+  34 -6.3320613e+00 8.32e+01 1.10e-05  -8.6 1.08e+04    -  1.96e-01 2.47e-01h  1
+  35 -6.3322159e+00 7.29e+01 1.09e-05  -8.6 3.95e+03    -  3.10e-01 2.00e-01h  1
+  36 -6.3322789e+00 6.62e+01 3.31e-05  -8.6 3.34e+03    -  3.02e-01 1.19e-01h  1
+  37 -6.3324274e+00 5.97e+01 2.28e-05  -8.6 3.07e+03    -  3.25e-01 3.19e-01h  1
+  38 -6.3325405e+00 3.85e+01 1.60e-05  -8.6 1.44e+03    -  5.61e-01 3.90e-01h  1
+  39 -6.3326164e+00 2.16e+01 8.84e-06  -8.6 8.18e+02    -  5.19e-01 4.60e-01h  1
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+  40 -6.3326351e+00 1.69e+01 7.81e-06  -8.6 4.23e+02    -  5.87e-01 2.18e-01h  1
+  41 -6.3326729e+00 7.38e+00 8.30e-06  -8.6 3.28e+02    -  1.00e+00 5.71e-01h  1
+  42 -6.3326973e+00 8.31e-01 2.26e-06  -8.6 1.37e+02    -  1.00e+00 8.88e-01h  1
+  43 -6.3327003e+00 3.87e-05 3.36e-13  -8.6 1.48e+01    -  1.00e+00 1.00e+00h  1
+Reallocating memory for MA57: lfact (422080)
+  44 -6.3327003e+00 1.23e-08 2.51e-14  -8.6 4.24e-02    -  1.00e+00 1.00e+00h  1
+
+Number of Iterations....: 44
+
+                                   (scaled)                 (unscaled)
+Objective...............:  -6.3327003245850708e+00   -6.3327003245850708e+00
+Dual infeasibility......:   2.5059035674162971e-14    2.5059035674162971e-14
+Constraint violation....:   9.1604306362569332e-09    1.2289092410355805e-08
+Complementarity.........:   2.7196815779234200e-09    2.7196815779234200e-09
+Overall NLP error.......:   9.1604306362569332e-09    1.2289092410355805e-08
+
+
+Number of objective function evaluations             = 46
+Number of objective gradient evaluations             = 45
+Number of equality constraint evaluations            = 46
+Number of inequality constraint evaluations          = 0
+Number of equality constraint Jacobian evaluations   = 45
+Number of inequality constraint Jacobian evaluations = 0
+Number of Lagrangian Hessian evaluations             = 44
+Total CPU secs in IPOPT (w/o function evaluations)   =      1.596
+Total CPU secs in NLP function evaluations           =      0.005
+
+EXIT: Optimal Solution Found.
 </pre></div>
 </div>
 </div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">aopt_pyomo_doe_results</span> <span class="o">=</span> <span class="n">extract_plot_results</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">optimize_result3</span><span class="o">.</span><span class="n">model</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">dopt_pyomo_doe_results</span> <span class="o">=</span> <span class="n">extract_plot_results</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">TC_Lab_DoE_A</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">scenario_blocks</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/1f42a97a03779f7a012c18b99f6a8be569f1c49348ae913746d2da20b8301c48.png" src="../_images/1f42a97a03779f7a012c18b99f6a8be569f1c49348ae913746d2da20b8301c48.png" />
+<img alt="../_images/136c7ff73739aa5a920160097556daf445e7a92d660020d57d2045b9aaf8142b.png" src="../_images/136c7ff73739aa5a920160097556daf445e7a92d660020d57d2045b9aaf8142b.png" />
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Model parameters:
-Ua = 0.0515 Watts/degC
-Ub = 0.0005 Watts/degC
-CpH = 6.8386 Joules/degC
-CpS = 0.01 Joules/degC
+Ua = 0.0421 Watts/degC
+Ub = 0.0094 Watts/degC
+CpH = 6.0274 Joules/degC
+CpS = 0.1714 Joules/degC
  
 </pre></div>
 </div>
 </div>
 </div>
-<p>Interestingly, we get a different optimal experiment. The A-optimal experiment starts with a ramp around 90% power. Around 700 seconds, the power is signigicantly reduced, resulting in slight cooling.</p>
+<p>Interestingly, we get a different optimal experiment. However, square-tooth like structure appears to emulate the first cycle in the D-optimal experiment, however achieving a higher temperature appears to be the best experiment for the A-optimal criteria.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">optimize_result3</span><span class="o">.</span><span class="n">result_analysis</span><span class="p">()</span>
-<span class="n">results_summary</span><span class="p">(</span><span class="n">optimize_result3</span><span class="p">)</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">results_summary</span><span class="p">(</span><span class="n">TC_Lab_DoE_A</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="s1">&#39;FIM&#39;</span><span class="p">])</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>======Results Summary======
 Four design criteria log10() value:
-A-optimality: 9.69904706065488
-D-optimality: 27.18858455834762
-E-optimality: 3.5371505560285486
-Modified E-optimality: 6.14572713071946
+A-optimality: 6.332700324585071
+D-optimality: 14.221895379167925
+E-optimality: -1.035091770165665
+Modified E-optimality: 7.3342634189119815
 
 FIM:
- [[ 1.89991601e+08 -1.91393319e+08 -8.37777345e+06 -7.01417940e+02]
- [-1.91393319e+08  4.80931433e+09  6.51835652e+07  2.98584987e+04]
- [-8.37777345e+06  6.51835652e+07  1.57722375e+06  1.82177349e+04]
- [-7.01417940e+02  2.98584987e+04  1.82177349e+04  4.07195806e+03]]
+ [[1955865.1928081303, -10256.668510071942, -252788.48744997822, -18301.258965837907], [-10256.668510071942, 8250.475377585391, 27927.87862216795, 8884.520772699641], [-252788.48744997822, 27927.87862216795, 177519.01981971957, 32875.957483123544], [-18301.258965837907, 8884.520772699641, 32875.957483123544, 9662.079129546986]]
 
 eigenvalues:
- [4.81812083e+09 1.82252585e+08 5.10367039e+05 3.44469327e+03]
+ [1.99146028e+06 1.53941730e+05 5.89466513e+03 9.22376500e-02]
 
 eigenvectors:
- [[ 4.13397884e-02  9.98639527e-01  3.17626753e-02 -1.11744386e-03]
- [-9.99052686e-01  4.17477808e-02 -1.22748394e-02  4.25749195e-04]
- [-1.35923510e-02 -3.12444734e-02  9.98800998e-01 -3.51510621e-02]
- [-6.24867208e-06 -1.26975821e-07  3.51713956e-02  9.99381295e-01]]
+ [[-9.90295022e-01  1.36479979e-01 -2.62484625e-02 -5.56588466e-05]
+ [ 7.12084874e-03  1.85358482e-01  6.96595323e-01 -6.93070330e-01]
+ [ 1.38323769e-01  9.50087656e-01 -2.78570003e-01 -2.44690500e-02]
+ [ 1.14716207e-02  2.10591771e-01  6.60654772e-01  7.20454565e-01]]
 </pre></div>
 </div>
 </div>
@@ -1486,42 +2497,35 @@ eigenvectors:
     <span class="n">theta_values_new</span> <span class="o">=</span> <span class="n">theta_values</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
     <span class="n">theta_values_new</span><span class="p">[</span><span class="s1">&#39;inv_CpS&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">v</span>
 
+    <span class="c1"># Create experiment object for design of experiments</span>
+    <span class="n">doe_experiment</span> <span class="o">=</span> <span class="n">TC_Lab_experiment</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">tc_data</span><span class="p">,</span> <span class="n">theta_initial</span><span class="o">=</span><span class="n">theta_values_new</span><span class="p">,</span> <span class="n">number_of_states</span><span class="o">=</span><span class="n">number_tclab_states</span><span class="p">)</span>
+    
+    <span class="c1"># Create the design of experiments object using our experiment instance from above</span>
+    <span class="n">TC_Lab_DoE</span> <span class="o">=</span> <span class="n">DesignOfExperiments</span><span class="p">(</span><span class="n">experiment</span><span class="o">=</span><span class="n">doe_experiment</span><span class="p">,</span> 
+                                     <span class="n">step</span><span class="o">=</span><span class="mf">1e-2</span><span class="p">,</span>
+                                     <span class="n">scale_constant_value</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                                     <span class="n">scale_nominal_param_value</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> 
+                                     <span class="n">tee</span><span class="o">=</span><span class="kc">False</span><span class="p">,)</span>
+
+    <span class="n">FIM_new</span> <span class="o">=</span> <span class="n">TC_Lab_DoE</span><span class="o">.</span><span class="n">compute_FIM</span><span class="p">(</span><span class="n">method</span><span class="o">=</span><span class="s1">&#39;sequential&#39;</span><span class="p">)</span>
+
     <span class="c1"># Create a new DoE object</span>
-    <span class="n">doe_object</span> <span class="o">=</span> <span class="n">DesignOfExperiments</span><span class="p">(</span>
-        <span class="n">theta_values_new</span><span class="p">,</span>  <span class="c1"># dictionary of parameters</span>
-        <span class="n">decisions</span><span class="p">,</span>  <span class="c1"># design variable</span>
-        <span class="n">measurements</span><span class="p">,</span>  <span class="c1"># measurement variable</span>
-        <span class="n">create_model_doe</span><span class="p">,</span>  <span class="c1"># model</span>
-        <span class="n">solver</span><span class="o">=</span><span class="n">solver</span><span class="p">,</span>
-        <span class="n">prior_FIM</span><span class="o">=</span><span class="n">prior</span><span class="p">,</span>  <span class="c1"># use previous experiment as prior</span>
-    <span class="p">)</span>
+    <span class="n">TC_Lab_DoE</span> <span class="o">=</span> <span class="n">DesignOfExperiments</span><span class="p">(</span><span class="n">experiment</span><span class="o">=</span><span class="n">doe_experiment</span><span class="p">,</span> 
+                                     <span class="n">step</span><span class="o">=</span><span class="mf">1e-2</span><span class="p">,</span>
+                                     <span class="n">scale_constant_value</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                                     <span class="n">scale_nominal_param_value</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                     <span class="n">objective_option</span><span class="o">=</span><span class="s2">&quot;trace&quot;</span><span class="p">,</span>  <span class="c1"># We specify a type of objective, A-opt = &quot;trace&quot;</span>
+                                     <span class="n">prior_FIM</span><span class="o">=</span><span class="n">FIM</span><span class="p">,</span>  <span class="c1"># We use the prior information from the original experiment</span>
+                                     <span class="n">tee</span><span class="o">=</span><span class="kc">False</span><span class="p">,)</span>
+    
+    <span class="n">TC_Lab_DoE</span><span class="o">.</span><span class="n">run_doe</span><span class="p">()</span>
 
-    <span class="c1"># Compute FIM at initial point</span>
-    <span class="n">result</span> <span class="o">=</span> <span class="n">doe_object</span><span class="o">.</span><span class="n">compute_FIM</span><span class="p">(</span>
-        <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;sequential_finite&#39;</span><span class="p">,</span>
-        <span class="n">formula</span><span class="o">=</span><span class="s1">&#39;central&#39;</span><span class="p">,</span>
-        <span class="n">tee_opt</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>  <span class="c1"># toggle off display to keep notebook shorter</span>
-    <span class="p">)</span>
+    
+    <span class="n">pyomo_results</span> <span class="o">=</span> <span class="n">extract_results</span><span class="p">(</span><span class="n">TC_Lab_DoE</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">scenario_blocks</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
 
-    <span class="c1"># Extract the prior FIM and Jacobian information from the previous</span>
-    <span class="c1"># result to use for initialization.</span>
-    <span class="n">jac_for_initialization</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">jaco_information</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    <span class="n">results_summary</span><span class="p">(</span><span class="n">TC_Lab_DoE</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="s1">&#39;FIM&#39;</span><span class="p">])</span>
 
-    <span class="c1"># Solve the DoE problem</span>
-    <span class="n">square_result</span><span class="p">,</span> <span class="n">optimize_result</span> <span class="o">=</span> <span class="n">doe_object</span><span class="o">.</span><span class="n">stochastic_program</span><span class="p">(</span>
-        <span class="n">if_optimize</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>  <span class="c1"># optimize</span>
-        <span class="n">scale_nominal_param_value</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>  <span class="c1"># scale model parameter value</span>
-        <span class="n">objective_option</span><span class="o">=</span><span class="s2">&quot;trace&quot;</span><span class="p">,</span>  <span class="c1"># objective option</span>
-        <span class="n">jac_initial</span><span class="o">=</span><span class="n">jac_for_initialization</span><span class="p">,</span>  <span class="c1"># initialize Jacobian with prior solution</span>
-        <span class="n">step</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span>  <span class="c1"># step size</span>
-        <span class="n">tee_opt</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>  <span class="c1"># toggle off display to keep notebook shorter</span>
-    <span class="p">)</span>
-
-    <span class="n">pyomo_results</span> <span class="o">=</span> <span class="n">extract_results</span><span class="p">(</span><span class="n">optimize_result</span><span class="o">.</span><span class="n">model</span><span class="p">)</span>
-
-    <span class="n">results_summary</span><span class="p">(</span><span class="n">optimize_result</span><span class="p">)</span>
-
-    <span class="n">a_opt</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">optimize_result</span><span class="o">.</span><span class="n">trace</span><span class="p">)</span>
+    <span class="n">a_opt</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="n">TC_Lab_DoE</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="s1">&#39;FIM&#39;</span><span class="p">]))</span>
     <span class="n">u_solutions</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">pyomo_results</span><span class="o">.</span><span class="n">u1</span>
     <span class="n">Ts_solutions</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">pyomo_results</span><span class="o">.</span><span class="n">TS1_data</span>
 
@@ -1532,141 +2536,116 @@ eigenvectors:
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>********************
 CpS =  0.01  J/°C
-INFO: elapsed time: 7.9 seconds
-INFO: elapsed time: 16.4 seconds
 ======Results Summary======
 Four design criteria log10() value:
-A-optimality: 9.699047060654987
-D-optimality: 27.18858453937762
-E-optimality: 3.5371505370099876
-Modified E-optimality: 6.145727149738004
+A-optimality: 6.345620766498505
+D-optimality: 16.557236420353764
+E-optimality: 1.1762641874433832
+Modified E-optimality: 5.1369934458645155
 
 FIM:
- [[ 1.89991601e+08 -1.91393319e+08 -8.37777345e+06 -7.01417839e+02]
- [-1.91393319e+08  4.80931433e+09  6.51835652e+07  2.98584985e+04]
- [-8.37777345e+06  6.51835652e+07  1.57722375e+06  1.82177345e+04]
- [-7.01417839e+02  2.98584985e+04  1.82177345e+04  4.07195788e+03]]
+ [[2022826.6843716432, 829.8956823446237, -253458.792748775, -1844.3200988452588], [829.8956823446237, 5018.395139330466, 13267.86931681891, 5253.887159678284], [-253458.792748775, 13267.86931681891, 182871.0061206644, 15273.342611570326], [-1844.3200988452588, 5253.887159678284, 15273.342611570326, 5544.211892849836]]
 
 eigenvalues:
- [4.81812083e+09 1.82252585e+08 5.10367039e+05 3.44469311e+03]
+ [2.05711056e+06 1.51416060e+05 7.71867330e+03 1.50059739e+01]
 
 eigenvectors:
- [[ 4.13397884e-02  9.98639527e-01  3.17626753e-02 -1.11744384e-03]
- [-9.99052686e-01  4.17477808e-02 -1.22748394e-02  4.25749184e-04]
- [-1.35923510e-02 -3.12444734e-02  9.98800998e-01 -3.51510612e-02]
- [-6.24867204e-06 -1.26975237e-07  3.51713948e-02  9.99381295e-01]]
+ [[-9.90975205e-01 -1.32948451e-01  1.71120584e-02  1.73845853e-04]
+ [ 4.70656783e-04 -9.34233205e-02 -6.91297021e-01 -7.16505611e-01]
+ [ 1.34031153e-01 -9.81169740e-01  1.38943069e-01 -6.03444276e-03]
+ [ 1.88989842e-03 -1.04416157e-01 -7.08879701e-01  6.97555205e-01]]
 ********************
 
 
 ********************
 CpS =  0.05  J/°C
-INFO: elapsed time: 7.7 seconds
-INFO: elapsed time: 14.8 seconds
 ======Results Summary======
 Four design criteria log10() value:
-A-optimality: 9.699031163491872
-D-optimality: 28.28180372949283
-E-optimality: 4.640722468159026
-Modified E-optimality: 5.042160223389367
+A-optimality: 6.342325011779826
+D-optimality: 16.321525241559577
+E-optimality: 1.0002023526296024
+Modified E-optimality: 5.309645954586698
 
 FIM:
- [[ 1.89729627e+08 -1.91464677e+08 -8.37281440e+06 -7.33127210e+04]
- [-1.91464677e+08  4.80936312e+09  6.52345440e+07  7.90200383e+04]
- [-8.37281440e+06  6.52345440e+07  1.55781909e+06  6.95926794e+04]
- [-7.33127210e+04  7.90200383e+04  6.95926794e+04  5.36066218e+04]]
+ [[2006472.394538007, -1467.0401482268803, -253316.132823798, -5414.614507492659], [-1467.0401482268803, 5331.469940705959, 16889.27482496716, 5601.521979178391], [-253316.132823798, 16889.27482496716, 181767.3677006974, 19662.58659537228], [-5414.614507492659, 5601.521979178391, 19662.58659537228, 5934.062631847605]]
 
 eigenvalues:
- [4.81817635e+09 1.81985025e+08 4.99071671e+05 4.37242600e+04]
+ [2.04102492e+06 1.51702014e+05 6.76835666e+03 1.00046604e+01]
 
 eigenvectors:
- [[ 4.13523325e-02  9.98638936e-01  3.14947133e-02 -4.28290800e-03]
- [-9.99052026e-01  4.17606420e-02 -1.21585568e-02  1.80748094e-03]
- [-1.36026840e-02 -3.12436785e-02  9.88546010e-01 -1.47022400e-01]
- [-1.72107339e-05 -3.96233604e-04  1.47095340e-01  9.89122239e-01]]
+ [[-9.90828557e-01  1.33692536e-01 -1.96231275e-02  9.89308405e-05]
+ [ 1.84539923e-03  1.16226648e-01  6.95096845e-01 -7.09456367e-01]
+ [ 1.35054779e-01  9.75416487e-01 -1.73837433e-01 -1.01700856e-02]
+ [ 3.94617173e-03  1.31073830e-01  6.97306143e-01  7.04675970e-01]]
 ********************
 
 
 ********************
 CpS =  0.1  J/°C
-INFO: elapsed time: 7.1 seconds
-INFO: elapsed time: 16.4 seconds
 ======Results Summary======
 Four design criteria log10() value:
-A-optimality: 9.699012736210362
-D-optimality: 28.605661339832956
-E-optimality: 4.983668579828283
-Modified E-optimality: 4.699220335889959
+A-optimality: 6.338305077462897
+D-optimality: 15.91622580578106
+E-optimality: 0.6410420755686448
+Modified E-optimality: 5.664468827976248
 
 FIM:
- [[ 1.89426767e+08 -1.91603364e+08 -8.37578079e+06 -2.13222158e+05]
- [-1.91603364e+08  4.80942092e+09  6.52498370e+07  1.37380551e+05]
- [-8.37578079e+06  6.52498370e+07  1.53177433e+06  8.50089154e+04]
- [-2.13222158e+05  1.37380551e+05  8.50089154e+04  1.12532763e+05]]
+ [[1985809.1550228556, -4753.045405788305, -253116.64035824887, -10348.70079375541], [-4753.045405788305, 6221.3496716527125, 21476.075843530678, 6596.462411900629], [-253116.64035824887, 21476.075843530678, 180152.17262518042, 25177.03340049613], [-10348.70079375541, 6596.462411900629, 25177.03340049613, 7057.401320143186]]
 
 eigenvalues:
- [4.81824540e+09 1.81671853e+08 4.78427569e+05 9.63093784e+04]
+ [2.02074216e+06 1.52373364e+05 6.12017401e+03 4.37564495e+00]
 
 eigenvectors:
- [[ 4.13789112e-02  9.98635542e-01  3.13992320e-02 -5.37847429e-03]
- [-9.99050885e-01  4.17879602e-02 -1.20287213e-02  2.53081255e-03]
- [-1.36056440e-02 -3.12967169e-02  9.78294192e-01 -2.04391479e-01]
- [-3.05574102e-05 -1.15582539e-03  2.04474626e-01  9.78871182e-01]]
+ [[-9.90627510e-01  1.34711035e-01 -2.25847797e-02 -1.64016116e-05]
+ [ 3.81334342e-03  1.45034949e-01  6.98333196e-01 -7.00914452e-01]
+ [ 1.36368025e-01  9.66326089e-01 -2.17618427e-01 -1.61205103e-02]
+ [ 6.80851583e-03  1.64413167e-01  6.81515146e-01  7.13063153e-01]]
 ********************
 
 
 ********************
 CpS =  0.5  J/°C
-INFO: elapsed time: 5.8 seconds
-INFO: elapsed time: 15.5 seconds
 ======Results Summary======
 Four design criteria log10() value:
-A-optimality: 9.698934804949802
-D-optimality: 28.58610589270721
-E-optimality: 5.025707528039896
-Modified E-optimality: 4.657180056345964
+A-optimality: 6.308227354867407
+D-optimality: 17.2140928274729
+E-optimality: 1.743297276186294
+Modified E-optimality: 4.5254408898399205
 
 FIM:
- [[ 1.88592295e+08 -1.91509662e+08 -8.27264506e+06 -1.17842642e+05]
- [-1.91509662e+08  4.80941688e+09  6.51969110e+07  1.33300888e+05]
- [-8.27264506e+06  6.51969110e+07  1.47718285e+06  3.16548951e+04]
- [-1.17842642e+05  1.33300888e+05  3.16548951e+04  1.08412326e+05]]
+ [[1814818.2397931218, -46227.91439323254, -250460.46722158237, -66459.37899154567], [-46227.91439323254, 23869.06890217848, 52737.913904675544, 26917.54673919637], [-250460.46722158237, 52737.913904675544, 164083.29380926758, 62175.163641595085], [-66459.37899154567, 26917.54673919637, 62175.163641595085, 30650.63384980441]]
 
 eigenvalues:
- [4.81823063e+09 1.80840963e+08 4.17074818e+05 1.06098081e+05]
+ [1.85668473e+06 1.67154502e+05 9.52663022e+03 5.53729009e+01]
 
 eigenvectors:
- [[ 4.13510935e-02  9.98650299e-01  3.13607399e-02 -2.04258542e-03]
- [-9.99052200e-01  4.17546821e-02 -1.22541193e-02  1.04107381e-03]
- [-1.35936377e-02 -3.08826173e-02  9.95823708e-01 -8.48328893e-02]
- [-2.87410254e-05 -6.25760214e-04  8.48615501e-02  9.96392556e-01]]
+ [[-0.98758136  0.1537699  -0.03203633  0.00339956]
+ [ 0.02979323  0.33411043  0.60897714 -0.71876938]
+ [ 0.14858665  0.84961147 -0.50532261 -0.02704482]
+ [ 0.04144194  0.37800184  0.61054859  0.69471404]]
 ********************
 
 
 ********************
 CpS =  1.0  J/°C
-INFO: elapsed time: 5.9 seconds
-INFO: elapsed time: 15.9 seconds
 ======Results Summary======
 Four design criteria log10() value:
-A-optimality: 9.698911538768735
-D-optimality: 28.041077568457922
-E-optimality: 4.4897654763527575
-Modified E-optimality: 5.193114534945105
+A-optimality: 6.2736109217669735
+D-optimality: 17.87184745410738
+E-optimality: 2.0770029315286553
+Modified E-optimality: 4.146408066672371
 
 FIM:
- [[ 1.88486120e+08 -1.91422054e+08 -8.24878032e+06 -2.94437208e+04]
- [-1.91422054e+08  4.80934080e+09  6.51736547e+07  5.65603744e+04]
- [-8.24878032e+06  6.51736547e+07  1.46901185e+06  8.21094084e+03]
- [-2.94437208e+04  5.65603744e+04  8.21094084e+03  3.10060290e+04]]
+ [[1604350.725326083, -117739.53034468756, -242878.6550187617, -155742.8293981735], [-117739.53034468756, 53729.0818745208, 74760.56129881516, 62446.54001365692], [-242878.6550187617, 74760.56129881516, 146437.60208523984, 88110.12839713677], [-155742.8293981735, 62446.54001365692, 88110.12839713677, 73116.50833673016]]
 
 eigenvalues:
- [4.81814661e+09 1.80740762e+08 4.08673025e+05 3.08862709e+04]
+ [1.67267281e+06 1.84654633e+05 2.01870712e+04 1.19399616e+02]
 
 eigenvectors:
- [[-4.13319465e-02  9.98654557e-01 -3.13143682e-02 -3.94923515e-04]
- [ 9.99053059e-01  4.17341015e-02  1.22966110e-02  2.08829423e-04]
- [ 1.35888018e-02 -3.07785213e-02 -9.99281720e-01 -1.74376327e-02]
- [ 1.20037299e-05 -1.51050672e-04 -1.74426961e-02  9.99847853e-01]]
+ [[ 0.97679606 -0.21323534  0.01776713  0.00919096]
+ [-0.08283596 -0.45140663 -0.47514835 -0.75073584]
+ [-0.16570503 -0.70124636  0.69339326  0.00107751]
+ [-0.10746861 -0.50893642 -0.54140942  0.6605377 ]]
 ********************
 </pre></div>
 </div>
@@ -1685,7 +2664,7 @@ eigenvectors:
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/068b48f584448f582abee9e2f771c64140f3b0de9ae96c85924fb0f90751642a.png" src="../_images/068b48f584448f582abee9e2f771c64140f3b0de9ae96c85924fb0f90751642a.png" />
+<img alt="../_images/35943538438adfc55759824dce9d69576ae4dd7f65c2a74c9fdcd4984fa9ccf5.png" src="../_images/35943538438adfc55759824dce9d69576ae4dd7f65c2a74c9fdcd4984fa9ccf5.png" />
 </div>
 </div>
 <p>We see the objective changes insignificantly as we vary <span class="math notranslate nohighlight">\(C_p^S\)</span>. What about the optimal solution?</p>
@@ -1701,10 +2680,10 @@ eigenvectors:
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/f0252b4ba7bfe5d1552252ea58b5856d3a75a5f636322b67a99825b8a79f21a8.png" src="../_images/f0252b4ba7bfe5d1552252ea58b5856d3a75a5f636322b67a99825b8a79f21a8.png" />
+<img alt="../_images/94abc706f016a0945d4dbac48ac14a75b1668235672163bba0dad2f846729e20.png" src="../_images/94abc706f016a0945d4dbac48ac14a75b1668235672163bba0dad2f846729e20.png" />
 </div>
 </div>
-<p>Interesting, the A-optimal next experiment does change on the assumed value of <span class="math notranslate nohighlight">\(C_p^S\)</span>. For small values of <span class="math notranslate nohighlight">\(C_p^S\)</span>, the optimal solutions are similar: start around <span class="math notranslate nohighlight">\(u_1 = 90\)</span>% and then decreases as the experiment progresses. As <span class="math notranslate nohighlight">\(C_p^S\)</span> increases, the starting value of <span class="math notranslate nohighlight">\(u_1\)</span> decreases.</p>
+<p>Interesting, the A-optimal next experiment does change on the assumed value of <span class="math notranslate nohighlight">\(C_p^S\)</span>. For small values of <span class="math notranslate nohighlight">\(C_p^S\)</span>, the optimal solutions are similar: start around <span class="math notranslate nohighlight">\(u_1 = 100\)</span>% and then decreases as the experiment progresses. As <span class="math notranslate nohighlight">\(C_p^S\)</span> increases, the length of time spent at 100% power increases.</p>
 <p>Let’s also look at the optimal sensor temperature profile:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -1718,7 +2697,7 @@ eigenvectors:
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/c7e33d36999ff0c44c8a3dc18a13c879700fdd590689574a4b5bbac9352f079f.png" src="../_images/c7e33d36999ff0c44c8a3dc18a13c879700fdd590689574a4b5bbac9352f079f.png" />
+<img alt="../_images/f8d3fe0989caa5f4b490dc63c584760540f8525a20183a9e69d919960f7aa242.png" src="../_images/f8d3fe0989caa5f4b490dc63c584760540f8525a20183a9e69d919960f7aa242.png" />
 </div>
 </div>
 <p>Now to be pragmatic. What should we do with this information? Here are some suggested next steps:</p>
