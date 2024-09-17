@@ -2,31 +2,31 @@
 
 Welcome to the interaction tutorial workshop for parameter estimation and model-based design of experiments in the Pyomo ecosystem!
 
-![Pyomo workflow](./images/pyomo_workflow.png)
+![Pyomo workflow](./images/pyomo_workflow_new.png)
 
-These materials were created by [Prof. Alexander Dowling](https://dowlinglab.nd.edu/people/professor-alexander-w-dowling/) at the University of Notre Dame. Special thanks to [Prof. Jeff Kantor](https://engineering.nd.edu/news/in-memoriam-jeffrey-kantor-former-vice-president-associate-provost-and-dean/), [Maddie Watson](https://dowlinglab.nd.edu/people/madelynn-watson/), [Molly Dougher](https://dowlinglab.nd.edu/people/molly-dougher/), and [Hailey Lynch](https://dowlinglab.nd.edu/people/hailey-lynch/) for assistance with the TCLab models and activities. Pyomo.DoE was developed by [Jialu Wang](https://dowlinglab.nd.edu/people/jialu-wang/) and Alexander Dowling with assistance from [John Siirola](https://www.sandia.gov/ccr/staff/john-daniel-siirola/), [Bethany Nicholson](https://scholar.google.com/citations?user=WxqNQ6IAAAAJ&hl=en), [Miranda Mundt](https://ieeexplore.ieee.org/author/37089520396), [Hailey Lynch](https://dowlinglab.nd.edu/people/hailey-lynch/), and [Dan Laky](https://dowlinglab.nd.edu/people/daniel-laky/).
+These materials were created by [Prof. Alexander Dowling](https://dowlinglab.nd.edu/people/professor-alexander-w-dowling/) at the University of Notre Dame. Special thanks to [Prof. Jeff Kantor](https://engineering.nd.edu/news/in-memoriam-jeffrey-kantor-former-vice-president-associate-provost-and-dean/), [Maddie Watson](https://dowlinglab.nd.edu/people/madelynn-watson/), [Molly Dougher](https://dowlinglab.nd.edu/people/molly-dougher/), and [Hailey Lynch](https://dowlinglab.nd.edu/people/hailey-lynch/) for assistance with the TCLab models and activities. Pyomo.DoE was developed by [Jialu Wang](https://dowlinglab.nd.edu/people/jialu-wang/) and Alexander Dowling with assistance from [John Siirola](https://www.sandia.gov/ccr/staff/john-daniel-siirola/), [Bethany Nicholson](https://scholar.google.com/citations?user=WxqNQ6IAAAAJ&hl=en), [Miranda Mundt](https://ieeexplore.ieee.org/author/37089520396), [Hailey Lynch](https://dowlinglab.nd.edu/people/hailey-lynch/), and [Dan Laky](https://dowlinglab.nd.edu/people/daniel-laky/). Pyomo.DoE was refactored over the summer of 2024 by [Dan Laky](https://dowlinglab.nd.edu/people/daniel-laky/) and [Prof. Alexander Dowling](https://dowlinglab.nd.edu/people/professor-alexander-w-dowling/), who both also updated the workshop materials to coincide with the refactored versions of both Pyomo.DoE and parmest.
 
-## ESCAPE/PSE 2024 Workshop Schedule
+## PSE+ Stakeholder Summit 2024 Workshop Schedule
 
-Thank you for joining the workshop at the ESCAPE/PSE meeting in Florence, Italy on June 2, 2024.
+Thank you for joining the workshop at the PSE+ Stakeholder Summit in Pittsburgh, Pennsylvania on September 19, 2024.
 * [Workshop slides](https://raw.githubusercontent.com/dowlinglab/pyomo-doe/main/slides/ESCAPE34_PSE24_Workshop.pdf)
 * [Presentation slides](https://raw.githubusercontent.com/dowlinglab/pyomo-doe/main/slides/ESCAPE34_PSE24_Presentation.pdf)
 
 | Time | Topic |
 | ---- | -------- |
 | 1:00 pm  | *Welcome and Overview* |
-| 1:05 pm | **Modeling and Optimization in Pyomo** |
-| | [](./notebooks/tclab_model.ipynb)
-| | [](./notebooks/pyomo_simulation.ipynb) |
+| 1:10 pm | **Modeling and Optimization in Pyomo** |
+| | [TC Lab Model](./notebooks/tclab_model.ipynb) |
+| | [Simulation in Pyomo](./notebooks/pyomo_simulation.ipynb) |
 | 1:30 pm | **Parameter Estimation** |
-| | [](./notebooks/parmest.ipynb) |
-| | [](./notebooks/parmest_exercise.ipynb) |
-| 2:10 pm | *Break* |
-| 2:20 pm | **Optimal Experiment Design** |
-| | [](./notebooks/doe_exploratory_analysis.ipynb)
-| | [](./notebooks/doe_optimize.ipynb)
-| | [](./notebooks/doe_exercise.ipynb)
-| 3:00 pm | *Adjourn* |
+| | [Parmest package overview](./notebooks/parmest.ipynb) |
+| | [Parmest Exercise](./notebooks/parmest_exercise.ipynb) |
+| 1:50 pm | *Break* |
+| 2:00 pm | **Optimal Experiment Design** |
+| | [Pyomo.DoE exploratory analysis](./notebooks/doe_exploratory_analysis.ipynb) |
+| | [Pyomo.DoE optimal experimental design](./notebooks/doe_optimize.ipynb) |
+| | [Pyomo.DoE Exercise](./notebooks/doe_exercise.ipynb) |
+| 2:30 pm | *Adjourn* |
 
 ## What will I learn in this workshop?
 
