@@ -715,13 +715,17 @@ document.write(`
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pyomo.contrib.parmest.parmest</span> <span class="k">as</span> <span class="nn">parmest</span>
 
 <span class="c1"># First, we define an Experiment object within parmest</span>
+<span class="c1">### BEGIN SOLUTION</span>
 <span class="n">TC_Lab_sine_exp</span> <span class="o">=</span> <span class="n">TC_Lab_experiment</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">tc_data</span><span class="p">,</span> <span class="n">number_of_states</span><span class="o">=</span><span class="n">number_tclab_states</span><span class="p">)</span>
+<span class="c1">### END SOLUTION</span>
 
 <span class="c1"># Since everything has been labeled properly in the Experiment object, we simply invoke</span>
 <span class="c1"># parmest&#39;s Estimator function to estimate the parameters.</span>
+<span class="c1">### BEGIN SOLUTION</span>
 <span class="n">pest</span> <span class="o">=</span> <span class="n">parmest</span><span class="o">.</span><span class="n">Estimator</span><span class="p">([</span><span class="n">TC_Lab_sine_exp</span><span class="p">,</span> <span class="p">],</span> <span class="n">obj_function</span><span class="o">=</span><span class="s1">&#39;SSE&#39;</span><span class="p">,</span> <span class="n">tee</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
 <span class="n">obj</span><span class="p">,</span> <span class="n">theta</span> <span class="o">=</span> <span class="n">pest</span><span class="o">.</span><span class="n">theta_est</span><span class="p">()</span>
+<span class="c1">### END SOLUTION</span>
 </pre></div>
 </div>
 </div>

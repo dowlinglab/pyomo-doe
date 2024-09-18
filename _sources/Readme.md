@@ -9,8 +9,7 @@ These materials were created by [Prof. Alexander Dowling](https://dowlinglab.nd.
 ## PSE+ Stakeholder Summit 2024 Workshop Schedule
 
 Thank you for joining the workshop at the PSE+ Stakeholder Summit in Pittsburgh, Pennsylvania on September 19, 2024.
-* [Workshop slides](https://raw.githubusercontent.com/dowlinglab/pyomo-doe/main/slides/ESCAPE34_PSE24_Workshop.pdf)
-* [Presentation slides](https://raw.githubusercontent.com/dowlinglab/pyomo-doe/main/slides/ESCAPE34_PSE24_Presentation.pdf)
+* [Workshop slides](https://raw.githubusercontent.com/dowlinglab/pyomo-doe/main/slides/Dowling_Laky_Pyomo_DoE_PSE_Summit_2024.pdf)
 
 | Time | Topic |
 | ---- | -------- |
@@ -77,3 +76,9 @@ New to Pyomo? Check out these great resources:
 * [ND Pyomo Cookbook](https://jckantor.github.io/ND-Pyomo-Cookbook/README.html)
 * [Pyomo textbook](https://link.springer.com/book/10.1007/978-3-030-68928-5)
 * [Hands-On Mathematical Optimization with Python](https://mobook.github.io/MO-book/intro.html)
+
+## Past Tutorials
+
+European Symposium on Computer Aided Process Engineering and International Symposium on Process Systems Engineering:
+* [Workshop slides](https://raw.githubusercontent.com/dowlinglab/pyomo-doe/main/slides/ESCAPE34_PSE24_Workshop.pdf)
+* [Presentation slides](https://raw.githubusercontent.com/dowlinglab/pyomo-doe/main/slides/ESCAPE34_PSE24_Presentation.pdf)
