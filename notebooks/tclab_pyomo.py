@@ -461,8 +461,27 @@ class TC_Lab_experiment(Experiment):
                     # REPARAM
                     return m.Ts2dot[t] == m.beta_3 * (m.Th2[t] - m.Ts2[t])
 
+        '''
+        @m.Integral(m.t)
+        def experiment_cost(m, t):
+            """
+            This integral is used to calculate the total energy input to the system
+            from the control inputs (U1 and U2). We use this as a proxy for the
+            experiment cost.
+            """
+            if self.number_of_states == 2:
+                return m.U1[t] * m.P1 * self.alpha
+            else:
+                return m.U1[t] * m.P1 * self.alpha + m.U2[t] * m.P2 * self.alpha
+        '''
+
+        # Add the experiment cost to the model
+        # m.experiment_cost = Expression(expr=control_energy)
+
         # End model equation definition
         ################################
+
+
         
         return m
     
@@ -486,6 +505,12 @@ class TC_Lab_experiment(Experiment):
                 m.Th1[0].fix(m.Tamb)
                 m.Ts1[0].fix(m.Tamb)
 
+            # With backwards finite difference, the first control decision does not matter
+            # because it is not used in the first time step
+            # m.U1[0].fix(0)
+
+            
+
             if self.number_of_states == 4:
                 if self.data.TS2_data is not None and self.data.TS2_data[0] is not None:
                     # Initialize with first temperature measurement
@@ -495,6 +520,10 @@ class TC_Lab_experiment(Experiment):
                     # Initialize with ambient temperature
                     m.Th2[0].fix(m.Tamb)
                     m.Ts2[0].fix(m.Tamb)
+
+                # m.U2[0].fix(0)  # Only for 4-state model
+
+
 
         # End initial conditions definition
         ####################################
