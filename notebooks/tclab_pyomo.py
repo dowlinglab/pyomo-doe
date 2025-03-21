@@ -250,7 +250,9 @@ def helper(my_array, time):
 
 ### -------------- Part 4 v 2: Create Experiment object -------------- ###
 class TC_Lab_experiment(Experiment):
-    def __init__(self, data, alpha=0.00016, theta_initial=None, number_of_states=2, sine_amplitude=None, sine_period=None, reparam=False):
+    def __init__(self, data, alpha=0.00016, theta_initial=None, number_of_states=2, 
+                 sine_amplitude=None, sine_period=None, reparam=False,
+                 theta_scale={"Ua": 1, "Ub": 1, "Uc": 1, "CpH": 1, "CpS": 1, "Uc":1}):
         """
         Arguments
         ---------
@@ -306,6 +308,8 @@ class TC_Lab_experiment(Experiment):
         self.sine_period = sine_period
         
         self.reparam = reparam
+
+        self.theta_scale = theta_scale
         
         self.model = None
     
@@ -378,34 +382,36 @@ class TC_Lab_experiment(Experiment):
         
         # Heat transfer coefficients
         if not self.reparam:
-            m.Ua = Var(initialize=self.theta_initial["Ua"], bounds=(0, 1e4))
+            m.Ua = Var(initialize=self.theta_initial["Ua"]/self.theta_scale["Ua"], bounds=(0, 1e4))
             m.Ua.fix()
-            m.Ub = Var(initialize=self.theta_initial["Ub"], bounds=(0, 1e4))
+            m.Ub = Var(initialize=self.theta_initial["Ub"]/self.theta_scale["Ub"], bounds=(0, 1e4))
             m.Ub.fix()
             
             if self.number_of_states == 4:
-                m.Uc = Var(initialize=self.theta_initial["Uc"], bounds=(0, 1e4))
+                m.Uc = Var(initialize=self.theta_initial["Uc"]/self.theta_scale["Uc"], bounds=(0, 1e4))
                 m.Uc.fix()
             
             # Inverse of the heat capacity coefficients (1/CpH and 1/CpS)
-            m.inv_CpH = Var(initialize=self.theta_initial["inv_CpH"], bounds=(0, 1e6))
+            m.inv_CpH = Var(initialize=self.theta_initial["inv_CpH"]*self.theta_scale["CpH"], bounds=(0, 1e6))
             m.inv_CpH.fix()
-            m.inv_CpS = Var(initialize=self.theta_initial["inv_CpS"], bounds=(0, 1e3))
+            m.inv_CpS = Var(initialize=self.theta_initial["inv_CpS"]*self.theta_scale["CpS"], bounds=(0, 1e3))
             m.inv_CpS.fix()
         else:
             # REPARAMETRIZATION
-            m.beta_1 = Var(initialize=self.theta_initial["Ua"] * self.theta_initial["inv_CpH"], bounds=(0, 1e6))
+            m.beta_1 = Var(initialize=self.theta_initial["Ua"]/self.theta_scale["Ua"] * self.theta_initial["inv_CpH"] * self.theta_scale["CpH"], bounds=(0, 1e6))
             m.beta_1.fix()
-            m.beta_2 = Var(initialize=self.theta_initial["Ub"] * self.theta_initial["inv_CpH"], bounds=(1e-6, 1e6))
+            m.beta_2 = Var(initialize=self.theta_initial["Ub"]/self.theta_scale["Ub"] * self.theta_initial["inv_CpH"] * self.theta_scale["CpH"], bounds=(1e-6, 1e6))
             m.beta_2.fix()
-            m.beta_3 = Var(initialize=self.theta_initial["Ub"] * self.theta_initial["inv_CpS"], bounds=(0, 1e6))
+            m.beta_3 = Var(initialize=self.theta_initial["Ub"]/self.theta_scale["Ub"] * self.theta_initial["inv_CpS"] * self.theta_scale["CpS"], bounds=(0, 1e6))
             m.beta_3.fix()
-            m.beta_4 = Var(initialize=self.alpha * pyovalue(m.P1) * self.theta_initial["inv_CpH"], bounds=(0, 1e6))
+            m.beta_4 = Var(initialize=self.alpha * pyovalue(m.P1) * self.theta_initial["inv_CpH"]* self.theta_scale["CpH"], bounds=(0, 1e6))
             m.beta_4.fix()
 
             if self.number_of_states == 4:
-                m.beta_5 = Var(initialize=self.theta_initial["Uc"] / self.theta_initial["inv_CpH"], bounds=(0, 1e6))
+                m.beta_5 = Var(initialize=self.theta_initial["Uc"] * self.theta_scale["Uc"] / self.theta_initial["inv_CpH"] * self.theta_scale["CpH"], bounds=(0, 1e6))
                 m.beta_5.fix()
+
+            print("WARNING: Did not update the equations for the reparametrization yet to consider scaling")
         
         # End unknown parameter definition
         ####################################
@@ -417,7 +423,7 @@ class TC_Lab_experiment(Experiment):
         @m.Constraint(m.t)
         def Th1_ode(m, t):
             if not self.reparam:
-                rhs_expr = (m.Ua * (m.Tamb - m.Th1[t]) + m.Ub * (m.Ts1[t] - m.Th1[t]) + m.alpha * m.P1 * m.U1[t]) * m.inv_CpH
+                rhs_expr = (m.Ua*self.theta_scale["Ua"] * (m.Tamb - m.Th1[t]) + m.Ub*self.theta_scale["Ub"] * (m.Ts1[t] - m.Th1[t]) + m.alpha * m.P1 * m.U1[t]) * m.inv_CpH/self.theta_scale["CpH"]
             else:
                 # REPARAM
                 rhs_expr = m.beta_1 * (m.Tamb - m.Th1[t]) + m.beta_2 * (m.Ts1[t] - m.Th1[t]) + m.beta_4 * m.U1[t]
@@ -425,7 +431,7 @@ class TC_Lab_experiment(Experiment):
             # If we use the 4-state model, we add heat transfer from sensor 2 to the energy balance on fin 1
             if self.number_of_states == 4:
                 if not self.reparam:
-                    rhs_expr += (m.Uc * (m.Th2[t] - m.Th1[t])) * m.inv_CpH
+                    rhs_expr += (m.Uc*self.theta_scale["Uc"] * (m.Th2[t] - m.Th1[t])) * m.inv_CpH/self.theta_scale["CpH"]
                 else:
                     # REPARAM
                     rhs_expr += m.beta_5 * (m.Th2[t] - m.Th1[t])
@@ -436,7 +442,7 @@ class TC_Lab_experiment(Experiment):
         @m.Constraint(m.t)
         def Ts1_ode(m, t):
             if not self.reparam:
-                return m.Ts1dot[t] == (m.Ub * (m.Th1[t] - m.Ts1[t])) * m.inv_CpS
+                return m.Ts1dot[t] == (m.Ub*self.theta_scale["Ub"] * (m.Th1[t] - m.Ts1[t])) * m.inv_CpS/self.theta_scale["CpS"]
             else:
                 # REPARAM
                 return m.Ts1dot[t] == m.beta_3 * (m.Th1[t] - m.Ts1[t])
@@ -447,7 +453,7 @@ class TC_Lab_experiment(Experiment):
             @m.Constraint(m.t)
             def Th2_ode(m, t):
                 if not self.reparam:
-                    return m.Th2dot[t] == (m.Ua * (m.Tamb - m.Th2[t]) + m.Ub * (m.Ts2[t] - m.Th2[t]) + m.Uc * (m.Th1[t] - m.Th2[t]) + m.alpha * m.P2 * m.U2[t]) * m.inv_CpH
+                    return m.Th2dot[t] == (m.Ua*self.theta_scale["Ua"] * (m.Tamb - m.Th2[t]) + m.Ub*self.theta_scale["Ub"] * (m.Ts2[t] - m.Th2[t]) + m.Uc*self.theta_scale["Uc"] * (m.Th1[t] - m.Th2[t]) + m.alpha * m.P2 * m.U2[t]) * m.inv_CpH/self.theta_scale["CpH"]
                 else:
                     # REPARAM
                     return m.Th2dot[t] == m.beta_1 * (m.Tamb - m.Th2[t]) + m.beta_2 * (m.Ts2[t] - m.Th2[t]) + m.beta_5 * (m.Th1[t] - m.Th2[t]) + m.beta_4 * m.U2[t]
@@ -456,7 +462,7 @@ class TC_Lab_experiment(Experiment):
             @m.Constraint(m.t)
             def Ts2_ode(m, t):
                 if not self.reparam:
-                    return m.Ts2dot[t] == (m.Ub * (m.Th2[t] - m.Ts2[t])) * m.inv_CpS
+                    return m.Ts2dot[t] == (m.Ub*self.theta_scale["Ub"] * (m.Th2[t] - m.Ts2[t])) * m.inv_CpS/self.theta_scale["CpS"]
                 else:
                     # REPARAM
                     return m.Ts2dot[t] == m.beta_3 * (m.Th2[t] - m.Ts2[t])
@@ -598,9 +604,9 @@ class TC_Lab_experiment(Experiment):
         m.unknown_parameters = Suffix(direction=Suffix.LOCAL)
         # Add labels to all unknown parameters with nominal value as the value
         if not self.reparam:
-            m.unknown_parameters.update((k, k.value) for k in [m.Ua, m.Ub, m.inv_CpH, m.inv_CpS])
+            m.unknown_parameters.update((k, k.value) for k in [m.Ua*self.theta_scale["Ua"], m.Ub*self.theta_scale["Ub"], m.inv_CpH/self.theta_scale["CpH"], m.inv_CpS/self.theta_scale["CpS"]])
             if self.number_of_states == 4:
-                m.unknown_parameters[m.Uc] = m.Uc.value
+                m.unknown_parameters[m.Uc*self.theta_scale["Uc"]] = m.Uc*self.theta_scale["Uc"].value
         else:
         # REPARAM
             m.unknown_parameters.update((k, k.value) for k in [m.beta_1, m.beta_2, m.beta_3, m.beta_4])
