@@ -63,8 +63,18 @@ if "google.colab" in sys.modules:
         print("idaes was found! No need to install.")
     except ImportError:
         print("Installing idaes via pip...")
+        ### Install newest version of IDAES
+        '''
         v = subprocess.run(
             [sys.executable, "-m", "pip", "install", "-q", "idaes_pse"],
+            check=True,
+            capture_output=True,
+            text=True,
+        )
+        '''
+        ### Pin to a specific version of IDAES
+        v = subprocess.run(
+            [sys.executable, "-m", "pip", "install", "-qv", "idaes_pse==2.7.0"],
             check=True,
             capture_output=True,
             text=True,
