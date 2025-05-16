@@ -326,6 +326,9 @@ def doe_lite(experiment, objective="A"):
         raise ValueError("Objective must be None, 'A' or 'D'")
     
     try:
+
+        solver.options["max_iter"] = 10
+
         results4 = solver.solve(model, tee=True)
     except ValueError as e:
         print("Solver failed to converge, see error message below:")
@@ -334,6 +337,7 @@ def doe_lite(experiment, objective="A"):
         print("Resolving as a last ditch attempt...")
 
         results4 = solver.solve(model, tee=True)
+
 
     print("\nDone.\n\n")
 
