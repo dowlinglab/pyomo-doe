@@ -52,6 +52,8 @@ def doe_lite(experiment, objective="A"):
 
     ## Step 2: Assemble the Jacobians via Symbolic Difference
 
+    print("Adding the Jacobian constraints and resolving the square model...")
+
     # Parameters
     # Create an empty component set
     param_set = ComponentSet()
@@ -221,7 +223,6 @@ def doe_lite(experiment, objective="A"):
         return model.fim[i,j] == sum((1 / model.measurement_error[val]) * model.jac_variables_wrt_param[model.measurement_index[ind + 1], i] * model.jac_variables_wrt_param[model.measurement_index[ind + 1], j] for ind, val in enumerate(model.me_included))
 
     # model.fim_constraint.pprint()
-    model.T.pprint()
     results3 = solver.solve(model, tee=True)
 
     def get_fim():
@@ -247,7 +248,7 @@ def doe_lite(experiment, objective="A"):
         return model, jac, fim
     else:
 
-        print("Solving DoE optimization problem with {objective}-optimality objective")
+        print(f"Solving DoE optimization problem with {objective}-optimality objective")
 
         # Unfix the experiment design decisions
         for v in model.experiment_inputs:
@@ -323,8 +324,17 @@ def doe_lite(experiment, objective="A"):
         )
     else:
         raise ValueError("Objective must be None, 'A' or 'D'")
-        
-    results4 = solver.solve(model, tee=True)
+    
+    try:
+        results4 = solver.solve(model, tee=True)
+    except ValueError as e:
+        print("Solver failed to converge, see error message below:")
+        print(e)
+
+        print("Resolving as a last ditch attempt...")
+
+        results4 = solver.solve(model, tee=True)
+
     print("\nDone.\n\n")
 
     jac = get_jac()
