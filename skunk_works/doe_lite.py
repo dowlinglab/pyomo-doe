@@ -106,7 +106,8 @@ def doe_lite(experiment, objective="A"):
 
     # Assemble Jacobian 
     # Create an empty dictionary
-    jac_dict = {}
+    jac_dict_sd = {}
+    jac_dict_ad = {}
 
     # Enumerate over the constraints
     for i,c in enumerate(con_list):
@@ -114,20 +115,33 @@ def doe_lite(experiment, objective="A"):
         assert c.equality, "This function only works with equality constraints"
         
         # Perform symbolic differentiation
-        der_map = reverse_sd(c.body)
+        der_map_sd = reverse_sd(c.body)
+        der_map_ad = reverse_ad(c.body)
 
         # Loop over the Pyomo variables, which includes 
         # parameters, measurements, control decisions
         for j,v in enumerate(var_list):
             # Check if the variable is in the derivative map
-            if v in der_map:
+            if v in der_map_sd:
                 # Record the expression 
-                deriv = der_map[v]
+                deriv = der_map_sd[v]
             else:
                 # Otherwise, record 0
                 deriv = 0
             # Save results in the Jacobian dictionary
-            jac_dict[(i, j)] = deriv
+            jac_dict_sd[(i, j)] = deriv
+
+            if v in der_map_ad:
+                # Record the expression 
+                deriv = der_map_ad[v]
+            else:
+                # Otherwise, record 0
+                deriv = 0
+            # Save results in the Jacobian dictionary
+            jac_dict_ad[(i, j)] = deriv
+
+
+
 
 
     ## Build the constraints to compute the Jacobian
@@ -162,6 +176,47 @@ def doe_lite(experiment, objective="A"):
                 measurement_index.append(i)
                 model.me_included[v] = model.measurement_error[v]
 
+
+    print("Jacobian assembled using automatic differentiation.")
+
+    '''
+    for i, j in jac_dict_ad.keys():
+        val = jac_dict_ad[(i,j)]
+        if abs(val) > 1e-6:
+            print(f"Jacobian of {var_list[j]} with respect to constraint {i}: {val}")
+    '''
+
+    num_measurements = len(output_set)
+    num_params = len(param_set)
+    num_constraints = len(con_set)
+    num_vars = len(var_set)
+    print(f"Model has {num_vars} variables, {num_measurements} measurements, {num_params} parameters, and {num_constraints} constraints.")
+
+    jac_con_wrt_param = np.zeros((num_constraints, num_params))
+    for i in range(num_constraints):
+        for j, p in enumerate(param_index):
+            jac_con_wrt_param[i, j] = jac_dict_ad[(i, p)]
+
+    jac_con_wrt_vars = np.zeros((num_constraints, len(model_var_index)))
+    for i in range(num_constraints):
+        for j, v in enumerate(model_var_index):
+            jac_con_wrt_vars[i, j] = jac_dict_ad[(i, v)]
+
+    print(f"Jacobian of constraints with respect to parameters shape: {jac_con_wrt_param.shape}")
+    print(f"Jacobian of constraints with respect to variables shape: {jac_con_wrt_vars.shape}")
+
+    jac_vars_wrt_param = np.linalg.solve(
+        jac_con_wrt_vars, -jac_con_wrt_param
+    )
+
+    print(f"Jacobian of all variables with respect to parameters:\n{jac_vars_wrt_param}")
+
+    jac_measurements_wrt_param = jac_vars_wrt_param[measurement_index, :]
+
+    print(f"Jacobian of measurements with respect to parameters:\n{jac_measurements_wrt_param}")
+
+    print("Jacobian assembled using symbolic differentiation.")
+
     # Using the lists of indices to create Pyomo Sets
     model.param_index = pyo.Set(initialize=param_index)
     model.measurement_index = pyo.Set(initialize=measurement_index)
@@ -175,7 +230,7 @@ def doe_lite(experiment, objective="A"):
     # Calculate the Jacobian using the chain rule and total derivative definitions
     #
     # Prior comment:
-    # This has an index mistake... jac_dict includes the parameters, but var_index skips them
+    # This has an index mistake... jac_dict_sd includes the parameters, but var_index skips them
     # We need to be more careful about the indices
     #
     # New reflection:
@@ -183,7 +238,7 @@ def doe_lite(experiment, objective="A"):
     # I think this is okay
     @model.Constraint(model.constraint_index, model.param_index)
     def jacobian_constraint(model, i, j):
-        return jac_dict[(i,j)] == -sum(model.jac_variables_wrt_param[k,j] * jac_dict[(i,k)] for k in model.var_index)
+        return jac_dict_sd[(i,j)] == -sum(model.jac_variables_wrt_param[k,j] * jac_dict_sd[(i,k)] for k in model.var_index)
     
     # Step 3: Solve the model with the Jacobian constraints, extract the Jacobian
     results2 = solver.solve(model, tee=True)
