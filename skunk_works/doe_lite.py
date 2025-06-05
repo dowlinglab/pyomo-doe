@@ -1,6 +1,6 @@
 import pyomo.environ as pyo
 
-from pyomo.core.expr.calculus.diff_with_pyomo import reverse_sd
+from pyomo.core.expr.calculus.diff_with_pyomo import reverse_sd, reverse_ad
 from pyomo.core.expr.visitor import identify_variables
 from pyomo.common.collections import ComponentSet
 
@@ -327,7 +327,7 @@ def doe_lite(experiment, objective="A"):
     
     try:
 
-        solver.options["max_iter"] = 10
+        solver.options["max_iter"] = 1000
 
         results4 = solver.solve(model, tee=True)
     except ValueError as e:
@@ -345,6 +345,142 @@ def doe_lite(experiment, objective="A"):
     fim = get_fim()
 
     return model, jac, fim
+
+'''
+def automatic_differentiation(model):
+    """ Given an Experiment model, assemble the sensitivty matrix using automatic differentiation.
+    
+    """
+
+    param_set = ComponentSet()
+
+    # Loop over the unknown model parameters
+    for p in model.unknown_parameters.keys():
+        param_set.add(p)
+
+    # Assemble into a list
+    
+    param_list = list(param_set)
+
+    # Measurements (outputs)
+    # Create an empty component set
+    output_set = ComponentSet()
+
+    # Loop over the model outputs
+    for o in model.experiment_outputs.keys():
+        output_set.add(o)
+
+    # Assemble into a list
+    output_list = list(output_set)
+
+    # Constraints and Variables
+    # Create empty component sets
+    con_set = ComponentSet() # These will be all constraints in the Pyomo model
+    var_set = ComponentSet() # These will be all Pyomo variables in the Pyomo model
+
+    # Loop over the active model constraints
+    for c in model.component_data_objects(pyo.Constraint, descend_into=True, active=True):
+
+        # Add constraint c to the constraint set
+        con_set.add(c)
+
+        # Loop over the variables in the constraint c
+        # Note: changed this to include_fixed=True
+        # Changed back to False to fix problem degree of freedom issues
+        for v in identify_variables(c.body, include_fixed=False):
+            # Add variable v to the variable set
+            var_set.add(v)
+
+    # recall that the parameters are fixed, so we did not
+    # get them above. Let's add them now.
+    for p in model.unknown_parameters.keys():
+        var_set.add(p)
+
+    # Assemble into lists
+    con_list = list(con_set)
+    var_list = list(var_set)
+
+    # Assemble Jacobian 
+    # Create an empty dictionary
+    jac_dict = {}
+
+    # Enumerate over the constraints
+    for i,c in enumerate(con_list):
+        # Check we only have equality constraints... otherwise this gets more complicated
+        assert c.equality, "This function only works with equality constraints"
+        
+        # Perform symbolic differentiation
+        der_map = reverse_ad(c.body)
+
+        # Loop over the Pyomo variables, which includes 
+        # parameters, measurements, control decisions
+        for j,v in enumerate(var_list):
+            # Check if the variable is in the derivative map
+            if v in der_map:
+                # Record the expression 
+                deriv = der_map[v]
+            else:
+                # Otherwise, record 0
+                deriv = 0
+            # Save results in the Jacobian dictionary
+            jac_dict[(i, j)] = deriv
+
+
+    ## Build the constraints to compute the Jacobian
+
+    # Create empty lists
+    param_index = []
+    model_var_index = []
+    measurement_index = []
+    # Adding a `included` suffix to only
+    # take outputs that are unfixed. This
+    # makes indices match.
+    model.me_included = pyo.Suffix(direction=pyo.Suffix.LOCAL)
+
+    # Loop over the variables and determine which ones 
+    # (and associated indices) are (a) parameters or 
+    # (b) measurements
+    # TODO: Does this considered fixed variables?
+    # How does that change things? We fix all of our
+    # experiment inputs and unknown parameters.
+    for i, v in enumerate(var_set):
+        # Check if the variable is a parameter
+        if v in param_set:
+            # If yes, record its index
+            param_index.append(i)
+        else:
+            # Otherwise, it is a model variable
+            model_var_index.append(i)
+
+            # Check if the model variable is a measurement
+            if v in output_set:
+                # If yes, record its index
+                measurement_index.append(i)
+                model.me_included[v] = model.measurement_error[v]
+
+    # Using the lists of indices to create Pyomo Sets
+    model.param_index = pyo.Set(initialize=param_index)
+    model.measurement_index = pyo.Set(initialize=measurement_index)
+    model.constraint_index = pyo.Set(initialize=range(len(con_list)))
+    model.var_index = pyo.Set(initialize=model_var_index)
+
+    # Define a Pyomo variable for the Jacobian of the model variables 
+    # (everything except parameters) with respect to the model parameters
+    model.jac_variables_wrt_param = pyo.Var(model.var_index, model.param_index, initialize=0)
+
+    # Calculate the Jacobian using the chain rule and total derivative definitions
+    #
+    # Prior comment:
+    # This has an index mistake... jac_dict includes the parameters, but var_index skips them
+    # We need to be more careful about the indices
+    #
+    # New reflection:
+    # var_index is built from the indices in var_list, which includes the parameters
+    # I think this is okay
+    @model.Constraint(model.constraint_index, model.param_index)
+    def jacobian_constraint(model, i, j):
+        return jac_dict[(i,j)] == -sum(model.jac_variables_wrt_param[k,j] * jac_dict[(i,k)] for k in model.var_index)
+'''
 
 
 def perform_reactor_doe():
