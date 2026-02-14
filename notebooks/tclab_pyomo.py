@@ -404,9 +404,9 @@ class TC_Lab_experiment(Experiment):
             m.inv_CpS.fix()
         else:
             # REPARAMETRIZATION
-            m.beta_1 = Var(initialize=self.theta_initial["Ua"] * self.theta_initial["inv_CpH"], bounds=(0, 1e6))
+            m.beta_1 = Var(initialize=(self.theta_initial["Ua"] + self.theta_initial["Ub"]) * self.theta_initial["inv_CpH"], bounds=(0, 1e6))
             m.beta_1.fix()
-            m.beta_2 = Var(initialize=self.theta_initial["Ub"] * self.theta_initial["inv_CpH"], bounds=(1e-6, 1e6))
+            m.beta_2 = Var(initialize=self.theta_initial["Ub"] * self.theta_initial["inv_CpH"], bounds=(0, 1e6))
             m.beta_2.fix()
             m.beta_3 = Var(initialize=self.theta_initial["Ub"] * self.theta_initial["inv_CpS"], bounds=(0, 1e6))
             m.beta_3.fix()
@@ -414,7 +414,7 @@ class TC_Lab_experiment(Experiment):
             m.beta_4.fix()
 
             if self.number_of_states == 4:
-                m.beta_5 = Var(initialize=self.theta_initial["Uc"] / self.theta_initial["inv_CpH"], bounds=(0, 1e6))
+                m.beta_5 = Var(initialize=self.theta_initial["Uc"] * self.theta_initial["inv_CpH"], bounds=(0, 1e6))
                 m.beta_5.fix()
         
         # End unknown parameter definition
@@ -430,7 +430,7 @@ class TC_Lab_experiment(Experiment):
                 rhs_expr = (m.Ua * (m.Tamb - m.Th1[t]) + m.Ub * (m.Ts1[t] - m.Th1[t]) + m.alpha * m.P1 * m.U1[t]) * m.inv_CpH
             else:
                 # REPARAM
-                rhs_expr = m.beta_1 * (m.Tamb - m.Th1[t]) + m.beta_2 * (m.Ts1[t] - m.Th1[t]) + m.beta_4 * m.U1[t]
+                rhs_expr = - m.beta_1 * (m.Th1[t] - m.Tamb) + m.beta_2 * (m.Ts1[t] - m.Tamb) + m.beta_4 * m.U1[t]
                         
             # If we use the 4-state model, we add heat transfer from sensor 2 to the energy balance on fin 1
             if self.number_of_states == 4:
@@ -449,7 +449,7 @@ class TC_Lab_experiment(Experiment):
                 return m.Ts1dot[t] == (m.Ub * (m.Th1[t] - m.Ts1[t])) * m.inv_CpS
             else:
                 # REPARAM
-                return m.Ts1dot[t] == m.beta_3 * (m.Th1[t] - m.Ts1[t])
+                return m.Ts1dot[t] == m.beta_3 * (m.Th1[t] - m.Tamb) - m.beta_3 * (m.Ts1[t] - m.Tamb)
         
         # Second fin/sensor (only active for the 4-state model
         if self.number_of_states == 4:
@@ -457,10 +457,12 @@ class TC_Lab_experiment(Experiment):
             @m.Constraint(m.t)
             def Th2_ode(m, t):
                 if not self.reparam:
-                    return m.Th2dot[t] == (m.Ua * (m.Tamb - m.Th2[t]) + m.Ub * (m.Ts2[t] - m.Th2[t]) + m.Uc * (m.Th1[t] - m.Th2[t]) + m.alpha * m.P2 * m.U2[t]) * m.inv_CpH
+                    return m.Th2dot[t] == (m.Ua * (m.Tamb - m.Th2[t]) + m.Ub * (m.Ts2[t] - m.Th2[t]) + m.Uc *
+                                           (m.Th1[t] - m.Th2[t]) + m.alpha * m.P2 * m.U2[t]) * m.inv_CpH
                 else:
                     # REPARAM
-                    return m.Th2dot[t] == m.beta_1 * (m.Tamb - m.Th2[t]) + m.beta_2 * (m.Ts2[t] - m.Th2[t]) + m.beta_5 * (m.Th1[t] - m.Th2[t]) + m.beta_4 * m.U2[t]
+                    return (m.Th2dot[t] == - m.beta_1 * (m.Th2[t] - m.Tamb) + m.beta_2 * (m.Ts2[t] - m.Tamb) +
+                            m.beta_5 * (m.Th1[t] - m.Th2[t]) + m.beta_4 * m.U2[t])
            
             # Second sensor energy balance
             @m.Constraint(m.t)
@@ -469,7 +471,7 @@ class TC_Lab_experiment(Experiment):
                     return m.Ts2dot[t] == (m.Ub * (m.Th2[t] - m.Ts2[t])) * m.inv_CpS
                 else:
                     # REPARAM
-                    return m.Ts2dot[t] == m.beta_3 * (m.Th2[t] - m.Ts2[t])
+                    return m.Ts2dot[t] == m.beta_3 * (m.Th2[t] - m.Tamb) - m.beta_3 * (m.Ts2[t] - m.Tamb)
 
         # End model equation definition
         ################################
