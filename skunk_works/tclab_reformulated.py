@@ -12,10 +12,12 @@ simulation and later parameter estimation.
 from __future__ import annotations
 
 import argparse
+import contextlib
 from dataclasses import dataclass
 from pathlib import Path
 import os
 import shutil
+import sys
 from typing import Any, Sequence
 
 import numpy as np
@@ -78,6 +80,22 @@ class TCLabData:
         """Return the experiment as a pandas DataFrame."""
 
         return pd.DataFrame({"time": self.time, "T": self.T, "u": self.u})
+
+
+class TeeStream:
+    """Mirror writes to multiple text streams."""
+
+    def __init__(self, *streams: Any):
+        self.streams = streams
+
+    def write(self, text: str) -> int:
+        for stream in self.streams:
+            stream.write(text)
+        return len(text)
+
+    def flush(self) -> None:
+        for stream in self.streams:
+            stream.flush()
 
 
 def helper(values: Sequence[float], time: Sequence[float]) -> dict[float, float]:
@@ -334,13 +352,13 @@ def build_reformulated_tclab_model(
     if parameterization == "physics":
         m.Ua = Var(bounds=(1e-6, 0.1), initialize=float(theta["Ua"]))
         m.Cp = Var(bounds=(1e-3, 100.0), initialize=float(theta["Cp"]))
-        m.theta = Var(bounds=(1e-6, None), initialize=float(theta["theta"]))
+        m.theta = Var(bounds=(1e-6, 1e7), initialize=float(theta["theta"]))
         if fix_parameters:
             _fix_parameters(m, theta, ["Ua", "Cp", "theta"])
     else:
         m.K = Var(bounds=(1e-6, 100.0), initialize=float(theta["K"]))
         m.tau = Var(bounds=(1e-6, 1e5), initialize=float(theta["tau"]))
-        m.theta = Var(bounds=(1e-6, None), initialize=float(theta["theta"]))
+        m.theta = Var(bounds=(1e-6, 1e7), initialize=float(theta["theta"]))
         if fix_parameters:
             _fix_parameters(m, theta, ["K", "tau", "theta"])
 
@@ -537,6 +555,12 @@ class EstimationResult:
     covariance_figure: plt.Figure
     rmse: float
     mae: float
+    multistart_figure: plt.Figure | None = None
+    multistart_results: pd.DataFrame | None = None
+    multistart_best_objective: float | None = None
+    multistart_sampling_method: str | None = None
+    multistart_n_restarts: int | None = None
+    multistart_seed: int | None = None
 
 
 @dataclass
@@ -585,6 +609,49 @@ def _theta_and_cov_names(parameterization: str) -> list[str]:
     if parameterization == "io":
         return ["K", "tau", "theta"]
     raise ValueError("parameterization must be 'physics' or 'io'")
+
+
+def theta_bounds(
+    variant: str,
+    parameterization: str,
+) -> dict[str, tuple[float, float]]:
+    """Return hard bounds for estimated parameters."""
+
+    if variant == "original":
+        return {
+            "Ua": (1e-6, 0.1),
+            "Ub": (1e-6, 0.1),
+            "CpH": (1e-3, 100.0),
+            "CpS": (1e-3, 100.0),
+        }
+    if variant == "reformulated" and parameterization == "physics":
+        return {
+            "Ua": (1e-6, 0.1),
+            "Cp": (1e-3, 100.0),
+            "theta": (1e-6, 1e7),
+        }
+    if variant == "reformulated" and parameterization == "io":
+        return {
+            "K": (1e-6, 100.0),
+            "tau": (1e-6, 1e5),
+            "theta": (1e-6, 1e7),
+        }
+    raise ValueError("Unsupported variant / parameterization combination.")
+
+
+def clip_theta_to_bounds(
+    theta: pd.Series | dict[str, float],
+    variant: str,
+    parameterization: str,
+) -> pd.Series:
+    """Project parameter values onto the feasible box."""
+
+    bounds = theta_bounds(variant, parameterization)
+    series = pd.Series(theta, dtype=float).copy()
+    for name, (lb, ub) in bounds.items():
+        if name in series.index:
+            series[name] = float(np.clip(series[name], lb, ub))
+    return series
 
 
 def transform_theta_and_covariance(
@@ -764,6 +831,29 @@ def plot_covariance_heatmap(cov: pd.DataFrame, title: str) -> plt.Figure:
     return fig
 
 
+def plot_multistart_objectives(results_df: pd.DataFrame, title: str) -> plt.Figure:
+    """Plot multistart objective values against restart index."""
+
+    fig, ax = plt.subplots(figsize=(9.0, 4.8), constrained_layout=True)
+    if results_df.empty:
+        ax.text(0.5, 0.5, "No multistart results", ha="center", va="center")
+        ax.set_axis_off()
+        return fig
+
+    x = np.arange(len(results_df))
+    y = pd.to_numeric(results_df["final objective"], errors="coerce").to_numpy()
+    term = results_df["solver termination"].astype(str)
+    colors = np.where(
+        term.str.contains("optimal", case=False, na=False), "tab:green", "tab:red"
+    )
+    ax.scatter(x, y, c=colors, s=40, edgecolor="black", linewidth=0.4)
+    ax.set_xlabel("Restart index")
+    ax.set_ylabel("Final objective")
+    ax.set_title(title)
+    ax.grid(True, alpha=0.3)
+    return fig
+
+
 def estimate_variant(
     data: TCLabData,
     variant: str,
@@ -774,6 +864,13 @@ def estimate_variant(
     measurement_error: float = 0.25,
     tee: bool = False,
     theta0: dict[str, float] | None = None,
+    use_multistart: bool = False,
+    multistart_sampling_method: str = "uniform_random",
+    n_restarts: int = 20,
+    seed: int | None = None,
+    solver_options: dict[str, Any] | None = None,
+    save_multistart_results: bool = False,
+    multistart_results_path: Path | None = None,
 ) -> EstimationResult:
     """Estimate one model variant and assemble the plots and covariance outputs."""
 
@@ -784,6 +881,8 @@ def estimate_variant(
 
     if theta0 is None:
         theta0 = default_delayed_theta(parameterization)
+
+    solver_options = {} if solver_options is None else dict(solver_options)
 
     experiment = TCLabParmestExperiment(
         data=data,
@@ -797,8 +896,54 @@ def estimate_variant(
         fix_input=True,
     )
 
-    pest = parmest.Estimator([experiment], obj_function=objective, tee=tee)
+    pest = parmest.Estimator(
+        [experiment], obj_function=objective, tee=tee, solver_options=solver_options
+    )
+
+    multistart_results = None
+    multistart_best_obj = None
+    multistart_fig = None
+    if use_multistart:
+        if multistart_sampling_method not in {
+            "uniform_random",
+            "latin_hypercube",
+            "sobol_sampling",
+        }:
+            raise ValueError(
+                "multistart_sampling_method must be uniform_random, "
+                "latin_hypercube, or sobol_sampling"
+            )
+        multistart_kwargs: dict[str, Any] = {
+            "n_restarts": n_restarts,
+            "multistart_sampling_method": multistart_sampling_method,
+            "seed": seed,
+            "save_results": save_multistart_results,
+        }
+        if multistart_results_path is not None:
+            multistart_kwargs["file_name"] = str(multistart_results_path)
+        multistart_results, best_theta_dict, multistart_best_obj = pest.theta_est_multistart(
+            **multistart_kwargs
+        )
+        if best_theta_dict is None or not np.isfinite(multistart_best_obj):
+            raise RuntimeError("Multistart did not identify a finite best solution.")
+        best_theta_dict = clip_theta_to_bounds(
+            best_theta_dict, variant=variant, parameterization=parameterization
+        ).to_dict()
+        print(
+            f"\nMultistart best objective ({multistart_sampling_method}, n_restarts={n_restarts}): "
+            f"{multistart_best_obj:.6g}"
+        )
+        experiment.theta = best_theta_dict
+        pest = parmest.Estimator(
+            [experiment], obj_function=objective, tee=tee, solver_options=solver_options
+        )
+        theta0 = best_theta_dict
+
     obj_val, theta_hat = pest.theta_est()
+    theta_hat = clip_theta_to_bounds(
+        theta_hat, variant=variant, parameterization=parameterization
+    )
+    pest.estimated_theta = theta_hat.to_dict()
     cov = pest.cov_est(method="finite_difference", solver="ipopt", step=1e-3)
 
     theta_hat = pd.Series(theta_hat)
@@ -833,10 +978,18 @@ def estimate_variant(
     )
     fit_fig = plot_fit_quality(data, fitted, fit_title)
     cov_fig = plot_covariance_heatmap(cov, cov_title)
+    if multistart_results is not None:
+        multistart_title = (
+            f"Multistart: {parameterization} / delay_order={delay_order} / "
+            f"{multistart_sampling_method} / obj={objective}"
+        )
+        multistart_fig = plot_multistart_objectives(multistart_results, multistart_title)
 
     print("\n" + "=" * 80)
     print(f"Variant: {variant} | parameterization: {parameterization}")
     print(f"Objective value: {obj_val:.6g}")
+    if multistart_best_obj is not None:
+        print(f"Multistart best objective: {multistart_best_obj:.6g}")
     if theta0 is not None:
         print("Initial guess:")
         print(pd.Series(theta0).to_string())
@@ -864,8 +1017,14 @@ def estimate_variant(
         fitted_data=fitted,
         fit_figure=fit_fig,
         covariance_figure=cov_fig,
+        multistart_figure=multistart_fig,
         rmse=rmse,
         mae=mae,
+        multistart_results=multistart_results,
+        multistart_best_objective=multistart_best_obj,
+        multistart_sampling_method=multistart_sampling_method if use_multistart else None,
+        multistart_n_restarts=n_restarts if use_multistart else None,
+        multistart_seed=seed if use_multistart else None,
     )
 
 
@@ -886,6 +1045,15 @@ def build_summary_tables(
             "rmse": result.rmse,
             "mae": result.mae,
         }
+
+        if result.multistart_sampling_method is not None:
+            run_row["multistart_sampling_method"] = result.multistart_sampling_method
+        if result.multistart_n_restarts is not None:
+            run_row["multistart_n_restarts"] = result.multistart_n_restarts
+        if result.multistart_seed is not None:
+            run_row["multistart_seed"] = result.multistart_seed
+        if result.multistart_best_objective is not None:
+            run_row["multistart_best_objective"] = result.multistart_best_objective
 
         for name in ["Ua", "Cp", "K", "tau", "theta"]:
             run_row[f"fit_{name}"] = float(result.theta_hat[name]) if name in result.theta_hat.index else np.nan
@@ -977,10 +1145,55 @@ def main(argv: Sequence[str] | None = None) -> int:
         help="Heater gain constant alpha.",
     )
     parser.add_argument(
+        "--multistart",
+        action="store_true",
+        help="Use Parmest multistart instead of a single-start estimate.",
+    )
+    parser.add_argument(
+        "--multistart-method",
+        choices=["uniform_random", "latin_hypercube", "sobol_sampling"],
+        default="uniform_random",
+        help="Sampling method used when --multistart is enabled.",
+    )
+    parser.add_argument(
+        "--n-restarts",
+        type=int,
+        default=15,
+        help="Number of multistart restarts to generate.",
+    )
+    parser.add_argument(
+        "--seed",
+        type=int,
+        default=532,
+        help="Random seed used for multistart sampling.",
+    )
+    parser.add_argument(
+        "--linear-solver",
+        default="ma57",
+        help="Ipopt linear solver option passed through Parmest.",
+    )
+    parser.add_argument(
+        "--max-iter",
+        type=int,
+        default=1000,
+        help="Ipopt max_iter option passed through Parmest.",
+    )
+    parser.add_argument(
+        "--save-multistart-results",
+        action="store_true",
+        help="Save the full multistart restart table to CSV.",
+    )
+    parser.add_argument(
         "--output-dir",
         type=Path,
         default=Path(__file__).resolve().with_name("tclab_reformulated_results"),
         help="Directory where figures should be saved.",
+    )
+    parser.add_argument(
+        "--log-file",
+        type=Path,
+        default=None,
+        help="Optional text file to receive a copy of console output.",
     )
     parser.add_argument(
         "--show",
@@ -994,81 +1207,133 @@ def main(argv: Sequence[str] | None = None) -> int:
     )
     args = parser.parse_args(argv)
 
-    ensure_ipopt_on_path()
-    data = load_sine_wave_dataset()
+    log_file = args.log_file
+    if log_file is not None:
+        log_file = Path(log_file)
+        log_file.parent.mkdir(parents=True, exist_ok=True)
 
-    results = []
-    if args.delay_orders is not None and len(args.delay_orders) > 0:
-        delay_orders = list(dict.fromkeys(args.delay_orders))
-    elif args.compare_delay_orders:
-        delay_orders = [2, 3]
-    else:
-        delay_orders = [args.delay_order]
+    def run() -> int:
+        ensure_ipopt_on_path()
+        data = load_sine_wave_dataset()
+        solver_options: dict[str, Any] = {"max_iter": args.max_iter}
+        if args.linear_solver:
+            solver_options["linear_solver"] = args.linear_solver
+        args.output_dir.mkdir(parents=True, exist_ok=True)
 
-    for delay_order in delay_orders:
-        physics_result = estimate_variant(
-            data=data,
-            variant="reformulated",
-            delay_order=delay_order,
-            parameterization="physics",
-            objective=args.objective,
-            alpha=args.alpha,
-            measurement_error=args.measurement_error,
-            tee=args.tee,
-        )
-        results.append(physics_result)
+        results = []
+        if args.delay_orders is not None and len(args.delay_orders) > 0:
+            delay_orders = list(dict.fromkeys(args.delay_orders))
+        elif args.compare_delay_orders:
+            delay_orders = [2, 3]
+        else:
+            delay_orders = [args.delay_order]
 
-        print(
-            "\nWarm-starting the io parameterization from the transformed physics estimate."
-        )
-        io_result = estimate_variant(
-            data=data,
-            variant="reformulated",
-            delay_order=delay_order,
-            parameterization="io",
-            objective=args.objective,
-            alpha=args.alpha,
-            measurement_error=args.measurement_error,
-            tee=args.tee,
-            theta0=physics_result.transformed_theta.to_dict(),
-        )
-        results.append(io_result)
+        for delay_order in delay_orders:
+            physics_result = estimate_variant(
+                data=data,
+                variant="reformulated",
+                delay_order=delay_order,
+                parameterization="physics",
+                objective=args.objective,
+                alpha=args.alpha,
+                measurement_error=args.measurement_error,
+                tee=args.tee,
+                use_multistart=args.multistart,
+                multistart_sampling_method=args.multistart_method,
+                n_restarts=args.n_restarts,
+                seed=args.seed,
+                solver_options=solver_options,
+                save_multistart_results=args.save_multistart_results,
+                multistart_results_path=(
+                    args.output_dir
+                    / f"physics_delay{delay_order}_{args.objective}_{args.multistart_method}_multistart.csv"
+                    if args.multistart
+                    else None
+                ),
+            )
+            results.append(physics_result)
 
-    for result in results:
-        result.fit_figure.canvas.draw_idle()
-        result.covariance_figure.canvas.draw_idle()
+            if not args.multistart:
+                print(
+                    "\nWarm-starting the io parameterization from the transformed physics estimate."
+                )
+            io_result = estimate_variant(
+                data=data,
+                variant="reformulated",
+                delay_order=delay_order,
+                parameterization="io",
+                objective=args.objective,
+                alpha=args.alpha,
+                measurement_error=args.measurement_error,
+                tee=args.tee,
+                theta0=physics_result.transformed_theta.to_dict(),
+                use_multistart=args.multistart,
+                multistart_sampling_method=args.multistart_method,
+                n_restarts=args.n_restarts,
+                seed=args.seed,
+                solver_options=solver_options,
+                save_multistart_results=args.save_multistart_results,
+                multistart_results_path=(
+                    args.output_dir
+                    / f"io_delay{delay_order}_{args.objective}_{args.multistart_method}_multistart.csv"
+                    if args.multistart
+                    else None
+                ),
+            )
+            results.append(io_result)
 
-    args.output_dir.mkdir(parents=True, exist_ok=True)
-    for result in results:
-        fit_name = (
-            f"{result.parameterization}_delay{result.delay_order}_{args.objective}_fit.png"
-        )
-        cov_name = (
-            f"{result.parameterization}_delay{result.delay_order}_{args.objective}_cov.png"
-        )
-        fit_path = args.output_dir / fit_name
-        cov_path = args.output_dir / cov_name
-        result.fit_figure.savefig(fit_path, dpi=200, bbox_inches="tight")
-        result.covariance_figure.savefig(cov_path, dpi=200, bbox_inches="tight")
-        print(f"Saved fit figure to {fit_path}")
-        print(f"Saved covariance figure to {cov_path}")
+        for result in results:
+            result.fit_figure.canvas.draw_idle()
+            result.covariance_figure.canvas.draw_idle()
 
-    if args.show:
-        plt.show()
-    else:
-        plt.close("all")
+        args.output_dir.mkdir(parents=True, exist_ok=True)
+        for result in results:
+            fit_name = (
+                f"{result.parameterization}_delay{result.delay_order}_{args.objective}_fit.png"
+            )
+            cov_name = (
+                f"{result.parameterization}_delay{result.delay_order}_{args.objective}_cov.png"
+            )
+            fit_path = args.output_dir / fit_name
+            cov_path = args.output_dir / cov_name
+            result.fit_figure.savefig(fit_path, dpi=200, bbox_inches="tight")
+            result.covariance_figure.savefig(cov_path, dpi=200, bbox_inches="tight")
+            print(f"Saved fit figure to {fit_path}")
+            print(f"Saved covariance figure to {cov_path}")
+            if result.multistart_figure is not None:
+                multistart_name = (
+                    f"{result.parameterization}_delay{result.delay_order}_{args.objective}_{args.multistart_method}_multistart.png"
+                )
+                multistart_path = args.output_dir / multistart_name
+                result.multistart_figure.savefig(
+                    multistart_path, dpi=200, bbox_inches="tight"
+                )
+                print(f"Saved multistart figure to {multistart_path}")
 
-    summary, covariance_summary = build_summary_tables(results)
-    summary_csv = args.output_dir / "tclab_reformulated_fit_summary.csv"
-    covariance_csv = args.output_dir / "tclab_reformulated_covariance_summary.csv"
-    summary.to_csv(summary_csv, index=False)
-    covariance_summary.to_csv(covariance_csv, index=False)
-    print(f"Saved fit summary to {summary_csv}")
-    print(f"Saved covariance summary to {covariance_csv}")
+        if args.show:
+            plt.show()
+        else:
+            plt.close("all")
 
-    print("\nSummary:")
-    print(summary.to_string(index=False))
-    return 0
+        summary, covariance_summary = build_summary_tables(results)
+        summary_csv = args.output_dir / "tclab_reformulated_fit_summary.csv"
+        covariance_csv = args.output_dir / "tclab_reformulated_covariance_summary.csv"
+        summary.to_csv(summary_csv, index=False)
+        covariance_summary.to_csv(covariance_csv, index=False)
+        print(f"Saved fit summary to {summary_csv}")
+        print(f"Saved covariance summary to {covariance_csv}")
+
+        print("\nSummary:")
+        print(summary.to_string(index=False))
+        return 0
+
+    if log_file is None:
+        return run()
+
+    with log_file.open("w", encoding="utf-8") as fh, contextlib.redirect_stdout(
+        TeeStream(sys.stdout, fh)
+    ), contextlib.redirect_stderr(TeeStream(sys.stderr, fh)):
+        return run()
 
 
 if __name__ == "__main__":
