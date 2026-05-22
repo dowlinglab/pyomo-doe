@@ -35,7 +35,6 @@ The maintainer environment includes:
 
 Notebook formatting is handled with Black's Jupyter support inside the maintainer environment.
 
-- install: `conda run -n pyomo-doe-maint python -m pip install "black[jupyter]"`
 - format the notebooks that are included in `myst.yml` with `black`
 - skip notebooks that are commented out in `myst.yml`
 
