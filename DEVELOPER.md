@@ -39,6 +39,22 @@ Notebook formatting is handled with Black's Jupyter support inside the maintaine
 - format the notebooks that are included in `myst.yml` with `black`
 - skip notebooks that are commented out in `myst.yml`
 
+## Refactor Notes
+
+We are treating [notebooks/doe_exploratory_analysis.ipynb](./notebooks/doe_exploratory_analysis.ipynb) as an obsolete archival notebook. It stays out of the active site TOC and is no longer part of the supported workflow.
+
+Current cleanup plan:
+
+- remove the parameterized sine-wave test path from [notebooks/tclab_pyomo.py](./notebooks/tclab_pyomo.py)
+- keep the active notebooks in [myst.yml](./myst.yml) working without any sine-specific branches
+- use pytest to cover the shared `tclab_pyomo.py` module and the active notebook set
+
+Testing approach:
+
+- unit tests should focus on `tclab_pyomo.py` behavior that is shared by the active notebooks
+- notebook tests should verify that every active notebook listed in `myst.yml` is still parseable and that the site build succeeds
+- because solver binaries are not guaranteed in every environment, we are not relying on full notebook execution in pytest right now
+
 ## Site build workflow
 
 Every site build has three stages:
