@@ -1,11 +1,27 @@
 from __future__ import annotations
 
+import importlib.util
 import subprocess
+from pathlib import Path
 
 import nbformat
 from IPython.core.inputtransformer2 import TransformerManager
 
-from conftest import ROOT, active_notebook_paths
+
+def _load_test_conftest():
+    conftest_path = Path(__file__).with_name("conftest.py")
+    spec = importlib.util.spec_from_file_location("tests_conftest", conftest_path)
+    if spec is None or spec.loader is None:
+        raise ImportError(f"Unable to load test configuration from {conftest_path}")
+
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+_conftest = _load_test_conftest()
+ROOT = _conftest.ROOT
+active_notebook_paths = _conftest.active_notebook_paths
 
 
 def test_active_notebooks_match_site_toc():
