@@ -1,10 +1,12 @@
 from __future__ import annotations
 
 import importlib.util
+import shutil
 import subprocess
 from pathlib import Path
 
 import nbformat
+import pytest
 from IPython.core.inputtransformer2 import TransformerManager
 
 
@@ -52,6 +54,7 @@ def test_active_notebooks_code_cells_compile():
             )
 
 
+@pytest.mark.skipif(shutil.which("myst") is None, reason="myst CLI is not installed")
 def test_site_build_smoke():
     completed = subprocess.run(
         ["myst", "build", "--html"],

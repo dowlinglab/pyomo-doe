@@ -20,6 +20,7 @@ Create the maintainer environment with:
 conda env create -f environment-maintainer.yml
 conda activate pyomo-doe-maint
 idaes get-extensions
+npm install -g mystmd
 ```
 
 The maintainer environment includes:
@@ -28,6 +29,7 @@ The maintainer environment includes:
 - `idaes-pse`
 - notebook-processing dependencies
 - `nodejs`
+- `mystmd` (provides the `myst` CLI)
 - `jupyter-book`
 - `black[jupyter]` for formatting notebook sources
 
