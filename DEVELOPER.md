@@ -29,6 +29,14 @@ The maintainer environment includes:
 - notebook-processing dependencies
 - `nodejs`
 - `jupyter-book`
+- `black[jupyter]` for formatting notebook sources
+
+## Notebook formatting
+
+Notebook formatting is handled with Black's Jupyter support inside the maintainer environment.
+
+- format the notebooks that are included in `myst.yml` with `black`
+- skip notebooks that are commented out in `myst.yml`
 
 ## Site build workflow
 
