@@ -39,6 +39,26 @@ Notebook formatting is handled with Black's Jupyter support inside the maintaine
 - format the notebooks that are included in `myst.yml` with `black`
 - skip notebooks that are commented out in `myst.yml`
 
+## Notebook execution
+
+For a long local execution check of the active website notebooks, use:
+
+```bash
+conda run --no-capture-output -n pyomo-doe-maint python scripts/run_notebooks_from_myst.py
+```
+
+Notes:
+
+- the runner reads the top-level [myst.yml](./myst.yml)
+- notebooks that are commented out in `myst.yml` are skipped
+- student exercise notebooks in `notebooks/` are skipped by default because they intentionally contain incomplete cells
+- solution notebooks in `exercise_solutions/` are still executed
+- the runner prepends `~/.idaes/bin` to `PATH` so IDAES-installed solver tools such as `k_aug` and `dot_sens` can be found
+- use `--include-exercises` to include the student exercise notebooks anyway
+- use `--list-only` to print the resolved notebook set without executing it
+
+`conda run` captures subprocess output by default, so use `--no-capture-output` if you want to see `[RUN]`, `[PASS]`, and `[FAIL]` lines in real time.
+
 ## Refactor Notes
 
 We are treating [notebooks/doe_exploratory_analysis.ipynb](./notebooks/doe_exploratory_analysis.ipynb) as an obsolete archival notebook. It stays out of the active site TOC and is no longer part of the supported workflow.
@@ -53,6 +73,7 @@ Testing approach:
 
 - unit tests should focus on `tclab_pyomo.py` behavior that is shared by the active notebooks
 - notebook tests should verify that every active notebook listed in `myst.yml` is still parseable and that the site build succeeds
+- full notebook execution is handled by `scripts/run_notebooks_from_myst.py` as a separate long local check
 - because solver binaries are not guaranteed in every environment, we are not relying on full notebook execution in pytest right now
 
 ## Site build workflow
@@ -214,6 +235,7 @@ Typical workflow:
 - [myst.yml](./myst.yml)
 - [environment-maintainer.yml](./environment-maintainer.yml)
 - [scripts/process_notebooks.py](./scripts/process_notebooks.py)
+- [scripts/run_notebooks_from_myst.py](./scripts/run_notebooks_from_myst.py)
 - [scripts/build_theme_dist.sh](./scripts/build_theme_dist.sh)
 - [scripts/build_local.sh](./scripts/build_local.sh)
 - [scripts/preview_html.sh](./scripts/preview_html.sh)

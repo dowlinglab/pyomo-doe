@@ -19,6 +19,10 @@ DEFAULT_MYST_FILE = REPO_ROOT / "myst.yml"
 IDAES_BIN_DIR = Path("~/.idaes/bin").expanduser()
 
 
+def log(message: str, *, stream=None) -> None:
+    print(message, file=stream, flush=True)
+
+
 def parse_active_notebooks(myst_file: Path) -> list[Path]:
     notebooks: list[Path] = []
     seen: set[Path] = set()
@@ -132,7 +136,7 @@ def main() -> int:
 
     myst_file = Path(args.myst_file).resolve()
     if not myst_file.exists():
-        print(f"[ERROR] MyST file not found: {myst_file}", file=sys.stderr)
+        log(f"[ERROR] MyST file not found: {myst_file}", stream=sys.stderr)
         return 2
 
     notebooks = parse_active_notebooks(myst_file)
@@ -142,37 +146,37 @@ def main() -> int:
     if not notebooks:
         message = f"[INFO] No active notebook entries found in {myst_file}"
         if args.allow_empty:
-            print(message)
+            log(message)
             return 0
-        print(f"[ERROR] {message}", file=sys.stderr)
+        log(f"[ERROR] {message}", stream=sys.stderr)
         return 2
 
     missing = [path for path in notebooks if not path.exists()]
     if missing:
-        print("[ERROR] Some notebooks listed in the TOC do not exist:", file=sys.stderr)
+        log("[ERROR] Some notebooks listed in the TOC do not exist:", stream=sys.stderr)
         for path in missing:
-            print(f"  - {path}", file=sys.stderr)
+            log(f"  - {path}", stream=sys.stderr)
         return 2
 
     if args.max_notebooks is not None:
         if args.max_notebooks <= 0:
-            print("[ERROR] --max-notebooks must be positive.", file=sys.stderr)
+            log("[ERROR] --max-notebooks must be positive.", stream=sys.stderr)
             return 2
         notebooks = notebooks[: args.max_notebooks]
 
     if args.list_only:
-        print(f"[INFO] Found {len(notebooks)} active notebooks in {myst_file}")
+        log(f"[INFO] Found {len(notebooks)} active notebooks in {myst_file}")
         for notebook in notebooks:
-            print(notebook)
+            log(str(notebook))
         return 0
 
-    print(f"[INFO] Running {len(notebooks)} notebooks from {myst_file}")
+    log(f"[INFO] Running {len(notebooks)} notebooks from {myst_file}")
     failures: list[tuple[Path, float, str]] = []
     started_all = time.time()
 
     for idx, notebook_path in enumerate(notebooks, start=1):
         started = time.time()
-        print(f"[RUN {idx}/{len(notebooks)}] {notebook_path}")
+        log(f"[RUN {idx}/{len(notebooks)}] {notebook_path}")
         try:
             execute_notebook(
                 path=notebook_path,
@@ -182,22 +186,22 @@ def main() -> int:
         except Exception as err:  # pragma: no cover
             duration = time.time() - started
             failures.append((notebook_path, duration, repr(err)))
-            print(f"[FAIL] {notebook_path} ({duration:.1f}s): {err}")
+            log(f"[FAIL] {notebook_path} ({duration:.1f}s): {err}")
             continue
 
         duration = time.time() - started
-        print(f"[PASS] {notebook_path} ({duration:.1f}s)")
+        log(f"[PASS] {notebook_path} ({duration:.1f}s)")
 
     total = time.time() - started_all
-    print(f"[DONE] Completed in {total:.1f}s")
+    log(f"[DONE] Completed in {total:.1f}s")
 
     if failures:
-        print(f"[SUMMARY] {len(failures)} notebook(s) failed:", file=sys.stderr)
+        log(f"[SUMMARY] {len(failures)} notebook(s) failed:", stream=sys.stderr)
         for path, duration, err_text in failures:
-            print(f"  - {path} ({duration:.1f}s): {err_text}", file=sys.stderr)
+            log(f"  - {path} ({duration:.1f}s): {err_text}", stream=sys.stderr)
         return 1
 
-    print("[SUMMARY] All notebooks executed successfully.")
+    log("[SUMMARY] All notebooks executed successfully.")
     return 0
 
 
