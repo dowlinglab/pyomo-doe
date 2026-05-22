@@ -85,6 +85,6 @@ def test_recover_original_covariance_shape(tclab_pyomo_module):
         reformulated, cov_reform, alpha, p1
     )
 
-    assert list(cov_orig.index) == ["Ua", "Ub", "Inv_CpH", "inv_CpS"]
-    assert list(cov_orig.columns) == ["Ua", "Ub", "Inv_CpH", "inv_CpS"]
+    assert list(cov_orig.index) == ["Ua", "Ub", "inv_CpH", "inv_CpS"]
+    assert list(cov_orig.columns) == ["Ua", "Ub", "inv_CpH", "inv_CpS"]
     assert cov_orig.shape == (4, 4)
