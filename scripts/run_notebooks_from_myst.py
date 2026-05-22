@@ -8,10 +8,6 @@ import sys
 import time
 from pathlib import Path
 
-import nbformat
-from nbclient import NotebookClient
-
-
 NOTEBOOK_FILE_RE = re.compile(r"^-?\s*file:\s*['\"]?([^'\"]+\.ipynb)['\"]?\s*$")
 SCRIPT_DIR = Path(__file__).resolve().parent
 REPO_ROOT = SCRIPT_DIR.parent
@@ -55,6 +51,9 @@ def is_student_exercise_notebook(path: Path) -> bool:
 
 
 def execute_notebook(path: Path, timeout: int, kernel_name: str | None) -> None:
+    import nbformat
+    from nbclient import NotebookClient
+
     with path.open(encoding="utf-8") as notebook_file:
         notebook = nbformat.read(notebook_file, as_version=4)
 

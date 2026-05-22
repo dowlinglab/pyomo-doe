@@ -5,6 +5,7 @@ import sys
 from pathlib import Path
 
 import pytest
+from scripts.run_notebooks_from_myst import parse_active_notebooks
 
 ROOT = Path(__file__).resolve().parents[1]
 NOTEBOOK_DIR = ROOT / "notebooks"
@@ -24,14 +25,7 @@ def load_tclab_pyomo():
 
 
 def active_notebook_paths():
-    notebooks = []
-    for raw_line in MYST_FILE.read_text().splitlines():
-        line = raw_line.strip()
-        if line.startswith("#"):
-            continue
-        if line.startswith("- file:") and line.endswith(".ipynb"):
-            notebooks.append(ROOT / line.split(":", 1)[1].strip())
-    return notebooks
+    return parse_active_notebooks(MYST_FILE)
 
 
 @pytest.fixture(scope="session")
