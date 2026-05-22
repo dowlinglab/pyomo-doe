@@ -1344,8 +1344,8 @@ def recover_original_covariance(reform_params, cov_reform, alpha, P1):
     cov_theta = dtheta_dbeta @ cov_reform @ dtheta_dbeta.T
     cov_orig = pd.DataFrame(
         cov_theta.to_numpy(),
-        index=["Ua", "Ub", "Inv_CpH", "inv_CpS"],
-        columns=["Ua", "Ub", "Inv_CpH", "inv_CpS"], )
+        index=["Ua", "Ub", "inv_CpH", "inv_CpS"],
+        columns=["Ua", "Ub", "inv_CpH", "inv_CpS"], )
 
     return cov_orig
 
