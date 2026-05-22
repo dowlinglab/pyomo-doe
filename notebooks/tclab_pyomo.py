@@ -201,7 +201,6 @@ from pyomo.environ import (
     value as pyovalue,
     Suffix,
     Expression,
-    sin,
     PositiveReals,
 )
 from pyomo.dae import DerivativeVar, ContinuousSet, Simulator
@@ -289,8 +288,6 @@ class TC_Lab_experiment(Experiment):
         alpha=0.00016,
         theta_initial=None,
         number_of_states=2,
-        sine_amplitude=None,
-        sine_period=None,
         reparam=False,
         measurement_error=0.25,
     ):
@@ -301,8 +298,6 @@ class TC_Lab_experiment(Experiment):
         alpha: float, Conversion factor for TCLab (fixed parameter)
         theta_initial: dictionary, initial guesses for the unknown parameters
         number_of_states: number of states in the heat transfer model (must be 2 or 4), default: 2
-        sine_amplitude: float, amplitude of the sine wave, default: None (do not use the sine wave)
-        sine_period: float, period of the sine wave, default: None (do not use the sine wave)
         measurement_error: float, constant measurement error of sensor 1, default: 0.25 deg C
         
         """
@@ -326,28 +321,6 @@ class TC_Lab_experiment(Experiment):
         if number_of_states not in [2, 4, ]:
             raise ValueError("number_of_states must be 2 or 4.")
         self.number_of_states = number_of_states
-        
-        # Make sure that the sine amplitude and period are reasonable
-        if sine_amplitude is not None and sine_period is not None:
-            self.sine_period_max = 10  # minutes
-            self.sine_period_min = 10 / 60  # minutes
-
-            assert sine_amplitude <= 50, "Sine amplitude must be less than 50."
-            assert sine_amplitude >= 0, "Sine amplitude must be greater than 0."
-
-            assert sine_period <= self.sine_period_max, "Sine period must be less than " + str(
-                self.sine_period_max
-            )
-            assert (
-                sine_period >= self.sine_period_min
-            ), "Sine period must be greater than " + str(self.sine_period_min)
-        elif sine_amplitude is not None or sine_period is not None:
-            raise ValueError("If sine wave is used, both amplitude and period must be provided.")
-        else:
-            self.sine_period_max = None
-            self.sine_period_min = None
-        self.sine_amplitude = sine_amplitude
-        self.sine_period = sine_period
         
         self.reparam = reparam
         self.measurement_error = measurement_error
@@ -554,33 +527,6 @@ class TC_Lab_experiment(Experiment):
         # End initial conditions definition
         ####################################
         
-        ########################################
-        # Defining optional sine wave equations
-        # (only when sine wave control is used)
-        
-        if self.sine_amplitude is not None and self.sine_period is not None:
-            # Add measurement control decision variables
-            m.u1_period = Var(
-                initialize=self.sine_period, bounds=(self.sine_period_min, self.sine_period_max)
-            )  # minutes
-            m.u1_amplitude = Var(initialize=self.sine_amplitude, bounds=(0, 50))  # % power
-            
-            # Fixed for parameter estimation
-            m.u1_period.fix()
-            m.u1_amplitude.fix()
-
-            # Add constraint to calculate u1
-            @m.Constraint(m.t)
-            def u1_constraint(m, t):
-                return m.U1[t] == 50 + m.u1_amplitude * sin(2 * np.pi / (m.u1_period * 60) * t)
-            
-            m.U1.unfix()  # Unfixed for because of above constraints
-        
-        # TODO: Add second sine wave functionality for 4-state model
-        
-        # End optional sine wave constraints
-        ########################################
-        
         #########################################
         # Initialize the model using integration
         m.var_input = Suffix(direction=Suffix.LOCAL)
@@ -602,19 +548,11 @@ class TC_Lab_experiment(Experiment):
 
         # Simulate to initialize
         # Makes the solver more efficient
-        if self.sine_amplitude is None or self.sine_period is None:
-            sim = Simulator(m, package='scipy')
-            tsim, profiles = sim.simulate(
-                numpoints=100, integrator='vode', varying_inputs=m.var_input
-            )
-            sim.initialize_model()
-        else:
-            # sim = Simulator(m, package='casadi')
-            # tsim, profiles = sim.simulate(
-            #     numpoints=100, integrator='idas', varying_inputs=m.var_input
-            # )
-            # sim.initialize_model()
-            pass
+        sim = Simulator(m, package='scipy')
+        tsim, profiles = sim.simulate(
+            numpoints=100, integrator='vode', varying_inputs=m.var_input
+        )
+        sim.initialize_model()
         
         TransformationFactory('dae.finite_difference').apply_to(
             m, scheme='BACKWARD', nfe=len(self.data.time) - 1
@@ -671,13 +609,9 @@ class TC_Lab_experiment(Experiment):
         
         m.experiment_inputs = Suffix(direction=Suffix.LOCAL)
         # Add experimental input label for control variable (m.U1)
-        if self.sine_amplitude is not None and self.sine_period is not None:
-            m.experiment_inputs[m.u1_period] = None
-            m.experiment_inputs[m.u1_amplitude] = None
-        else:    
-            m.experiment_inputs.update((m.U1[t], None) for t in self.data.time)
-            if self.number_of_states == 4:
-                m.experiment_inputs.update((m.U2[t], None) for t in self.data.time)
+        m.experiment_inputs.update((m.U1[t], None) for t in self.data.time)
+        if self.number_of_states == 4:
+            m.experiment_inputs.update((m.U2[t], None) for t in self.data.time)
         
         # End experiment inputs
         #################################
@@ -1059,11 +993,6 @@ def extract_plot_results(tc_exp_data, model, number_of_states=2, reparam=False):
             print("Uc =", round(pyovalue(model.Uc), 4), "Watts/°C")
         print("CpH =", round(1 / pyovalue(model.inv_CpH), 4), "Joules/°C")
         print("CpS =", round(1 / pyovalue(model.inv_CpS), 4), "Joules/°C")
-
-    if hasattr(model, 'u1_period'):
-        print("u1_period =", round(pyovalue(model.u1_period), 2), "minutes")
-    if hasattr(model, 'u1_amplitude'):
-        print("u1_amplitude =", round(pyovalue(model.u1_amplitude), 4), "% power")
 
     print(" ")  # New line
 

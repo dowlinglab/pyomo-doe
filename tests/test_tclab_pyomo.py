@@ -36,6 +36,17 @@ def test_tc_lab_experiment_builds_active_two_state_model(tclab_pyomo_module):
     assert extracted.TS2_data is None
 
 
+def test_legacy_sine_wave_kwargs_are_not_supported(tclab_pyomo_module):
+    data = make_two_state_data(tclab_pyomo_module)
+
+    with pytest.raises(TypeError):
+        tclab_pyomo_module.TC_Lab_experiment(
+            data=data,
+            sine_amplitude=10.0,
+            sine_period=2.0,
+        )
+
+
 def test_parameter_round_trip_helpers(tclab_pyomo_module):
     alpha = 0.00016
     p1 = 200.0
