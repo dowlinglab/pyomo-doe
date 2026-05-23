@@ -458,3 +458,103 @@ Compared to the original second-order model, the reformulated model:
 * preserves continuous-time physics-based structure
 * supports arbitrary heater input signals $u(t)$
 * remains compatible with state-space methods and optimal experimental design frameworks
+
+---
+
+## 7. Planned Estimation Workflow Inspired by FOPDT Regression
+
+The [APMonitor TCLab](https://apmonitor.com/pdc/index.php/Main/TCLabRegression)
+and [FOPDT](https://apmonitor.com/pdc/index.php/Main/FirstOrderSystems)
+examples suggest a practical workflow for our
+planned parameter estimation study:
+
+1. Use a low-order, input-output interpretation first.
+2. Estimate a process gain, time constant, and dead time.
+3. Refine those estimates by direct optimization against data.
+4. Only then map the result back to a physics-based parameterization.
+
+This is especially helpful because the APMONITOR notes emphasize that:
+
+* first-order-plus-dead-time models are a common empirical description of stable processes
+* graphical fitting from a step response can provide a quick initial guess
+* optimization-based regression is preferred when the data are more complicated
+* the objective is naturally an SSE-style fit between measured and simulated output
+
+### 7.1 Graphical Intuition
+
+For step-test data, the FOPDT graphical recipe is:
+
+* estimate the gain from $\Delta y / \Delta u$
+* estimate the dead time from the response delay
+* estimate the time constant from the 63.2% rise point
+
+Even when we do not use a pure step test, this picture is still useful for
+initializing the TCLab model:
+
+* $K$ plays the role of the steady-state input-output gain
+* $\tau$ controls the dominant response speed
+* $\theta$ captures the lag between heater actuation and sensor response
+
+### 7.2 Optimization Refinement
+
+The next step is direct regression:
+
+$$
+J(\theta) = \sum_i \left(y_i^{\mathrm{meas}} - y_i^{\mathrm{sim}}(\theta)\right)^2
+$$
+
+This matches the optimization idea used in the
+[APMonitor FOPDT optimization notebook](https://apmonitor.com/pdc/index.php/Main/FirstOrderOptimization)
+and
+is the same spirit as our ParmEst-based workflow.
+
+For the TCLab study, the practical plan is:
+
+* fit the delayed single-state model in the $K, \tau, \theta$ form
+* compare against the physics form $U_a, C_p, \theta$
+* use multistart when the fit is sensitive to initialization
+* inspect covariance and parameter tradeoffs to judge practical identifiability
+
+### 7.3 Mapping Between the Two Parameterizations
+
+The two parameterizations remain tied together by:
+
+$$
+K = \frac{\alpha P}{U_a}
+$$
+
+$$
+\tau = \frac{C_p}{U_a}
+$$
+
+$$
+U_a = \frac{\alpha P}{K}
+$$
+
+$$
+C_p = \frac{\alpha P \tau}{K}
+$$
+
+This means we can estimate the model in whichever form is numerically easier,
+then transform the parameters for interpretation.
+
+### 7.4 Why This Matters for the TCLab
+
+The FOPDT framing gives us a clean benchmark for what the reduced TCLab model
+should do:
+
+* capture the dominant rise time
+* capture the apparent delay
+* preserve a physically meaningful gain interpretation
+* avoid over-parameterizing the hidden heater dynamics
+
+That is exactly the motivation for the delayed single-state reformulation.
+
+## Sources
+
+The approach in this note is informed by the following APMonitor pages:
+
+1. [TCLab FOPDT Regression](https://apmonitor.com/pdc/index.php/Main/TCLabRegression)
+2. [Graphical Method: FOPDT to Step Test](https://apmonitor.com/pdc/index.php/Main/FirstOrderGraphical)
+3. [Optimization Method: FOPDT to Data](https://apmonitor.com/pdc/index.php/Main/FirstOrderOptimization)
+4. [First Order Plus Dead Time (FOPDT)](https://apmonitor.com/pdc/index.php/Main/FirstOrderSystems)

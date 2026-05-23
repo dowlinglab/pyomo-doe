@@ -10,6 +10,9 @@ This folder is a scratchpad for working notes and small write-ups. The current f
 - `reformulating_tclab_second_order_as_delayed_single_state_system.md`: the write-up describing the delayed single-state reformulation of the TCLab model
 - `tclab_reformulated.py`: the standalone TCLab model and estimation script
 
+If you want the main narrative for the planned approach, start with
+`reformulating_tclab_second_order_as_delayed_single_state_system.md`.
+
 ### TCLab Results
 
 The TCLab estimation script writes its output to `skunk_works/tclab_reformulated_results/`.
