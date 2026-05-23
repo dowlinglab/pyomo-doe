@@ -24,7 +24,7 @@ This workshop is intended for researchers and practitioners interested in digita
 
 [*Register Here*](https://acc2026.a2c2.org/registration)
 
-We are scheduled for a [half-day afternoon workshop](https://acc2026.a2c2.org/program/workshop-listing#session-6-17) on **Tuesday, May 26, 2026**. The schedule below assumes a 1pm start time and will be updated once the conference schedule is finalized.
+We are scheduled for a [half-day afternoon workshop](https://acc2026.a2c2.org/program/workshop-listing#session-6-17) on **Tuesday, May 26, 2026**. Attendees should *eat lunch on their own* before the workshop starts.
 
 | Time | Topic |
 | ---- | -------- |
