@@ -9,7 +9,7 @@ This folder is a scratchpad for working notes and small write-ups. The current f
 - `README.md`: this file
 - `reformulating_tclab_second_order_as_delayed_single_state_system.md`: the write-up describing the delayed single-state reformulation of the TCLab model
 - `tclab_reformulated.py`: the standalone TCLab model and estimation script
-- `tclab_objective_contours.py`: the standalone contour-analysis script for SSE surfaces over `K`, `tau`, and fixed `theta`
+- `tclab_objective_contours.py`: the standalone contour-analysis script for SSE sensitivity surfaces over `K`, `tau`, and `theta`, with switchable `K-tau` and `theta-tau` slice views
 
 If you want the main narrative for the planned approach, start with
 `reformulating_tclab_second_order_as_delayed_single_state_system.md`.
@@ -38,15 +38,34 @@ The contour-analysis script writes its output to `skunk_works/tclab_objective_co
 
 That directory will contain:
 
-- `tclab_objective_contours_sine_delay2.png`: contour figure for the sine dataset with `delay_order=2`
-- `tclab_objective_contours_sine_delay2.csv`: summary table of best grid points for the sine dataset with `delay_order=2`
-- `tclab_objective_contours_sine_delay3.png`: contour figure for the sine dataset with `delay_order=3`
-- `tclab_objective_contours_sine_delay3.csv`: summary table of best grid points for the sine dataset with `delay_order=3`
-- `tclab_objective_contours_step_delay2.png`: contour figure for the step dataset with `delay_order=2`
-- `tclab_objective_contours_step_delay2.csv`: summary table of best grid points for the step dataset with `delay_order=2`
-- `tclab_objective_contours_step_delay3.png`: contour figure for the step dataset with `delay_order=3`
-- `tclab_objective_contours_step_delay3.csv`: summary table of best grid points for the step dataset with `delay_order=3`
+- `tclab_objective_contours_grid.csv`: the full 3D sensitivity table over `K`, `tau`, and `theta`
+- `tclab_objective_contours_sine_delay2_ktau.png`: `K-tau` contour figure for the sine dataset with `delay_order=2`
+- `tclab_objective_contours_sine_delay2_ktau.csv`: slice summary for the sine dataset with `delay_order=2`
+- `tclab_objective_contours_sine_delay2_thetatau.png`: `theta-tau` contour figure for the sine dataset with `delay_order=2`
+- `tclab_objective_contours_sine_delay2_thetatau.csv`: slice summary for the sine dataset with `delay_order=2`
+- `tclab_objective_contours_sine_delay3_ktau.png`: `K-tau` contour figure for the sine dataset with `delay_order=3`
+- `tclab_objective_contours_sine_delay3_ktau.csv`: slice summary for the sine dataset with `delay_order=3`
+- `tclab_objective_contours_sine_delay3_thetatau.png`: `theta-tau` contour figure for the sine dataset with `delay_order=3`
+- `tclab_objective_contours_sine_delay3_thetatau.csv`: slice summary for the sine dataset with `delay_order=3`
+- `tclab_objective_contours_step_delay2_ktau.png`: `K-tau` contour figure for the step dataset with `delay_order=2`
+- `tclab_objective_contours_step_delay2_ktau.csv`: slice summary for the step dataset with `delay_order=2`
+- `tclab_objective_contours_step_delay2_thetatau.png`: `theta-tau` contour figure for the step dataset with `delay_order=2`
+- `tclab_objective_contours_step_delay2_thetatau.csv`: slice summary for the step dataset with `delay_order=2`
+- `tclab_objective_contours_step_delay3_ktau.png`: `K-tau` contour figure for the step dataset with `delay_order=3`
+- `tclab_objective_contours_step_delay3_ktau.csv`: slice summary for the step dataset with `delay_order=3`
+- `tclab_objective_contours_step_delay3_thetatau.png`: `theta-tau` contour figure for the step dataset with `delay_order=3`
+- `tclab_objective_contours_step_delay3_thetatau.csv`: slice summary for the step dataset with `delay_order=3`
 - `tclab_objective_contours_summary.csv`: combined summary table across delay orders
+
+What the contour sweep showed:
+
+- the objective surfaces are broad and ridge-like rather than sharply curved, which is a classic estimability warning sign
+- the sine-wave data provides more structure than the step data, especially in the `K-tau` slices
+- the step-test slices are comparatively flat in `theta`, so the delay is weakly informed by that experiment alone
+- `delay_order=2` and `delay_order=3` often produce very similar best SSE values, which means the data do not strongly prefer one lag-chain order over the other
+- the best slices cluster in a narrow band of `K` values near `0.75` to `0.80`, while `tau` and `theta` can trade off against one another
+
+The contour plots therefore make the estimability issue very visible: several parameter combinations produce nearly indistinguishable fits, especially once the delay is allowed to move.
 
 ## TCLab Multistart Findings
 
@@ -85,6 +104,60 @@ This tells us:
 The sweep log is saved at:
 
 - `tclab_reformulated_console.log`
+
+### Contour-Informed Bounded Revisit
+
+After the contour study, we tightened the delayed-model bounds to the region
+suggested by the SSE surfaces and reran the multistart comparison with
+`latin_hypercube` sampling and 10 restarts.
+
+This second pass was much more stable:
+
+- both `delay_order=2` and `delay_order=3` converged to the same low-delay basin in the `K, tau, theta` formulation
+- the fitted values stayed near `K ≈ 0.77`, `tau ≈ 165 s`, and `theta ≈ 16 s`
+- the transformed physics parameters were consistent with the same solution basin
+- the earlier runaway-delay behavior disappeared once the bounds were narrowed to the contour-informed box
+
+| Delay Order | Parameterization | Best Objective | Fit Quality | Notes |
+| --- | --- | --- | --- | --- |
+| 2 | physics (`Ua`, `Cp`, `theta`) | 465.151 | Good | Converged inside the contour-informed bounds |
+| 2 | input-output (`K`, `tau`, `theta`) | 465.151 | Good | Same low-delay basin as the physics form |
+| 3 | physics (`Ua`, `Cp`, `theta`) | 431.808 | Good | Converged inside the contour-informed bounds |
+| 3 | input-output (`K`, `tau`, `theta`) | 431.808 | Good | Same low-delay basin as the physics form |
+
+Relevant log file:
+
+- `tclab_reformulated_console_bounds.log`
+
+This is the most important practical update so far: the contour plots did not just explain the estimability issue, they also gave us a usable parameter box that makes the estimation problem behave much better.
+
+### Joint Sine + Step Fit
+
+We also ran a joint Parmest estimate using both the sine-wave and step-test experiments together, with a shared parameter set and `delay_order=2`.
+
+For the first pass we used the `K, tau, theta` formulation only, because that was the most stable form in the single-experiment studies.
+
+The joint fit converged cleanly to a low-delay compromise between the two experiments:
+
+- `K ≈ 0.779`
+- `tau ≈ 167.4 s`
+- `theta ≈ 15.55 s`
+- objective value `526.98`
+- `RMSE ≈ 0.7648 °C`
+
+The run was saved in:
+
+- `tclab_reformulated_results/joint_sine_step/`
+
+The joint fit plot is here:
+
+- `tclab_reformulated_results/joint_sine_step/io_delay2_SSE_fit.png`
+
+The covariance plot is here:
+
+- `tclab_reformulated_results/joint_sine_step/io_delay2_SSE_cov.png`
+
+This is a good sign: the shared-parameter fit is still physically reasonable, and the contours had already suggested that the low-delay basin was the one worth keeping.
 
 ## What We Have Learned So Far
 
@@ -183,7 +256,12 @@ What to remember when resuming:
 
 Suggested resume plan:
 
-1. Read the multistart restart CSV files first, especially for the `delay_order=2` physics case and the `delay_order=3` runs.
-2. Try `--multistart-method latin_hypercube` with the same `--n-restarts 10` sweep.
-3. If the `delay_order=3` cases are still poor, tighten the scope to `delay_order=2` only until the restart strategy is improved.
-4. Once the multistart behavior looks stable, migrate the workflow into a notebook and keep the script as the batch runner.
+1. Fit the joint sine+step model with `delay_order=3`.
+2. Try fitting the joint experiments with the physics parameterization `Ua, Cp, theta`.
+3. Compute the FIM for the sine test only and for the sine test plus step test.
+4. Try optimal experiment design using those two FIM cases.
+5. Try optimal experiment design with no prior.
+6. Read the multistart restart CSV files first, especially for the `delay_order=2` physics case and the `delay_order=3` runs.
+7. Try `--multistart-method latin_hypercube` with the same `--n-restarts 10` sweep.
+8. If the `delay_order=3` cases are still poor, tighten the scope to `delay_order=2` only until the restart strategy is improved.
+9. Once the multistart behavior looks stable, migrate the workflow into a notebook and keep the script as the batch runner.

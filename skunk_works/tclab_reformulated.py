@@ -125,15 +125,33 @@ def default_delayed_theta(parameterization: str = "physics") -> dict[str, float]
 
     if parameterization == "physics":
         return {
-            "Ua": 0.030,
-            "Cp": 7.50,
+            "Ua": 0.040,
+            "Cp": 6.50,
             "theta": 15.0,
         }
     if parameterization == "io":
         return {
-            "K": 1.0,
-            "tau": 250.0,
+            "K": 0.80,
+            "tau": 165.0,
             "theta": 15.0,
+        }
+    raise ValueError("parameterization must be 'physics' or 'io'")
+
+
+def contour_informed_bounds(parameterization: str) -> dict[str, tuple[float, float]]:
+    """Return contour-informed bounds for the delayed single-state model."""
+
+    if parameterization == "physics":
+        return {
+            "Ua": (0.03, 0.05),
+            "Cp": (4.0, 10.0),
+            "theta": (10.0, 30.0),
+        }
+    if parameterization == "io":
+        return {
+            "K": (0.68, 0.92),
+            "tau": (140.0, 190.0),
+            "theta": (10.0, 30.0),
         }
     raise ValueError("parameterization must be 'physics' or 'io'")
 
@@ -345,20 +363,21 @@ def build_reformulated_tclab_model(
     if fix_input:
         m.u.fix()
 
+    bounds = contour_informed_bounds(parameterization)
     m.delay_index = RangeSet(1, delay_order)
     m.z = Var(m.delay_index, m.t, bounds=(0, 100), initialize=float(data.u[0]))
     m.dzdt = DerivativeVar(m.z, wrt=m.t)
 
     if parameterization == "physics":
-        m.Ua = Var(bounds=(1e-6, 0.1), initialize=float(theta["Ua"]))
-        m.Cp = Var(bounds=(1e-3, 100.0), initialize=float(theta["Cp"]))
-        m.theta = Var(bounds=(1e-6, 1e7), initialize=float(theta["theta"]))
+        m.Ua = Var(bounds=bounds["Ua"], initialize=float(theta["Ua"]))
+        m.Cp = Var(bounds=bounds["Cp"], initialize=float(theta["Cp"]))
+        m.theta = Var(bounds=bounds["theta"], initialize=float(theta["theta"]))
         if fix_parameters:
             _fix_parameters(m, theta, ["Ua", "Cp", "theta"])
     else:
-        m.K = Var(bounds=(1e-6, 100.0), initialize=float(theta["K"]))
-        m.tau = Var(bounds=(1e-6, 1e5), initialize=float(theta["tau"]))
-        m.theta = Var(bounds=(1e-6, 1e7), initialize=float(theta["theta"]))
+        m.K = Var(bounds=bounds["K"], initialize=float(theta["K"]))
+        m.tau = Var(bounds=bounds["tau"], initialize=float(theta["tau"]))
+        m.theta = Var(bounds=bounds["theta"], initialize=float(theta["theta"]))
         if fix_parameters:
             _fix_parameters(m, theta, ["K", "tau", "theta"])
 
@@ -490,6 +509,36 @@ def load_sine_wave_dataset(
         Tamb=float(df["T1"].values[0]),
         P=200.0,
     )
+
+
+def load_step_test_dataset(
+    csv_path: str | Path | None = None,
+) -> TCLabData:
+    """Load the step-test TCLab dataset used in the contour study."""
+
+    if csv_path is None:
+        csv_path = Path(__file__).resolve().parents[1] / "data" / "tclab_step_test.csv"
+    csv_path = Path(csv_path)
+    df = pd.read_csv(csv_path)
+    return TCLabData(
+        name="Step Test for Heater 1",
+        time=df["Time"].values,
+        T=df["T1"].values,
+        u=df["Q1"].values,
+        Tamb=float(df["T1"].values[0]),
+        P=200.0,
+    )
+
+
+def load_named_dataset(name: str) -> TCLabData:
+    """Load one of the supported TCLab datasets by name."""
+
+    key = name.lower().strip()
+    if key in {"sine", "sine_wave", "parmest"}:
+        return load_sine_wave_dataset()
+    if key in {"step", "step_test"}:
+        return load_step_test_dataset()
+    raise ValueError("Supported datasets are 'sine' and 'step'.")
 
 
 def find_ipopt_executable() -> Path | None:
@@ -625,17 +674,9 @@ def theta_bounds(
             "CpS": (1e-3, 100.0),
         }
     if variant == "reformulated" and parameterization == "physics":
-        return {
-            "Ua": (1e-6, 0.1),
-            "Cp": (1e-3, 100.0),
-            "theta": (1e-6, 1e7),
-        }
+        return contour_informed_bounds(parameterization)
     if variant == "reformulated" and parameterization == "io":
-        return {
-            "K": (1e-6, 100.0),
-            "tau": (1e-6, 1e5),
-            "theta": (1e-6, 1e7),
-        }
+        return contour_informed_bounds(parameterization)
     raise ValueError("Unsupported variant / parameterization combination.")
 
 
@@ -802,6 +843,49 @@ def plot_fit_quality(
     return fig
 
 
+def plot_joint_fit_quality(
+    datasets: Sequence[TCLabData],
+    fitted_frames: Sequence[pd.DataFrame],
+    title: str,
+) -> plt.Figure:
+    """Plot measured vs fitted temperatures for multiple experiments."""
+
+    n = len(datasets)
+    fig, axes = plt.subplots(
+        nrows=n,
+        ncols=2,
+        figsize=(14, max(3.8 * n, 4.5)),
+        constrained_layout=True,
+        sharex="col",
+    )
+    if n == 1:
+        axes = np.array([axes])
+
+    for row, (data, fitted) in enumerate(zip(datasets, fitted_frames)):
+        ax_fit = axes[row, 0]
+        ax_res = axes[row, 1]
+        residuals = np.asarray(data.T) - np.asarray(fitted["Tm"])
+
+        label = data.name or f"Experiment {row + 1}"
+        ax_fit.plot(data.time, data.T, "o", ms=4, label=f"measured: {label}")
+        ax_fit.plot(fitted["time"], fitted["Tm"], lw=2.5, label="fitted")
+        ax_fit.set_ylabel("Temperature (°C)")
+        ax_fit.set_title(label)
+        ax_fit.grid(True, alpha=0.3)
+        ax_fit.legend(loc="best")
+
+        ax_res.axhline(0.0, color="black", lw=1)
+        ax_res.plot(data.time, residuals, lw=1.8, color="tab:red")
+        ax_res.set_ylabel("Residual (°C)")
+        ax_res.set_title(f"Residuals: {label}")
+        ax_res.grid(True, alpha=0.3)
+
+    axes[-1, 0].set_xlabel("Time (s)")
+    axes[-1, 1].set_xlabel("Time (s)")
+    fig.suptitle(title)
+    return fig
+
+
 def plot_covariance_heatmap(cov: pd.DataFrame, title: str) -> plt.Figure:
     """Plot a covariance matrix as a labeled heatmap."""
 
@@ -855,7 +939,7 @@ def plot_multistart_objectives(results_df: pd.DataFrame, title: str) -> plt.Figu
 
 
 def estimate_variant(
-    data: TCLabData,
+    data: TCLabData | Sequence[TCLabData],
     variant: str,
     delay_order: int,
     parameterization: str,
@@ -882,22 +966,35 @@ def estimate_variant(
     if theta0 is None:
         theta0 = default_delayed_theta(parameterization)
 
+    if isinstance(data, TCLabData):
+        datasets = [data]
+    else:
+        datasets = list(data)
+    if len(datasets) == 0:
+        raise ValueError("At least one dataset is required for estimation.")
+    reference_P = float(datasets[0].P)
+    if any(not np.isclose(float(dataset.P), reference_P) for dataset in datasets[1:]):
+        raise ValueError("All joint datasets must use the same heater power P.")
+
     solver_options = {} if solver_options is None else dict(solver_options)
 
-    experiment = TCLabParmestExperiment(
-        data=data,
-        variant=variant,
-        parameterization=parameterization,
-        delay_order=delay_order,
-        alpha=alpha,
-        measurement_error=measurement_error,
-        theta=theta0,
-        discretize=True,
-        fix_input=True,
-    )
+    experiments = [
+        TCLabParmestExperiment(
+            data=dataset,
+            variant=variant,
+            parameterization=parameterization,
+            delay_order=delay_order,
+            alpha=alpha,
+            measurement_error=measurement_error,
+            theta=theta0,
+            discretize=True,
+            fix_input=True,
+        )
+        for dataset in datasets
+    ]
 
     pest = parmest.Estimator(
-        [experiment], obj_function=objective, tee=tee, solver_options=solver_options
+        experiments, obj_function=objective, tee=tee, solver_options=solver_options
     )
 
     multistart_results = None
@@ -933,9 +1030,10 @@ def estimate_variant(
             f"\nMultistart best objective ({multistart_sampling_method}, n_restarts={n_restarts}): "
             f"{multistart_best_obj:.6g}"
         )
-        experiment.theta = best_theta_dict
+        for experiment in experiments:
+            experiment.theta = best_theta_dict
         pest = parmest.Estimator(
-            [experiment], obj_function=objective, tee=tee, solver_options=solver_options
+            experiments, obj_function=objective, tee=tee, solver_options=solver_options
         )
         theta0 = best_theta_dict
 
@@ -949,16 +1047,26 @@ def estimate_variant(
     theta_hat = pd.Series(theta_hat)
     cov = pd.DataFrame(cov).loc[theta_hat.index, theta_hat.index]
 
-    fitted_model = solve_fitted_model(
-        data=data,
-        theta=theta_hat,
-        variant=variant,
-        parameterization=parameterization,
-        delay_order=delay_order,
-        alpha=alpha,
+    fitted_frames: list[pd.DataFrame] = []
+    for index, dataset in enumerate(datasets, start=1):
+        fitted_model = solve_fitted_model(
+            data=dataset,
+            theta=theta_hat,
+            variant=variant,
+            parameterization=parameterization,
+            delay_order=delay_order,
+            alpha=alpha,
+        )
+        fitted = solution_to_dataframe(fitted_model)
+        fitted["experiment"] = dataset.name or f"Experiment {index}"
+        fitted_frames.append(fitted)
+    fitted_all = pd.concat(fitted_frames, ignore_index=True)
+    residuals = np.concatenate(
+        [
+            np.asarray(dataset.T) - np.asarray(fitted_frame["Tm"])
+            for dataset, fitted_frame in zip(datasets, fitted_frames)
+        ]
     )
-    fitted = solution_to_dataframe(fitted_model)
-    residuals = np.asarray(data.T) - np.asarray(fitted["Tm"])
     rmse = float(np.sqrt(np.mean(residuals**2)))
     mae = float(np.mean(np.abs(residuals)))
 
@@ -967,7 +1075,7 @@ def estimate_variant(
         covariance=cov,
         parameterization=parameterization,
         alpha=alpha,
-        P=data.P,
+        P=reference_P,
     )
 
     fit_title = (
@@ -976,7 +1084,10 @@ def estimate_variant(
     cov_title = (
         f"Covariance: {parameterization} / delay_order={delay_order} / obj={objective}"
     )
-    fit_fig = plot_fit_quality(data, fitted, fit_title)
+    if len(datasets) == 1:
+        fit_fig = plot_fit_quality(datasets[0], fitted_frames[0], fit_title)
+    else:
+        fit_fig = plot_joint_fit_quality(datasets, fitted_frames, fit_title)
     cov_fig = plot_covariance_heatmap(cov, cov_title)
     if multistart_results is not None:
         multistart_title = (
@@ -1003,7 +1114,9 @@ def estimate_variant(
     print(transformed_cov.to_string())
     print(f"\nFit quality: RMSE={rmse:.4f} °C, MAE={mae:.4f} °C")
     print("Approximate 95% CIs for estimated parameters:")
-    print(confidence_interval_from_covariance(theta_hat, cov, len(data.time)).to_string())
+    print(
+        confidence_interval_from_covariance(theta_hat, cov, len(fitted_all)).to_string()
+    )
 
     return EstimationResult(
         variant=variant,
@@ -1014,7 +1127,7 @@ def estimate_variant(
         covariance=cov,
         transformed_theta=transformed_theta,
         transformed_covariance=transformed_cov,
-        fitted_data=fitted,
+        fitted_data=fitted_all,
         fit_figure=fit_fig,
         covariance_figure=cov_fig,
         multistart_figure=multistart_fig,
@@ -1104,6 +1217,26 @@ def main(argv: Sequence[str] | None = None) -> int:
             "Estimate the delayed TCLab model in both parameterizations using the "
             "sine-wave dataset from parmest.ipynb."
         )
+    )
+    parser.add_argument(
+        "--datasets",
+        nargs="*",
+        choices=["sine", "step"],
+        default=["sine"],
+        help=(
+            "Datasets to fit. Use one value for a single-experiment fit or "
+            "multiple values for a joint fit."
+        ),
+    )
+    parser.add_argument(
+        "--parameterizations",
+        nargs="*",
+        choices=["physics", "io"],
+        default=None,
+        help=(
+            "Parameterizations to fit. Defaults to both for a single dataset, "
+            "or io-only for a joint fit."
+        ),
     )
     parser.add_argument(
         "--objective",
@@ -1214,11 +1347,21 @@ def main(argv: Sequence[str] | None = None) -> int:
 
     def run() -> int:
         ensure_ipopt_on_path()
-        data = load_sine_wave_dataset()
+        datasets = [load_named_dataset(name) for name in args.datasets]
+        if len(datasets) == 1:
+            default_parameterizations = ["physics", "io"]
+        else:
+            default_parameterizations = ["io"]
+        parameterizations = args.parameterizations or default_parameterizations
+
         solver_options: dict[str, Any] = {"max_iter": args.max_iter}
         if args.linear_solver:
             solver_options["linear_solver"] = args.linear_solver
-        args.output_dir.mkdir(parents=True, exist_ok=True)
+        run_output_dir = args.output_dir
+        if len(datasets) > 1:
+            dataset_tag = "_".join(name.lower() for name in args.datasets)
+            run_output_dir = args.output_dir / f"joint_{dataset_tag}"
+        run_output_dir.mkdir(parents=True, exist_ok=True)
 
         results = []
         if args.delay_orders is not None and len(args.delay_orders) > 0:
@@ -1229,64 +1372,46 @@ def main(argv: Sequence[str] | None = None) -> int:
             delay_orders = [args.delay_order]
 
         for delay_order in delay_orders:
-            physics_result = estimate_variant(
-                data=data,
-                variant="reformulated",
-                delay_order=delay_order,
-                parameterization="physics",
-                objective=args.objective,
-                alpha=args.alpha,
-                measurement_error=args.measurement_error,
-                tee=args.tee,
-                use_multistart=args.multistart,
-                multistart_sampling_method=args.multistart_method,
-                n_restarts=args.n_restarts,
-                seed=args.seed,
-                solver_options=solver_options,
-                save_multistart_results=args.save_multistart_results,
-                multistart_results_path=(
-                    args.output_dir
-                    / f"physics_delay{delay_order}_{args.objective}_{args.multistart_method}_multistart.csv"
-                    if args.multistart
-                    else None
-                ),
-            )
-            results.append(physics_result)
-
-            if not args.multistart:
-                print(
-                    "\nWarm-starting the io parameterization from the transformed physics estimate."
+            previous_result: EstimationResult | None = None
+            for parameterization in parameterizations:
+                if parameterization == "io" and previous_result is not None:
+                    theta0 = previous_result.transformed_theta.to_dict()
+                else:
+                    theta0 = None
+                    if len(datasets) > 1 and parameterization == "io":
+                        print(
+                            "\nUsing contour-informed initial guess for the joint io fit."
+                        )
+                result = estimate_variant(
+                    data=datasets if len(datasets) > 1 else datasets[0],
+                    variant="reformulated",
+                    delay_order=delay_order,
+                    parameterization=parameterization,
+                    objective=args.objective,
+                    alpha=args.alpha,
+                    measurement_error=args.measurement_error,
+                    tee=args.tee,
+                    theta0=theta0,
+                    use_multistart=args.multistart,
+                    multistart_sampling_method=args.multistart_method,
+                    n_restarts=args.n_restarts,
+                    seed=args.seed,
+                    solver_options=solver_options,
+                    save_multistart_results=args.save_multistart_results,
+                    multistart_results_path=(
+                        run_output_dir
+                        / f"{parameterization}_delay{delay_order}_{args.objective}_{args.multistart_method}_multistart.csv"
+                        if args.multistart
+                        else None
+                    ),
                 )
-            io_result = estimate_variant(
-                data=data,
-                variant="reformulated",
-                delay_order=delay_order,
-                parameterization="io",
-                objective=args.objective,
-                alpha=args.alpha,
-                measurement_error=args.measurement_error,
-                tee=args.tee,
-                theta0=physics_result.transformed_theta.to_dict(),
-                use_multistart=args.multistart,
-                multistart_sampling_method=args.multistart_method,
-                n_restarts=args.n_restarts,
-                seed=args.seed,
-                solver_options=solver_options,
-                save_multistart_results=args.save_multistart_results,
-                multistart_results_path=(
-                    args.output_dir
-                    / f"io_delay{delay_order}_{args.objective}_{args.multistart_method}_multistart.csv"
-                    if args.multistart
-                    else None
-                ),
-            )
-            results.append(io_result)
+                results.append(result)
+                previous_result = result
 
         for result in results:
             result.fit_figure.canvas.draw_idle()
             result.covariance_figure.canvas.draw_idle()
 
-        args.output_dir.mkdir(parents=True, exist_ok=True)
         for result in results:
             fit_name = (
                 f"{result.parameterization}_delay{result.delay_order}_{args.objective}_fit.png"
@@ -1294,8 +1419,8 @@ def main(argv: Sequence[str] | None = None) -> int:
             cov_name = (
                 f"{result.parameterization}_delay{result.delay_order}_{args.objective}_cov.png"
             )
-            fit_path = args.output_dir / fit_name
-            cov_path = args.output_dir / cov_name
+            fit_path = run_output_dir / fit_name
+            cov_path = run_output_dir / cov_name
             result.fit_figure.savefig(fit_path, dpi=200, bbox_inches="tight")
             result.covariance_figure.savefig(cov_path, dpi=200, bbox_inches="tight")
             print(f"Saved fit figure to {fit_path}")
@@ -1304,7 +1429,7 @@ def main(argv: Sequence[str] | None = None) -> int:
                 multistart_name = (
                     f"{result.parameterization}_delay{result.delay_order}_{args.objective}_{args.multistart_method}_multistart.png"
                 )
-                multistart_path = args.output_dir / multistart_name
+                multistart_path = run_output_dir / multistart_name
                 result.multistart_figure.savefig(
                     multistart_path, dpi=200, bbox_inches="tight"
                 )
@@ -1316,8 +1441,8 @@ def main(argv: Sequence[str] | None = None) -> int:
             plt.close("all")
 
         summary, covariance_summary = build_summary_tables(results)
-        summary_csv = args.output_dir / "tclab_reformulated_fit_summary.csv"
-        covariance_csv = args.output_dir / "tclab_reformulated_covariance_summary.csv"
+        summary_csv = run_output_dir / "tclab_reformulated_fit_summary.csv"
+        covariance_csv = run_output_dir / "tclab_reformulated_covariance_summary.csv"
         summary.to_csv(summary_csv, index=False)
         covariance_summary.to_csv(covariance_csv, index=False)
         print(f"Saved fit summary to {summary_csv}")

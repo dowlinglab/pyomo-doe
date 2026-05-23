@@ -553,7 +553,8 @@ That is exactly the motivation for the delayed single-state reformulation.
 ### 7.5 Regression Objective Contours for TCLab
 
 A useful next diagnostic is to map the least-squares objective as a function
-of the gain and time constant while holding the delay fixed.
+of the gain, time constant, and delay in a way that supports two kinds of
+two-dimensional slices.
 
 For the sine-wave and step-test datasets, the plan is to evaluate:
 
@@ -563,27 +564,35 @@ J(K,\tau;\theta)
 \sum_i \left(y_i^{\mathrm{meas}} - y_i^{\mathrm{sim}}(K,\tau,\theta)\right)^2
 $$
 
-on a grid of $(K,\tau)$ values for a fixed set of delays:
+on a 3D grid of $(K,\tau,\theta)$ values and then slice it in two different
+ways:
 
 $$
-\theta \in \{10,\ 15,\ 20,\ 25,\ 30\}\ \mathrm{s}
+\theta \in [10,\ 30]\ \mathrm{s}
 $$
 
-The initial plotting bounds will be:
+The master-grid bounds will be:
 
-* $K \in [0.5, 2.0]$
+* $K \in [0.5, 0.9]$
 * $\tau \in [120, 200]\ \mathrm{s}$
+* $\theta \in [10, 30]\ \mathrm{s}$
 
 These bounds are intentionally a little wider than the “typical value” ranges
 often quoted for TCLab so that the contour shape is visible even when the
 objective surface is broad or shifted away from the nominal values.
 
-The figure layout will be:
+The figure layouts will be:
 
-* one figure per delay order
-* one row per fixed $\theta$ value
-* left column: contour plot of the SSE over $(K,\tau)$
-* right column: model prediction at the grid point with the lowest SSE
+* `K-tau` mode:
+  * one figure per delay order
+  * one row per fixed $\theta$ value, using $\theta = \{10,15,20,25,30\}\ \mathrm{s}$
+  * left column: contour plot of the SSE over $(K,\tau)$
+  * right column: model prediction at the lowest SSE on that slice
+* `theta-tau` mode:
+  * one figure per delay order
+  * one row per fixed $K$ value, using $K = \{0.75,0.80,0.85\}$
+  * left column: contour plot of the SSE over $(\theta,\tau)$
+  * right column: model prediction at the lowest SSE on that slice
 
 The marker on the contour plot should identify the best grid point, and the
 right-hand panel should show the corresponding simulation against the measured
@@ -593,6 +602,8 @@ For the first pass:
 
 * use both the sine-wave and step-test datasets
 * use unweighted SSE
+* evaluate the 3D sensitivity grid once and save it to CSV
+* build both contour orientations from the same saved sensitivity table
 * start with the second-order delay approximation
 * keep the implementation modular so that a future optimization-based search
   can replace the grid search without changing the plotting code
@@ -600,6 +611,30 @@ For the first pass:
 This contour study should help us compare the second-order and third-order
 delay approximations by showing how flat or well-conditioned the objective
 surface is for each delay order.
+
+### 7.6 Joint Sine-Wave and Step-Test Estimation
+
+With the contour-informed bounds in place, the next step is to fit the
+sine-wave and step-test experiments jointly with a shared parameter set.
+
+For the first pass, we use the delayed single-state input-output form
+$(K,\tau,\theta)$ with the two experiments combined in one Parmest objective.
+This is the cleanest way to check whether the low-delay basin remains stable
+when the model is forced to explain both datasets at once.
+
+The first joint fit converged to a physically reasonable compromise:
+
+* $K \approx 0.779$
+* $\tau \approx 167.4\ \mathrm{s}$
+* $\theta \approx 15.55\ \mathrm{s}$
+
+with an objective value of about $526.98$ and an RMSE of about
+$0.765^\circ\mathrm{C}$.
+
+The key point is that the joint estimate stayed in the same low-delay basin
+suggested by the contour plots, which is exactly what we wanted to confirm
+before trying the physics-based $(U_a, C_p, \theta)$ form on the combined
+dataset.
 
 ## Sources
 

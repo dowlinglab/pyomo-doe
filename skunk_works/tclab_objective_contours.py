@@ -31,7 +31,7 @@ if str(ROOT) not in sys.path:
 
 import matplotlib.pyplot as plt
 from matplotlib.colors import LogNorm
-from scipy.interpolate import interp1d
+from scipy.interpolate import RegularGridInterpolator, interp1d
 
 
 @dataclass
@@ -137,6 +137,34 @@ class ContourConfig:
     n_tau: int
 
 
+@dataclass(frozen=True)
+class MasterGridConfig:
+    """Configuration for the 3D sensitivity grid."""
+
+    dataset_key: str
+    dataset_label: str
+    delay_order: int
+    k_values: np.ndarray
+    tau_values: np.ndarray
+    theta_values: np.ndarray
+
+
+@dataclass
+class MasterGridResult:
+    """Result of the 3D sensitivity sweep."""
+
+    config: MasterGridConfig
+    sse_tensor: np.ndarray
+
+    def interpolator(self) -> RegularGridInterpolator:
+        return RegularGridInterpolator(
+            (self.config.k_values, self.config.tau_values, self.config.theta_values),
+            self.sse_tensor,
+            bounds_error=False,
+            fill_value=None,
+        )
+
+
 @dataclass
 class ContourSliceResult:
     """Result for one fixed-theta contour slice."""
@@ -225,6 +253,302 @@ def objective_sse(data: TCLabData, prediction: pd.DataFrame) -> float:
 
     residuals = np.asarray(data.T, dtype=float) - np.asarray(prediction["Tm"], dtype=float)
     return float(np.sum(residuals**2))
+
+
+def evaluate_master_grid(
+    data: TCLabData,
+    config: MasterGridConfig,
+) -> MasterGridResult:
+    """Evaluate the full K-tau-theta grid once."""
+
+    sse_tensor = np.empty(
+        (
+            len(config.k_values),
+            len(config.tau_values),
+            len(config.theta_values),
+        ),
+        dtype=float,
+    )
+
+    for i, K in enumerate(config.k_values):
+        for j, tau in enumerate(config.tau_values):
+            for k, theta in enumerate(config.theta_values):
+                prediction = simulate_delayed_fopdt(
+                    data=data,
+                    delay_order=config.delay_order,
+                    K=float(K),
+                    tau=float(tau),
+                    theta=float(theta),
+                )
+                sse_tensor[i, j, k] = objective_sse(data, prediction)
+        print(f"  completed K slice {i + 1}/{len(config.k_values)} for delay_order={config.delay_order}")
+
+    return MasterGridResult(config=config, sse_tensor=sse_tensor)
+
+
+def master_grid_to_dataframe(grid: MasterGridResult) -> pd.DataFrame:
+    """Flatten the master grid to a tabular CSV-friendly format."""
+
+    k_grid, tau_grid, theta_grid = np.meshgrid(
+        grid.config.k_values,
+        grid.config.tau_values,
+        grid.config.theta_values,
+        indexing="ij",
+    )
+    return pd.DataFrame(
+        {
+            "dataset_key": np.repeat(
+                grid.config.dataset_key, len(grid.sse_tensor.ravel())
+            ),
+            "dataset_label": np.repeat(
+                grid.config.dataset_label, len(grid.sse_tensor.ravel())
+            ),
+            "delay_order": np.repeat(grid.config.delay_order, len(grid.sse_tensor.ravel())),
+            "K": k_grid.ravel(),
+            "tau": tau_grid.ravel(),
+            "theta": theta_grid.ravel(),
+            "sse": grid.sse_tensor.ravel(),
+        }
+    )
+
+
+@dataclass
+class SliceContourResult:
+    """Result for one fixed-parameter contour slice."""
+
+    plot_mode: str
+    dataset_key: str
+    dataset_label: str
+    delay_order: int
+    fixed_parameter_name: str
+    fixed_parameter_value: float
+    x_values: np.ndarray
+    y_values: np.ndarray
+    sse_grid: np.ndarray
+    best_k: float
+    best_tau: float
+    best_theta: float
+    best_sse: float
+    best_prediction: pd.DataFrame
+
+
+def _axis_labels_for_mode(plot_mode: str) -> tuple[str, str, str]:
+    """Return x, y, and fixed-parameter labels for a contour mode."""
+
+    if plot_mode == "ktau":
+        return "K", r"$\tau$ (s)", r"$\theta$ (s)"
+    if plot_mode == "thetatau":
+        return r"$\theta$ (s)", r"$\tau$ (s)", "K"
+    raise ValueError("plot_mode must be 'ktau' or 'thetatau'")
+
+
+def evaluate_slice(
+    grid: MasterGridResult,
+    data: TCLabData,
+    plot_mode: str,
+    fixed_parameter_value: float,
+) -> SliceContourResult:
+    """Evaluate one contour slice from the master grid via interpolation."""
+
+    interpolator = grid.interpolator()
+    if plot_mode == "ktau":
+        x_values = grid.config.k_values
+        y_values = grid.config.tau_values
+        x_mesh, y_mesh = np.meshgrid(x_values, y_values, indexing="xy")
+        pts = np.column_stack(
+            [
+                x_mesh.ravel(),
+                y_mesh.ravel(),
+                np.full(x_mesh.size, float(fixed_parameter_value), dtype=float),
+            ]
+        )
+        sse_grid = interpolator(pts).reshape(x_mesh.shape)
+        best_index = int(np.nanargmin(sse_grid))
+        best_y_idx, best_x_idx = np.unravel_index(best_index, sse_grid.shape)
+        best_k = float(x_mesh[best_y_idx, best_x_idx])
+        best_tau = float(y_mesh[best_y_idx, best_x_idx])
+        best_theta = float(fixed_parameter_value)
+        fixed_parameter_name = "theta"
+    elif plot_mode == "thetatau":
+        x_values = grid.config.theta_values
+        y_values = grid.config.tau_values
+        x_mesh, y_mesh = np.meshgrid(x_values, y_values, indexing="xy")
+        pts = np.column_stack(
+            [
+                np.full(x_mesh.size, float(fixed_parameter_value), dtype=float),
+                y_mesh.ravel(),
+                x_mesh.ravel(),
+            ]
+        )
+        sse_grid = interpolator(pts).reshape(x_mesh.shape)
+        best_index = int(np.nanargmin(sse_grid))
+        best_y_idx, best_x_idx = np.unravel_index(best_index, sse_grid.shape)
+        best_k = float(fixed_parameter_value)
+        best_tau = float(y_mesh[best_y_idx, best_x_idx])
+        best_theta = float(x_mesh[best_y_idx, best_x_idx])
+        fixed_parameter_name = "K"
+    else:
+        raise ValueError("plot_mode must be 'ktau' or 'thetatau'")
+
+    best_prediction = simulate_delayed_fopdt(
+        data=data,
+        delay_order=grid.config.delay_order,
+        K=best_k,
+        tau=best_tau,
+        theta=best_theta,
+    )
+    best_sse = float(sse_grid[best_y_idx, best_x_idx])
+
+    return SliceContourResult(
+        plot_mode=plot_mode,
+        dataset_key=grid.config.dataset_key,
+        dataset_label=grid.config.dataset_label,
+        delay_order=grid.config.delay_order,
+        fixed_parameter_name=fixed_parameter_name,
+        fixed_parameter_value=float(fixed_parameter_value),
+        x_values=x_values,
+        y_values=y_values,
+        sse_grid=sse_grid,
+        best_k=best_k,
+        best_tau=best_tau,
+        best_theta=best_theta,
+        best_sse=best_sse,
+        best_prediction=best_prediction,
+    )
+
+
+def plot_contour_mode(
+    grid: MasterGridResult,
+    data: TCLabData,
+    plot_mode: str,
+    fixed_values: Sequence[float],
+    output_path: Path | None = None,
+) -> pd.DataFrame:
+    """Build and optionally save one contour figure for a plotting mode."""
+
+    results = [evaluate_slice(grid, data, plot_mode, float(value)) for value in fixed_values]
+    all_values = np.concatenate([result.sse_grid.ravel() for result in results])
+    vmin = float(max(np.nanmin(all_values), np.finfo(float).tiny))
+    vmax = float(np.nanmax(all_values))
+    if not np.isfinite(vmax) or vmax <= vmin:
+        vmax = vmin * 10.0
+    norm = LogNorm(vmin=vmin, vmax=vmax)
+    levels = np.geomspace(vmin, vmax, 18)
+
+    x_label, y_label, fixed_label = _axis_labels_for_mode(plot_mode)
+    fig, axes = plt.subplots(
+        nrows=len(results),
+        ncols=2,
+        figsize=(14.0, max(3.0 * len(results), 4.5)),
+        constrained_layout=True,
+        sharex="col",
+    )
+    if len(results) == 1:
+        axes = np.array([axes])
+
+    contour_artist = None
+    summary_rows = []
+    for row, result in enumerate(results):
+        ax_contour = axes[row, 0]
+        ax_fit = axes[row, 1]
+        x_mesh, y_mesh = np.meshgrid(result.x_values, result.y_values, indexing="xy")
+        contour_artist = ax_contour.contourf(
+            x_mesh,
+            y_mesh,
+            result.sse_grid,
+            levels=levels,
+            cmap="viridis",
+            norm=norm,
+        )
+        ax_contour.contour(
+            x_mesh,
+            y_mesh,
+            result.sse_grid,
+            levels=levels[::3],
+            colors="black",
+            linewidths=0.5,
+            alpha=0.35,
+        )
+        if plot_mode == "ktau":
+            best_x, best_y = result.best_k, result.best_tau
+        else:
+            best_x, best_y = result.best_theta, result.best_tau
+        ax_contour.scatter(
+            best_x,
+            best_y,
+            marker="*",
+            s=180,
+            c="red",
+            edgecolor="white",
+            linewidth=0.8,
+            zorder=5,
+        )
+        ax_contour.set_title(f"{fixed_label} = {result.fixed_parameter_value:.3g}")
+        ax_contour.set_xlabel(x_label)
+        ax_contour.set_ylabel(y_label)
+        ax_contour.text(
+            0.03,
+            0.97,
+            (
+                f"best SSE = {result.best_sse:.3g}\n"
+                f"K = {result.best_k:.3g}\n"
+                f"tau = {result.best_tau:.3g} s\n"
+                f"theta = {result.best_theta:.3g} s"
+            ),
+            transform=ax_contour.transAxes,
+            ha="left",
+            va="top",
+            fontsize=9,
+            bbox=dict(boxstyle="round", facecolor="white", alpha=0.8, edgecolor="none"),
+        )
+        ax_contour.grid(True, alpha=0.15)
+
+        ax_fit.plot(data.time, data.T, "o", ms=3.5, color="black", label="measured")
+        ax_fit.plot(
+            result.best_prediction["time"],
+            result.best_prediction["Tm"],
+            lw=2.2,
+            color="tab:red",
+            label="best grid fit",
+        )
+        ax_fit.set_title(
+            f"Best fit | K = {result.best_k:.3g}, tau = {result.best_tau:.3g} s, "
+            f"theta = {result.best_theta:.3g} s"
+        )
+        ax_fit.set_xlabel("Time (s)")
+        ax_fit.set_ylabel("Temperature (°C)")
+        ax_fit.grid(True, alpha=0.3)
+        ax_fit.legend(loc="best")
+
+        summary_rows.append(
+            {
+                "dataset_key": result.dataset_key,
+                "dataset_label": result.dataset_label,
+                "delay_order": result.delay_order,
+                "plot_mode": result.plot_mode,
+                "fixed_parameter_name": result.fixed_parameter_name,
+                "fixed_parameter_value": result.fixed_parameter_value,
+                "best_K": result.best_k,
+                "best_tau": result.best_tau,
+                "best_theta": result.best_theta,
+                "best_sse": result.best_sse,
+            }
+        )
+
+    fig.colorbar(contour_artist, ax=axes[:, 0], shrink=0.92, label="SSE")
+    mode_title = "K-tau slices" if plot_mode == "ktau" else "theta-tau slices"
+    fig.suptitle(
+        f"TCLab objective contours | {grid.config.dataset_label} | "
+        f"delay_order={grid.config.delay_order} | {mode_title}",
+        fontsize=14,
+    )
+
+    if output_path is not None:
+        output_path.parent.mkdir(parents=True, exist_ok=True)
+        fig.savefig(output_path, dpi=200, bbox_inches="tight")
+        print(f"Saved contour figure to {output_path}")
+
+    return pd.DataFrame(summary_rows)
 
 
 def grid_search_theta_slice(
@@ -481,6 +805,12 @@ def parse_theta_values(values: Sequence[str] | None) -> tuple[float, ...]:
     return tuple(float(v) for v in values)
 
 
+def parse_k_values(values: Sequence[str] | None) -> tuple[float, ...]:
+    if values is None or len(values) == 0:
+        return (0.75, 0.80, 0.85)
+    return tuple(float(v) for v in values)
+
+
 def parse_datasets(values: Sequence[str] | None) -> tuple[DatasetConfig, ...]:
     """Parse dataset keys into dataset configurations."""
 
@@ -522,7 +852,14 @@ def main(argv: Sequence[str] | None = None) -> int:
         type=float,
         nargs="*",
         default=[10.0, 15.0, 20.0, 25.0, 30.0],
-        help="Fixed delay values in seconds.",
+        help="Fixed theta values for the K-tau contour slices.",
+    )
+    parser.add_argument(
+        "--ks",
+        type=float,
+        nargs="*",
+        default=[0.75, 0.80, 0.85],
+        help="Fixed K values for the theta-tau contour slices.",
     )
     parser.add_argument(
         "--k-min",
@@ -533,8 +870,8 @@ def main(argv: Sequence[str] | None = None) -> int:
     parser.add_argument(
         "--k-max",
         type=float,
-        default=2.0,
-        help="Upper bound for K.",
+        default=0.9,
+        help="Upper bound for the master-grid K axis.",
     )
     parser.add_argument(
         "--tau-min",
@@ -549,22 +886,41 @@ def main(argv: Sequence[str] | None = None) -> int:
         help="Upper bound for tau.",
     )
     parser.add_argument(
+        "--theta-min",
+        type=float,
+        default=10.0,
+        help="Lower bound for the master-grid theta axis.",
+    )
+    parser.add_argument(
+        "--theta-max",
+        type=float,
+        default=30.0,
+        help="Upper bound for the master-grid theta axis.",
+    )
+    parser.add_argument(
         "--n-k",
         type=int,
         default=25,
-        help="Number of grid points for K.",
+        help="Number of grid points for K in the master grid.",
     )
     parser.add_argument(
         "--n-tau",
         type=int,
         default=25,
-        help="Number of grid points for tau.",
+        help="Number of grid points for tau in the master grid.",
     )
     parser.add_argument(
-        "--search-method",
-        choices=["grid"],
-        default="grid",
-        help="Search backend used for each contour slice.",
+        "--n-theta",
+        type=int,
+        default=25,
+        help="Number of grid points for theta in the master grid.",
+    )
+    parser.add_argument(
+        "--plot-modes",
+        nargs="*",
+        choices=["ktau", "thetatau"],
+        default=["ktau", "thetatau"],
+        help="Contour styles to render from the master grid.",
     )
     parser.add_argument(
         "--output-dir",
@@ -583,38 +939,84 @@ def main(argv: Sequence[str] | None = None) -> int:
     output_dir.mkdir(parents=True, exist_ok=True)
 
     summaries = []
+    grid_tables = []
     datasets = parse_datasets(args.datasets)
-    theta_values = parse_theta_values(args.thetas)
+    theta_slice_values = parse_theta_values(args.thetas)
+    k_slice_values = parse_k_values(args.ks)
 
     for dataset_config in datasets:
         data = dataset_config.loader()
         print(f"Loaded dataset: {dataset_config.key} ({dataset_config.label})")
         for delay_order in args.delay_orders:
-            config = ContourConfig(
+            master_config = MasterGridConfig(
                 dataset_key=dataset_config.key,
                 dataset_label=dataset_config.label,
                 delay_order=delay_order,
-                theta_values=theta_values,
-                k_min=args.k_min,
-                k_max=args.k_max,
-                tau_min=args.tau_min,
-                tau_max=args.tau_max,
-                n_k=args.n_k,
-                n_tau=args.n_tau,
+                k_values=np.linspace(args.k_min, args.k_max, args.n_k),
+                tau_values=np.linspace(args.tau_min, args.tau_max, args.n_tau),
+                theta_values=np.linspace(args.theta_min, args.theta_max, args.n_theta),
             )
-            summary = run_contour_study(
-                data=data,
-                config=config,
-                search_method=args.search_method,
-                output_dir=output_dir,
+            print(
+                f"Evaluating master grid for {dataset_config.key}, delay_order={delay_order}"
             )
-            summaries.append(summary)
+            master_grid = evaluate_master_grid(data=data, config=master_config)
 
-    summary_df = pd.concat(summaries, ignore_index=True)
-    summary_path = output_dir / "tclab_objective_contours_summary.csv"
-    summary_df.to_csv(summary_path, index=False)
-    print(f"Saved combined contour summary to {summary_path}")
-    print(summary_df.to_string(index=False))
+            grid_csv = output_dir / (
+                f"tclab_objective_contours_{dataset_config.key}_delay{delay_order}_grid.csv"
+            )
+            master_grid_to_dataframe(master_grid).to_csv(grid_csv, index=False)
+            print(f"Saved master grid to {grid_csv}")
+
+            grid_tables.append(master_grid_to_dataframe(master_grid))
+
+            if "ktau" in args.plot_modes:
+                ktau_path = output_dir / (
+                    f"tclab_objective_contours_{dataset_config.key}_delay{delay_order}_ktau.png"
+                )
+                ktau_summary = plot_contour_mode(
+                    grid=master_grid,
+                    data=data,
+                    plot_mode="ktau",
+                    fixed_values=theta_slice_values,
+                    output_path=ktau_path,
+                )
+                ktau_csv = output_dir / (
+                    f"tclab_objective_contours_{dataset_config.key}_delay{delay_order}_ktau.csv"
+                )
+                ktau_summary.to_csv(ktau_csv, index=False)
+                print(f"Saved contour summary to {ktau_csv}")
+                summaries.append(ktau_summary)
+
+            if "thetatau" in args.plot_modes:
+                thetatau_path = output_dir / (
+                    f"tclab_objective_contours_{dataset_config.key}_delay{delay_order}_thetatau.png"
+                )
+                thetatau_summary = plot_contour_mode(
+                    grid=master_grid,
+                    data=data,
+                    plot_mode="thetatau",
+                    fixed_values=k_slice_values,
+                    output_path=thetatau_path,
+                )
+                thetatau_csv = output_dir / (
+                    f"tclab_objective_contours_{dataset_config.key}_delay{delay_order}_thetatau.csv"
+                )
+                thetatau_summary.to_csv(thetatau_csv, index=False)
+                print(f"Saved contour summary to {thetatau_csv}")
+                summaries.append(thetatau_summary)
+
+    if grid_tables:
+        grid_df = pd.concat(grid_tables, ignore_index=True)
+        grid_path = output_dir / "tclab_objective_contours_grid.csv"
+        grid_df.to_csv(grid_path, index=False)
+        print(f"Saved combined grid table to {grid_path}")
+
+    if summaries:
+        summary_df = pd.concat(summaries, ignore_index=True)
+        summary_path = output_dir / "tclab_objective_contours_summary.csv"
+        summary_df.to_csv(summary_path, index=False)
+        print(f"Saved combined contour summary to {summary_path}")
+        print(summary_df.to_string(index=False))
 
     if args.show:
         plt.show()
