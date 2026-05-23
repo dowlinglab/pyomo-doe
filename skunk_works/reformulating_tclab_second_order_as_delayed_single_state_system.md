@@ -550,6 +550,57 @@ should do:
 
 That is exactly the motivation for the delayed single-state reformulation.
 
+### 7.5 Regression Objective Contours for TCLab
+
+A useful next diagnostic is to map the least-squares objective as a function
+of the gain and time constant while holding the delay fixed.
+
+For the sine-wave and step-test datasets, the plan is to evaluate:
+
+$$
+J(K,\tau;\theta)
+=
+\sum_i \left(y_i^{\mathrm{meas}} - y_i^{\mathrm{sim}}(K,\tau,\theta)\right)^2
+$$
+
+on a grid of $(K,\tau)$ values for a fixed set of delays:
+
+$$
+\theta \in \{10,\ 15,\ 20,\ 25,\ 30\}\ \mathrm{s}
+$$
+
+The initial plotting bounds will be:
+
+* $K \in [0.5, 2.0]$
+* $\tau \in [120, 200]\ \mathrm{s}$
+
+These bounds are intentionally a little wider than the “typical value” ranges
+often quoted for TCLab so that the contour shape is visible even when the
+objective surface is broad or shifted away from the nominal values.
+
+The figure layout will be:
+
+* one figure per delay order
+* one row per fixed $\theta$ value
+* left column: contour plot of the SSE over $(K,\tau)$
+* right column: model prediction at the grid point with the lowest SSE
+
+The marker on the contour plot should identify the best grid point, and the
+right-hand panel should show the corresponding simulation against the measured
+data.
+
+For the first pass:
+
+* use both the sine-wave and step-test datasets
+* use unweighted SSE
+* start with the second-order delay approximation
+* keep the implementation modular so that a future optimization-based search
+  can replace the grid search without changing the plotting code
+
+This contour study should help us compare the second-order and third-order
+delay approximations by showing how flat or well-conditioned the objective
+surface is for each delay order.
+
 ## Sources
 
 The approach in this note is informed by the following APMonitor pages:

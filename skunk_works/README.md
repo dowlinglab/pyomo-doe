@@ -9,6 +9,7 @@ This folder is a scratchpad for working notes and small write-ups. The current f
 - `README.md`: this file
 - `reformulating_tclab_second_order_as_delayed_single_state_system.md`: the write-up describing the delayed single-state reformulation of the TCLab model
 - `tclab_reformulated.py`: the standalone TCLab model and estimation script
+- `tclab_objective_contours.py`: the standalone contour-analysis script for SSE surfaces over `K`, `tau`, and fixed `theta`
 
 If you want the main narrative for the planned approach, start with
 `reformulating_tclab_second_order_as_delayed_single_state_system.md`.
@@ -30,6 +31,22 @@ That directory currently contains:
 - `physics_delay3_SSE_cov.png`: covariance heatmap for the physics parameterization with `delay_order=3`
 - `io_delay3_SSE_fit.png`: fit plot for the input-output parameterization with `delay_order=3`
 - `io_delay3_SSE_cov.png`: covariance heatmap for the input-output parameterization with `delay_order=3`
+
+### TCLab Contour Analysis
+
+The contour-analysis script writes its output to `skunk_works/tclab_objective_contours_results/`.
+
+That directory will contain:
+
+- `tclab_objective_contours_sine_delay2.png`: contour figure for the sine dataset with `delay_order=2`
+- `tclab_objective_contours_sine_delay2.csv`: summary table of best grid points for the sine dataset with `delay_order=2`
+- `tclab_objective_contours_sine_delay3.png`: contour figure for the sine dataset with `delay_order=3`
+- `tclab_objective_contours_sine_delay3.csv`: summary table of best grid points for the sine dataset with `delay_order=3`
+- `tclab_objective_contours_step_delay2.png`: contour figure for the step dataset with `delay_order=2`
+- `tclab_objective_contours_step_delay2.csv`: summary table of best grid points for the step dataset with `delay_order=2`
+- `tclab_objective_contours_step_delay3.png`: contour figure for the step dataset with `delay_order=3`
+- `tclab_objective_contours_step_delay3.csv`: summary table of best grid points for the step dataset with `delay_order=3`
+- `tclab_objective_contours_summary.csv`: combined summary table across delay orders
 
 ## TCLab Multistart Findings
 
