@@ -51,6 +51,8 @@ We are scheduled for a [half-day afternoon workshop](https://acc2026.a2c2.org/pr
 | | Hands-on Examples |
 | 5:00 pm | *Adjourn* |
 
+We recommend viewing this website in **light mode**.
+
 ## What will I learn in this workshop?
 
 In this workshop, we will learn how to develop digital twin models in the open-source Pyomo ecosystem. Specifically, we will learn how to use three Pyomo-based toolkits:
