@@ -43,7 +43,7 @@ def main():
     r0 = fit["CpS"]/fit["Ub"]
     figure, axes = fs.figure(fs.MULTI_PANEL, nrows=2, ncols=2, sharex=True)
     for ax, parameter, title, unit in zip(axes.flat[:3], ["CpH", "CpS", "Ub"],
-                                           [r"(a) Heater capacity $C_{p,H}$", r"(b) Sensor capacity $C_{p,S}$", r"(c) Coupling $U_b$"],
+                                           [r"(a) $C_{p,H}$", r"(b) $C_{p,S}$", r"(c) $U_b$"],
                                            [r"J K$^{-1}$", r"J K$^{-1}$", r"W K$^{-1}$"]):
         ax.plot(joint.r_s, joint[parameter], color=fs.color(5), linewidth=fs.DENSE_LINEWIDTH)
         ax.plot(r0, fit[parameter], "o", color=fs.color(1), markersize=6)
@@ -51,9 +51,9 @@ def main():
         ax.locator_params(axis="y", nbins=4)
     axes[1, 1].plot(joint.r_s, joint.maximum_prediction_difference_C*1e12, color=fs.color(0),
                     linewidth=fs.DENSE_LINEWIDTH)
-    axes[1, 1].set(title="(d) Forward numerical difference", ylabel=r"Maximum difference ($10^{-12}$ C)", ylim=(0., 2.1))
+    axes[1, 1].set(title="(d) Prediction difference", ylabel="Numerical error\n"+r"($10^{-12}$ C)", ylim=(0., 2.1))
     for ax in axes[-1]:
-        ax.set_xlabel(r"Family coordinate $r=C_{p,S}/U_b$ (s)")
+        ax.set_xlabel(r"Family coordinate $r$ (s)")
     for ax in axes.flat:
         ax.set_xlim(10., 155.)
         ax.set_xticks([25, 75, 125])
@@ -80,7 +80,7 @@ def main():
             values.append({"method": method, "point": float(row.point), "lower": float(row.lower),
                            "median": float(row['median']), "upper": float(row.upper)})
         ax.axvline(0., color="0.65", linestyle="--", linewidth=fs.REFERENCE_LINEWIDTH)
-        ax.set(title=title, xlabel="Change from fitted boundary (%)", ylim=(4.6, -.6))
+        ax.set(title=title, xlabel="Boundary change (%)", ylim=(4.6, -.6))
         ax.set_yticks(range(5))
         ax.set_yticklabels(labels)
         ax.locator_params(axis="x", nbins=4)
@@ -103,16 +103,18 @@ def main():
     delta = np.array([.001, 3.])
     coefficient = reference_rows.iloc[0].squared_prediction_distance_C2/reference_rows.iloc[0].delta_s**4
     axes[0].loglog(delta, coefficient*delta**4, color="0.55", linestyle=":", linewidth=fs.REFERENCE_LINEWIDTH, label=r"$\propto\delta^4$")
-    axes[0].set(title="(a) Repeated pole", xlabel=r"Fixed-mean perturbation $\delta$ (s)", ylabel=r"Squared mean distance (C$^2$)")
+    axes[0].set(title="(a) Repeated pole", xlabel=r"Perturbation $\delta$ (s)", ylabel="Squared distance\n"+r"(C$^2$)")
+    axes[0].set_yticks([1e-12, 1e-6, 1.])
     rows = onset["rows"]
     order = np.array([row["order"] for row in rows])
     rise = np.array([row["rise_at_mean_delay_C"] for row in rows])
     axes[1].loglog(order, rise, "o-", color=fs.color(5), markersize=4, linewidth=fs.DENSE_LINEWIDTH, label="Exact onset rise")
     axes[1].loglog(order, onset["CLT_coefficient_C"]/np.sqrt(order), color="0.5", linestyle="--", linewidth=fs.REFERENCE_LINEWIDTH,
                    label=r"$A/\sqrt{n}$")
-    axes[1].set(title="(b) Delay-chain onset", xlabel="Delay stages n", ylabel=r"Rise at $t=\theta$ (C)")
-    for ax in axes:
-        ax.legend(loc="lower left", bbox_to_anchor=(0., 1.12), ncol=2, columnspacing=.6, handlelength=1.4)
+    axes[1].set(title="(b) Delay onset", xlabel="Delay stages n", ylabel="Rise at onset (C)")
+    axes[1].set_xticks([1., 100., 10000.])
+    for i, ax in enumerate(axes):
+        ax.legend(loc="lower left", bbox_to_anchor=(0., 1.12), ncol=2 if i == 0 else 1, columnspacing=.6, handlelength=1.4)
     figure.tight_layout(rect=(0., 0., 1., .79), w_pad=1.5)
     data["nonregular_limits"] = {"repeated_poles": pole_data, "quartic_reference_coefficient": float(coefficient),
                                   "onset_rows": rows, "CLT_coefficient_C": onset["CLT_coefficient_C"]}
