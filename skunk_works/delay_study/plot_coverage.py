@@ -58,7 +58,8 @@ def load_delay_summary(summary, coverage, config_path):
     audit = json.loads(audit_path.read_text())
     if (audit["status"] != "passed" or audit["requested_draws"] != 3600 or audit["summary_rows"] != 384
             or audit["input_sha256"].get(str(manifest_path)) != sha(manifest_path)
-            or audit["input_sha256"].get(str(config_path)) != sha(config_path)
+            or manifest["identity"].get("config_sha256") != sha(config_path)
+            or sha(config_path) not in audit["input_sha256"].values()
             or audit.get("summary_sha256") != sha(table_path)):
         raise RuntimeError("Coverage summary does not match its completed arithmetic audit")
     for path, digest in audit["input_sha256"].items():

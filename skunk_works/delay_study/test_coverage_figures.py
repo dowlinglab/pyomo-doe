@@ -112,7 +112,8 @@ def test_all_failed_terminal_collection_round_trips_without_fake_coverage(tmp_pa
         for noise in config["noise_scenarios"]:
             for first in range(0, 300, 10):
                 failures[case+"__"+noise+f"__{first:04d}_{first+9:04d}"] = "Explicit all-failed artifact fixture"
-    manifest = {"status": "complete_with_failures", "filter": "", "identity": {"replicate_override": None},
+    manifest = {"status": "complete_with_failures", "filter": "",
+                "identity": {"replicate_override": None, "config_sha256": plot.sha(config_path)},
                 "completed": {}, "failed": failures, "expected_chunks": 360, "expected_draws": 3600}
     manifest_path = coverage/"manifest.json"
     manifest_path.write_text(json.dumps(manifest))
@@ -123,6 +124,12 @@ def test_all_failed_terminal_collection_round_trips_without_fake_coverage(tmp_pa
     (summary/"audit.json").write_text(json.dumps({"status": "passed", "requested_draws": 3600,
         "summary_rows": 384, "summary_sha256": plot.sha(csv_path),
         "input_sha256": {str(manifest_path): plot.sha(manifest_path), str(config_path): plot.sha(config_path)}}))
+    alias = tmp_path/"byte_identical_config.json"
+    alias.write_bytes(config_path.read_bytes())
+    assert len(plot.load_delay_summary(summary, coverage, alias)[0]) == 84
+    alias.write_text(alias.read_text().replace('"replicates": 300', '"replicates": 299'))
+    with pytest.raises(RuntimeError, match="terminal"):
+        plot.load_delay_summary(summary, coverage, alias)
     monkeypatch.setattr(plot, "figures", lambda *args: ["coverage_delay_coverage", "coverage_delay_width"])
     arguments = ["--coverage", str(coverage), "--summary", str(summary), "--config", str(config_path)]
     monkeypatch.setattr(sys, "argv", ["plot_coverage.py", *arguments, "--output", str(figures)])
