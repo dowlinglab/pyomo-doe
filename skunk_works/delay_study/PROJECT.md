@@ -10,8 +10,8 @@ This file owns current execution state. Git preserves superseded states.
 - Branch: `reformulation-exploration`; fetched `origin/main` merged in `02ab3d9`.
 - Research began **2026-10-21 01:39:03 UTC**. The requested twelve-hour minimum
   elapsed at **13:39:03 UTC**. Completion still requires every delivery gate.
-- The existing thread goal is active. Recovery heartbeat:
-  `tc-lab-overnight-research`. Do not create another goal or duplicate automation.
+- Goal and recovery-heartbeat lifecycle are managed in the app. The heartbeat
+  is `tc-lab-overnight-research`; do not create a duplicate goal or automation.
 - **Every declared numerical comparison is terminal and independently audited.**
   No numerical fitting/optimization pool remains live. Report-formatting sessions
   have exited. The full-PDF page render (session **19929**) is terminal; all 48 pages were inspected.
@@ -24,9 +24,13 @@ This file owns current execution state. Git preserves superseded states.
   `b61db178c8e7a3482e890245352d650237dc9e753cd9c63d87a4056fd8d52dc7`.
   Files are in `literature/manuscript_audit/`; a changed source requires a new
   expansion and private packet binding.
-- **No final push or completion email has been sent.** Gmail self-recipient was
-  verified as `adowling@nd.edu`; refresh the profile at delivery. Send exactly
-  once after final verification and push, retaining/reconciling the sent ID.
+- The completed release is pushed as `35d48055d3de427eb965854fcb267f8b0215dd13`.
+  GitHub's branch head was verified before delivery. Gmail message
+  `1a15f35f374c71df` sent the PDF to `adowling@nd.edu` exactly once; readback
+  confirmed its filename and 906,515-byte attachment, and Sent search found
+  exactly that one completion message. **Do not resend.** `delivery_receipt.json`
+  records the requirement-by-requirement completion audit.
+
 
 ## Numerical authorities
 
@@ -121,12 +125,12 @@ selected audits, source/figure/table/PDF bindings, exact-draft literature counts
 141 passing tests and the three fresh-fit reproductions. Each numerical audit
 retains its own scope; this index is not a new full-matrix rerun.
 
-The report, numerical results and source audits are committed through `dde4f0c`.
-Final packet/export receipts and the release index are ready for a coherent commit.
-The remaining authorized actions are normal push with remote-HEAD verification,
-exactly one Gmail completion email with the verified PDF, and a saved delivery
-receipt. Only after these succeed should the goal be marked complete and the
-existing heartbeat paused. Human scientific review remains pending in draft 0.
+The complete scientific release is committed and pushed as `35d4805`.
+The self-addressed Gmail completion message and its PDF attachment were verified;
+`delivery_receipt.json` records that delivery and the completion audit. The receipt
+and this final handoff update are committed and pushed separately. No research or
+report-delivery work remains. Close the existing goal and pause its heartbeat;
+human scientific review remains pending in draft 0.
 
 ## Working rules
 
