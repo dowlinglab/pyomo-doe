@@ -6,6 +6,13 @@ not evidence that its phase has finished. `research_brief.md` fixes the study
 scope. Preserve the supplied CSVs, saved first-pass results and numerical
 failures when reproducing or extending a phase.
 
+`results/study_manifest.json` indexes the completed phase authorities and final
+report hashes. `delivery_receipt.json` records the separate Git/Gmail delivery.
+On `reformulation-exploration`, `python skunk_works/delay_study/build_study_manifest.py`
+checks the declared counts, selected audits, migration hashes, final report binding
+and representative reproduction before rebuilding that index. It does not rerun
+the numerical matrices or promote agent review to human scientific approval.
+
 ## Runtime and short checks
 
 `environment.json` records Python 3.9.12 and exact numerical package versions.

@@ -82,51 +82,51 @@ compiler run or a partial receipt is not final all-page QA or human review.
 - The working PDF is ignored `manuscript/main.pdf`. All 48 pages are rendered in
   `/private/tmp/tclab-final-draft-qa`; all pages passed inspection. The named PDF is manuscript/TC_Lab_delay_study_draft0.pdf; final_visual_review.json binds its source/build/PDF hashes.
 
-## Literature state and exact resume point
+## Literature audit and export
 
-Use the configured lab literature skill, without installing or reconfiguring
-its runtime or ingesting/publishing new source PDFs. Packet:
-`6f11d88ebd8741c892fea8fffc243d7d`. The exact draft is now saved through the native API. All 24 occurrences have exact-span agent claims and inventory coverage review; 17 explicit issues retain missing ingested carriers for five externally inspected works. Latest completed claim/issue revision: 27bbc96ec524d7f22cd6383a97ffc45b90b71c8b96ffc901d46d931e6bb70df8. Evidence planning batch 6a1c85fa62e0408b915223d72961c147 is live in functions cell 750; do not restart it. The batch contains seven claim-bound uses of the two inspected reusable passages, with support versus context relations kept distinct. Inspect every saved plan before grounding. Use the actual head after any mutation, not this earlier revision.
+Exact-draft packet `6f11d88ebd8741c892fea8fffc243d7d` is saved at revision
+`353ae0c83c3252afe8b0ce5db404679f66e699615a9c71f858ec96ee3130c5e8`.
+All **24 citation occurrences across seven works** have exact-span claims and
+agent inventory review. Seven occurrences link two inspected fine passages:
+three support relations and four context relations. Seventeen occurrences retain
+explicit unavailable-ingested-carrier issues for five primary works inspected
+externally. These are library availability gaps, not claims that the PDFs were
+unread. Agent support assessments and mechanical linkage do not establish full
+claim coverage or human scientific acceptance.
 
-Runtime: configured maintenance 0.5.8; private state is
-`/Users/adowling/Library/Application Support/shared-literature-rag/state-0.5.8-maintenance-2026-10-19`.
-Native calls can take several minutes. Timeouts do not prove termination. Inspect
-saved ownership/head/receipts before repeating an uncertain mutation; do not
-start parallel writes to this packet or bypass library integrity validation.
+Two guarded publication/readback stops were reconciled through native operations.
+The persisted passages were reused and all seven current usages/attachments
+completed; no library configuration, policy or runtime was changed. No literature
+operation remains live. Runtime/source/destination records and primary PDF/page
+identities remain in `literature/`. Four DOI identities were checked through
+Crossref and three others against primary pages; do not claim seven Crossref checks.
 
-`literature/source_review.json`, `acquired_sources.json` and the visual/evidence
-receipts retain primary identities, PDF hashes, physical/printed pages, assumptions
-and access gaps. Seven works are cited. Two ingested carriers have inspected fine
-passages: Raue profile construction, fine shard
-`2ec259a5dedd82b02a891e141629a060ac4cb8beabf6ff26a7c1077636036afe`;
-Garnier/Wang/Young chapter residual decomposition, fine shard
-`c6d3d2dabc24623261caeabeaa3fbed5c7151bf187cbe2d807913f9ab9006b0c`.
-Five cited primary PDFs were inspected externally and have no ingested carrier;
-retain explicit carrier/fine-availability issues, without calling the PDFs unread.
-Chapter/book aliases and inspected preprint/journal distinctions must survive
-export. Four DOI identities passed Crossref checks; three additional identities
-were checked against primary pages. Do not claim seven Crossref checks.
+Native Markdown, JSON and scoped BibTeX export
+`c87e20495d9a844c8c2b27a3e7a4eeb2f1ced9cc4cea8fb62b620758ecde1c01`
+was inspected and its hashes verified. The files are copied to ignored
+`_private/final_packet/`; raw passages and source PDFs are not tracked.
+`literature/manuscript_audit/final_packet_receipt.json` records the exact counts,
+links, gaps, review status and export hashes. Its alias review preserves the
+Garnier/Wang/Young chapter reference separately from the book carrier, and the
+inspected Manchester preprint separately from the unread proceedings version.
+The manuscript bibliography retains all seven checked works; scoped library
+BibTeX contains only the two ingested carriers.
 
-Exact draft and claim/inventory binding has completed. Finish the live evidence-planning batch, inspect its plans, then ground the supported/context Raue/chapter clauses through normal native operations while retaining external-source availability gaps. Bounded evidence/grounding batch tools are available; inspect
-plans before applying them. Export private Markdown/JSON/scoped BibTeX into
-ignored `_private/`, inspect it, and save only scoped public receipts/hash metadata.
-Raw source passages and PDFs do not belong in Git. Mechanical quote matching,
-metadata identity, claim support and human scientific review remain separate.
+## Release and delivery
 
-## Remaining delivery gates
+`build_study_manifest.py` passed, creating `results/study_manifest.json` with
+234 indexed receipts and a measured elapsed window over fourteen hours. It
+verifies declared phase completion, unchanged raw CSVs, notebook migration hashes,
+selected audits, source/figure/table/PDF bindings, exact-draft literature counts,
+141 passing tests and the three fresh-fit reproductions. Each numerical audit
+retains its own scope; this index is not a new full-matrix rerun.
 
-1. Finish all-page rendered review and any necessary fixes; preserve no-ai-slop
-   and notation checks. Re-expand after any TeX change.
-2. Complete the exact-draft packet workflow and scoped export with explicit gaps.
-3. Commit the full audited discrimination outputs, prepared design summary,
-   final figures/tables/prose, report PDF and verification receipts coherently.
-4. Create `results/study_manifest.json` indexing every phase and final artifacts;
-   do not replace the baseline `results/manifest.json`. Verify reproduction and
-   final source/result/artifact identities against the actual committed tree.
-5. Push `reformulation-exploration` normally; confirm remote HEAD. Email the
-   verified finished report through Gmail exactly once and retain the sent ID.
-6. Only then mark the active goal complete and pause the existing heartbeat.
-   Unresolved human scientific review is disclosed in draft 0, not fabricated.
+The report, numerical results and source audits are committed through `dde4f0c`.
+Final packet/export receipts and the release index are ready for a coherent commit.
+The remaining authorized actions are normal push with remote-HEAD verification,
+exactly one Gmail completion email with the verified PDF, and a saved delivery
+receipt. Only after these succeed should the goal be marked complete and the
+existing heartbeat paused. Human scientific review remains pending in draft 0.
 
 ## Working rules
 
