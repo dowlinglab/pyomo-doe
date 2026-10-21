@@ -164,7 +164,7 @@ def main():
                     "started_utc": datetime.now(timezone.utc).isoformat(), "completed": {}, "failed": {}, "scope": config["scope"]}
         save_json(args.output/"manifest.json", manifest)
         state = (config, design_config, scenarios, knots, time, basis, str(args.designs))
-        with ProcessPoolExecutor(max_workers=min(4, config["workers"]), initializer=initialize, initargs=(state,)) as pool:
+        with ProcessPoolExecutor(max_workers=min(4, config["workers"], len(selected)), initializer=initialize, initargs=(state,)) as pool:
             futures = {pool.submit(execute, task, args.phase, str(args.output), identity): task[0] for task in selected}
             for future in as_completed(futures):
                 try:
