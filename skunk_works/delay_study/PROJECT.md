@@ -101,6 +101,9 @@ Commit coherent, inspected changes with an AI attribution trailer. Reconcile liv
 jobs after interruption rather than restarting blindly. Keep a single current-state
 section here and a single sourcing manifest; Git preserves superseded states.
 
+Reproduction dependencies, source-checkout rules, fresh-output conventions and
+artifact checks are described in `REPRODUCING.md`.
+
 ## Environment
 
 The existing base Python has NumPy 1.21.5, SciPy 1.7.3, Pandas 1.4.2,
@@ -313,6 +316,13 @@ bylines, obtain/check the published Gerencser/Hjalmarsson/Huang (2017) version
 (the downloaded 2019 arXiv revision differs in author order), and review primary
 sources for dependent-data uncertainty. `literature/source_review.json` needs
 its pending discovery statuses reconciled with these later source inspections.
+The chapter-one residual-source passage at physical page 28 (printed page 2)
+was also rendered, checked, grounded as fine shard
+`c6d3d2dabc24623261caeabeaa3fbed5c7151bf187cbe2d807913f9ab9006b0c`,
+and read back with the selected source event and exact stored-text offsets.
+`literature/garnier_residual_evidence_receipt.json` records the scoped receipt
+without publishing source text. The book carrier does not replace the chapter
+authors/key. Final exact-draft packet claim bindings remain pending.
 Raue's nuisance-reoptimization passage is now grounded in fine shard
 `2ec259a5dedd82b02a891e141629a060ac4cb8beabf6ff26a7c1077636036afe`.
 The published Newey-West (1987) scan was acquired from a University of Wisconsin
