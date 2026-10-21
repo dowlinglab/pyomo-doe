@@ -1,0 +1,33 @@
+{
+  "status": "passed_partial_visual_review",
+  "reviewed_utc": "2026-10-21T07:29:47.941821+00:00",
+  "reviewer": "Codex AI; human scientific review pending",
+  "pdf_snapshot": "/private/tmp/tclab-nuisance-qa/working34pages.pdf",
+  "pdf_sha256": "4a8e0a9834574b0d16b85370724a6efe347ce5a3f61462305a6dfe868d54126c",
+  "total_pages": 34,
+  "pages_inspected": [
+    4,
+    5,
+    29,
+    30,
+    31
+  ],
+  "scope": "Nuisance sensitivity methods and derivations only; no final full-document audit.",
+  "checks": [
+    "Nuisance matrix agrees with configured 96 free plus 96 fixed ambient plus 49 reconstruction cases.",
+    "Pole-exchange Laplace numerator and zero-initial-command exception checked analytically.",
+    "Constant-command gain/ambient/history invariants checked analytically; tested exact trajectory equivalence in four delayed formulations.",
+    "Displayed equations, symbols, cross-references, margins and prose read on rendered pages.",
+    "Final LaTeX log has no overfull/underfull or undefined-reference warnings."
+  ],
+  "numerical_check": {
+    "command": "python -m pytest -q skunk_works/delay_study/test_nuisance.py",
+    "passed": 8
+  },
+  "sources": {
+    "manuscript/sections/methods.tex": "492248fc21bb115db6e924b6bb57b6b6ddb8aa2038d4ab4887cd75a44ae9df04",
+    "manuscript/sections/nuisance_assumptions.tex": "a4b0e5e3cac0978c6d884a0977ff9b11722fc99d986a573c7b3505d6a9260064",
+    "sensitivity_config.json": "17be2a8277369088dd3f853eab2472d2cecab5204c2a05c54d35b02ade9dffad",
+    "test_nuisance.py": "45b4aab56ca7ff6a87ebc7eadb36486a8f5aae1b73b8a48e340d602ca53f5b83"
+  }
+}

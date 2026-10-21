@@ -365,7 +365,7 @@ inspected. `baseline_numeric_audit.json` and `baseline_visual_audit.json` retain
 the separate checks. The remaining full document and future figures need their
 own final audit; this is not human scientific review.
 
-The last compiled working manuscript is **32 pages**, without warnings. New
+The last compiled working manuscript is **34 pages**, without warnings. New
 generated tables cover calibration errors, parameters, coordinate metrics,
 conditional delay uncertainty and OU innovations. `audit_tables.py` checked
 150 printed cells using independent result paths, including independent physical
@@ -409,6 +409,15 @@ pooling definition. A derived IID-component filtering example explains how an
 OU filter can induce lag-one correlation near -1/2 without identifying the
 actual residual mechanism. The source-snapshot and visual-QA receipts identify
 the exact 32-page temporary PDF; the final document still needs full review.
+
+The nuisance appendix now derives the admissible one-stage history/pole
+exchange and the constant-command gain/ambient/history continuum, including
+the zero-initial-command exception and explicit parameter-domain restrictions.
+The methods specify the 241-case matrix before its production outcomes. Eight
+existing independent nuisance checks pass. Working pages 4/5/29/30/31 were read
+and the final compile has no warnings; `manuscript/nuisance_derivation_review.json`
+identifies this partial 34-page PDF review. It does not establish uncertainty
+coverage or finish the pending nuisance computation.
 
 The exact-draft preflight expands controlled LaTeX inputs without executing
 them, hashes every included source, checks citation offsets and bibliography

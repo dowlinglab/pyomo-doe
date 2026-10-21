@@ -60,6 +60,65 @@ directions leaves information $A^\top(I-BB^+)A$, where $B^+$ is the
 Moore--Penrose pseudoinverse. This projection cannot increase information.
 Bounds or independent nuisance measurements alter the problem and must be stated.
 
+\subsection{Free history can preserve the exchanged pole labels}
+For the one-stage model, write $y=T-\Tamb$, $A_0=T_0-\Tamb$, and
+$z(0)=\gamma u_0$, where $u_0=u(0)$. Taking the one-sided Laplace transform
+of the two state equations gives
+\[
+ (1+\tau s)(1+\theta s)Y(s)
+ =K U(s)+K\theta\gamma u_0+\tau A_0(1+\theta s).
+\]
+Exchange $\tau$ and $\theta$ while keeping $K$, ambient and the observed
+initial temperature fixed. The denominator and the coefficient of $s$ in the
+initial-state term stay the same. Equality of the remaining constant terms
+requires, for $u_0\ne0$,
+\begin{equation}
+ \gamma'=\frac{\theta\gamma+A_0(\tau-\theta)/(K u_0)}{\tau}.
+ \label{eq:history-pole-exchange}
+\end{equation}
+This transformation preserves the entire trajectory for any subsequent input.
+It is admissible only if $\gamma'\in[0,1]$ and both parameter vectors satisfy
+their fit bounds. For a joint fit, each record needs its own admissible
+transformed history fraction. When ambient has an offset, $A_0$ uses that
+record's actual fitted ambient.
+
+At $A_0=0$, equation~\eqref{eq:history-pole-exchange} reduces to
+$\gamma'=\gamma\theta/\tau$. A prescribed equilibrated history can separate
+pole labels that become indistinguishable when history is free. If $u_0=0$,
+history fractions have no effect in this restricted family; the exchange
+requires $A_0(\tau-\theta)=0$ instead. A local full-rank sensitivity matrix
+cannot exclude an admissible disconnected pole-label solution.
+
+\subsection{Constant input admits a gain--ambient--history continuum}
+For a constant command $u_0$, define the delay-state deficit
+\[
+ h_n(t)=e^{-nt/\theta}\sum_{k=0}^{n-1}\frac{(nt/\theta)^k}{k!}
+\]
+for an $n$-stage chain, and $h_\infty(t)=\mathbf 1_{\{t<\theta\}}$
+for pure delay. With the uniform initial history fraction $\gamma$, the
+thermal forcing is $K u_0[1-(1-\gamma)h_n(t)]$. Thus
+\[
+ T(t)=T_0 e^{-t/\tau}+C(1-e^{-t/\tau})
+ -\frac{B u_0}{\tau}\int_0^t e^{-(t-v)/\tau}h_n(v)\,dv,
+ \qquad C=\Tamb+K u_0,\quad B=K(1-\gamma).
+\]
+The same expression applies to pure delay with $h_\infty$. Holding $\tau$,
+$\theta$, $B$ and $C$ fixed gives the exact family
+\begin{equation}
+ K'>0,\qquad
+ \gamma'=1-\frac{K(1-\gamma)}{K'},\qquad
+ \Tamb'=\Tamb+u_0(K-K').
+ \label{eq:constant-nuisance-gauge}
+\end{equation}
+Every admissible member predicts the same measured-temperature trajectory.
+The gain box, ambient-offset bounds and $0\leq\gamma'\leq1$ restrict the
+family. At an interior point they still permit a continuum. With
+$\gamma=1$, the delay is also absent from the response. Varying the input
+generally breaks equation~\eqref{eq:constant-nuisance-gauge}, since the
+time-varying gain forcing cannot be absorbed into a constant ambient offset.
+Independent state-propagation checks verify this family for one-, two- and
+twelve-stage chains and pure delay, and the pole exchange for a varying input.
+
 \subsection{Serial dependence alone does not prove least-squares bias}
 For fixed input and known initial conditions, suppose observations have the
 correct mean $\bm m(\bm p_0)$ and additive error $\bm\epsilon$ with

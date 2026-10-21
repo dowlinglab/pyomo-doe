@@ -51,6 +51,37 @@ coordinate effects from changes in the feasible parameter domain.
 We retained convergence status and active bounds rather than interpreting every
 optimizer return as a successful estimate.
 
+\subsection{Ambient, history and input-reconstruction sensitivity}
+We prespecified 241 additional calibrations. For each of eight delayed models
+and three calibration datasets, four nuisance treatments give 96 fits:
+free ambient with cold history, free ambient with equilibrated history,
+free history with fixed ambient, and both free. Ambient offsets have bounds
+$[-2,2]\,{}^\circ\mathrm C$, separately for each record; history fractions
+have bounds $[0,1]$. These bounds describe assumed sensitivity ranges.
+They are not independently measured probability distributions. The three
+IO parameters are shared across records in a joint fit. We use logarithmic
+IO coordinates, additive ambient offsets and untransformed history fractions,
+with analytic mean derivatives, 24 starts, seed 532 and at most 1,200 function
+evaluations per start. Appendix~\ref{sec:nuisance-assumptions} derives exact
+ambiguities that can remain when these quantities are free.
+
+Another 96 joint fits hold ambient offsets at
+$-1,-0.5,-0.25,0.25,0.5,1\,{}^\circ\mathrm C$ for each delayed model and
+both prescribed histories. For these fixed perturbations, the same offset
+and history assumption are applied to each held-out record. Fitted
+record-specific nuisance quantities are not assigned automatically to an unseen
+record; those fits have no corresponding validation correction.
+
+The remaining 49 joint fits compare input reconstruction and discretization:
+32 exact left/right-hold fits across eight delayed models and two startups,
+14 right-hold backward-Euler fits across the seven finite chains and two
+startups, and three original-model variants (exact left hold, exact right hold,
+and right-hold backward Euler). They use the same 24-start budget of 1,200
+function evaluations. We retain active bounds, numerical ranks, all attempts
+and any failure to recover the nested fixed-assumption objective. Reduced
+calibration SSE after adding nuisance parameters supplies no independent
+validation evidence.
+
 \subsection{Local uncertainty and estimability}
 For residual vector $\bm e$ and log-parameter vector $\bm\eta$, the sensitivity
 matrix $J=\partial\bm e/\partial\bm\eta$ defines the conditional information
