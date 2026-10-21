@@ -43,6 +43,8 @@ scope, and `results/manifest.json` will identify manuscript results.
   `d88745b5615020ca2f74fa981cd87f94d867723803a0f0efb5a668e0a09f2262`.
   Current observed revision after two searches:
   `76843554a1e57656e98b3b1ff3530f57a502823a57346e9bb74d981efd3ef80d`.
+  A subsequent scope/interpretation note advanced the observed revision to
+  `38a5811a157d16b7d0ffb039919d3516a445e2d087ac957e4fbebf0749fddab1`.
   Inspect the current revision before further mutations. Primary Raue (2009)
   physical pages 1-5 were inspected; profile method is on physical page 4,
   printed page 1926. Search hits that only cite a paper are not supporting evidence.
@@ -124,3 +126,27 @@ physical model). Grids include global exploration and local refinement; the
 one-stage cold model additionally includes the exchanged pole-label mode.
 Intervals preserve disconnected components. IID Gaussian likelihood thresholds
 are conditional diagnostics, not coverage guarantees for autocorrelated residuals.
+
+## In flight and next work
+
+The full 300-job profile run started from immutable source commit `e267580`.
+Its progress authority is `results/profiles/manifest.json`; do not launch a second
+copy while its lock/process is live. The original execution session is 36231.
+A one-parameter frozen-source trial passed: 61 grid points, four starts per point,
+no lower minimum missed by the baseline. The last observed full-run progress was
+48/300 jobs with no failures. Re-read the manifest for current state.
+
+The baseline 99 fits are committed in `f30451e`. No push or completion email has
+been sent. Next implement bootstrap using canonical-coordinate fits with each
+bootstrap draw transformed to physical coordinates; independently fitted physical
+cases already verify coordinate equivalence where the optimum is identified.
+Keep redundant-parameter uncertainty undefined rather than inferring a confidence
+interval from whichever minimizer a bootstrap algorithm happens to choose.
+
+Literature next: inspect/ground the primary Raue method pages, inspect relevant
+Garnier/Wang book chapter bylines, and acquire the public Hjalmarsson (2009) and
+Hurtado/Kirosingh (2019) papers. Metadata searches found neither in the current
+corpus. `literature/source_review.json` retains exact source identities, page
+coverage and discovery URLs. Continue source review even if an acquisition fails.
+The configured literature server is maintenance 0.5.8; do not change its runtime,
+models, taxonomy, existing source records or configuration to bypass limitations.
