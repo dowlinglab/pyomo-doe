@@ -210,6 +210,17 @@ against quadrature and state propagation. The derived onset error is n^-1/2;
 its scaled value at n=65,536 is within 0.03% of the CLT coefficient. This is a
 cold constant-step result at fixed parameters, not a refitted trajectory error.
 
+The `75f7da6` family-function phase is also complete in
+`results/family_uncertainty`: it reuses 6,000 saved cold one-stage draws from
+15 case/method jobs, with no new refits, to quantify uncertainty in identifiable
+transfer coefficients and analytic positive-family boundary functions. These
+are not intervals for an arbitrarily selected original physical parameter.
+For joint block 60, for example, CpS supremum is 2.783 J/K with conditional
+percentiles [2.647, 2.910], and Ub supremum is 0.07451 W/K with percentiles
+[0.06801, 0.08156]. The full positive-family bounds precede the original numerical
+fit boxes. Two independent reconstruction/calibration-scaling tests pass.
+Add the boundary-function interpretation and formulas to the manuscript/figures.
+
 Four public PDFs were acquired in `/private/tmp/tclab-literature`, registered as
 source `tclab-lti-study-20261021`. The local review plan is
 `c49dff1f62c741bbb3d942f65df59e8c`; its four sources are distinct from the local
@@ -308,6 +319,12 @@ nuisance information, zero-mean colored-error least-squares interpretation,
 quartic behavior at coincident poles, and the onset convergence coefficient.
 The saved literature packet still has no exact draft/citation inventory; finish
 its synthesis/claim/grounding/export workflow before reporting it complete.
+A fresh metadata-only regex search (`snapshot_id` starting `1978ed7b`) found
+no current title matches for the five external cited sources across 2,899
+indexed papers, with no metadata issues. It does not validate passage/PDF state
+or remote synchronization. The full response remains in the active tool store
+as `studyCitedBibliographySearch`. Those works were read from hash-identified
+primary PDFs; do not imply they have saved fine grounding in the shared corpus.
 
 Coverage reporting must retain method-specific undefined intervals and optimizer
 failures, unconditional coverage bounds for failures, binomial uncertainty,
