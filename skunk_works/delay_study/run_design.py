@@ -81,8 +81,10 @@ def dense_audit(scenarios, amplitudes, knots, config):
     shutdown = horizon+float(amplitudes[-1])/config["maximum_slew_percent_per_s"]
     if shutdown > end:
         raise ValueError("Shutdown ramp exceeds the specified audit horizon")
-    time = np.unique(np.r_[np.arange(0., end+config["audit_interval_s"]/2, config["audit_interval_s"]),
-                           knots, shutdown])
+    # Match the propagator's 1 ns interval resolution before deduplication.
+    # An optimized shutdown can be within roundoff of a regular grid point.
+    time = np.unique(np.round(np.r_[np.arange(0., end+config["audit_interval_s"]/2, config["audit_interval_s"]),
+                                    knots, shutdown], 9))
     # Ramp the last command down at the same allowed slew, then hold zero.
     command_time = np.r_[knots, shutdown, end] if shutdown > horizon else np.r_[knots, end]
     command_values = np.r_[amplitudes, 0., 0.] if shutdown > horizon else np.r_[amplitudes, 0.]

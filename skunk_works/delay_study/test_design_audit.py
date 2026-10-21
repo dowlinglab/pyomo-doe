@@ -86,3 +86,22 @@ def test_saved_synthetic_design_is_audited_and_information_corruption_detected(t
     corrupted["evaluations"]["selected_local_design"]["dense_audit"]["scenarios"][0]["maximum_C"] -= 1.
     with pytest.raises(RuntimeError,match="dense_maximum_C"):
         audit_record(corrupted,task,study,{})
+
+
+@pytest.mark.parametrize("last", [1e-12, .25+1e-12, .25-1e-12])
+def test_nearly_coincident_shutdown_is_deduplicated_at_propagator_resolution(last):
+    from types import SimpleNamespace
+    from run_design import dense_audit
+    config = {"horizon_s": 6., "audit_tail_s": 4., "audit_interval_s": .25,
+              "maximum_slew_percent_per_s": 1., "maximum_temperature_C": 200.}
+    knots = np.array([0., 3., 6.])
+    amplitudes = np.array([20., 20., last])
+    time, command = dense_command(amplitudes, knots, config)
+    assert np.all(np.round(np.diff(time), 9) > 0.)
+    scenario = SimpleNamespace(name="near_grid", parameters=np.array([.8, 25., 4.]),
+                               spec=ModelSpec(family="chain", order=1), ambient=25.)
+    result = dense_audit([scenario], amplitudes, knots, config)
+    rounded = amplitudes.copy()
+    rounded[-1] = round(last, 9)
+    reference = dense_audit([scenario], rounded, knots, config)
+    assert abs(result["scenarios"][0]["maximum_C"]-reference["scenarios"][0]["maximum_C"]) < 1e-9

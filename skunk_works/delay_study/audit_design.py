@@ -67,7 +67,7 @@ def dense_command(amplitudes,knots,config):
     shutdown = horizon+float(amplitudes[-1])/config["maximum_slew_percent_per_s"]
     if shutdown > end:
         raise RuntimeError("Shutdown exceeds the declared audit tail")
-    time = np.unique(np.r_[np.arange(0.,end+config["audit_interval_s"]/2,config["audit_interval_s"]),knots,shutdown])
+    time = np.unique(np.round(np.r_[np.arange(0.,end+config["audit_interval_s"]/2,config["audit_interval_s"]),knots,shutdown],9))
     command = np.interp(time,knots,amplitudes)
     tail = time > horizon
     command[tail] = np.maximum(0.,amplitudes[-1]-config["maximum_slew_percent_per_s"]*(time[tail]-horizon))
