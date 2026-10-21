@@ -77,6 +77,23 @@ nonzero conditional error mean, or the thermal mean is misspecified. The
 observed TC-Lab residual offsets and held-out errors require those possibilities
 to remain open.
 
+\subsection{An OU filter can anticorrelate an IID component}
+Consider a fixed OU correlation factor $0<\phi<1$ at regular sampling and an
+IID component $v_i$ with variance $s_v^2$. Away from the first retained
+innovation, the unnormalized filtered component is $w_i=v_i-\phi v_{i-1}$.
+Independence gives
+\[
+ \operatorname{Var}(w_i)=(1+\phi^2)s_v^2,\qquad
+ \operatorname{Cov}(w_i,w_{i-1})=-\phi s_v^2,\qquad
+ \rho_w(1)=-\frac{\phi}{1+\phi^2}.
+\]
+Dividing by the constant OU innovation scale does not change this correlation.
+It approaches $-1/2$ as $\phi\to1$. Thus an IID component inside a residual
+process can produce negative filtered correlation even when slower components
+are present. This calculation concerns one component and a fixed regular-sample
+filter. It neither establishes that the TC-Lab has this decomposition nor
+assigns the observed correlations to sensor noise rather than mean error.
+
 \section{Chain convergence at the causal onset}
 \label{sec:onset}
 For a cold constant step of magnitude $u_0$ and zero initial thermal deviation,

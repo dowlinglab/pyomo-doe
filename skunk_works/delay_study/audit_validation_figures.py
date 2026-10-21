@@ -32,6 +32,12 @@ def main():
     table_path = Path(manifest["generated_table"]["path"])
     if sha(table_path) != manifest["generated_table"]["sha256"]:
         raise RuntimeError("Validation file table changed")
+    summary_path = Path(manifest["generated_summary_table"]["path"])
+    if sha(summary_path) != manifest["generated_summary_table"]["sha256"]:
+        raise RuntimeError("Validation summary table changed")
+    summary_lines = [line for line in summary_path.read_text().splitlines() if line.startswith("$n=") or line.startswith("Pure delay & ")]
+    if len(summary_lines) != 4:
+        raise RuntimeError("Validation summary table lost a model")
     data = json.loads(path.read_text())
     maximum, total, inputs = 0., 0, {}
 
@@ -46,7 +52,7 @@ def main():
         total += a.size
         maximum = max(maximum, error)
 
-    for case, values in data["validation_errors"].items():
+    for j, (case, values) in enumerate(data["validation_errors"].items()):
         record = json.loads((args.results/"fits"/(case+".json")).read_text())
         prediction = args.results/record["prediction_file"]
         if sha(prediction) != record["prediction_sha256"]:
@@ -63,6 +69,15 @@ def main():
             bias_sse += len(error)*float(error.mean())**2
             N += len(error)
         compare([values["pooled_rmse_C"], values["per_file_bias_fraction_of_pooled_SSE"]], [np.sqrt(total_sse/N), bias_sse/total_sse])
+        calibration = frame[frame.role == "calibration"]
+        retained = pd.concat([group.iloc[1:] for _, group in calibration.groupby("experiment")])
+        error = (retained.predicted_C-retained.measured_C).to_numpy()
+        calibration_rmse = float(np.sqrt(np.mean(error**2)))
+        compare(values["calibration_rmse_C"], calibration_rmse)
+        cells = [f"{calibration_rmse:.4f}", f"{np.sqrt(total_sse/N):.4f}", f"{100*bias_sse/total_sse:.1f}"]
+        actual = [cell.strip().removesuffix(r" \\").strip() for cell in summary_lines[j].split(" & ")[1:]]
+        if cells != actual:
+            raise RuntimeError("Printed validation summary cell changed")
     table_lines = table_path.read_text().splitlines()
     for item in data["validation_file_map"]:
         raw = load(item["file"])

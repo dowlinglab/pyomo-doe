@@ -56,6 +56,34 @@ does not establish independent sensor noise or reliable uncertainty coverage.
  \label{fig:baseline-trajectories}
 \end{figure}
 
+\subsection{Transfer to supplied validation files}
+The four representative joint cold formulations give similar errors on the
+eleven duplicate-excluded validation files (Fig.~\ref{fig:validation-errors}).
+Differences among files are much larger than differences among these stage
+counts. Most pooled squared error is accounted for algebraically by the
+per-file mean residuals (Table~\ref{tab:validation-summary}). These offsets
+are retrospective diagnostics, without an identified physical cause or a
+prospective correction. Ambient, command history, heater conversion, thermal
+coefficients and omitted dynamics remain possible explanations. The supplied
+file names alone do not distinguish them.
+\input{tables/validation_summary}
+\input{tables/validation_file_map}
+
+\begin{figure}[p]
+ \centering
+ \includegraphics[width=\linewidth]{validation_errors.pdf}
+ \caption{Transfer error varies more among supplied files than among the
+ representative cold delay formulations. Panels show RMSE and signed mean
+ residual, defined as prediction minus observation, excluding each initial
+ temperature. Parameters come from the two joint calibration records and
+ are not refitted on these files. Codes are defined in
+ Table~\ref{tab:validation-files}; lines join categorical file codes as guides.
+ Each prediction uses the file's first temperature as both its thermal initial
+ condition and assumed ambient. Markers do not imply independent replication,
+ and no uncertainty interval is shown.}
+ \label{fig:validation-errors}
+\end{figure}
+
 \subsection{Coordinate conditioning and physical ambiguity}
 The independently fitted physical and input--output formulations reach sums of
 squares that agree to numerical precision in the joint cold cases
@@ -251,6 +279,26 @@ held-out records also remain much larger than calibration errors. Allowing
 serial covariance changes conditional uncertainty without establishing that
 the thermal mean transfers between records.
 \input{tables/ou_diagnostics}
+Figure~\ref{fig:ou-correlations} compares raw residuals and filtered innovations
+within each OU fit. For reference, filtering an IID component at regular
+sampling gives interior lag-one correlation $-\phi/(1+\phi^2)$, approaching
+$-1/2$ for $\phi$ near one (Appendix~\ref{sec:nuisance-assumptions}). This
+provides one explanation to investigate, without identifying a unique error
+mechanism from the observed negative correlation.
+
+\begin{figure}[p]
+ \centering
+ \includegraphics[width=\linewidth]{ou_correlations.pdf}
+ \caption{A one-component OU covariance removes much low-frequency residual
+ correlation while leaving strongly negative first-lag innovations. Columns
+ show calibration records; rows show centered sample autocorrelations before
+ and after the stationary OU filter. Each curve uses its own jointly fitted
+ cold thermal mean and OU length in both rows, isolating the filter comparison
+ within that fit. Lag zero is omitted. These are empirical residual
+ diagnostics, without nominal whiteness-test bands or a unique physical
+ interpretation of the residual process.}
+ \label{fig:ou-correlations}
+\end{figure}
 
 The remaining empirical results will be inserted after the independent coverage,
 ambient/history sensitivity, validation and prospective-design audits finish.
