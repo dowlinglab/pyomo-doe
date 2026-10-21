@@ -23,8 +23,9 @@ scope, and `results/manifest.json` will identify manuscript results.
 - Notebook migration committed in `58b4fa5`: 13 deterministic Python exports,
   scientific-cell AST equality, and a successful migrated simulation run.
 - Exact LTI models committed in `451749f`; inference runner in `275fe0a`.
-  One hundred focused checks pass after adding exact-draft expansion and
-  citation-offset checks. They cover independent integrator/analytic agreement,
+  One hundred and four focused checks pass after adding exact-draft expansion,
+  citation-offset and independent nuisance-audit checks. They cover independent
+  integrator/analytic agreement,
   transformations, synthetic recovery, null directions, profile recovery,
   resampling, OU likelihoods, coverage accounting and input-design gradients.
 - First full sweep finished 95/99 cases; four uncertainty serialization failures
@@ -200,6 +201,16 @@ extra redundant coordinate. A varying-input target receives no uncertainty band
 when calibration leaves delay structurally unobservable, even where a local
 delay derivative happens to vanish. Mean-estimator uncertainty and an additional
 future observation error law are distinct outputs.
+
+The prepared `audit_sensitivity.py` separately propagates chain states at
+the fitted ambient/history initial conditions, checks every stored trajectory,
+SSE, selected converged start, input identity and held-out metric, and compares
+a finite-difference information matrix with the saved nuisance SVD. It checks
+IID covariance arithmetic and exact pole-exchange predictions without claiming
+a HAC audit or coverage guarantee. It refuses active/incomplete runs and
+requires an explicit flag for a filtered trial. Four new checks include
+regular and rank-deficient cases and deliberate covariance corruption. Production
+sensitivity outputs have not yet been computed or audited.
 
 One-shot follow-up queue **session 48705** is now confirmed live, waiting for
 coverage session 19175 to finish. It runs from immutable commit **5178dc5**;
