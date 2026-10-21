@@ -23,7 +23,7 @@ scope, and `results/manifest.json` will identify manuscript results.
 - Notebook migration committed in `58b4fa5`: 13 deterministic Python exports,
   scientific-cell AST equality, and a successful migrated simulation run.
 - Exact LTI models committed in `451749f`; inference runner in `275fe0a`.
-  Fifty-five focused checks passed on October 21 after the design-driver and
+  Eighty-two focused checks passed on October 21 after the design-driver and
   onset-limit checks were added. They cover independent integrator/analytic agreement,
   transformations, synthetic recovery, null directions, profile recovery,
   resampling, OU likelihoods, coverage accounting and input-design gradients.
@@ -188,6 +188,29 @@ nominal cold models with three working covariances, and mean/min utility over
 16 fitted mean models and re-simulated densely through a ramp-down tail.
 These remain local numerical designs under assumed constraints, not hardware
 operating instructions or globally optimal solutions.
+
+Additional committed follow-up phases await their trials: the 241-case
+`run_sensitivity.py` matrix (192 ambient/history cases and 49 input-hold/
+discretization cases), and 131 `run_prediction_uncertainty.py` jobs (51 local
+quotient cases, 48 OU cases, 32 joint bootstrap cases). All baseline linear-hold
+pure-delay predictions remain unchanged after adding exact left/right holds.
+Prediction variance is checked for original/n1 quotient invariance, with residual
+degrees of freedom based on the proven identifiable quotient rather than an
+extra redundant coordinate. A varying-input target receives no uncertainty band
+when calibration leaves delay structurally unobservable, even where a local
+delay derivative happens to vanish. Mean-estimator uncertainty and an additional
+future observation error law are distinct outputs.
+
+One-shot follow-up queue **session 48705** is now confirmed live, waiting for
+coverage session 19175 to finish. It runs from immutable commit **5178dc5**;
+its record is `/private/tmp/tclab-followup-trials/queue.json`. It confirms coverage
+liveness with the held OS lock and requires complete terminal chunk/draw counts
+after owner release. It then runs seven sequential bounded trials (design,
+nuisance, pure left hold, original/null-delay/OU/bootstrap prediction) and stops
+for agent review. It does not launch full studies automatically. Do not start
+another numerical pool while either coverage or these trials owns the budget.
+Inspect trial outputs and convergence/estimability/interval properties before
+running or reusing them in the full phases. Preserve any failed trial source.
 
 While coverage runs: complete the design-driver review, literature synthesis,
 noise/validation and structural summaries, result figures/tables, ambient and
