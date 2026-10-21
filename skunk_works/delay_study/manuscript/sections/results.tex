@@ -65,6 +65,45 @@ metric at these fitted points. These differences concern the coordinate metric;
 they do not distinguish observationally equivalent model explanations.
 \input{tables/coordinate_metrics}
 
+The positive information spectra are similar across the reduced cold models,
+while their native local dimensions differ from the original model and the
+equilibrated step case (Fig.~\ref{fig:information-spectra}). The weakest local
+direction is dominated by relative delay changes at these joint cold points,
+with smaller compensating time-constant changes. Its components change after
+reexpressing the same model in physical coordinates
+(Fig.~\ref{fig:weak-directions}). Neither local eigenanalysis detects the
+one-stage pole-label exchange by itself.
+
+\begin{figure}[p]
+ \centering
+ \includegraphics[width=.85\linewidth]{information_spectra.pdf}
+ \caption{Positive information eigenvalues and structural null directions must
+ be counted separately. Values above the relative sensitivity-rank cutoff are
+ normalized by each case's largest eigenvalue. Legend parentheses give local
+ identifiable rank divided by native parameter dimension. The four reduced
+ curves use joint cold fits in log input--output coordinates and overlap closely.
+ The original joint model uses four physical logs; the step comparison uses
+ two-stage equilibrated delay states. Their null eigenvalues are omitted rather
+ than assigned a plotting floor. These coordinate-dependent spectra are not an
+ invariant ranking of information magnitude between formulations. Lines join
+ ordered eigenvalues as guides.}
+ \label{fig:information-spectra}
+\end{figure}
+
+\begin{figure}[p]
+ \centering
+ \includegraphics[width=\linewidth]{weak_directions.pdf}
+ \caption{Weakest local information directions depend on the coordinate metric.
+ Columns give joint cold fits for the indicated stage count, with infinity
+ denoting pure delay. Entries are components of unit eigenvectors for the
+ smallest information eigenvalue. The largest absolute component is assigned
+ positive sign. Physical-coordinate directions are re-diagonalized after the
+ exact transformation at the same fitted point; they are not additional
+ observations. The displayed directions concern one local pole representative
+ and do not remove global parameter ambiguities.}
+ \label{fig:weak-directions}
+\end{figure}
+
 The original model has a stronger ambiguity. For each calibration, the saved
 structural calculation sampled 403 positive physical parameter combinations with
 the same transfer function. Their largest prediction difference was below
@@ -92,6 +131,42 @@ interval is withheld where the recorded experiment leaves delay unobservable.
 The table compares assumptions rather than estimating a single unconditional
 physical uncertainty.
 \input{tables/delay_uncertainty}
+
+Figure~\ref{fig:profile-modes} displays the two one-stage profile modes on
+separate delay windows. Figure~\ref{fig:delay-intervals} compares the conditional
+intervals across residual block lengths. The apparent precision changes with
+the residual assumptions even when the fitted thermal trajectories remain close.
+
+\begin{figure}[p]
+ \centering
+ \includegraphics[width=\linewidth]{profile_modes.pdf}
+ \caption{The one-stage cold model has two distinct delay-label modes. Each
+ panel shows a separate declared window of the joint delay profile; the
+ intervening parameter range is omitted. The blue solid curve uses fixed
+ hypothetical sensor standard deviation $0.25\,{}^\circ\mathrm C$, and the
+ orange dashed curve profiles a common IID variance. Lines connect saved
+ nuisance-optimized grid values. The dotted line is the nominal 95\%
+ chi-squared threshold with one degree of freedom. Negative likelihood-ratio
+ roundoff is clamped to zero for display. Neither regular threshold assumptions
+ nor real-data coverage follow from the profile shape.}
+ \label{fig:profile-modes}
+\end{figure}
+
+\begin{figure}[p]
+ \centering
+ \includegraphics[width=\linewidth]{delay_intervals.pdf}
+ \caption{Residual assumptions change conditional delay intervals. All panels
+ use joint cold fits; the one-stage panel displays the canonical short-delay
+ representative. Bootstrap bars are percentile intervals from 400 saved draws
+ per method, with dots at medians. The profile bar uses the unknown-variance IID
+ accepted component containing the baseline estimate. OU bars exponentiate
+ local normal log-delay endpoints from the observed mean/length Hessian with
+ variance profiled. Their dots are fitted OU delays. Gray vertical lines mark
+ baseline least-squares delays. Residual blocks count retained samples. These
+ are nominal conditional intervals under different assumptions, not a common
+ unconditional physical uncertainty or simultaneous confidence statement.}
+ \label{fig:delay-intervals}
+\end{figure}
 
 \subsection{The working correlated-noise model remains inadequate}
 The independent innovations audit reproduced every saved OU likelihood within
