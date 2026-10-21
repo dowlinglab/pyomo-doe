@@ -139,7 +139,12 @@ Its progress authority is `results/profiles/manifest.json`; do not launch a seco
 copy while its lock/process is live. The original execution session is 36231.
 A one-parameter frozen-source trial passed: 61 grid points, four starts per point,
 no lower minimum missed by the baseline. The last observed full-run progress was
-48/300 jobs with no failures. Re-read the manifest for current state.
+95/300 jobs with one failure. Re-read the manifest for current state. The failed
+job is the original four-parameter model's joint-data Ua profile: all nuisance
+fits exhausted their iteration budget at one grid value. Preserve the failure;
+retry after the current run ends, preferably with a better-conditioned treatment
+of the redundant nuisance coordinates or a documented larger iteration budget.
+No completed profile has yet reported a lower minimum requiring a baseline refit.
 
 The baseline 99 fits are committed in `f30451e`. No push or completion email has
 been sent. Next implement bootstrap using canonical-coordinate fits with each
@@ -147,6 +152,12 @@ bootstrap draw transformed to physical coordinates; independently fitted physica
 cases already verify coordinate equivalence where the optimum is identified.
 Keep redundant-parameter uncertainty undefined rather than inferring a confidence
 interval from whichever minimizer a bootstrap algorithm happens to choose.
+Bootstrap helpers and driver are drafted in `bootstrap.py` and `run_bootstrap.py`.
+Four resampling checks pass. Run a short frozen-source end-to-end trial after
+the profile pool stops; do not overlap two four-worker numerical pools. Production
+configuration specifies 400 draws for each residual block length (1, 10, 30, 60)
+and 400 IID known-noise draws per IO fit, with physical coordinates transformed
+for each draw. The short trial must record its replicate override explicitly.
 
 Literature next: inspect/ground the primary Raue method pages, inspect relevant
 Garnier/Wang book chapter bylines, and acquire the public Hjalmarsson (2009) and
