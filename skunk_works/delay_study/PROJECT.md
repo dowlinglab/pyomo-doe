@@ -265,6 +265,30 @@ reference warnings, but they and the final results still require rendered review
 The working `main.pdf` is ignored; save a separately named final report only
 after the full manuscript and no-ai-slop/source/result audits are complete.
 
+Baseline figures now exist and are included in the working results section.
+`plot_baseline.py` reads only saved outputs. It uses the lab's supplied figure
+style module, with centralized additions for dense traces and a multipanel size.
+Its latest source is `f8ee8c1`; phase-specific
+`manuscript/figures/baseline_source_snapshot.json` is authoritative for restyling
+(the directory's generic `source_snapshot.json` preserves the earlier first launch).
+`audit_baseline_figures.py` checked 48 RMSE points against independent case JSONs
+and 32 trajectory arrays against hash-verified prediction files; all deltas were
+zero. Color and grayscale figures and their rendered manuscript pages 6-7 were
+inspected. `baseline_numeric_audit.json` and `baseline_visual_audit.json` retain
+the separate checks. The remaining full document and future figures need their
+own final audit; this is not human scientific review.
+
+The next coverage study should use synthetic observations under known mean
+models to test the conditional intervals, rather than infer coverage from the
+real-data fits. A useful planned core is theta coverage for representative n1,
+n2, and pure-delay cold joint fits under IID and correlated-noise scenarios,
+with at least 200 independent datasets per scenario, parameter bias and interval
+width summaries, Wilson intervals for observed coverage, and explicit optimizer
+failures. Profile at least the delay, preserve n1's disconnected pole modes, and
+compare local IID/HAC estimates against the empirical refit distribution.
+Pilot timing first and retain immutable source and per-draw recovery checkpoints.
+These calculations are planned; no coverage results exist yet.
+
 Priority work after these phases: ambient and prehistory sensitivity, a correlated
 residual likelihood using actual time intervals, per-file validation diagnostics,
 and finite-horizon input design. The extra sensor trace cannot be assumed to

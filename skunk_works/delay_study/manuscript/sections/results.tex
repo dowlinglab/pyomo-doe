@@ -5,7 +5,51 @@ exhausted their nuisance-optimization budgets; their failed status is retained
 pending a documented retry. None of the completed profiles found a minimum
 requiring a baseline refit under the recorded tolerance.
 
-The manuscript's generated tables and figures will replace this working status
-after the profile retries, resampling, sensitivity analyses, and input-design
-calculations have been audited. Intermediate fitted values are available in the
-saved result files and are not yet presented as final uncertainty conclusions.
+\subsection{Order and initialization}
+The startup assumption reverses the order ranking for the sine and joint
+calibrations (Fig.~\ref{fig:baseline-order}). For these two calibration sets,
+cold delay states give the lowest error at one stage among the compared
+formulations. Equilibrated states favor
+the pure-delay limit. The step experiment with equilibrated states gives the
+same error for every order, as expected from the delay's absence from its
+response. These comparisons concern calibration error under prescribed histories;
+they do not establish which history occurred before recording began.
+
+\begin{figure}[p]
+ \centering
+ \includegraphics[width=.5\linewidth]{baseline_order.pdf}
+ \caption{Initialization changes the fitted order ranking. Root mean squared
+ temperature error (RMSE) for sine, step, and joint calibration is plotted for
+ input--output parameter fits. Cold means $z_i(0)=0$; equilibrated means
+ $z_i(0)=u(0)$. The infinity label denotes the separately fitted pure-delay model,
+ with the corresponding input prehistory. Lines connect categorical orders as
+ guides. Every error excludes the first temperature used to initialize the
+ model. No uncertainty intervals are implied by the markers.}
+ \label{fig:baseline-order}
+\end{figure}
+
+\subsection{Temperature traces and residuals}
+The jointly calibrated cold models give closely spaced temperature predictions,
+while their residual traces show differences near startup and the sine peaks
+(Fig.~\ref{fig:baseline-trajectories}). Residual structure persists over many
+successive observations. A visual match on the full temperature scale therefore
+does not establish independent sensor noise or reliable uncertainty coverage.
+
+\begin{figure}[p]
+ \centering
+ \includegraphics[width=\linewidth]{baseline_trajectories.pdf}
+ \caption{The residual scale exposes differences hidden in the temperature
+ overlays. Columns show the sine and step experiments; rows show heater input
+ $u$, measured temperature $T$ with jointly fitted cold-start mean predictions,
+ and residuals defined as prediction minus observation. All recorded calibration
+ samples are plotted. The thermal initial condition and assumed ambient equal
+ the first observation, and the delay prehistory is zero. The four curves use
+ independent joint fits for their respective formulations. These are mean
+ predictions; uncertainty bands are not shown.}
+ \label{fig:baseline-trajectories}
+\end{figure}
+
+The remaining results will be inserted after the profile retries, resampling,
+sensitivity analyses, validation diagnostics, and input-design calculations have
+been audited. The current figures use completed baseline outputs only.
+\FloatBarrier
