@@ -352,7 +352,7 @@ inspected. `baseline_numeric_audit.json` and `baseline_visual_audit.json` retain
 the separate checks. The remaining full document and future figures need their
 own final audit; this is not human scientific review.
 
-The working manuscript is now **21 pages**, compiled without warnings. New
+The working manuscript is now **25 pages**, compiled without warnings. New
 generated tables cover calibration errors, parameters, coordinate metrics,
 conditional delay uncertainty and OU innovations. `audit_tables.py` checked
 150 printed cells using independent result paths, including independent physical
@@ -365,6 +365,16 @@ source is `6dd8633`, and an independent audit checks 434 plotted values. Color,
 grayscale and working PDF pages 10/12/13/14 were inspected. Vector heatmap cells
 avoid raster seams observed in the earlier PDF attempt. This adds partial
 figure QA, not a full-document final review or human scientific review.
+Three structural figures and two additional tables now report the physical
+equivalence family, identifiable boundary-function uncertainty, parameter
+correlations, quartic repeated-pole curvature and the step-onset limit. Their
+producer is `c900ff9`; independent audits verify 2,781 plotted values and 44
+table numbers. The latter uses original bootstrap draws and independently
+fitted physical-coordinate correlations (maximum difference 9.3e-9). Color,
+grayscale and rendered working pages 9/11/13/14/18 were inspected; receipts
+identify the exact temporary 25-page PDF snapshot. A wording correction
+clarifies that the onset rate excludes a uniform O(n^-1) bound, rather than
+claiming the temperature response fails to converge uniformly.
 Added derivations cover heater-calibration scale ambiguity, ambient/history
 nuisance information, zero-mean colored-error least-squares interpretation,
 quartic behavior at coincident poles, and the onset convergence coefficient.
