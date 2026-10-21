@@ -29,8 +29,8 @@ scope, and `results/manifest.json` will identify manuscript results.
 - Notebook migration committed in `58b4fa5`: 13 deterministic Python exports,
   scientific-cell AST equality, and a successful migrated simulation run.
 - Exact LTI models committed in `451749f`; inference runner in `275fe0a`.
-  One hundred and twelve focused checks pass after adding exact-draft expansion,
-  citation-offset and independent nuisance/prediction-audit checks. They cover independent
+  One hundred and sixteen focused checks pass after adding exact-draft expansion,
+  citation-offset and independent nuisance/prediction/design-audit checks. They cover independent
   integrator/analytic agreement,
   transformations, synthetic recovery, null directions, profile recovery,
   resampling, OU likelihoods, coverage accounting and input-design gradients.
@@ -199,6 +199,25 @@ nominal cold models with three working covariances, and mean/min utility over
 16 fitted mean models and re-simulated densely through a ramp-down tail.
 These remain local numerical designs under assumed constraints, not hardware
 operating instructions or globally optimal solutions.
+
+The prepared `audit_design.py` reconstructs information directly from each
+candidate command rather than the cached input-to-sensitivity map. It checks
+all scenario matrices, eigenpairs and four target scores; reference normalization;
+every recorded attempt objective and actual coarse resource violation; the
+best-converged-feasible-start rule; and dense all-model temperature maxima through
+shutdown. Normwise information/eigenpair residuals use the declared log-IO metric
+to avoid treating finite-difference cancellation at an exact null as a physical
+cross sensitivity; individual spectra and finite/undefined target utilities
+remain separately checked. Four new checks cover analytic utilities/null targets,
+dense OU precision, irregular-knot command dose/shutdown and a saved synthetic
+design, including deliberate information/temperature corruption. The 116-check
+suite passed in 7.31 s; the added attempt-budget guard passed targeted checks.
+Production design outputs still await the queued trial and full run.
+The model section now distinguishes recorded command from calibrated heat input,
+identifies the exact delay factor in the pure-delay limit, and separates
+input-equilibrated memory from whole-system thermal equilibrium. Working pages
+2/3 were inspected in a warning-free 34-page build; the scoped receipt is
+`manuscript/model_assumption_review.json`. Final full-document QA remains pending.
 
 Additional committed follow-up phases await their trials: the 241-case
 `run_sensitivity.py` matrix (192 ambient/history cases and 49 input-hold/

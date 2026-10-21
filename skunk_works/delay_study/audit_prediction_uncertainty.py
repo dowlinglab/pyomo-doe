@@ -38,7 +38,7 @@ def compare_values(actual, expected, label, errors, atol=1e-8, rtol=1e-7):
     maximum = float(np.max(abs(a[defined]-b[defined]))) if defined.any() else 0.
     errors[label] = max(errors.get(label, 0.), maximum)
     if not np.allclose(a, b, atol=atol, rtol=rtol, equal_nan=True):
-        raise RuntimeError("Saved prediction values disagree: "+label+"; maximum error "+str(maximum))
+        raise RuntimeError("Saved numeric values disagree: "+label+"; maximum error "+str(maximum))
 
 
 def covariance_basis(J):

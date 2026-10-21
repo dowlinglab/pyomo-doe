@@ -2,7 +2,7 @@
 \label{sec:models}
 
 \subsection{Thermal balance with a distributed input delay}
-The measured input $u(t)$ is heater power in percentage points, and the measured
+The recorded input $u(t)$ is the heater command in percentage points, and the measured
 output $T(t)$ is the first temperature sensor in degrees Celsius. We fixed the
 heater conversion $c=\alpha P$ at $0.032\,\mathrm{W}$ per percentage point, using
 the inherited values $\alpha=0.00016$ and $P=200$. The ambient temperature
@@ -39,7 +39,7 @@ variance $\theta^2/n$; Appendix~\ref{sec:structural} derives these quantities.
 The linear chain construction is consistent with the Erlang dwell-time
 representation studied by \citet{hurtado-2019-generalizations}. A finite chain
 responds before time $\theta$ and therefore represents a distributed lag. As
-$n$ increases at fixed $\theta$, its transfer function tends to
+$n$ increases at fixed $\theta$, the delay factor $(1+\theta s/n)^{-n}$ tends to
 $\exp(-\theta s)$. We also fitted the limiting pure-delay model,
 \begin{equation}
  \tau\dot T(t)=-(T(t)-\Tamb)+K u(t-\theta).
@@ -55,6 +55,11 @@ The pure-delay model used the corresponding zero or constant input prehistory.
 These assumptions encode different unobserved histories of heater operation.
 Neither was established by the recorded input before the first sample, because
 that history is absent from the supplied data.
+Input-equilibrated refers to delay memory. Under a constant command $u_0$,
+equilibrium of the entire model would additionally require
+$T(0)=\Tamb+Ku_0$. Here the thermal initial condition is fixed independently
+at the first reading. Determining the preceding thermal trajectory requires
+pre-window observations.
 
 \subsection{Original two-state thermal model}
 The inherited model describes heater temperature $T_{\mathrm H}$ and sensor
