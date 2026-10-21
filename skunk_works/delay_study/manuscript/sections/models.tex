@@ -1,0 +1,84 @@
+\section{Model formulations}
+\label{sec:models}
+
+\subsection{Thermal balance with a distributed input delay}
+The measured input $u(t)$ is heater power in percentage points, and the measured
+output $T(t)$ is the first temperature sensor in degrees Celsius. We fixed the
+heater conversion $c=\alpha P$ at $0.032\,\mathrm{W}$ per percentage point, using
+the inherited values $\alpha=0.00016$ and $P=200$. The ambient temperature
+$\Tamb$ was set to the first measured temperature in each experiment. This
+choice conditions the analysis on an uncertain ambient estimate.
+
+For a chain of $n$ delay states, the auxiliary variables $z_i(t)$ have the same
+units as $u(t)$. The physical parameters $\Ua>0$, $\Cp>0$, and $\theta>0$
+denote thermal conductance, effective heat capacity, and mean input-delay time,
+respectively. The model is
+\begin{align}
+ \dot z_1 &= \frac{n}{\theta}(u-z_1), &
+ \dot z_i &= \frac{n}{\theta}(z_{i-1}-z_i),\quad i=2,\ldots,n,\label{eq:chain}\\
+ \Cp\dot T &= -\Ua(T-\Tamb)+c z_n.\label{eq:physical}
+\end{align}
+The input--output coordinates $K=c/\Ua$ and $\tau=\Cp/\Ua$ are steady-state
+gain and thermal time constant. In these coordinates the temperature equation is
+\begin{equation}
+ \dot T=-\frac{T-\Tamb}{\tau}+\frac{K}{\tau}z_n.
+ \label{eq:io}
+\end{equation}
+Both parameterizations describe the same positive model family. Their inverse
+map is $\Ua=c/K$ and $\Cp=c\tau/K$. Distinct rectangular parameter bounds need
+not map onto each other; our numerical comparison records active bounds and
+compares common interior solutions.
+
+For zero initial deviations, the Laplace variable $s$ gives the transfer function
+\begin{equation}
+ G_n(s)=\frac{K}{(1+\tau s)(1+\theta s/n)^n}.
+ \label{eq:transfer}
+\end{equation}
+The delay chain has an Erlang impulse-response kernel with mean $\theta$ and
+variance $\theta^2/n$; Appendix~\ref{sec:structural} derives these quantities.
+The linear chain construction is consistent with the Erlang dwell-time
+representation studied by \citet{hurtado-2019-generalizations}. A finite chain
+responds before time $\theta$ and therefore represents a distributed lag. As
+$n$ increases at fixed $\theta$, its transfer function tends to
+$\exp(-\theta s)$. We also fitted the limiting pure-delay model,
+\begin{equation}
+ \tau\dot T(t)=-(T(t)-\Tamb)+K u(t-\theta).
+ \label{eq:puredelay}
+\end{equation}
+Increasing $n$ changes the transfer-function shape and adds dynamic states;
+it does not add estimated parameters to the three-parameter family.
+
+\subsection{Initial-state assumptions}
+We conditioned $T(0)$ on the first observation. The cold-start assumption set
+all $z_i(0)=0$, while the input-equilibrated assumption set all $z_i(0)=u(0)$.
+The pure-delay model used the corresponding zero or constant input prehistory.
+These assumptions encode different unobserved histories of heater operation.
+Neither was established by the recorded input before the first sample, because
+that history is absent from the supplied data.
+
+\subsection{Original two-state thermal model}
+The inherited model describes heater temperature $T_{\mathrm H}$ and sensor
+temperature $T_{\mathrm S}$. Its conductances $\Ua,\Ub>0$ and heat capacities
+$\CpH,\CpS>0$ satisfy
+\begin{align}
+ \CpH\dot T_{\mathrm H}&=-\Ua(T_{\mathrm H}-\Tamb)
+                       -\Ub(T_{\mathrm H}-T_{\mathrm S})+cu,\\
+ \CpS\dot T_{\mathrm S}&=\Ub(T_{\mathrm H}-T_{\mathrm S}).
+ \label{eq:original}
+\end{align}
+Only $T_{\mathrm S}$ was used in this single-output comparison. Both initial
+temperatures were fixed at the first sensor reading. Under these conditions its
+transfer function depends on three combinations of four physical parameters:
+\begin{equation}
+ G_{\mathrm{orig}}(s)=\frac{K}{1+a s+b s^2},\qquad
+ K=\frac{c}{\Ua},\quad
+ a=\frac{\CpH}{\Ua}+\frac{\CpS}{\Ub}+\frac{\CpS}{\Ua},\quad
+ b=\frac{\CpH\CpS}{\Ua\Ub}.
+ \label{eq:original-transfer}
+\end{equation}
+Appendix~\ref{sec:structural} exhibits the resulting continuum of equivalent
+physical parameters. The one-stage cold-start model has $a=\tau+\theta$ and
+$b=\tau\theta$, so its zero-state transfer family coincides with this original
+model. The pole labels $\tau$ and $\theta$ can be interchanged. We used the
+convention $\tau\geq\theta$ when the exchanged point remained within the
+specified parameter bounds and retained both modes in likelihood profiles.

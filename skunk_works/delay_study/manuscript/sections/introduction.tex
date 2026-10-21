@@ -1,0 +1,40 @@
+\section{Introduction and theoretical grounding}
+Parameter estimation for the TC-Lab must distinguish uncertainty in a measured
+thermal response from ambiguity in its physical explanation. A model may predict
+the observed temperature closely while several parameter combinations produce
+the same response. Changing parameter coordinates can improve numerical scaling,
+but an invertible coordinate transformation preserves that ambiguity.
+
+Identifiability concerns the uniqueness of parameters given a model, an observed
+output, and an experiment. Practical estimability additionally depends on the
+record length, input, noise, and initial-state information. Profile likelihood
+examines a parameter while reoptimizing the remaining parameters and can reveal
+features missed by a local quadratic approximation
+\citep{raue-2009-structural}. We combine that approach with explicit transfer
+functions, sensitivity singular values, and resampling. The algebraic calculation
+is needed to distinguish an exact equivalence class from a numerically shallow
+objective or a finite exploration bound.
+
+Linear time-invariant system identification supplies a connection between input
+excitation, parameter information, and prediction accuracy. Application-oriented
+design can target informative parameter combinations rather than require equal
+precision in every physical parameter. \citet{hjalmarsson-2009-system} develops
+this distinction using parameter confidence regions and application loss. Its
+prediction-error information formula assumes that the true system belongs to
+the model set and that the predictor is differentiable. Those assumptions require
+separate scrutiny here because the TC-Lab residuals can contain serial structure
+and between-experiment discrepancies.
+
+An $n$-stage chain is a family of distributed-delay models. The linear chain
+construction relates cascaded first-order stages to Erlang dwell times
+\citep{hurtado-2019-generalizations}. For a fixed mean delay, increasing the stage
+count narrows the delay distribution and approaches a pure delay. Fitting this
+family therefore tests a shape assumption as well as a numerical approximation.
+Its auxiliary stage count differs from its number of estimated parameters.
+
+This study asks how these distinctions affect the available TC-Lab data. We
+compare physical and input--output parameterizations, quantify conditional
+uncertainty, test sensitivity to initialization and data handling, and evaluate
+simulated inputs for future estimation and discrimination. The study is a
+reproducible draft for internal review; it does not establish a validated
+physical mechanism from temperature fit alone.

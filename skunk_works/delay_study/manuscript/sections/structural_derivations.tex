@@ -1,0 +1,73 @@
+\section{Structural derivations}
+\label{sec:structural}
+
+\subsection{Delay-chain moments and pure-delay limit}
+Let $r=n/\theta$ be the delay-state rate. The normalized chain kernel for
+$t\geq0$ is
+\[
+ h_n(t)=\frac{r^n t^{n-1}e^{-rt}}{(n-1)!}.
+\]
+Its Laplace transform is $(1+s/r)^{-n}$. Differentiating that transform at zero
+gives mean $n/r=\theta$ and variance $n/r^2=\theta^2/n$. Consequently, the
+normalized complete thermal response has impulse-time mean $\tau+\theta$ and
+variance $\tau^2+\theta^2/n$. These are properties of the model kernel;
+they are not estimates of a measured residence-time distribution.
+For fixed $s$ in the domain of convergence,
+\[
+ \log(1+\theta s/n)^{-n}=-n\log(1+\theta s/n)\longrightarrow-\theta s.
+\]
+This calculation supplies the pure-delay limit of Eq.~\eqref{eq:transfer}.
+
+\subsection{An explicit physical-parameter equivalence class}
+Define the two positive pole time constants $t_{\mathrm f}<t_{\mathrm s}$ by
+$a=t_{\mathrm f}+t_{\mathrm s}$ and $b=t_{\mathrm f}t_{\mathrm s}$. For fixed
+positive transfer coefficients $(K,a,b)$, choose a family coordinate
+$r=\CpS/\Ub$ between these pole time constants. The physical parameters
+\begin{equation}
+ \Ua=\frac{c}{K},\qquad
+ \CpH=\frac{b\Ua}{r},\qquad
+ \CpS=\Ua\left(a-r-\frac{b}{r}\right),\qquad
+ \Ub=\frac{\CpS}{r}
+ \label{eq:equivalent}
+\end{equation}
+produce exactly the same transfer function for every
+$r\in(t_{\mathrm f},t_{\mathrm s})$. Positivity follows from
+$a-r-b/r=-(r-t_{\mathrm f})(r-t_{\mathrm s})/r>0$. Substitution into
+Eq.~\eqref{eq:original-transfer} recovers $K$, $a$, and $b$ exactly.
+The conductance $\Ua$ is identifiable through $K$; the other three parameters
+vary along this equivalence class. No input waveform can distinguish members
+of this class through this output under the stated initial conditions.
+
+Positivity constrains this continuum to finite ranges in some coordinates.
+For example, its heat capacities obey
+\[
+ \Ua t_{\mathrm f}<\CpH<\Ua t_{\mathrm s},\qquad
+ 0<\CpS\leq\Ua\left(a-2\sqrt b\right).
+\]
+The second upper bound occurs at $r=\sqrt b$.
+Thus bounded physical ranges or bounded exploration grids do not establish
+structural identifiability. Structural uniqueness must be checked separately
+from the numerical width of a confidence set.
+
+\subsection{Constant input with equilibrated delay states}
+If $u(t)=u_0$ and $z_i(0)=u_0$, every delay-state derivative in
+Eq.~\eqref{eq:chain} vanishes. The predicted temperature then depends on
+$K$ and $\tau$ alone, and its derivative with respect to $\theta$ is zero at
+every observation time. A constant prehistory gives the same conclusion for
+Eq.~\eqref{eq:puredelay}. This experiment cannot estimate the delay even when
+the thermal transient is well measured. Cold delay states under the same
+post-start input retain a transient that depends on $\theta$.
+
+\subsection{Coordinate changes and information}
+For positive parameters, write $\bm\eta=(\log K,\log\tau,\log\theta)^\top$
+and $\bm\xi=(\log\Ua,\log\Cp,\log\theta)^\top$. The Jacobian of the map
+from $\bm\eta$ to $\bm\xi$ is the constant matrix
+\[
+ M=\begin{pmatrix}-1&0&0\\-1&1&0\\0&0&1\end{pmatrix},\qquad M^{-1}=M.
+\]
+For a nonsingular covariance $C_{\eta}$, the transformed local covariance is
+$C_{\xi}=M C_{\eta}M^\top$. Sensitivity rank and prediction-space uncertainty
+are invariant under this invertible transformation. Numerical eigenvalues,
+eigenvectors, and condition numbers generally change with the coordinate metric.
+The matrix satisfies $|\det M|=1$, so log-coordinate information determinants
+at the same model point are equal in this particular transformation.

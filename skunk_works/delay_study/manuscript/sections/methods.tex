@@ -1,0 +1,102 @@
+\section{Computational methods}
+\label{sec:methods}
+
+\subsection{Data and reproducibility}
+We preserved the supplied observations and first reproduced the unchanged
+inherited simulations twice. The resulting trajectories were byte-identical
+within each dataset. We then exported the teaching notebooks to Python scripts
+with cell markers and source hashes, checking equality of their scientific
+abstract syntax trees. The delay study uses separate Python modules for data,
+simulation, inference, and result generation.
+
+The data audit found 15 CSV files. Two validation files were numeric duplicates
+of the sine and step calibration files, respectively. We excluded both duplicates
+from validation, leaving 11 files. We fitted the sine experiment, the step
+experiment, and their combination separately. Each calibration experiment has
+901 temperature observations. The first observation conditions the initial
+temperature and is excluded from the fitted residual vector, leaving 900
+residuals per experiment. This treatment does not propagate uncertainty in the
+initial temperature or in the ambient temperature inferred from it.
+
+Long calculations run from immutable copies of committed source and raw data.
+The run manifests retain source, configuration and data hashes, package versions,
+random seeds, every optimizer attempt, and failures. A single manifest identifies
+each numerical phase. Result tables and figures are generated from saved outputs.
+
+\subsection{Simulation and fitting}
+We used exact state propagation of the linear time-invariant dynamics over each
+sampling interval, with linear interpolation of the measured heater signal.
+Separate checks compared left and right input holds and the inherited backward
+Euler discretization. The pure-delay simulator integrates across shifted input
+knots. These choices distinguish input reconstruction and numerical discretization
+from a change in model equations.
+
+The baseline comparison fitted seven orders, $n\in\{1,2,3,4,6,8,12\}$, two
+initial-state assumptions, and both parameter coordinates. Pure-delay fits used
+the same two initial-state assumptions and coordinates. The original model used
+its four physical parameters. These choices gave 99 calibration cases.
+We minimized unweighted temperature sum of squared errors using bounded
+least squares in logarithmic parameters, with 24 starts per case and seed 532.
+The broad input--output bounds were $0.2\leq K\leq1.5$,
+$5\leq\tau\leq600\,\mathrm{s}$, and
+$0.01\leq\theta\leq200\,\mathrm{s}$. The physical-coordinate bounds were
+$0.032/1.5\leq\Ua\leq0.032/0.2\,\mathrm{W\,K^{-1}}$,
+$0.1\leq\Cp\leq100\,\mathrm{J\,K^{-1}}$, and the same delay bounds.
+We retained convergence status and active bounds rather than interpreting every
+optimizer return as a successful estimate.
+
+\subsection{Local uncertainty and estimability}
+For residual vector $\bm e$ and log-parameter vector $\bm\eta$, the sensitivity
+matrix $J=\partial\bm e/\partial\bm\eta$ defines the conditional information
+matrix $F=J^\top J/\sigma^2$ under independent Gaussian errors of variance
+$\sigma^2$. We computed the singular value decomposition of $J$ directly and
+reported the eigenvalues and directions of $F$. Numerical rank uses a relative
+singular-value cutoff of $10^{-8}$. This threshold is a numerical convention;
+the explicit equivalence classes in Appendix~\ref{sec:structural} establish the
+structural conclusions independently.
+
+We reported local uncertainty under a fixed hypothetical sensor standard
+deviation of $0.25\,{}^\circ\mathrm C$ and under a common variance estimated
+from each calibration residual vector. The fixed value is a sensitivity scenario,
+not a calibration established by these experiments. Rank-deficient full parameter
+covariances are undefined. A diagnostic pseudoinverse is retained separately and
+is not used as a confidence interval for a null direction. We also computed
+heteroskedasticity and autocorrelation consistent sandwich estimates at lag
+bandwidths of 10, 30, and 60 samples, together with residual autocorrelation
+functions and Ljung--Box statistics. These calculations assess sensitivity to
+serial dependence; they do not correct a biased mean model.
+
+\subsection{Likelihood profiles and resampling}
+For each native parameter we fixed its value and reoptimized all nuisance
+parameters, following the profile construction of \citet{raue-2009-structural}.
+The exploration combined a global grid with local refinement, targeting 61 points
+and four nuisance starts at each point. The exact count after merging grids is
+recorded per profile. Additional points examined the exchanged
+pole mode of the one-stage cold-start model. We retained disconnected accepted
+components and endpoints at the exploration bounds. An endpoint at such a bound
+does not establish an unbounded mathematical interval.
+
+For $N$ residuals and sum of squared errors $S(\bm\eta)$, the likelihood-ratio
+statistics were $[S(\bm\eta)-S(\hat{\bm\eta})]/\sigma^2$ for fixed variance
+and $N\log[S(\bm\eta)/S(\hat{\bm\eta})]$ for a common profiled variance.
+The nominal 95\% reference threshold was the 0.95 quantile of a chi-squared
+distribution with one degree of freedom. These thresholds assume an appropriate
+independent Gaussian likelihood and regular identification; they are conditional
+diagnostics when those assumptions fail.
+
+The resampling design specified 400 refits for each of four circular residual
+block lengths (1, 10, 30, and 60 samples), plus 400 independent Gaussian
+simulations at the fixed $0.25\,{}^\circ\mathrm C$ standard deviation, for each
+input--output calibration case. Residuals were centered and resampled within
+each experiment; first temperatures, ambient estimates, and heater calibration
+were fixed. Each draw was transformed exactly into physical coordinates.
+Structural null directions were marked undefined rather than assigned an interval
+from arbitrary optimizer selections. These resampling distributions remain
+conditional on the mean model and on the assumed within-experiment stationarity.
+
+\subsection{Prospective experiment design}
+The experiment-design phase compares finite-horizon input candidates using
+scaled parameter information and separate model-discrimination criteria.
+All designs are simulations. The final design specification, numerical results,
+and constraint checks will be inserted after that phase completes; no proposed
+waveform has been applied to laboratory hardware.

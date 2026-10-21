@@ -134,17 +134,16 @@ are conditional diagnostics, not coverage guarantees for autocorrelated residual
 
 ## In flight and next work
 
-The full 300-job profile run started from immutable source commit `e267580`.
-Its progress authority is `results/profiles/manifest.json`; do not launch a second
-copy while its lock/process is live. The original execution session is 36231.
+The full 300-job profile run from immutable source commit `e267580` finished:
+297 jobs succeeded, and three Ua profiles of the original model failed (sine,
+step, joint). Its authority is `results/profiles/manifest.json`; the original
+execution session 36231 has exited. Preserve the first-pass outcomes.
 A one-parameter frozen-source trial passed: 61 grid points, four starts per point,
-no lower minimum missed by the baseline. The last observed full-run progress was
-95/300 jobs with one failure. Re-read the manifest for current state. The failed
-job is the original four-parameter model's joint-data Ua profile: all nuisance
-fits exhausted their iteration budget at one grid value. Preserve the failure;
+no lower minimum missed by the baseline. The failed
+jobs exhausted nuisance-fit iteration budgets at a fixed Ua grid value. Preserve the failures;
 retry after the current run ends, preferably with a better-conditioned treatment
 of the redundant nuisance coordinates or a documented larger iteration budget.
-No completed profile has yet reported a lower minimum requiring a baseline refit.
+No completed profile reported a lower minimum requiring a baseline refit.
 
 The baseline 99 fits are committed in `f30451e`. No push or completion email has
 been sent. Next implement bootstrap using canonical-coordinate fits with each
@@ -152,17 +151,58 @@ bootstrap draw transformed to physical coordinates; independently fitted physica
 cases already verify coordinate equivalence where the optimum is identified.
 Keep redundant-parameter uncertainty undefined rather than inferring a confidence
 interval from whichever minimizer a bootstrap algorithm happens to choose.
-Bootstrap helpers and driver are drafted in `bootstrap.py` and `run_bootstrap.py`.
-Four resampling checks pass. Run a short frozen-source end-to-end trial after
-the profile pool stops; do not overlap two four-worker numerical pools. Production
+Bootstrap helpers and driver are committed in `1b01061`. All 22 numerical checks
+pass across models, inference, profiles, and resampling. Two frozen-source trials
+passed 25/25 draws each: sine n2 cold and step n2 input-equilibrated, with five
+draws per method. Repeating the sine trial reused all five saved jobs. The step
+trial correctly withheld all theta intervals. Trial outputs remain under
+`/private/tmp/tclab-bootstrap-trial` and `/private/tmp/tclab-bootstrap-null-trial`.
+The full bootstrap is now live from source `1b01061`, execution session **11820**,
+with authority `results/bootstrap/manifest.json`. There are 240 jobs, 96,000
+planned refits. Do not launch another numerical pool while this one is live.
+Production
 configuration specifies 400 draws for each residual block length (1, 10, 30, 60)
 and 400 IID known-noise draws per IO fit, with physical coordinates transformed
 for each draw. The short trial must record its replicate override explicitly.
 
-Literature next: inspect/ground the primary Raue method pages, inspect relevant
-Garnier/Wang book chapter bylines, and acquire the public Hjalmarsson (2009) and
-Hurtado/Kirosingh (2019) papers. Metadata searches found neither in the current
-corpus. `literature/source_review.json` retains exact source identities, page
-coverage and discovery URLs. Continue source review even if an acquisition fails.
+Four public PDFs were acquired in `/private/tmp/tclab-literature`, registered as
+source `tclab-lti-study-20261021`. The local review plan is
+`c49dff1f62c741bbb3d942f65df59e8c`; its four sources are distinct from the local
+library. Cross-check `b9f398dcc5274c3bc5272bc53e931922` used an OCR judge and
+recommends pypdf for Hjalmarsson, Hurtado, and Manchester; pdftotext for Huang.
+Its unresolved Huang page 35 is not used for a claim. Other disputed pages remain
+bounded extraction evidence, not verified mathematical text. Hjalmarsson physical
+pages 8-9 and Hurtado pages 11-12 were inspected as rendered images as well as text.
+The paper hashes and private staging workspace are in
+`literature/acquired_sources.json`. No shared-library publication was performed;
+this task needs a source-grounded review, not maintenance of the shared corpus.
+Literature next: ground Raue's method passages, inspect Garnier/Wang chapter
+bylines, obtain/check the published Gerencser/Hjalmarsson/Huang (2017) version
+(the downloaded 2019 arXiv revision differs in author order), and review primary
+sources for dependent-data uncertainty. `literature/source_review.json` needs
+its pending discovery statuses reconciled with these later source inspections.
 The configured literature server is maintenance 0.5.8; do not change its runtime,
 models, taxonomy, existing source records or configuration to bypass limitations.
+
+## Manuscript argument and evidence map
+
+Split LaTeX sources now exist in `manuscript/`. The desktop compiler succeeded
+on the initial working draft, which explicitly marks unfinished analyses and
+AI authorship. It is not the completed report. Generate result tables/figures
+from saved numerical outputs and replace status placeholders before delivery.
+
+- Transfer-family equivalence and physical ambiguity: model equations and an
+  explicit equivalence class in `sections/structural_derivations.tex`, to be
+  accompanied by a parameter-manifold/prediction figure.
+- Order and initialization comparison: generated fit table, RMSE/order plot,
+  calibration overlays, and a separate held-out experiment plot.
+- Coordinate effects and estimability: scaled information spectra/directions,
+  transformed confidence geometry, and numerical coordinate-equivalence table.
+- Conditional uncertainty and its limits: disconnected profiles, block-length
+  comparisons, parametric/residual bootstrap intervals, residual diagnostics,
+  and sensitivity to ambient/prehistory/noise assumptions.
+- Prospective design: candidate input/temperature traces, audited resource
+  constraints, information improvements, model-discrimination scores, and
+  parameter/model sensitivity of the proposed inputs.
+- Literature: source/claim/page audit distinguishing theoretical assumptions,
+  our derivations, and observed TC-Lab results. Do not cite metadata-only leads.
