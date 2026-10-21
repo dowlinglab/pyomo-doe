@@ -23,8 +23,8 @@ scope, and `results/manifest.json` will identify manuscript results.
 - Notebook migration committed in `58b4fa5`: 13 deterministic Python exports,
   scientific-cell AST equality, and a successful migrated simulation run.
 - Exact LTI models committed in `451749f`; inference runner in `275fe0a`.
-  Eighty-seven focused checks passed on October 21 after the exact-family and
-  targeted profile-refinement checks were added. They cover independent integrator/analytic agreement,
+  Ninety-one focused checks passed on October 21 after the exact-family,
+  profile-refinement and discrimination checks were added. They cover independent integrator/analytic agreement,
   transformations, synthetic recovery, null directions, profile recovery,
   resampling, OU likelihoods, coverage accounting and input-design gradients.
 - First full sweep finished 95/99 cases; four uncertainty serialization failures
@@ -211,6 +211,17 @@ for agent review. It does not launch full studies automatically. Do not start
 another numerical pool while either coverage or these trials owns the budget.
 Inspect trial outputs and convergence/estimability/interval properties before
 running or reusing them in the full phases. Preserve any failed trial source.
+
+`discrimination.py` and its driver prepare a separate model-order design phase:
+12 local fixed-mean designs compare all six pairs among n1/n2/n12/pure, using
+both startup assumptions and all three working covariances. A bounded 72-case
+refit diagnostic lets n2/n12/pure change parameters against a fixed n1 generating
+mean under constant, multisine and selected mean/min designs. It does not cover
+every generating model or parameter point. Direct covariance and gradient checks
+pass. An equilibrated constant-input counterexample has positive separation at
+the original fitted parameters but zero separation after refitting, demonstrating
+why fixed-mean scores alone can exaggerate discrimination. This phase also waits
+for an inspected trial after the active pool releases; nothing runs on hardware.
 
 While coverage runs: complete the design-driver review, literature synthesis,
 noise/validation and structural summaries, result figures/tables, ambient and
