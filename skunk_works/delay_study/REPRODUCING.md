@@ -146,6 +146,15 @@ latexmk -pdf -interaction=nonstopmode -halt-on-error main.tex
 
 The working `main.pdf` is ignored. A final named PDF requires full-document
 visual review, numerical/source checks and the no-ai-slop editorial pass.
+The current source includes the teaching follow-up as Appendix G. Generate its
+four tables with `teaching_followup/render_report_tables.py`; its experiment
+figure is produced by `teaching_followup/plot_experiments.py` from the saved
+designs. The updated named PDF is `TC_Lab_delay_study_draft0_updated.pdf`.
+`teaching_followup/report_revision.json` owns this revision's source, result and
+visual checks. The earlier named PDF and `results/study_manifest.json` remain
+the frozen overnight release; do not rebuild that release index against the
+changed manuscript. Use `prepare_manuscript_audit.py --output
+teaching_followup/report_audit` for the revised exact-draft inventory.
 `prepare_manuscript_audit.py` expands the exact saved TeX inputs without executing
 them and records source hashes, bibliography mappings and citation offsets.
 After final editing, bind that exact draft to the saved evidence packet, review

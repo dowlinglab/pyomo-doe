@@ -7,6 +7,24 @@ This file owns current execution state. Git preserves superseded states.
 
 ## Current state
 
+- The user requested an updated report and a new self-email after the teaching
+  follow-up. The current source adds Appendix G, generated tables and the four
+  native Pyomo.DoE experiment plots. The updated deliverable is
+  `manuscript/TC_Lab_delay_study_draft0_updated.pdf`; its separate source,
+  numerical-audit and visual-review bindings are in
+  `teaching_followup/report_revision.json`. The original named PDF, study release
+  index and original email receipt below describe the earlier frozen release.
+  This explicit request authorizes one new email containing the revised report.
+- The updated build has 53 pages. The original 48 pages are pixel-identical at
+  the checked rendering resolution; all five added pages passed visual review.
+  No numerical optimization or fitting was rerun for this report revision.
+- The revised exact draft is bound to native literature packet revision
+  `e7c5813e985dc6a68fa8cc1c0432b95dadbe7f3d762f8201360d1308c5a649b1`.
+  All 24 unchanged cited claims were re-anchored. Seven occurrences reuse two
+  checked source passages; seventeen retain the original unavailable-carrier
+  issues. The inspected export and scoped receipt are recorded in
+  `teaching_followup/report_audit/packet_receipt.json`. Human scientific review
+  remains pending.
 - Branch: `reformulation-exploration`; fetched `origin/main` merged in `02ab3d9`.
 - Research began **2026-10-21 01:39:03 UTC**. The requested twelve-hour minimum
   elapsed at **13:39:03 UTC**. Completion still requires every delivery gate.
