@@ -25,6 +25,12 @@ This file owns current execution state. Git preserves superseded states.
   issues. The inspected export and scoped receipt are recorded in
   `teaching_followup/report_audit/packet_receipt.json`. Human scientific review
   remains pending.
+- Updated report and verification records were committed and pushed as
+  `fabbfc1bc302c26618a6d65f859c7b9ecab16c9c`. Gmail message
+  `1a15fb844da39b96` delivered the revised PDF to `adowling@nd.edu`; readback
+  confirmed its filename and 1,159,539-byte attachment. Sent search found one
+  update message. `teaching_followup/delivery_receipt.json` owns this delivery.
+  The user's report-update request is complete; do not resend the update.
 - Branch: `reformulation-exploration`; fetched `origin/main` merged in `02ab3d9`.
 - Research began **2026-10-21 01:39:03 UTC**. The requested twelve-hour minimum
   elapsed at **13:39:03 UTC**. Completion still requires every delivery gate.
