@@ -42,7 +42,7 @@ def main():
 
     # Question: how do order and initialization change calibration error?
     figure, axes = fs.figure(fs.TALL, nrows=3, sharex=True, sharey=True)
-    upper = np.ceil(10*summary.rmse_C.max())/10
+    upper = np.ceil(10*summary.rmse_C.max()*1.12)/10
     for ax, calibration, letter in zip(axes, ["sine", "step", "joint"], ["a", "b", "c"]):
         ax.set_title("("+letter+") "+calibration.capitalize(), loc="left")
         rows = summary[summary.calibration == calibration]
@@ -85,24 +85,24 @@ def main():
             plot_data[key] = {name: data[name].tolist() for name in ("time_s", "input_percent", "measured_C", "predicted_C")}
             if family == "chain" and order == 1:
                 axes[0, column].plot(data.time_s, data.input_percent, color=fs.color(0))
-                observed, = axes[1, column].plot(data.time_s, data.measured_C, ".", color="0.5", markersize=2, label="Observed", zorder=1)
-            line, = axes[1, column].plot(data.time_s, data.predicted_C, color=color, linestyle=style, label=label, zorder=2)
-            axes[2, column].plot(data.time_s, data.predicted_C-data.measured_C, color=color, linestyle=style)
+                observed, = axes[1, column].plot(data.time_s, data.measured_C, ".", color="0.5", markersize=fs.DENSE_MARKERSIZE, label="Observed", zorder=3)
+            line, = axes[1, column].plot(data.time_s, data.predicted_C, color=color, linestyle=style, label=label, zorder=2, linewidth=fs.DENSE_LINEWIDTH)
+            axes[2, column].plot(data.time_s, data.predicted_C-data.measured_C, color=color, linestyle=style, linewidth=fs.DENSE_LINEWIDTH)
             if column == 0:
                 legend_handles.append(line)
     for column, name in enumerate(["Sine", "Step"]):
         axes[0, column].set_title(name)
-        axes[2, column].axhline(0., color="0.7", linewidth=1, zorder=0)
+        axes[2, column].axhline(0., color="0.7", linewidth=fs.REFERENCE_LINEWIDTH, zorder=0)
         axes[2, column].set_xlabel("Time (s)")
         axes[2, column].set_xticks([0, 300, 600, 900])
         experiment = ["sine", "step"][column]
         axes[2, column].set_xlim(0., plot_data["chain1__"+experiment]["time_s"][-1])
-    axes[0, 0].set_ylabel("Input (%)")
-    axes[1, 0].set_ylabel("Temperature (°C)")
+    axes[0, 0].set_ylabel(r"$u$ (%)")
+    axes[1, 0].set_ylabel(r"$T$ (°C)")
     axes[2, 0].set_ylabel("Residual (°C)")
     figure.legend([observed]+legend_handles, ["Observed"]+[x[2] for x in selected_models],
                   loc="upper center", ncol=3, bbox_to_anchor=(.5, 1.02), columnspacing=1.)
-    figure.tight_layout(rect=(0., 0., 1., .88))
+    figure.tight_layout(rect=(0., 0., 1., .88), h_pad=2.)
     fs.grayscale_preview(figure, str(args.output/"baseline_trajectories"))
     fs.save_fig(figure, str(args.output/"baseline_trajectories"), sources=[str(p) for p in sources],
                 notes="Jointly fitted cold-start models; every recorded calibration sample is shown. Residual sign is prediction minus observation. These are mean predictions, without confidence or prediction bands.")
@@ -115,6 +115,15 @@ def main():
                 "figures": ["baseline_order", "baseline_trajectories"],
                 "status": "generated_awaiting_visual_review",
                 "notice": "Formatting saved numerical outputs only. PDF timestamps may change on regeneration. Grayscale previews support visual checking, not automatic accessibility certification."}
+    snapshot = HERE.parents[1]/"snapshot.json"
+    if snapshot.exists():
+        receipt = json.loads(snapshot.read_text())
+        manifest["source_commit"] = receipt["commit"]
+        (args.output/"baseline_source_snapshot.json").write_text(snapshot.read_text())
+        manifest["source_snapshot_sha256"] = sha(args.output/"baseline_source_snapshot.json")
+        manifest["source_snapshot_notice"] = "The phase-specific baseline_source_snapshot.json records this plot generation. A generic source_snapshot.json in the directory is the first launch, which can predate restyling."
+    else:
+        manifest["source_commit"] = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=HERE, text=True).strip()
     (args.output/"baseline_figure_manifest.json").write_text(json.dumps(manifest, indent=2)+"\n")
 
 

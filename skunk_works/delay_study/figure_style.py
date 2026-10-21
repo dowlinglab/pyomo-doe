@@ -51,7 +51,8 @@ from cycler import cycler
 
 __all__ = [
     "PALETTE", "SEQUENTIAL", "DIVERGING",
-    "SINGLE", "TALL", "WIDE", "TWO_PANEL", "NAMED_SIZES",
+    "SINGLE", "TALL", "WIDE", "TWO_PANEL", "MULTI_PANEL", "NAMED_SIZES",
+    "DENSE_LINEWIDTH", "DENSE_MARKERSIZE", "REFERENCE_LINEWIDTH",
     "apply_style", "color", "figure", "save_fig", "grayscale_preview",
 ]
 
@@ -87,6 +88,9 @@ TALL = (4.0, 6.4)
 WIDE = (6.4, 4.0)
 TWO_PANEL = (8.0, 4.0)
 MULTI_PANEL = (8.0, 6.4)
+DENSE_LINEWIDTH = 1.5
+DENSE_MARKERSIZE = 2
+REFERENCE_LINEWIDTH = 1
 
 NAMED_SIZES = {
     "SINGLE": SINGLE, "TALL": TALL, "WIDE": WIDE, "TWO_PANEL": TWO_PANEL,
