@@ -1,0 +1,25 @@
+{
+  "scope": "Implementation trials before the measured teaching comparison; no overnight artifacts changed.",
+  "failures": [
+    {
+      "stage": "solver construction",
+      "error": "Pyomo Bunch.update does not accept keyword arguments",
+      "correction": "Set solver option entries explicitly."
+    },
+    {
+      "stage": "Post-design finite-difference FIM evaluation",
+      "error": "A fixed selected design was reported infeasible while computing sensitivities with the design limits retained.",
+      "correction": "Disable design inequalities during forward sensitivity evaluation, where the derivative remains defined across a constraint boundary. Keep all design constraints in optimization, disallow Ipopt bound relaxation, and independently check nominal dose, command changes and dense temperature. No data or statistical assumptions changed."
+    },
+    {
+      "stage": "Two-stage collocation initialization",
+      "error": "An imposed nonnegative temperature-rise bound made the coarse collocation model infeasible. An unconstrained solve exposed a -0.000758 C polynomial undershoot near t=1.55 s; removing only that lower bound restored optimal termination.",
+      "correction": "Retain the upper temperature limit but remove the unnecessary polynomial lower bound. Exact positive-system propagation independently checks the actual trajectory; no upper temperature, dose or input limit was relaxed."
+    },
+    {
+      "stage": "Two-stage coarse-grid mean verification",
+      "error": "Both n2 optimizations solved, but the nfe=90 mean approximation differed from exact propagation by 0.0016583 C, exceeding the predeclared 0.001 C acceptance threshold.",
+      "correction": "Rerun n2 with nfe=180 and verify at nfe=360. Retain the original threshold rather than loosen it. No producer source change."
+    }
+  ]
+}

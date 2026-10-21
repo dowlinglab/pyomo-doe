@@ -134,6 +134,13 @@ human scientific review remains pending in draft 0.
 
 ## Working rules
 
+The subsequent teaching follow-up is in `teaching_followup/README.md`. Its
+separate scripts compare the original/n1/n2 saved predictions and residual-block
+intervals, and run native Pyomo.DoE for n1/n2 under IID and fixed OU covariance.
+All four two-start designs and sixteen information-matrix evaluations passed
+an independent exact-simulator/full-covariance audit. This supplement does not
+replace the frozen overnight report or its release index.
+
 Follow the user's sibling `claude-for-researchers` practices and the no-ai-slop
 skill. That sibling repository is read-only. User authorization explicitly
 permits commits, the final push and self-email. Preserve raw CSVs and inherited
