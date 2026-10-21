@@ -15,6 +15,7 @@ from scipy.optimize import minimize
 
 from data import Experiment
 from inference import ModelSpec, predict, sensitivities
+from noise import whiten_ou
 
 
 @dataclass
@@ -27,6 +28,7 @@ class DesignScenario:
     prior_information: np.ndarray
     ambient: float
     sigma: float
+    noise_length_s: Optional[float] = None
 
 
 def interpolation_basis(time, knots):
@@ -49,17 +51,20 @@ def energy_weights(knots):
 
 
 def build_scenario(name, parameters, spec, time, basis, ambient=25., sigma=.25,
-                   prior_information=None):
+                   prior_information=None, noise_length=None):
     if spec.coordinates != "io" or spec.family == "original":
         raise ValueError("Design uses the three IO parameters")
     responses, derivatives = [], []
     for column in basis.T:
         experiment = Experiment(name, time, np.full(len(time), ambient), column, ambient)
         responses.append(predict(experiment, parameters, spec)-ambient)
-        derivatives.append(sensitivities(parameters, [experiment], spec, log=True))
+        J = sensitivities(parameters, [experiment], spec, log=True)
+        if noise_length is not None:
+            J, _ = whiten_ou(J, time[1:], noise_length)
+        derivatives.append(J)
     prior = np.zeros((3, 3)) if prior_information is None else np.asarray(prior_information)
     return DesignScenario(name, np.asarray(parameters), spec, np.column_stack(responses),
-                          np.stack(derivatives, axis=-1), prior, ambient, sigma)
+                          np.stack(derivatives, axis=-1), prior, ambient, sigma, noise_length)
 
 
 def information(scenario, amplitudes, include_prior=False):
@@ -80,7 +85,10 @@ def score_and_gradient(scenario, amplitudes, criterion="D", include_prior=False,
     F = information(scenario, amplitudes, include_prior)
     dF = information_gradient(scenario, amplitudes)
     values, vectors = np.linalg.eigh(F)
-    if values[0] <= 1e-16*values[-1] or not np.all(np.isfinite(values)):
+    if not np.all(np.isfinite(values)) or values[-1] <= 0:
+        return -np.inf, np.zeros(len(amplitudes))
+    keep = values > 1e-16*values[-1]
+    if not keep.all() and criterion in {"D", "E"}:
         return -np.inf, np.zeros(len(amplitudes))
     if criterion == "D":
         inverse = np.linalg.solve(F, np.eye(3))
@@ -88,14 +96,24 @@ def score_and_gradient(scenario, amplitudes, criterion="D", include_prior=False,
     if criterion == "E":
         direction = vectors[:, 0]
         return float(np.log(values[0])), np.einsum("p,kpq,q->k", direction, dF, direction)/values[0]
-    inverse = np.linalg.solve(F, np.eye(3))
     if criterion == "theta":
         weight = np.diag([0., 0., 1.])
     elif criterion == "prediction" and prediction_information is not None:
         weight = np.asarray(prediction_information)
     else:
         raise ValueError("Unknown criterion or missing prediction weight")
+    # Estimable functions can have finite variance while other parameters are
+    # unidentifiable. A diagnostic pseudoinverse is meaningful for this target
+    # only when its weight annihilates the entire local null space.
+    if not keep.all():
+        if np.linalg.norm(weight@vectors[:, ~keep]) > 1e-8*max(np.linalg.norm(weight), 1e-30):
+            return -np.inf, np.zeros(len(amplitudes))
+        inverse = (vectors[:, keep]/values[keep])@vectors[:, keep].T
+    else:
+        inverse = np.linalg.solve(F, np.eye(3))
     loss = np.trace(weight@inverse)
+    if loss <= 0:
+        raise ValueError("Prediction/parameter target must have positive variance")
     gradient = np.einsum("pq,kqp->k", inverse@weight@inverse, dF)/loss
     return float(-np.log(loss)), gradient
 
@@ -127,7 +145,8 @@ def candidates(knots, mean_input=50., seed=532):
 
 def optimize(scenarios, knots, starts, criterion="D", include_prior=False,
              aggregation="mean", mean_input=50., maximum_temperature=85.,
-             maximum_slew=1., maxiter=400, prediction_information=None):
+             maximum_slew=1., maxiter=400, prediction_information=None,
+             constraint_scenarios=None):
     """SLSQP multistart with analytic utility and linear-constraint gradients.
 
     The min aggregation is nonsmooth at scenario ties. We retain actual solver
@@ -136,23 +155,29 @@ def optimize(scenarios, knots, starts, criterion="D", include_prior=False,
     weights = energy_weights(knots)
     difference = np.diff(np.eye(len(knots)), axis=0)
     slew_bounds = maximum_slew*np.diff(knots)
-    maps = np.vstack([s.response_map for s in scenarios])
-    bounds = np.concatenate([np.full(len(s.response_map), maximum_temperature-s.ambient) for s in scenarios])
+    safety = scenarios if constraint_scenarios is None else constraint_scenarios
+    maps = np.vstack([s.response_map for s in safety])
+    bounds = np.concatenate([np.full(len(s.response_map), maximum_temperature-s.ambient) for s in safety])
     constraint_map = np.vstack([maps, difference, -difference])
     constraint_bounds = np.concatenate([bounds, slew_bounds, slew_bounds])
+    def prediction_weight(scenario):
+        if isinstance(prediction_information, dict):
+            return prediction_information[scenario.name]
+        return prediction_information
+
     reference = np.full(len(knots), mean_input)
-    reference_scores = np.array([score_and_gradient(s, reference, criterion, include_prior, prediction_information)[0] for s in scenarios])
+    reference_scores = np.array([score_and_gradient(s, reference, criterion, include_prior, prediction_weight(s))[0] for s in scenarios])
     # Normalize across scenarios without changing their within-scenario criterion.
     if not np.all(np.isfinite(reference_scores)):
         # Constant equilibrated input can have exactly zero theta information.
         # A varying feasible reference avoids a fictitious information ridge.
         reference = candidates(knots, mean_input)["multisine"]
-        reference_scores = np.array([score_and_gradient(s, reference, criterion, include_prior, prediction_information)[0] for s in scenarios])
+        reference_scores = np.array([score_and_gradient(s, reference, criterion, include_prior, prediction_weight(s))[0] for s in scenarios])
     if not np.all(np.isfinite(reference_scores)):
         raise ValueError("Reference is rank deficient; design an identifiable target")
 
     def utility(amplitudes):
-        rows = [score_and_gradient(s, amplitudes, criterion, include_prior, prediction_information) for s in scenarios]
+        rows = [score_and_gradient(s, amplitudes, criterion, include_prior, prediction_weight(s)) for s in scenarios]
         values = np.array([x[0] for x in rows])-reference_scores
         gradients = np.array([x[1] for x in rows])
         if aggregation == "mean":
@@ -180,9 +205,11 @@ def optimize(scenarios, knots, starts, criterion="D", include_prior=False,
                         float(np.max(-amplitudes)), float(np.max(amplitudes-100)))
         attempts.append({"start": name, "success": bool(fitted.success), "solver_status": int(fitted.status),
                          "message": str(fitted.message), "iterations": int(fitted.nit),
-                         "objective": float(fitted.fun), "maximum_constraint_violation": violation,
+                         "objective": float(fitted.fun) if np.isfinite(fitted.fun) else None,
+                         "maximum_constraint_violation": violation,
                          "amplitudes": amplitudes.tolist()})
-    accepted = [a for a in attempts if a["success"] and a["maximum_constraint_violation"] < 1e-6]
+    accepted = [a for a in attempts if a["success"] and a["objective"] is not None
+                and a["maximum_constraint_violation"] < 1e-6]
     best = min(accepted, key=lambda a: a["objective"]) if accepted else None
     return {"criterion": criterion, "aggregation": aggregation, "include_prior": include_prior,
             "reference_amplitudes": reference.tolist(), "reference_scores": reference_scores.tolist(),

@@ -8,23 +8,27 @@ from design import (interpolation_basis, energy_weights, build_scenario, informa
                     information_gradient, score_and_gradient, candidates, optimize)
 
 
-def example(initialization="cold"):
+def example(initialization="cold", noise_length=None):
     time = np.arange(0., 601., 5.)
     knots = np.linspace(0., 600., 13)
     basis = interpolation_basis(time, knots)
     parameters = np.array([.78, 150., 18.])
     spec = ModelSpec(order=2, initialization=initialization)
-    scenario = build_scenario("synthetic", parameters, spec, time, basis)
+    scenario = build_scenario("synthetic", parameters, spec, time, basis, noise_length=noise_length)
     return time, knots, basis, parameters, spec, scenario
 
 
 @pytest.mark.parametrize("initialization", ["cold", "input_equilibrated"])
-def test_input_and_sensitivity_maps_reproduce_direct_simulation(initialization):
-    time, knots, basis, parameters, spec, scenario = example(initialization)
+@pytest.mark.parametrize("noise_length", [None, 10.])
+def test_input_and_sensitivity_maps_reproduce_direct_simulation(initialization, noise_length):
+    from noise import whiten_ou
+    time, knots, basis, parameters, spec, scenario = example(initialization, noise_length)
     amplitudes = candidates(knots)["multisine"]
     experiment = Experiment("synthetic", time, np.full(len(time), 25.), basis@amplitudes, 25.)
     assert np.max(abs(scenario.response_map@amplitudes+25-predict(experiment, parameters, spec))) < 1e-10
     direct = sensitivities(parameters, [experiment], spec)
+    if noise_length is not None:
+        direct, _ = whiten_ou(direct, time[1:], noise_length)
     mapped = np.einsum("tpk,k->tp", scenario.sensitivity_map, amplitudes)
     assert np.max(abs(direct-mapped)) < 1e-9
 
@@ -61,6 +65,18 @@ def test_constant_equilibrated_input_is_rejected_as_singular_design():
     assert not np.isfinite(value)
 
 
+def test_prediction_target_can_be_estimable_with_a_null_delay():
+    _, knots, _, _, _, scenario = example("input_equilibrated")
+    amplitudes = np.full(len(knots), 50.)
+    J = np.einsum("tpk,k->tp", scenario.sensitivity_map, amplitudes)
+    target = J.T@J
+    assert np.linalg.matrix_rank(information(scenario, amplitudes), tol=1e-8) == 2
+    value, gradient = score_and_gradient(scenario, amplitudes, "prediction", prediction_information=target)
+    delay_value, _ = score_and_gradient(scenario, amplitudes, "theta")
+    assert np.isfinite(value) and np.all(np.isfinite(gradient))
+    assert not np.isfinite(delay_value)
+
+
 def test_optimized_input_obeys_temperature_and_energy_constraints():
     _, knots, _, _, _, scenario = example()
     starts = {"multisine": candidates(knots)["multisine"]}
@@ -72,3 +88,15 @@ def test_optimized_input_obeys_temperature_and_energy_constraints():
     initial = score_and_gradient(scenario, starts["multisine"])[0]
     final = score_and_gradient(scenario, amplitudes)[0]
     assert final >= initial-1e-7
+
+
+def test_scenario_specific_prediction_weight_matches_single_target():
+    _, knots, _, _, _, scenario = example()
+    starts = {"multisine": candidates(knots)["multisine"]}
+    target = np.diag([1., 2., 3.])
+    common = dict(criterion="prediction", maximum_temperature=75., maxiter=150)
+    direct = optimize([scenario], knots, starts, prediction_information=target, **common)
+    mapped = optimize([scenario], knots, starts, prediction_information={scenario.name: target}, **common)
+    assert direct["best"] is not None and mapped["best"] is not None
+    assert np.allclose(direct["best"]["amplitudes"], mapped["best"]["amplitudes"], atol=1e-9)
+    assert abs(direct["best"]["objective"]-mapped["best"]["objective"]) < 1e-12

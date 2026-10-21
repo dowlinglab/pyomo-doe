@@ -23,9 +23,10 @@ scope, and `results/manifest.json` will identify manuscript results.
 - Notebook migration committed in `58b4fa5`: 13 deterministic Python exports,
   scientific-cell AST equality, and a successful migrated simulation run.
 - Exact LTI models committed in `451749f`; inference runner in `275fe0a`.
-  Fifteen focused checks now pass, including independent integrator/analytic
-  agreement, baseline agreement, transformations, synthetic recovery, and
-  exact delay nonidentifiability under constant equilibrated input.
+  Forty-eight focused checks passed on October 21 before the full design-driver
+  checks were added. They cover independent integrator/analytic agreement,
+  transformations, synthetic recovery, null directions, profile recovery,
+  resampling, OU likelihoods, coverage accounting and input-design gradients.
 - First full sweep finished 95/99 cases; four uncertainty serialization failures
   exposed a rank-deficient covariance roundoff issue. `baseline/initial_sweep_*`
   preserves the original manifest and numerical summary. Complete original
@@ -36,9 +37,9 @@ scope, and `results/manifest.json` will identify manuscript results.
   `results/comparison_receipt.json` verifies 95 prior objectives agree within
   1.14e-13. `results/fit_summary.csv` and `coordinate_comparison.csv` are generated
   by `summarize_fits.py`, not manually maintained tables.
-  Next: full likelihood profiles, block/bootstrap uncertainty, model mismatch
-  and initialization/noise sensitivity, input design, literature grounding, and
-  the manuscript. The overnight goal remains active; do not mark it complete early.
+  Full profiles, bootstrap, structural checks and OU calibration have since
+  finished. Independent synthetic coverage is live; see the single phase-status
+  section below. The overnight goal remains active; do not mark it complete early.
 - Literature packet: `6f11d88ebd8741c892fea8fffc243d7d`. Initial revision:
   `d88745b5615020ca2f74fa981cd87f94d867723803a0f0efb5a668e0a09f2262`.
   Current observed revision after two searches:
@@ -134,38 +135,62 @@ one-stage cold model additionally includes the exchanged pole-label mode.
 Intervals preserve disconnected components. IID Gaussian likelihood thresholds
 are conditional diagnostics, not coverage guarantees for autocorrelated residuals.
 
-## In flight and next work
+## Phase status and next work
 
-The full 300-job profile run from immutable source commit `e267580` finished:
-297 jobs succeeded, and three Ua profiles of the original model failed (sine,
-step, joint). Its authority is `results/profiles/manifest.json`; the original
-execution session 36231 has exited. Preserve the first-pass outcomes.
-A one-parameter frozen-source trial passed: 61 grid points, four starts per point,
-no lower minimum missed by the baseline. The failed
-jobs exhausted nuisance-fit iteration budgets at a fixed Ua grid value. Preserve the failures;
-retry after the current run ends, preferably with a better-conditioned treatment
-of the redundant nuisance coordinates or a documented larger iteration budget.
-No completed profile reported a lower minimum requiring a baseline refit.
+The 99 baseline fits are committed in `f30451e`. The immutable `e267580`
+profile pass completed 297/300 jobs; all three original-model Ua failures were
+recovered from source `d2f4f15` in a separate `results/profile_retries` phase.
+Keep both manifests. No completed profile found a lower baseline minimum.
+Retry records retain failed starts before complex-step Jacobians, Jacobian
+scaling and a larger evaluation budget. The later experimental pole-chart
+helper was not used for these measured retries.
 
-The baseline 99 fits are committed in `f30451e`. No push or completion email has
-been sent. Next implement bootstrap using canonical-coordinate fits with each
-bootstrap draw transformed to physical coordinates; independently fitted physical
-cases already verify coordinate equivalence where the optimum is identified.
-Keep redundant-parameter uncertainty undefined rather than inferring a confidence
-interval from whichever minimizer a bootstrap algorithm happens to choose.
-Bootstrap helpers and driver are committed in `1b01061`. All 22 numerical checks
-pass across models, inference, profiles, and resampling. Two frozen-source trials
-passed 25/25 draws each: sine n2 cold and step n2 input-equilibrated, with five
-draws per method. Repeating the sine trial reused all five saved jobs. The step
-trial correctly withheld all theta intervals. Trial outputs remain under
-`/private/tmp/tclab-bootstrap-trial` and `/private/tmp/tclab-bootstrap-null-trial`.
-The full bootstrap is now live from source `1b01061`, execution session **11820**,
-with authority `results/bootstrap/manifest.json`. There are 240 jobs, 96,000
-planned refits. Do not launch another numerical pool while this one is live.
-Production
-configuration specifies 400 draws for each residual block length (1, 10, 30, 60)
-and 400 IID known-noise draws per IO fit, with physical coordinates transformed
-for each draw. The short trial must record its replicate override explicitly.
+The immutable `1b01061` bootstrap finished **240 jobs, 96,000 successful draws**
+with no failed jobs. Its session 11820 has exited. The producer audit checks
+saved arrays, fit identities, selected converged minima and independently
+recomputed physical transforms. Four hundred draws per method cover residual
+blocks 1, 10, 30, 60 and known-sigma IID Gaussian simulation for each of 48 IO
+fits. Eight constant-step input-equilibrated cases correctly have undefined
+delay intervals. These are conditional intervals; per-experiment centering does
+not capture run-to-run mean discrepancy. Baseline/trial outputs are preserved.
+
+The `d2f4f15` structural phase is complete in `results/structural`: 403 sampled
+positive physical equivalents per calibration, analytic null tangents,
+repeated-pole perturbations and a fixed-parameter chain-to-delay limit. Maximum
+equivalent prediction differences are below 1.8e-12 C. Sampled parameter ranges
+are not confidence intervals. Source/output receipts are committed in `9cb14b6`.
+
+All **48 OU likelihood calibrations finished without revisit flags**, from
+source `9cb14b6`, in `results/ou`; session 17895 has exited. Audit and summarize
+their noise lengths, bounds, likelihoods, mean predictions and conditional/full
+Hessians before citing them. The OU covariance is a working assumption and
+cannot repair mean-model bias. No push or completion email has been sent.
+
+The independent coverage production is **live**, execution session **19175**,
+from immutable source **23629a2**, output `results/coverage`. It has four workers;
+do not start another numerical pool. There are **3,600 synthetic datasets**:
+300 per combination of n1/n2/n12/pure delay and IID/OU10/OU60 noise, with
+three-coordinate local intervals and nuisance-reoptimized delay profiles.
+`results/coverage_pilot` preserves the 12-draw pilot and production-size receipt.
+The initial draft's 500 was changed to 300 using solver timing and a binomial
+precision calculation before inspecting pilot coverage. Production seed 726533
+differs from pilot seed 726532. Nominal Monte Carlo standard error near 95%
+coverage is about 1.3 percentage points. Do not mix pilot and production draws.
+
+The 112-job experiment-design driver and configuration are now written. Run a
+frozen short trial and the full study once the coverage pool frees resources.
+It considers D, E, delay and prediction criteria, prior information on/off,
+nominal cold models with three working covariances, and mean/min utility over
+48 model/startup/noise scenarios. Temperature assumptions are checked across
+16 fitted mean models and re-simulated densely through a ramp-down tail.
+These remain local numerical designs under assumed constraints, not hardware
+operating instructions or globally optimal solutions.
+
+While coverage runs: complete the design-driver review, literature synthesis,
+noise/validation and structural summaries, result figures/tables, ambient and
+heater-calibration uncertainty derivations, and manuscript editing. Further
+long numerical phases wait for the current pool; brief single-thread unit
+checks may run. Remaining model-mismatch computations can follow coverage.
 
 Four public PDFs were acquired in `/private/tmp/tclab-literature`, registered as
 source `tclab-lti-study-20261021`. The local review plan is
@@ -219,44 +244,11 @@ from saved numerical outputs and replace status placeholders before delivery.
 - Literature: source/claim/page audit distinguishing theoretical assumptions,
   our derivations, and observed TC-Lab results. Do not cite metadata-only leads.
 
-## Prepared next numerical phases
-
-All **38 focused checks passed** across the current modules: exact models, inference,
-profiles and their recovery path, bootstrap resampling, and design maps/gradients
-and resource constraints, plus five irregular-time residual-likelihood checks.
-The new design utilities are in `design.py`; a full
-resumable design driver still needs to be written. The measured bootstrap source
-is unaffected because its run uses the earlier immutable snapshot.
-
-The new `noise.py` evaluates a stationary Gaussian Ornstein-Uhlenbeck (OU)
-residual likelihood at actual observation times, resetting across experiments
-and profiling a shared variance. Its determinant term is retained. Analytic
-gradients agree with independent finite differences; whitening and likelihood
-agree with a dense covariance calculation. A resumable multistart OU calibration
-driver still needs to be written and run. This is a working noise assumption,
-not established physics of TC-Lab discrepancy. Add comparison to IID fits,
-bound diagnostics, and uncertainty conditional on or profiling the noise scale.
-Do not infer that fitting correlated residuals repairs a biased thermal mean.
+## Verification and manuscript work
 
 The lab's DOI checker verified **4/4 cited entries as MATCH** against Crossref;
 `literature/doi_results.json` preserves the result. This checks reference identity,
 not whether a source supports a particular manuscript statement.
-
-After the bootstrap pool stops, run the three failed original Ua profiles into a
-separate output folder, retaining the first pass. The retry is explicit:
-
-```
-OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 python skunk_works/delay_study/frozen_run.py run_profiles.py --fits skunk_works/delay_study/results/fits --output skunk_works/delay_study/results/profile_retries --only original_n0_physics_cold_linear_exact__Ua --original-recovery
-```
-
-The new option keeps the original attempts, then uses complex-step Jacobians,
-Jacobian-based variable scaling, and ten times the evaluation budget only when
-all initial original-model nuisance attempts fail. It does not accept failed
-optimizer returns. The new `run_structural.py` is prepared for deterministic
-equivalence-class curves, null-tangent checks, repeated-pole nonregularity, and
-chain convergence toward the pure-delay limit at a common parameter point.
-It locks its output and refuses changed provenance. Commit it before a frozen
-run; numerical outputs from that phase do not yet exist.
 
 The initial 8-page manuscript was rendered and all eight pages inspected. A long
 source filename caused one overfull line, which was corrected with breakable
@@ -278,16 +270,11 @@ inspected. `baseline_numeric_audit.json` and `baseline_visual_audit.json` retain
 the separate checks. The remaining full document and future figures need their
 own final audit; this is not human scientific review.
 
-The next coverage study should use synthetic observations under known mean
-models to test the conditional intervals, rather than infer coverage from the
-real-data fits. A useful planned core is theta coverage for representative n1,
-n2, and pure-delay cold joint fits under IID and correlated-noise scenarios,
-with at least 200 independent datasets per scenario, parameter bias and interval
-width summaries, Wilson intervals for observed coverage, and explicit optimizer
-failures. Profile at least the delay, preserve n1's disconnected pole modes, and
-compare local IID/HAC estimates against the empirical refit distribution.
-Pilot timing first and retain immutable source and per-draw recovery checkpoints.
-These calculations are planned; no coverage results exist yet.
+Coverage reporting must retain method-specific undefined intervals and optimizer
+failures, unconditional coverage bounds for failures, binomial uncertainty,
+bias/width summaries and the distinction between component and envelope widths
+for disconnected profiles. A valid result at these chosen generating points
+does not establish coverage throughout parameter space or for real discrepancy.
 
 Priority work after these phases: ambient and prehistory sensitivity, a correlated
 residual likelihood using actual time intervals, per-file validation diagnostics,
