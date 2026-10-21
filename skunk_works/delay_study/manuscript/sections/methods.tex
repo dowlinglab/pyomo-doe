@@ -25,7 +25,7 @@ each numerical phase. Result tables and figures are generated from saved outputs
 
 \subsection{Simulation and fitting}
 We used exact state propagation of the linear time-invariant dynamics over each
-sampling interval, with linear interpolation of the measured heater signal.
+sampling interval, with linear interpolation of the recorded heater command.
 Separate checks compared left and right input holds and the inherited backward
 Euler discretization. The pure-delay simulator integrates across shifted input
 knots. These choices distinguish input reconstruction and numerical discretization
@@ -35,7 +35,7 @@ The baseline comparison fitted seven orders, $n\in\{1,2,3,4,6,8,12\}$, two
 initial-state assumptions, and both parameter coordinates. Pure-delay fits used
 the same two initial-state assumptions and coordinates. The original model used
 its four physical parameters. These choices gave 99 calibration cases.
-We minimized unweighted temperature sum of squared errors using bounded
+We minimized unweighted temperature sum of squared errors (SSE) using bounded
 least squares in logarithmic parameters, with 24 starts per case and seed 532.
 The broad input--output bounds were $0.2\leq K\leq1.5$,
 $5\leq\tau\leq600\,\mathrm{s}$, and
@@ -50,6 +50,7 @@ of the IO rectangle. Same-point covariance and information comparisons separate
 coordinate effects from changes in the feasible parameter domain.
 We retained convergence status and active bounds rather than interpreting every
 optimizer return as a successful estimate.
+Root mean squared error (RMSE) uses the same retained residuals.
 
 \subsection{Ambient, history and input-reconstruction sensitivity}
 We prespecified 241 additional calibrations. For each of eight delayed models
@@ -85,7 +86,8 @@ validation evidence.
 \subsection{Local uncertainty and estimability}
 For residual vector $\bm e$ and log-parameter vector $\bm\eta$, the sensitivity
 matrix $J=\partial\bm e/\partial\bm\eta$ defines the conditional information
-matrix $F=J^\top J/\sigma^2$ under independent Gaussian errors of variance
+matrix $F=J^\top J/\sigma^2$ under independent and identically distributed (IID)
+Gaussian errors of variance
 $\sigma^2$. We computed the singular value decomposition of $J$ directly and
 reported the eigenvalues and directions of $F$. Numerical rank uses a relative
 singular-value cutoff of $10^{-8}$. This threshold is a numerical convention;
@@ -98,17 +100,18 @@ from each calibration residual vector. The fixed value is a sensitivity scenario
 not a calibration established by these experiments. Rank-deficient full parameter
 covariances are undefined. A diagnostic pseudoinverse is retained separately and
 is not used as a confidence interval for a null direction. We also computed
-heteroskedasticity and autocorrelation consistent sandwich estimates at lag
+heteroskedasticity and autocorrelation consistent (HAC) sandwich estimates at lag
 bandwidths of 10, 30, and 60 samples, together with residual autocorrelation
-functions and Ljung--Box statistics. The sandwich uses Bartlett lag weights
+functions (ACFs) and Ljung--Box statistics. The sandwich uses Bartlett lag weights
 \citep{newey-1987-simple}. Its asymptotic justification requires zero-mean score
 moments, bounded moments, and suitable decay of dependence. Fixed bandwidths
 in these finite records do not establish those assumptions or nominal coverage.
 These calculations assess sensitivity to
 serial dependence; they do not correct a biased mean model.
 
-\subsection{A working OU residual likelihood}
-We also fitted the 48 IO calibration cases with stationary Gaussian residual
+\subsection{A working correlated-residual likelihood}
+We also fitted the 48 IO calibration cases with stationary Gaussian
+Ornstein--Uhlenbeck (OU) residual
 covariance $R_{ij}=\sigma^2\exp(-|t_i-t_j|/\ell)$ within each experiment,
 independently across experiments. Actual retained observation times are used.
 For residuals $e_i$, set $w_1=e_1$ and
@@ -254,7 +257,7 @@ give 112 planned designs. Six common command starts include constant, sine,
 multisine, random binary and alternating knot patterns, each satisfying the
 amplitude, dose and slew rules. Constant input supplies the normalization
 reference where its utility is finite; otherwise we use the multisine.
-Multistart SLSQP uses
+Multistart sequential least squares programming (SLSQP) uses
 analytic input gradients and retains convergence and constraint violations;
 its local solutions have no global-optimality certificate. Minimum aggregation
 is nonsmooth at scenario ties.

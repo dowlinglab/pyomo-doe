@@ -4,7 +4,9 @@ This study compares distributed-delay descriptions of a single-heater TC-Lab.
 The deliverable is a reproducible Python analysis and draft 0 of a LaTeX
 manuscript, including unfavorable results and explicit uncertainty assumptions.
 This file is the living entry point; `research_brief.md` records the authorized
-scope, and `results/manifest.json` will identify manuscript results.
+scope. The preserved `results/manifest.json` identifies the baseline fit sweep;
+each later phase has its own manifest. A final `results/study_manifest.json`
+must index those phases and manuscript artifacts without replacing their records.
 
 ## Current state
 
@@ -306,6 +308,20 @@ there are no new fits or numerical pools. The full suite is 131/131 in 8.26 s.
 Working pages 32/33 of a warning-free 35-page build were visually read; the
 partial receipt is `manuscript/frequency_information_review.json`. Final full
 manuscript review remains pending.
+
+A bounded working-manuscript review clarified notation and terminology: the
+initial-history deficit is now d_n, distinct from the delay kernel h_n; the IO,
+SSE, RMSE, IID, HAC, ACF, OU, SLSQP and DC terms are defined where used. The
+SLSQP expansion was checked against the installed SciPy 1.7.3 documentation.
+Methods refer to recorded heater command rather than measured heat input, and
+the held-out comparison explicitly concerns pooled error rather than every
+file. Two generic explanatory sentences were cut using no-ai-slop guidance.
+Across all 22 expanded TeX inputs, numeric-literal sequences are unchanged
+apart from the explicit gain unit-vector definition. All 24 citation occurrences
+are unchanged. Eleven affected working pages were read in a warning-free
+35-page build; `manuscript/notation_editorial_review.json` records the limited
+review. It does not replace final empirical writing, exact-draft citation
+binding or full-document review after all phases finish.
 
 While coverage runs: complete the design-driver review, literature synthesis,
 noise/validation and structural summaries, result figures/tables, ambient and
