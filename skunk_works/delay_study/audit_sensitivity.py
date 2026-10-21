@@ -240,6 +240,8 @@ def main():
     pd.DataFrame(rows).to_csv(root/"audited_summary.csv",index=False,float_format="%.12g")
     report={"status":"passed_trial" if manifest["filter"] else "passed", "cases":len(rows),
             "maximum_errors":errors,"tolerances":tolerances,"input_sha256":inputs,
+            "auditor_sha256":sha(Path(__file__)),
+            "checked_measurement_identity":identity,
             "summary_sha256":sha(root/"audited_summary.csv"),
             "notice":"Checks saved sources, data, means, SSE, selected converged starts, nuisance SVD/IID-covariance arithmetic, finite-difference information and held-out metrics. It does not certify global minima, measured nuisance probabilities, HAC covariance/coverage or physical causation. Pure-delay nuisance means reuse the independently tested pure-delay propagator; covariance arithmetic and finite-difference geometry are separate checks."}
     save_json(root/"audit.json",report)
