@@ -1,0 +1,100 @@
+\subsection{Ambient and history assumptions shift the fitted delay}
+Allowing record-specific ambient offsets reduces joint calibration error more
+than allowing only an initial history fraction in the representative models
+(Fig.~\ref{fig:nuisance-sensitivity}). The fitted delay also changes, although
+the cold one-stage formulation retains the lowest calibration error among these
+four representatives. With both nuisance terms free, every displayed step-record
+ambient offset reaches the imposed upper bound
+(Table~\ref{tab:nuisance-parameters}). The lower residual error therefore does
+not identify an independently measured ambient temperature. Extending that bound
+until the fit looks satisfactory would change the sensitivity question rather
+than resolve the missing measurement.
+\input{tables/nuisance_parameters}
+
+The nuisance fit retains the first sensor observation as its thermal initial
+condition while changing the assumed ambient and delay-state history. Its
+history fraction describes a declared state family; it does not reconstruct an
+unrecorded heater command. The separate constant-input derivation in
+Appendix~\ref{sec:nuisance-assumptions} explains why a fitted history or ambient
+can also introduce exact parameter ambiguity. A favorable joint residual score
+does not establish estimability in every experiment.
+
+\begin{figure}[p]
+ \centering
+ \includegraphics[width=\linewidth]{nuisance_sensitivity.pdf}
+ \caption{Ambient and initial-history assumptions change joint calibration
+ error and the selected delay. Cold, fixed is the original linear-hold fit;
+ History frees one delay-state history fraction per record with ambient fixed;
+ Ambient frees one ambient offset per record with cold delay states; Both frees
+ both. Offset bounds are $\pm2\,{}^\circ\mathrm C$ and history fractions lie in
+ $[0,1]$. The two thermal experiments share their model parameters. Lines join
+ categorical assumptions; markers are fitted representatives without confidence
+ intervals. The one-stage delay uses the selected short-delay pole label.}
+ \label{fig:nuisance-sensitivity}
+\end{figure}
+
+\subsection{Command reconstruction changes the inferred delay}
+Changing the command hold shifts the fitted delay while producing smaller
+changes in calibration RMSE (Fig.~\ref{fig:reconstruction-sensitivity}). A
+backward-Euler fit can even reduce the residual score relative to exact
+propagation. That does not make its discretization a more accurate description
+of the continuous thermal system: fitted parameters can absorb numerical and
+command-reconstruction differences. The recorded time/command pairs do not
+identify the command waveform between samples. Consequently, the narrowest
+conditional delay intervals should not be interpreted as resolving this
+unmeasured waveform choice. All compared holds use the same observations and
+the declared cold prehistory; pure delay has no backward-Euler counterpart in
+this study.
+
+\begin{figure}[p]
+ \centering
+ \includegraphics[width=\linewidth]{reconstruction_sensitivity.pdf}
+ \caption{Different command reconstructions and propagators change the
+ inferred delay at similar residual error. Each point is a separate joint cold
+ fit. Linear, left and right denote the assumed hold between recorded command
+ values. Exact uses the analytic LTI propagator for that hold; Right Euler uses
+ the inherited backward-Euler/right-end convention at the recorded observation
+ times. The pure-delay curve ends at the exact right-hold case. Lines join
+ categorical assumptions and imply neither a convergence path nor uncertainty
+ intervals.}
+ \label{fig:reconstruction-sensitivity}
+\end{figure}
+
+\subsection{Prediction precision remains conditional on the mean model}
+Prediction bands provide a coordinate-invariant target even when the original
+physical coordinates have an exact null direction. Its zero-state equivalence
+family preserves the measured thermal response, so prediction variance can be
+computed on the identifiable quotient without assigning finite uncertainty to
+each physical parameter. By contrast, constant-input calibration with
+equilibrated delay states leaves a globally free delay that affects a varying
+future input. Those target bands are withheld. The saved finite delay-exploration
+envelopes are sensitivity plots without a probability interpretation.
+
+For the jointly fitted cold representatives, mean-band widths depend strongly
+on the assumed covariance or residual resampling
+(Fig.~\ref{fig:prediction-mean-widths}). Fitted IID variance gives narrower mean
+bands than the displayed HAC, OU and block-residual alternatives. Wider bands
+under another working error law do not establish uncertainty from between-record
+mean discrepancy. Table~\ref{tab:prediction-widths} separates mean-band width
+from descriptive containment by observation bands on V01. Adding fitted future
+error variance does not resolve that record's transfer error. V01 is the first
+file in the existing sorted code map, with no selection by residual size; the
+complete saved summary retains every validation file, including those with
+better containment.
+\input{tables/prediction_widths}
+
+\begin{figure}[p]
+ \centering
+ \includegraphics[width=\linewidth]{prediction_mean_widths.pdf}
+ \caption{Conditional thermal-mean precision depends on the working error
+ model. Points give median pointwise nominal 95\% mean-band widths over the
+ sine calibration record and held-out V01, excluding their conditioned first
+ observations. IID fitted uses residual degrees of freedom on the identifiable
+ quotient; HAC60 uses Bartlett bandwidth 60; OU fitted uses the observed
+ mean/length Hessian with variance profiled; Block60 uses percentile predictions
+ from saved joint circular-block draws. The OU means are separately fitted;
+ other methods retain the baseline mean. Lines join methods as visual guides,
+ without a common unconditional confidence or repeated-experiment coverage
+ interpretation. These are mean bands, not future-observation bands.}
+ \label{fig:prediction-mean-widths}
+\end{figure}

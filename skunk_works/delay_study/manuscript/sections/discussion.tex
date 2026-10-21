@@ -51,8 +51,25 @@ before that record was observed. Independent ambient, command-history and
 heater-power measurements could help distinguish candidate explanations;
 the supplied filenames and temperature offsets do not identify one.
 
-The remaining discussion will incorporate the independent synthetic coverage,
-ambient/history and numerical sensitivity, prediction-band, and prospective-design
-results after their audits finish. Those results must retain the distinction
-between uncertainty around a chosen mean model and failure of that mean to
-transfer to another record.
+The controlled coverage experiment isolates one consequence of a wrong error
+law: IID likelihood intervals can fail even when the thermal mean is exactly
+correct. HAC improves the comparison without reaching the nominal reference
+at the longer tested correlation length. The finite-grid profile diagnostic
+also prevents treating every interpolated threshold set as an exact numerical
+confidence set. Neither result supplies coverage for the real-data bootstrap,
+whose centering removes the between-record mean errors seen in validation.
+
+The ambient/history and command-hold studies change a different part of the
+inference. Ambient offsets lower calibration error but reach imposed bounds;
+command reconstruction shifts the selected delay with less visible change in
+RMSE. These sensitivities can exceed the apparent precision of a chosen
+conditional error model. Recording independent ambient and heater history would
+therefore answer a question that collecting more samples under the same
+unverified initialization cannot settle.
+
+The prediction calculation preserves the distinction between a redundant
+physical representation and an unresolved future response. Quotient prediction
+variance remains finite along the original physical equivalence family, whereas
+an unobserved delay from a constant-input calibration can change a later varying
+response. A pseudoinverse alone cannot decide which of those situations applies.
+Final prospective-design interpretation remains pending its independent audits.

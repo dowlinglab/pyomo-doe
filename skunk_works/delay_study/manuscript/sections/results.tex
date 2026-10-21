@@ -4,8 +4,7 @@ The baseline comparison completed all 99 cases. The first profile pass completed
 original-model conductance profiles. Both passes are retained. None of the
 completed profiles found a minimum requiring a baseline refit under the recorded
 tolerance. The bootstrap completed all 96,000 planned refits, and the working
-OU likelihood comparison completed all 48 calibrations. Independent synthetic
-coverage and prospective-design results remain in progress.
+OU likelihood comparison completed all 48 calibrations. Synthetic coverage, ambient/history and numerical sensitivity, and prediction uncertainty also completed their declared matrices and independent arithmetic audits. Prospective-design results remain in progress.
 
 \subsection{Order and initialization}
 The startup assumption reverses the order ranking for the sine and joint
@@ -185,14 +184,20 @@ assigning an arbitrary member the status of a physical estimate.
  \label{fig:family-boundaries}
 \end{figure}
 
-The analytic family also exposed an interpolation failure. All nine redundant
-physical-parameter profiles excluded some known equivalent family members from
-their interpolated 95\% grid sets. The sampled objective values along the flat
-region were correct; coarse interpolation across its rising edge produced the
-misleading endpoints. We therefore withhold those endpoints as physical
-confidence claims. The merged profile catalog records this finding separately
-from the successful likelihood arithmetic and nuisance-fit checks. A converged
-pointwise optimizer and a plotted crossing do not validate the whole profile set.
+The analytic family also exposed an interpolation failure in the first-pass
+profiles. All nine redundant physical-parameter grid sets excluded some known
+equivalent members. Their sampled objectives were correct, but interpolation
+across the rising edges gave misleading endpoints. A separate refinement added
+verified equivalence witnesses and bisected the observed threshold crossings.
+The selected catalog now includes the complete analytically compatible intervals
+inside the numerical fitting box for all nine profiles. First-pass files remain
+available, and the revised numerical endpoints do not make the individual
+physical parameters identifiable. The same selected refinement treats the cold
+one-stage delay profiles in both coordinates and all three calibration sets,
+and the representative joint cold two-stage, twelve-stage and pure-delay
+profiles. Its arithmetic, newly evaluated forward objectives and family inclusion
+passed a separate audit. These checks do not certify unobserved modes or global
+nuisance minima.
 
 \subsection{Conditional delay uncertainty}
 Table~\ref{tab:delay-uncertainty} compares delay uncertainty for representative
@@ -302,6 +307,7 @@ mechanism from the observed negative correlation.
  \label{fig:ou-correlations}
 \end{figure}
 
-The remaining empirical results will be inserted after the independent coverage,
-ambient/history sensitivity, validation and prospective-design audits finish.
+\input{sections/followup_results}
+
+The prospective-design results will follow their independent audits.
 \FloatBarrier
