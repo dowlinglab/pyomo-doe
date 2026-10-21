@@ -101,6 +101,9 @@ def audit_nuisance_geometry(fit, datasets, spec, parameters):
         raise RuntimeError("Saved rank or right singular basis is inconsistent")
     J = finite_nuisance_jacobian(datasets, parameters, spec, offsets, histories,
                                   fit["free_ambient"], fit["free_history"])
+    finite_singular = np.linalg.svd(J, compute_uv=False)
+    if int(np.sum(finite_singular > 1e-8*finite_singular[0])) != rank:
+        raise RuntimeError("Independent finite-difference rank disagrees with the saved numerical convention")
     gram_error = relative_error(J.T@J, V.T@np.diag(s*s)@V)
     if gram_error > 5e-4:
         raise RuntimeError("Independent finite-difference information check failed: "+str(gram_error))

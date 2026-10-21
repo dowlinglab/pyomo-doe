@@ -14,6 +14,12 @@ scope, and `results/manifest.json` will identify manuscript results.
   The requested 12-hour window ends no earlier than October 21, 9:39 AM Eastern.
   Do substantive research throughout the window; do not pad it with idle waits.
 - Hourly recovery automation: `tc-lab-overnight-research`, attached to this chat.
+- Operational recovery: `get_goal` reported `blocked` at 07:35 UTC, while both
+  recorded sessions were still live and useful work could continue. The current
+  heartbeat explicitly authorizes continuation. Goal tools cannot resume that
+  status; do not recreate the unfinished goal or treat it as an instruction to
+  stop the study. Continue through this chat/heartbeat, reconcile the existing
+  jobs, and mark completion only after the actual delivery requirements pass.
 - Unchanged legacy simulations were run twice per dataset. `baseline/manifest.json`
   records source identity, versions and numerical results; duplicate trajectories
   were byte-identical. This is a behavior baseline, not a correctness certificate.
@@ -40,7 +46,8 @@ scope, and `results/manifest.json` will identify manuscript results.
   by `summarize_fits.py`, not manually maintained tables.
   Full profiles, bootstrap, structural checks and OU calibration have since
   finished. Independent synthetic coverage is live; see the single phase-status
-  section below. The overnight goal remains active; do not mark it complete early.
+  section below. The overnight study remains in progress; do not mark it
+  complete early.
 - Literature packet: `6f11d88ebd8741c892fea8fffc243d7d`. Initial revision:
   `d88745b5615020ca2f74fa981cd87f94d867723803a0f0efb5a668e0a09f2262`.
   Current observed revision after two searches:
@@ -205,8 +212,8 @@ future observation error law are distinct outputs.
 The prepared `audit_sensitivity.py` separately propagates chain states at
 the fitted ambient/history initial conditions, checks every stored trajectory,
 SSE, selected converged start, input identity and held-out metric, and compares
-a finite-difference information matrix with the saved nuisance SVD. It checks
-IID covariance arithmetic and exact pole-exchange predictions without claiming
+a finite-difference information matrix and numerical rank with the saved nuisance
+SVD. It checks IID covariance arithmetic and exact pole-exchange predictions without claiming
 a HAC audit or coverage guarantee. It refuses active/incomplete runs and
 requires an explicit flag for a filtered trial. Four new checks include
 regular and rank-deficient cases and deliberate covariance corruption. Production
