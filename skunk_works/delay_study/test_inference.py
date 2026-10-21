@@ -57,3 +57,19 @@ def test_uncertainty_excludes_conditioning_measurement():
     assert np.all(np.linalg.eigvalsh(output["cov_log_iid_unknown_sigma"]) > 0)
     for cov in output["cov_log_hac"].values():
         assert np.linalg.eigvalsh(cov).min() > -1e-12
+
+
+def test_constant_input_equilibrated_delay_is_unidentifiable_and_serializable():
+    import json
+    for n in (1, 2, 12):
+        spec = ModelSpec(order=n, initialization="input_equilibrated")
+        p = [0.8, 165., 16.]
+        result = {"spec": {"family": "chain", "order": n, "coordinates": "io",
+                           "initialization": "input_equilibrated", "hold": "linear", "method": "exact"},
+                  "parameters": dict(zip(spec.names, p))}
+        output = uncertainty(result, [load("step")])
+        assert output["rank_relative_1e-8"] == 2
+        assert output["nonestimable_native_parameters"] == ["theta"]
+        assert output["std_native_iid"][-1] is None
+        assert output["cov_log_iid_unknown_sigma"] is None
+        json.dumps(output, allow_nan=False)

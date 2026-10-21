@@ -20,18 +20,33 @@ scope, and `results/manifest.json` will identify manuscript results.
 - Maintainer Pyomo 6.10.0 has `cov_est` but lacks the custom
   `theta_est_multistart` used by the inherited script. The new numerical study
   must not silently assume that API exists or change a shared environment.
-- Next: export notebook logic into Python, verify migration, then implement and
-  validate the common LTI simulation/estimation pipeline before broad sweeps.
+- Notebook migration committed in `58b4fa5`: 13 deterministic Python exports,
+  scientific-cell AST equality, and a successful migrated simulation run.
+- Exact LTI models committed in `451749f`; inference runner in `275fe0a`.
+  Fifteen focused checks now pass, including independent integrator/analytic
+  agreement, baseline agreement, transformations, synthetic recovery, and
+  exact delay nonidentifiability under constant equilibrated input.
+- First full sweep finished 95/99 cases; four uncertainty serialization failures
+  exposed a rank-deficient covariance roundoff issue. `baseline/initial_sweep_*`
+  preserves the original manifest and numerical summary. Complete original
+  outputs remain locally in ignored `_runs/initial_sweep_undefined_covariance/`.
+  The correction uses SVD of the sensitivity matrix directly and reports undefined
+  full covariance and null standard deviations along nonestimable directions.
+  Fitting itself is unchanged. Next: rerun all 99 cases, account for fit deltas,
+  then profiles, bootstrap, initialization/noise sensitivity and input design.
 - Literature packet: `6f11d88ebd8741c892fea8fffc243d7d`. Initial revision:
   `d88745b5615020ca2f74fa981cd87f94d867723803a0f0efb5a668e0a09f2262`.
-  Inspect the current revision before further mutations. A first LTI search is
-  pending in the original tool execution; do not duplicate it.
+  Current observed revision after two searches:
+  `76843554a1e57656e98b3b1ff3530f57a502823a57346e9bb74d981efd3ef80d`.
+  Inspect the current revision before further mutations. Primary Raue (2009)
+  physical pages 1-5 were inspected; profile method is on physical page 4,
+  printed page 1926. Search hits that only cite a paper are not supporting evidence.
 - Gmail profile verified. Finished report recipient: `adowling@nd.edu` (self).
   Send once after verification and push; save the resulting message identity.
 
 ## Layout and authority
 
-- `../../notebooks/` from the repository root: original teaching notebooks;
+- `notebooks/` at the repository root: original teaching notebooks;
   preserve their content during migration.
 - `../tclab_reformulated.py`, `../tclab_objective_contours.py`: inherited models;
   preserve as baseline authorities until deltas have been explained.
@@ -75,3 +90,15 @@ Pyomo verification. Pin the new runner's verified environment before production.
 Use `MPLBACKEND=Agg` and a writable `MPLCONFIGDIR` for headless runs.
 Local `pdflatex`, `latexmk` and `pdftoppm` are available; confirm compilation and
 inspect rendered pages before delivering the report.
+
+From the repository root, run the numerical tests and fits with:
+
+```
+OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 python -m pytest -q skunk_works/delay_study/test_models.py skunk_works/delay_study/test_inference.py
+OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 python skunk_works/delay_study/run_fits.py
+```
+
+The runner caps workers at four, uses a nonblocking lock, checks measured source
+against HEAD, and refuses reuse across source/configuration changes. Prediction
+CSVs are gzip-compressed with a fixed timestamp; all attempt/convergence records
+and conditional noise assumptions remain in the case JSONs.

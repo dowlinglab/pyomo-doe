@@ -143,8 +143,7 @@ def fit(datasets, spec, n_starts=12, seed=532, starting=None, max_nfev=300):
             "starts": results, "seed": seed, "elapsed_seconds": time.monotonic()-begun}
 
 
-def _sandwich(J, residual, sizes, bandwidth):
-    bread = np.linalg.pinv(J.T@J, rcond=1e-12)
+def _sandwich(J, residual, sizes, bandwidth, bread):
     scores = J*residual[:, None]
     meat = scores.T@scores
     offset = 0
@@ -163,20 +162,26 @@ def uncertainty(fit_result, datasets, bandwidths=(10, 30, 60), sigma_known=.25):
     p = np.array([fit_result["parameters"][n] for n in spec.names])
     residual = residuals(np.log(p), datasets, spec)
     J = sensitivities(p, datasets, spec)
-    singular = np.linalg.svd(J, compute_uv=False)
+    _, singular, Vh = np.linalg.svd(J, full_matrices=False)
     gram = J.T@J
-    eigenvalues, eigenvectors = np.linalg.eigh(gram)
-    rank = int(np.sum(singular > singular[0]*1e-8))
+    keep = singular > singular[0]*1e-8
+    rank = int(np.sum(keep))
+    eigenvalues, eigenvectors = singular[::-1]**2, Vh.T[:, ::-1]
     # A pseudoinverse is diagnostic only when rank deficient, not a finite
     # uncertainty certificate along the unidentifiable directions.
-    inverse = np.linalg.pinv(gram, rcond=1e-12)
+    # Work directly from J rather than inverting J.T@J, which squares its
+    # condition number and can yield negative diagonal roundoff at exact rank loss.
+    basis = Vh[keep]
+    inverse = (basis.T/(singular[keep]**2))@basis
+    nonestimable = np.sum(Vh[~keep]**2, axis=0) > 1e-10
     dof = max(len(residual)-len(p), 1)
     iid = inverse*(residual@residual)/dof
     known = inverse*sigma_known**2
     sizes = [len(d.time)-1 for d in datasets]
-    hac = {str(b): _sandwich(J, residual, sizes, b).tolist() for b in bandwidths}
+    hac = {str(b): _sandwich(J, residual, sizes, b, inverse).tolist() for b in bandwidths}
     local_std = np.sqrt(np.maximum(np.diag(iid), 0))*p
-    correlation = iid/np.sqrt(np.outer(np.diag(iid), np.diag(iid)))
+    denominator = np.sqrt(np.maximum(np.outer(np.diag(iid), np.diag(iid)), 0))
+    correlation = np.divide(iid, denominator, out=np.zeros_like(iid), where=denominator > 0)
     diagnostics = []
     offset = 0
     for data, size in zip(datasets, sizes):
@@ -197,14 +202,19 @@ def uncertainty(fit_result, datasets, bandwidths=(10, 30, 60), sigma_known=.25):
            "eigenvectors_log_columns": eigenvectors.tolist(),
            "condition_J_log": float(singular[0]/singular[-1]),
            "condition_J_native": float(np.linalg.cond(J/p[None, :])),
-           "cov_log_iid_unknown_sigma": iid.tolist(), "cov_log_known_sigma": known.tolist(),
-           "known_sigma_C": sigma_known, "cov_log_hac": hac,
-           "std_native_iid": local_std.tolist(), "correlation_iid": correlation.tolist(),
+           "nonestimable_native_parameters": [name for name, flag in zip(spec.names, nonestimable) if flag],
+           "cov_log_iid_unknown_sigma": iid.tolist() if rank == len(p) else None,
+           "cov_log_known_sigma": known.tolist() if rank == len(p) else None,
+           "known_sigma_C": sigma_known, "cov_log_hac": hac if rank == len(p) else None,
+           "pseudoinverse_cov_log_iid_diagnostic_only": iid.tolist() if rank < len(p) else None,
+           "pseudoinverse_cov_log_hac_diagnostic_only": hac if rank < len(p) else None,
+           "std_native_iid": [None if flag else float(sd) for flag, sd in zip(nonestimable, local_std)],
+           "correlation_iid": correlation.tolist() if rank == len(p) else None,
            "residual_diagnostics": diagnostics,
            "uncertainty_status": "locally_rank_deficient_pseudoinverse_is_not_a_confidence_region" if rank < len(p) else "conditional_local_approximation_requires_noise_model_checks"}
     if spec.family != "original":
         # q_physics = constant + M*q_io; M is its own inverse.
         M = np.array([[-1., 0., 0.], [-1., 1., 0.], [0., 0., 1.]])
-        out["alternate_cov_log_iid"] = (M@iid@M.T).tolist()
-        out["alternate_cov_log_hac"] = {b: (M@np.asarray(c)@M.T).tolist() for b, c in hac.items()}
+        out["alternate_cov_log_iid"] = (M@iid@M.T).tolist() if rank == len(p) else None
+        out["alternate_cov_log_hac"] = {b: (M@np.asarray(c)@M.T).tolist() for b, c in hac.items()} if rank == len(p) else None
     return out

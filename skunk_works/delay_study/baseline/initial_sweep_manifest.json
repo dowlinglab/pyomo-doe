@@ -1,0 +1,675 @@
+{
+  "identity": {
+    "commit": "275fe0a81373a64ee21671e5f8828b855d83f62b",
+    "source_sha256": {
+      "skunk_works/delay_study/data.py": "ac6b9a57de386352f5f7a8a678101d84dd90cfa3f0c04e936aa08c7e905c8e7a",
+      "skunk_works/delay_study/models.py": "345d0e68f7de3f59c1e3293f703d7658f45aa19149301440d1fe228a91ac25a0",
+      "skunk_works/delay_study/inference.py": "f06da016020fd5933cf312fed1b720f4972a5af6f144764ed37dda1197115a98",
+      "skunk_works/delay_study/run_fits.py": "2451a77e22d73169abe37e313490989692580c39233b0779f8c41956b4511ef5",
+      "skunk_works/delay_study/config.json": "521abeba4b7a0f568e4a932874443344b15b112fff25843519994f7a223a7f43"
+    },
+    "config_sha256": "95ab6ccf65169f19efe808cd2301f539748e715f43c81d7b0eb1d6e05bb6e448"
+  },
+  "started_utc": "2026-10-21T01:56:58.768619+00:00",
+  "command": [
+    "skunk_works/delay_study/run_fits.py"
+  ],
+  "config": {
+    "orders": [
+      1,
+      2,
+      3,
+      4,
+      6,
+      8,
+      12
+    ],
+    "initializations": [
+      "cold",
+      "input_equilibrated"
+    ],
+    "coordinates": [
+      "io",
+      "physics"
+    ],
+    "calibration_sets": {
+      "sine": [
+        "sine"
+      ],
+      "step": [
+        "step"
+      ],
+      "joint": [
+        "sine",
+        "step"
+      ]
+    },
+    "families": [
+      "chain",
+      "pure_delay",
+      "original"
+    ],
+    "n_starts": 24,
+    "max_nfev": 600,
+    "seed": 532,
+    "workers": 4,
+    "profile_grid_points": 61,
+    "profile_starts": 4,
+    "bootstrap_replicates": 400,
+    "bootstrap_blocks_samples": [
+      1,
+      10,
+      30,
+      60
+    ],
+    "known_sigma_C": 0.25,
+    "hac_bandwidth_samples": [
+      10,
+      30,
+      60
+    ]
+  },
+  "filter": "",
+  "expected_cases": 99,
+  "completed": {
+    "sine__chain_n1_io_cold_linear_exact": {
+      "status": "complete",
+      "rmse_C": 0.2566668161630227
+    },
+    "sine__chain_n1_physics_cold_linear_exact": {
+      "status": "complete",
+      "rmse_C": 0.2566668161630219
+    },
+    "sine__chain_n1_physics_input_equilibrated_linear_exact": {
+      "status": "complete",
+      "rmse_C": 0.7818627301780459
+    },
+    "sine__chain_n1_io_input_equilibrated_linear_exact": {
+      "status": "complete",
+      "rmse_C": 0.7818627301780519
+    },
+    "sine__chain_n2_io_cold_linear_exact": {
+      "status": "complete",
+      "rmse_C": 0.3469621923977366
+    },
+    "sine__chain_n2_io_input_equilibrated_linear_exact": {
+      "status": "complete",
+      "rmse_C": 0.703765569897549
+    },
+    "sine__chain_n2_physics_input_equilibrated_linear_exact": {
+      "status": "complete",
+      "rmse_C": 0.7037655698975487
+    },
+    "sine__chain_n2_physics_cold_linear_exact": {
+      "status": "complete",
+      "rmse_C": 0.34696219239773834
+    },
+    "sine__chain_n3_io_input_equilibrated_linear_exact": {
+      "status": "complete",
+      "rmse_C": 0.6800758928961363
+    },
+    "sine__chain_n3_physics_input_equilibrated_linear_exact": {
+      "status": "complete",
+      "rmse_C": 0.6800758928961345
+    },
+    "sine__chain_n3_io_cold_linear_exact": {
+      "status": "complete",
+      "rmse_C": 0.381005953392728
+    },
+    "sine__chain_n3_physics_cold_linear_exact": {
+      "status": "complete",
+      "rmse_C": 0.38100595339272897
+    },
+    "sine__chain_n4_io_input_equilibrated_linear_exact": {
+      "status": "complete",
+      "rmse_C": 0.668785695481695
+    },
+    "sine__chain_n4_io_cold_linear_exact": {
+      "status": "complete",
+      "rmse_C": 0.39854640082607656
+    },
+    "sine__chain_n4_physics_input_equilibrated_linear_exact": {
+      "status": "complete",
+      "rmse_C": 0.6687856954816873
+    },
+    "sine__chain_n4_physics_cold_linear_exact": {
+      "status": "complete",
+      "rmse_C": 0.3985464008260699
+    },
+    "sine__chain_n6_io_input_equilibrated_linear_exact": {
+      "status": "complete",
+      "rmse_C": 0.6578988140901103
+    },
+    "sine__chain_n6_io_cold_linear_exact": {
+      "status": "complete",
+      "rmse_C": 0.4164561134509948
+    },
+    "sine__chain_n6_physics_input_equilibrated_linear_exact": {
+      "status": "complete",
+      "rmse_C": 0.6578988140901122
+    },
+    "sine__chain_n6_physics_cold_linear_exact": {
+      "status": "complete",
+      "rmse_C": 0.41645611345100686
+    },
+    "sine__chain_n8_io_input_equilibrated_linear_exact": {
+      "status": "complete",
+      "rmse_C": 0.6526144586912102
+    },
+    "sine__chain_n8_io_cold_linear_exact": {
+      "status": "complete",
+      "rmse_C": 0.42557533091324157
+    },
+    "sine__chain_n8_physics_input_equilibrated_linear_exact": {
+      "status": "complete",
+      "rmse_C": 0.6526144586912036
+    },
+    "sine__chain_n8_physics_cold_linear_exact": {
+      "status": "complete",
+      "rmse_C": 0.42557533091323035
+    },
+    "sine__chain_n12_io_input_equilibrated_linear_exact": {
+      "status": "complete",
+      "rmse_C": 0.6474403232352001
+    },
+    "sine__chain_n12_physics_input_equilibrated_linear_exact": {
+      "status": "complete",
+      "rmse_C": 0.6474403232351976
+    },
+    "sine__chain_n12_io_cold_linear_exact": {
+      "status": "complete",
+      "rmse_C": 0.43483623720266396
+    },
+    "sine__chain_n12_physics_cold_linear_exact": {
+      "status": "complete",
+      "rmse_C": 0.4348362372026666
+    },
+    "sine__pure_delay_n0_io_input_equilibrated_linear_exact": {
+      "status": "complete",
+      "rmse_C": 0.6374335496366575
+    },
+    "sine__pure_delay_n0_physics_input_equilibrated_linear_exact": {
+      "status": "complete",
+      "rmse_C": 0.6374335496366731
+    },
+    "sine__pure_delay_n0_io_cold_linear_exact": {
+      "status": "complete",
+      "rmse_C": 0.4541284215194007
+    },
+    "step__chain_n1_io_cold_linear_exact": {
+      "status": "complete",
+      "rmse_C": 0.15734680542041052
+    },
+    "sine__pure_delay_n0_physics_cold_linear_exact": {
+      "status": "complete",
+      "rmse_C": 0.4541284215193846
+    },
+    "sine__original_n0_physics_cold_linear_exact": {
+      "status": "complete",
+      "rmse_C": 0.2566668161630225
+    },
+    "step__chain_n1_physics_cold_linear_exact": {
+      "status": "complete",
+      "rmse_C": 0.15734680542040358
+    },
+    "step__chain_n1_physics_input_equilibrated_linear_exact": {
+      "status": "complete",
+      "rmse_C": 0.6470696634333726
+    },
+    "step__chain_n1_io_input_equilibrated_linear_exact": {
+      "status": "complete",
+      "rmse_C": 0.6470696634333276
+    },
+    "step__chain_n2_io_cold_linear_exact": {
+      "status": "complete",
+      "rmse_C": 0.15289418373452043
+    },
+    "step__chain_n2_physics_cold_linear_exact": {
+      "status": "complete",
+      "rmse_C": 0.1528941837345145
+    },
+    "step__chain_n2_physics_input_equilibrated_linear_exact": {
+      "status": "complete",
+      "rmse_C": 0.6470696634330444
+    },
+    "step__chain_n3_io_cold_linear_exact": {
+      "status": "complete",
+      "rmse_C": 0.15726490351863823
+    },
+    "step__chain_n3_physics_cold_linear_exact": {
+      "status": "complete",
+      "rmse_C": 0.15726490351864278
+    },
+    "step__chain_n3_io_input_equilibrated_linear_exact": {
+      "status": "complete",
+      "rmse_C": 0.6470696634329066
+    },
+    "step__chain_n3_physics_input_equilibrated_linear_exact": {
+      "status": "complete",
+      "rmse_C": 0.6470696634327676
+    },
+    "step__chain_n4_io_cold_linear_exact": {
+      "status": "complete",
+      "rmse_C": 0.1609922063699426
+    },
+    "step__chain_n4_physics_cold_linear_exact": {
+      "status": "complete",
+      "rmse_C": 0.16099220636994357
+    },
+    "step__chain_n4_physics_input_equilibrated_linear_exact": {
+      "status": "complete",
+      "rmse_C": 0.6470696634319996
+    },
+    "step__chain_n6_io_cold_linear_exact": {
+      "status": "complete",
+      "rmse_C": 0.16594238343476359
+    },
+    "step__chain_n6_physics_cold_linear_exact": {
+      "status": "complete",
+      "rmse_C": 0.1659423834347613
+    },
+    "step__chain_n6_physics_input_equilibrated_linear_exact": {
+      "status": "complete",
+      "rmse_C": 0.6470696634293912
+    },
+    "step__chain_n8_io_cold_linear_exact": {
+      "status": "complete",
+      "rmse_C": 0.16894900263095894
+    },
+    "step__chain_n8_physics_cold_linear_exact": {
+      "status": "complete",
+      "rmse_C": 0.16894900263096033
+    },
+    "step__chain_n8_io_input_equilibrated_linear_exact": {
+      "status": "complete",
+      "rmse_C": 0.6470696634303962
+    },
+    "step__chain_n8_physics_input_equilibrated_linear_exact": {
+      "status": "complete",
+      "rmse_C": 0.647069663428273
+    },
+    "step__chain_n12_io_cold_linear_exact": {
+      "status": "complete",
+      "rmse_C": 0.17237980237381764
+    },
+    "step__chain_n12_physics_cold_linear_exact": {
+      "status": "complete",
+      "rmse_C": 0.1723798023738173
+    },
+    "step__chain_n12_physics_input_equilibrated_linear_exact": {
+      "status": "complete",
+      "rmse_C": 0.647069663424917
+    },
+    "step__pure_delay_n0_io_cold_linear_exact": {
+      "status": "complete",
+      "rmse_C": 0.18115213964294996
+    },
+    "step__pure_delay_n0_physics_cold_linear_exact": {
+      "status": "complete",
+      "rmse_C": 0.1811521396429741
+    },
+    "step__original_n0_physics_cold_linear_exact": {
+      "status": "complete",
+      "rmse_C": 0.1573468054204342
+    },
+    "joint__chain_n1_io_cold_linear_exact": {
+      "status": "complete",
+      "rmse_C": 0.41145886321613817
+    },
+    "step__pure_delay_n0_physics_input_equilibrated_linear_exact": {
+      "status": "complete",
+      "rmse_C": 0.6470696634333952
+    },
+    "step__pure_delay_n0_io_input_equilibrated_linear_exact": {
+      "status": "complete",
+      "rmse_C": 0.6470696634333902
+    },
+    "joint__chain_n1_physics_cold_linear_exact": {
+      "status": "complete",
+      "rmse_C": 0.4114588632161424
+    },
+    "joint__chain_n1_io_input_equilibrated_linear_exact": {
+      "status": "complete",
+      "rmse_C": 0.7935842515105255
+    },
+    "joint__chain_n1_physics_input_equilibrated_linear_exact": {
+      "status": "complete",
+      "rmse_C": 0.7935842515105016
+    },
+    "joint__chain_n2_io_cold_linear_exact": {
+      "status": "complete",
+      "rmse_C": 0.4630421012935354
+    },
+    "joint__chain_n2_physics_cold_linear_exact": {
+      "status": "complete",
+      "rmse_C": 0.4630421012935443
+    },
+    "joint__chain_n2_io_input_equilibrated_linear_exact": {
+      "status": "complete",
+      "rmse_C": 0.7584753815257163
+    },
+    "joint__chain_n2_physics_input_equilibrated_linear_exact": {
+      "status": "complete",
+      "rmse_C": 0.7584753815257455
+    },
+    "joint__chain_n3_io_cold_linear_exact": {
+      "status": "complete",
+      "rmse_C": 0.4841301032655312
+    },
+    "joint__chain_n3_physics_cold_linear_exact": {
+      "status": "complete",
+      "rmse_C": 0.48413010326553196
+    },
+    "joint__chain_n3_io_input_equilibrated_linear_exact": {
+      "status": "complete",
+      "rmse_C": 0.7485904869213368
+    },
+    "joint__chain_n3_physics_input_equilibrated_linear_exact": {
+      "status": "complete",
+      "rmse_C": 0.748590486921331
+    },
+    "joint__chain_n4_io_cold_linear_exact": {
+      "status": "complete",
+      "rmse_C": 0.4953334155216501
+    },
+    "joint__chain_n4_physics_cold_linear_exact": {
+      "status": "complete",
+      "rmse_C": 0.4953334155216741
+    },
+    "joint__chain_n4_io_input_equilibrated_linear_exact": {
+      "status": "complete",
+      "rmse_C": 0.7440534783920976
+    },
+    "joint__chain_n4_physics_input_equilibrated_linear_exact": {
+      "status": "complete",
+      "rmse_C": 0.7440534783921002
+    },
+    "joint__chain_n6_io_cold_linear_exact": {
+      "status": "complete",
+      "rmse_C": 0.5070041052239129
+    },
+    "joint__chain_n6_physics_cold_linear_exact": {
+      "status": "complete",
+      "rmse_C": 0.5070041052239013
+    },
+    "joint__chain_n6_io_input_equilibrated_linear_exact": {
+      "status": "complete",
+      "rmse_C": 0.7398039270636279
+    },
+    "joint__chain_n6_physics_input_equilibrated_linear_exact": {
+      "status": "complete",
+      "rmse_C": 0.7398039270636165
+    },
+    "joint__chain_n8_io_cold_linear_exact": {
+      "status": "complete",
+      "rmse_C": 0.5130360700516411
+    },
+    "joint__chain_n8_io_input_equilibrated_linear_exact": {
+      "status": "complete",
+      "rmse_C": 0.7377907291655054
+    },
+    "joint__chain_n8_physics_input_equilibrated_linear_exact": {
+      "status": "complete",
+      "rmse_C": 0.7377907291655131
+    },
+    "joint__chain_n8_physics_cold_linear_exact": {
+      "status": "complete",
+      "rmse_C": 0.5130360700516428
+    },
+    "joint__chain_n12_io_cold_linear_exact": {
+      "status": "complete",
+      "rmse_C": 0.5192245180259404
+    },
+    "joint__chain_n12_physics_input_equilibrated_linear_exact": {
+      "status": "complete",
+      "rmse_C": 0.7358538279530389
+    },
+    "joint__chain_n12_io_input_equilibrated_linear_exact": {
+      "status": "complete",
+      "rmse_C": 0.7358538279530292
+    },
+    "joint__chain_n12_physics_cold_linear_exact": {
+      "status": "complete",
+      "rmse_C": 0.5192245180259405
+    },
+    "joint__pure_delay_n0_physics_input_equilibrated_linear_exact": {
+      "status": "complete",
+      "rmse_C": 0.7322125189341577
+    },
+    "joint__pure_delay_n0_io_input_equilibrated_linear_exact": {
+      "status": "complete",
+      "rmse_C": 0.7322125189341177
+    },
+    "joint__original_n0_physics_cold_linear_exact": {
+      "status": "complete",
+      "rmse_C": 0.4114588632161059
+    },
+    "joint__pure_delay_n0_io_cold_linear_exact": {
+      "status": "complete",
+      "rmse_C": 0.5323338580603157
+    },
+    "joint__pure_delay_n0_physics_cold_linear_exact": {
+      "status": "complete",
+      "rmse_C": 0.532333858060274
+    }
+  },
+  "failed": {
+    "step__chain_n2_io_input_equilibrated_linear_exact": "concurrent.futures.process._RemoteTraceback: \n\"\"\"\nTraceback (most recent call last):\n  File \"/Users/adowling/opt/anaconda3/lib/python3.9/concurrent/futures/process.py\", line 243, in _process_worker\n    r = call_item.fn(*call_item.args, **call_item.kwargs)\n  File \"/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/run_fits.py\", line 88, in run_case\n    save_json(path, {\"identity\": identity, \"calibration\": calibration, \"datasets\": names, \"fit\": result,\n  File \"/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/run_fits.py\", line 34, in save_json\n    temporary.write_text(json.dumps(obj, indent=2, allow_nan=False)+\"\\n\")\n  File \"/Users/adowling/opt/anaconda3/lib/python3.9/json/__init__.py\", line 234, in dumps\n    return cls(\n  File \"/Users/adowling/opt/anaconda3/lib/python3.9/json/encoder.py\", line 201, in encode\n    chunks = list(chunks)\n  File \"/Users/adowling/opt/anaconda3/lib/python3.9/json/encoder.py\", line 431, in _iterencode\n    yield from _iterencode_dict(o, _current_indent_level)\n  File \"/Users/adowling/opt/anaconda3/lib/python3.9/json/encoder.py\", line 405, in _iterencode_dict\n    yield from chunks\n  File \"/Users/adowling/opt/anaconda3/lib/python3.9/json/encoder.py\", line 405, in _iterencode_dict\n    yield from chunks\n  File \"/Users/adowling/opt/anaconda3/lib/python3.9/json/encoder.py\", line 325, in _iterencode_list\n    yield from chunks\n  File \"/Users/adowling/opt/anaconda3/lib/python3.9/json/encoder.py\", line 316, in _iterencode_list\n    yield buf + _floatstr(value)\n  File \"/Users/adowling/opt/anaconda3/lib/python3.9/json/encoder.py\", line 239, in floatstr\n    raise ValueError(\nValueError: Out of range float values are not JSON compliant: nan\n\"\"\"\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/run_fits.py\", line 122, in main\n    _, status, rmse = future.result()\n  File \"/Users/adowling/opt/anaconda3/lib/python3.9/concurrent/futures/_base.py\", line 439, in result\n    return self.__get_result()\n  File \"/Users/adowling/opt/anaconda3/lib/python3.9/concurrent/futures/_base.py\", line 391, in __get_result\n    raise self._exception\nValueError: Out of range float values are not JSON compliant: nan\n",
+    "step__chain_n4_io_input_equilibrated_linear_exact": "concurrent.futures.process._RemoteTraceback: \n\"\"\"\nTraceback (most recent call last):\n  File \"/Users/adowling/opt/anaconda3/lib/python3.9/concurrent/futures/process.py\", line 243, in _process_worker\n    r = call_item.fn(*call_item.args, **call_item.kwargs)\n  File \"/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/run_fits.py\", line 88, in run_case\n    save_json(path, {\"identity\": identity, \"calibration\": calibration, \"datasets\": names, \"fit\": result,\n  File \"/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/run_fits.py\", line 34, in save_json\n    temporary.write_text(json.dumps(obj, indent=2, allow_nan=False)+\"\\n\")\n  File \"/Users/adowling/opt/anaconda3/lib/python3.9/json/__init__.py\", line 234, in dumps\n    return cls(\n  File \"/Users/adowling/opt/anaconda3/lib/python3.9/json/encoder.py\", line 201, in encode\n    chunks = list(chunks)\n  File \"/Users/adowling/opt/anaconda3/lib/python3.9/json/encoder.py\", line 431, in _iterencode\n    yield from _iterencode_dict(o, _current_indent_level)\n  File \"/Users/adowling/opt/anaconda3/lib/python3.9/json/encoder.py\", line 405, in _iterencode_dict\n    yield from chunks\n  File \"/Users/adowling/opt/anaconda3/lib/python3.9/json/encoder.py\", line 405, in _iterencode_dict\n    yield from chunks\n  File \"/Users/adowling/opt/anaconda3/lib/python3.9/json/encoder.py\", line 325, in _iterencode_list\n    yield from chunks\n  File \"/Users/adowling/opt/anaconda3/lib/python3.9/json/encoder.py\", line 316, in _iterencode_list\n    yield buf + _floatstr(value)\n  File \"/Users/adowling/opt/anaconda3/lib/python3.9/json/encoder.py\", line 239, in floatstr\n    raise ValueError(\nValueError: Out of range float values are not JSON compliant: nan\n\"\"\"\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/run_fits.py\", line 122, in main\n    _, status, rmse = future.result()\n  File \"/Users/adowling/opt/anaconda3/lib/python3.9/concurrent/futures/_base.py\", line 439, in result\n    return self.__get_result()\n  File \"/Users/adowling/opt/anaconda3/lib/python3.9/concurrent/futures/_base.py\", line 391, in __get_result\n    raise self._exception\nValueError: Out of range float values are not JSON compliant: nan\n",
+    "step__chain_n6_io_input_equilibrated_linear_exact": "concurrent.futures.process._RemoteTraceback: \n\"\"\"\nTraceback (most recent call last):\n  File \"/Users/adowling/opt/anaconda3/lib/python3.9/concurrent/futures/process.py\", line 243, in _process_worker\n    r = call_item.fn(*call_item.args, **call_item.kwargs)\n  File \"/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/run_fits.py\", line 88, in run_case\n    save_json(path, {\"identity\": identity, \"calibration\": calibration, \"datasets\": names, \"fit\": result,\n  File \"/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/run_fits.py\", line 34, in save_json\n    temporary.write_text(json.dumps(obj, indent=2, allow_nan=False)+\"\\n\")\n  File \"/Users/adowling/opt/anaconda3/lib/python3.9/json/__init__.py\", line 234, in dumps\n    return cls(\n  File \"/Users/adowling/opt/anaconda3/lib/python3.9/json/encoder.py\", line 201, in encode\n    chunks = list(chunks)\n  File \"/Users/adowling/opt/anaconda3/lib/python3.9/json/encoder.py\", line 431, in _iterencode\n    yield from _iterencode_dict(o, _current_indent_level)\n  File \"/Users/adowling/opt/anaconda3/lib/python3.9/json/encoder.py\", line 405, in _iterencode_dict\n    yield from chunks\n  File \"/Users/adowling/opt/anaconda3/lib/python3.9/json/encoder.py\", line 405, in _iterencode_dict\n    yield from chunks\n  File \"/Users/adowling/opt/anaconda3/lib/python3.9/json/encoder.py\", line 325, in _iterencode_list\n    yield from chunks\n  File \"/Users/adowling/opt/anaconda3/lib/python3.9/json/encoder.py\", line 316, in _iterencode_list\n    yield buf + _floatstr(value)\n  File \"/Users/adowling/opt/anaconda3/lib/python3.9/json/encoder.py\", line 239, in floatstr\n    raise ValueError(\nValueError: Out of range float values are not JSON compliant: nan\n\"\"\"\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/run_fits.py\", line 122, in main\n    _, status, rmse = future.result()\n  File \"/Users/adowling/opt/anaconda3/lib/python3.9/concurrent/futures/_base.py\", line 439, in result\n    return self.__get_result()\n  File \"/Users/adowling/opt/anaconda3/lib/python3.9/concurrent/futures/_base.py\", line 391, in __get_result\n    raise self._exception\nValueError: Out of range float values are not JSON compliant: nan\n",
+    "step__chain_n12_io_input_equilibrated_linear_exact": "concurrent.futures.process._RemoteTraceback: \n\"\"\"\nTraceback (most recent call last):\n  File \"/Users/adowling/opt/anaconda3/lib/python3.9/concurrent/futures/process.py\", line 243, in _process_worker\n    r = call_item.fn(*call_item.args, **call_item.kwargs)\n  File \"/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/run_fits.py\", line 88, in run_case\n    save_json(path, {\"identity\": identity, \"calibration\": calibration, \"datasets\": names, \"fit\": result,\n  File \"/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/run_fits.py\", line 34, in save_json\n    temporary.write_text(json.dumps(obj, indent=2, allow_nan=False)+\"\\n\")\n  File \"/Users/adowling/opt/anaconda3/lib/python3.9/json/__init__.py\", line 234, in dumps\n    return cls(\n  File \"/Users/adowling/opt/anaconda3/lib/python3.9/json/encoder.py\", line 201, in encode\n    chunks = list(chunks)\n  File \"/Users/adowling/opt/anaconda3/lib/python3.9/json/encoder.py\", line 431, in _iterencode\n    yield from _iterencode_dict(o, _current_indent_level)\n  File \"/Users/adowling/opt/anaconda3/lib/python3.9/json/encoder.py\", line 405, in _iterencode_dict\n    yield from chunks\n  File \"/Users/adowling/opt/anaconda3/lib/python3.9/json/encoder.py\", line 405, in _iterencode_dict\n    yield from chunks\n  File \"/Users/adowling/opt/anaconda3/lib/python3.9/json/encoder.py\", line 325, in _iterencode_list\n    yield from chunks\n  File \"/Users/adowling/opt/anaconda3/lib/python3.9/json/encoder.py\", line 316, in _iterencode_list\n    yield buf + _floatstr(value)\n  File \"/Users/adowling/opt/anaconda3/lib/python3.9/json/encoder.py\", line 239, in floatstr\n    raise ValueError(\nValueError: Out of range float values are not JSON compliant: nan\n\"\"\"\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/run_fits.py\", line 122, in main\n    _, status, rmse = future.result()\n  File \"/Users/adowling/opt/anaconda3/lib/python3.9/concurrent/futures/_base.py\", line 439, in result\n    return self.__get_result()\n  File \"/Users/adowling/opt/anaconda3/lib/python3.9/concurrent/futures/_base.py\", line 391, in __get_result\n    raise self._exception\nValueError: Out of range float values are not JSON compliant: nan\n"
+  },
+  "validation_files": [
+    "validation_experiment_env_2_sin_2_50_run_1.csv",
+    "validation_experiment_env_2_sin_2_50_run_2.csv",
+    "validation_experiment_env_2_sin_2_50_run_3.csv",
+    "validation_experiment_env_2_sin_50_50_run_1.csv",
+    "validation_experiment_env_2_sin_50_50_run_2.csv",
+    "validation_experiment_env_2_sin_50_50_run_3.csv",
+    "validation_experiment_env_2_sin_5_50_run_2.csv",
+    "validation_experiment_env_2_sin_5_50_run_3.csv",
+    "validation_experiment_env_2_step_50_run_2.csv",
+    "validation_experiment_env_2_step_50_run_3.csv",
+    "validation_experiment_sin_5_50.csv"
+  ],
+  "data_audit": {
+    "files": [
+      {
+        "file": "data/tclab_sine_test_5min_period.csv",
+        "n": 901,
+        "sha256": "12abe51379ee107ee593986e1923aa849939aa2254412c551886708c26aa7f6d",
+        "numeric_sha256": "c2a81831c5fa00daa5bc26c369e83a5e09efd12032c7f492f83c0044eb82e8df",
+        "duration_s": 900.01,
+        "ambient_assumed_C": 22.2,
+        "second_heater_active": false,
+        "dt_min_s": 0.9799999999999898,
+        "dt_max_s": 1.0200000000000102,
+        "unique_dt_rounded_9dp": 5
+      },
+      {
+        "file": "data/tclab_step_test.csv",
+        "n": 901,
+        "sha256": "0c5fc5917a3693ca73a9240f0f40aea711fe1458853b88dd9c9db54fded776ec",
+        "numeric_sha256": "916014d294d20b36cc01966fb00f8f75ab1c6cb79a1a240fcb8a7cf9d57db841",
+        "duration_s": 900.02,
+        "ambient_assumed_C": 22.84,
+        "second_heater_active": false,
+        "dt_min_s": 0.9799999999999898,
+        "dt_max_s": 1.0200000000000102,
+        "unique_dt_rounded_9dp": 5
+      },
+      {
+        "file": "data/validation_experiment_env_2_sin_2_50_run_1.csv",
+        "n": 900,
+        "sha256": "5381e073c848b52b1ea2d3acc69b6be790f7aaad1cee18511589a09668e3d7b5",
+        "numeric_sha256": "dbed5ef01d294cc3e66499ae07bb05cabd38aaa9f2a12ace02abf37f2e88731c",
+        "duration_s": 900.02,
+        "ambient_assumed_C": 20.91,
+        "second_heater_active": false,
+        "dt_min_s": 0.9800000000000004,
+        "dt_max_s": 1.990000000000009,
+        "unique_dt_rounded_9dp": 6
+      },
+      {
+        "file": "data/validation_experiment_env_2_sin_2_50_run_2.csv",
+        "n": 901,
+        "sha256": "586359308d1f58b68f308f1027977fbf8f532b181e0a14e5676718692a63c3cf",
+        "numeric_sha256": "52df71d62a9d9187f13579d1d4b3ee50b05cc16a6a4d52c1a03d7d33a3e09a46",
+        "duration_s": 900.01,
+        "ambient_assumed_C": 20.26,
+        "second_heater_active": false,
+        "dt_min_s": 0.9799999999999898,
+        "dt_max_s": 1.0200000000000102,
+        "unique_dt_rounded_9dp": 5
+      },
+      {
+        "file": "data/validation_experiment_env_2_sin_2_50_run_3.csv",
+        "n": 901,
+        "sha256": "237abc1a34e2da0793372ea8d16bc2db7278a5c8e5945540e507bb8bea8a40e1",
+        "numeric_sha256": "e6bb3d45bf1cb6edde0dc2390f667dc3754bcb6d09d9900437c726b1c9ff8a46",
+        "duration_s": 900.01,
+        "ambient_assumed_C": 20.26,
+        "second_heater_active": false,
+        "dt_min_s": 0.9799999999999898,
+        "dt_max_s": 1.0200000000000102,
+        "unique_dt_rounded_9dp": 5
+      },
+      {
+        "file": "data/validation_experiment_env_2_sin_50_50_run_1.csv",
+        "n": 901,
+        "sha256": "958261e9db4cdd43c94d793e87ec97a3abef177913888bad4d25de27b8956389",
+        "numeric_sha256": "38275e2f015e980b925fe36bf2c768419fdc592249adbd2db36fb0fbf1a6bb19",
+        "duration_s": 900.01,
+        "ambient_assumed_C": 19.94,
+        "second_heater_active": false,
+        "dt_min_s": 0.9799999999999969,
+        "dt_max_s": 1.0200000000000102,
+        "unique_dt_rounded_9dp": 5
+      },
+      {
+        "file": "data/validation_experiment_env_2_sin_50_50_run_2.csv",
+        "n": 899,
+        "sha256": "ea3c7238ee1b4f7d04af9b3ad0de2ff68898aa876ce9d74e7b49e75e64a5add2",
+        "numeric_sha256": "b1880180f79255425cc208f98c87345dc04a0899aa898d0cd25193333312e3ad",
+        "duration_s": 900.0,
+        "ambient_assumed_C": 20.58,
+        "second_heater_active": false,
+        "dt_min_s": 0.9799999999999898,
+        "dt_max_s": 2.0,
+        "unique_dt_rounded_9dp": 6
+      },
+      {
+        "file": "data/validation_experiment_env_2_sin_50_50_run_3.csv",
+        "n": 899,
+        "sha256": "4de694a3e5288f89d2379ebdaba34dac668e8a885a90c9b7132b31706371f71a",
+        "numeric_sha256": "33566d1ff3ab627702fb61ed2f9a32fdf93a79125467e566151bec8ac9a44fe1",
+        "duration_s": 900.01,
+        "ambient_assumed_C": 20.26,
+        "second_heater_active": false,
+        "dt_min_s": 0.9799999999999898,
+        "dt_max_s": 2.0,
+        "unique_dt_rounded_9dp": 7
+      },
+      {
+        "file": "data/validation_experiment_env_2_sin_5_50_run_1.csv",
+        "n": 901,
+        "sha256": "12abe51379ee107ee593986e1923aa849939aa2254412c551886708c26aa7f6d",
+        "numeric_sha256": "c2a81831c5fa00daa5bc26c369e83a5e09efd12032c7f492f83c0044eb82e8df",
+        "duration_s": 900.01,
+        "ambient_assumed_C": 22.2,
+        "second_heater_active": false,
+        "dt_min_s": 0.9799999999999898,
+        "dt_max_s": 1.0200000000000102,
+        "unique_dt_rounded_9dp": 5
+      },
+      {
+        "file": "data/validation_experiment_env_2_sin_5_50_run_2.csv",
+        "n": 901,
+        "sha256": "a0cc520a2826d5dbd7cae6d389a48eb7ec32aa4046ca4a320ebed70caab638bc",
+        "numeric_sha256": "4131af7c1eb8bdb96943bdc22f3ce9d737ee8c7f74728e3da23d6bbb6ec5f95b",
+        "duration_s": 900.0,
+        "ambient_assumed_C": 23.48,
+        "second_heater_active": false,
+        "dt_min_s": 0.9799999999999898,
+        "dt_max_s": 1.0200000000000102,
+        "unique_dt_rounded_9dp": 5
+      },
+      {
+        "file": "data/validation_experiment_env_2_sin_5_50_run_3.csv",
+        "n": 901,
+        "sha256": "4b278a66c60f6adb4746fda7b7a71b43c39458d3c5a11cca064a59d1dd2f152f",
+        "numeric_sha256": "35e7c2b52ac1bf1b6846919992e537cb7649f89e44941bef406314e4af1dc0f2",
+        "duration_s": 900.0,
+        "ambient_assumed_C": 24.13,
+        "second_heater_active": false,
+        "dt_min_s": 0.9799999999999898,
+        "dt_max_s": 1.0200000000000102,
+        "unique_dt_rounded_9dp": 5
+      },
+      {
+        "file": "data/validation_experiment_env_2_step_50_run_1.csv",
+        "n": 901,
+        "sha256": "0c5fc5917a3693ca73a9240f0f40aea711fe1458853b88dd9c9db54fded776ec",
+        "numeric_sha256": "916014d294d20b36cc01966fb00f8f75ab1c6cb79a1a240fcb8a7cf9d57db841",
+        "duration_s": 900.02,
+        "ambient_assumed_C": 22.84,
+        "second_heater_active": false,
+        "dt_min_s": 0.9799999999999898,
+        "dt_max_s": 1.0200000000000102,
+        "unique_dt_rounded_9dp": 5
+      },
+      {
+        "file": "data/validation_experiment_env_2_step_50_run_2.csv",
+        "n": 901,
+        "sha256": "bd249f911ac8635bf2cf0d50dbf74405ebd10f879f9784feae90544d046cdbe4",
+        "numeric_sha256": "458286d3a9c7ccefa430ed3cfd20c2593e8e7af5d7e1ea8a0298c775782fea35",
+        "duration_s": 900.01,
+        "ambient_assumed_C": 24.13,
+        "second_heater_active": false,
+        "dt_min_s": 0.9799999999999898,
+        "dt_max_s": 1.0200000000000102,
+        "unique_dt_rounded_9dp": 5
+      },
+      {
+        "file": "data/validation_experiment_env_2_step_50_run_3.csv",
+        "n": 901,
+        "sha256": "08f2d71786510f0d232e22c1bb8e6225b5f4e7ecb572d4cde446f3305b184b6f",
+        "numeric_sha256": "6ecf4f1c6cb4ab157ecbba1afecd85d5071ae03ace68fd36837357c81508525f",
+        "duration_s": 900.0,
+        "ambient_assumed_C": 23.81,
+        "second_heater_active": false,
+        "dt_min_s": 0.9799999999999898,
+        "dt_max_s": 1.0200000000000102,
+        "unique_dt_rounded_9dp": 5
+      },
+      {
+        "file": "data/validation_experiment_sin_5_50.csv",
+        "n": 990,
+        "sha256": "49d041eb3080b795c78bf39b59d8c13ee9d1146f789020fac5f791595b344e52",
+        "numeric_sha256": "3340c42b1022a0430ac49b0620a2596697836a6c63e7fda863ab9283ec3bed2a",
+        "duration_s": 1000.01,
+        "ambient_assumed_C": 24.77,
+        "second_heater_active": false,
+        "dt_min_s": 0.9799999999999898,
+        "dt_max_s": 2.009999999999991,
+        "unique_dt_rounded_9dp": 8
+      }
+    ],
+    "exact_numeric_duplicates": [
+      [
+        "data/tclab_sine_test_5min_period.csv",
+        "data/validation_experiment_env_2_sin_5_50_run_1.csv"
+      ],
+      [
+        "data/tclab_step_test.csv",
+        "data/validation_experiment_env_2_step_50_run_1.csv"
+      ]
+    ],
+    "ambient_status": "First recorded sensor temperature assumed ambient; not independently measured",
+    "power_status": "P=200 and alpha=0.00016 inherited from workshop; calibration uncertainty unknown",
+    "validation_policy": "Exclude all numeric duplicates of calibration data from held-out evaluation; filenames alone do not establish independent replication."
+  },
+  "status": "complete_with_failures",
+  "scope_notice": "Initial thermal reading conditioned upon; unweighted SSE; validation excludes calibration duplicates",
+  "finished_utc": "2026-10-21T01:58:09.126713+00:00"
+}
