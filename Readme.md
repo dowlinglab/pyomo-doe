@@ -4,12 +4,12 @@ Welcome to the interactive tutorial workshop for parameter estimation and model-
 
 ![Pyomo workflow](./images/pyomo_workflow_new.png)
 
-These materials were created by [Prof. Alexander Dowling](https://dowlinglab.nd.edu/people/professor-alexander-w-dowling/), [Dr. Dan Laky](https://dowlinglab.nd.edu/people/daniel-laky/), [Stephen Cini](https://dowlinglab.nd.edu/people/stephen-cini/), [Shammah Lilonfe](https://dowlinglab.nd.edu/people/shammah-lilonfe/), [Shuvo Mondal](https://dowlinglab.nd.edu/people/shuvashish-mondal/), and [Dr. Shilpa Narasimhan](https://dowlinglab.nd.edu/people/dr-shilpa-narasimhan/) at the University of Notre Dame. 
+These [materials](./slides/PyomoDoE_ACC2026_Workshop.pdf) were created by [Prof. Alexander Dowling](https://dowlinglab.nd.edu/people/professor-alexander-w-dowling/), [Dr. Dan Laky](https://dowlinglab.nd.edu/people/daniel-laky/), [Shammah Lilonfe](https://dowlinglab.nd.edu/people/shammah-lilonfe/), [Stephen Cini](https://dowlinglab.nd.edu/people/stephen-cini/), [Shuvo Mondal](https://dowlinglab.nd.edu/people/shuvashish-mondal/), and [Dr. Shilpa Narasimhan](https://dowlinglab.nd.edu/people/dr-shilpa-narasimhan/) at the University of Notre Dame. 
 
 
 Special thanks to [Prof. Jeff Kantor](https://engineering.nd.edu/news/in-memoriam-jeffrey-kantor-former-vice-president-associate-provost-and-dean/), [Maddie Watson](https://dowlinglab.nd.edu/people/madelynn-watson/), [Molly Dougher](https://dowlinglab.nd.edu/people/molly-dougher/), and [Hailey Lynch](https://dowlinglab.nd.edu/people/hailey-lynch/) for assistance with the TCLab models and activities.
 
-Pyomo.DoE was developed by (in alphabetic order): [Stephen Cini](https://dowlinglab.nd.edu/people/stephen-cini/), [Prof. Alexander Dowling](https://dowlinglab.nd.edu/people/professor-alexander-w-dowling/), [Dan Laky](https://dowlinglab.nd.edu/people/daniel-laky/), [Miranda Mundt](https://ieeexplore.ieee.org/author/37089520396), [Bethany Nicholson](https://scholar.google.com/citations?user=WxqNQ6IAAAAJ&hl=en), [John Siirola](https://www.sandia.gov/ccr/staff/john-daniel-siirola/), and [Jialu Wang](https://dowlinglab.nd.edu/people/jialu-wang/).
+ParmEst and Pyomo.DoE were developed by (in alphabetic order): [Stephen Cini](https://dowlinglab.nd.edu/people/stephen-cini/), [Prof. Alexander Dowling](https://dowlinglab.nd.edu/people/professor-alexander-w-dowling/), [Katherine Klise](https://scholar.google.com/citations?user=Rv5DAzAAAAAJ&hl=en), [Dan Laky](https://dowlinglab.nd.edu/people/daniel-laky/), [Shammah Lilonfe](https://dowlinglab.nd.edu/people/shammah-lilonfe/), [Shawn Martin](https://scholar.google.com/citations?user=nCT_-C8AAAAJ&hl=en), [Shuvo Mondal](https://dowlinglab.nd.edu/people/shuvashish-mondal/), [Miranda Mundt](https://ieeexplore.ieee.org/author/37089520396), [Shilpa Narasimhan](https://dowlinglab.nd.edu/people/dr-shilpa-narasimhan/), [Bethany Nicholson](https://scholar.google.com/citations?user=WxqNQ6IAAAAJ&hl=en), [John Siirola](https://www.sandia.gov/ccr/staff/john-daniel-siirola/), and [Jialu Wang](https://dowlinglab.nd.edu/people/jialu-wang/).
 
 ## American Control Conference (ACC) 2026 Workshop
 
@@ -24,7 +24,7 @@ This workshop is intended for researchers and practitioners interested in digita
 
 [*Register Here*](https://acc2026.a2c2.org/registration)
 
-We are scheduled for a [half-day afternoon workshop](https://acc2026.a2c2.org/program/workshop-listing#session-6-17) on **Tuesday, May 26, 2026**. The schedule below assumes a 1pm start time and will be updated once the conference schedule is finalized.
+We are scheduled for a [half-day afternoon workshop](https://acc2026.a2c2.org/program/workshop-listing#session-6-17) on **Tuesday, May 26, 2026**. Attendees should *eat lunch on their own* before the workshop starts. Attendees should *bring a laptop computer* to run the interactive examples and exercises in Google Colab.
 
 | Time | Topic |
 | ---- | -------- |
@@ -50,6 +50,8 @@ We are scheduled for a [half-day afternoon workshop](https://acc2026.a2c2.org/pr
 | | [Multiple Experiments](./notebooks/doe_multiexperiment.ipynb) |
 | | Hands-on Examples |
 | 5:00 pm | *Adjourn* |
+
+We recommend viewing this website in **light mode**.
 
 ## What will I learn in this workshop?
 

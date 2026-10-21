@@ -145,7 +145,7 @@ if "google.colab" in sys.modules:
         return True
 
     # Install updated version of Pyomo
-    
+
     if not _check_pyomo_installed():
         print("Installing updated version of Pyomo.DoE...")
         print("  (this takes up to 5 minutes)")
@@ -169,7 +169,6 @@ if "google.colab" in sys.modules:
             raise RuntimeError(
                 "Pyomo was installed, but not from the expected git branch."
             )
-    
 
     import idaes
 
@@ -201,7 +200,6 @@ from pyomo.environ import (
     value as pyovalue,
     Suffix,
     Expression,
-    sin,
     PositiveReals,
 )
 from pyomo.dae import DerivativeVar, ContinuousSet, Simulator
@@ -261,6 +259,7 @@ class TC_Lab_data:
 
         return df
 
+
 ### -------------- Part 3.1: Helper function for initializing the model -------------- ###
 def helper(my_array, time):
     '''
@@ -281,6 +280,7 @@ def helper(my_array, time):
             data2[t] = 0
     return data2
 
+
 ### -------------- Part 4 v 2: Create Experiment object -------------- ###
 class TC_Lab_experiment(Experiment):
     def __init__(
@@ -289,8 +289,6 @@ class TC_Lab_experiment(Experiment):
         alpha=0.00016,
         theta_initial=None,
         number_of_states=2,
-        sine_amplitude=None,
-        sine_period=None,
         reparam=False,
         measurement_error=0.25,
     ):
@@ -301,89 +299,78 @@ class TC_Lab_experiment(Experiment):
         alpha: float, Conversion factor for TCLab (fixed parameter)
         theta_initial: dictionary, initial guesses for the unknown parameters
         number_of_states: number of states in the heat transfer model (must be 2 or 4), default: 2
-        sine_amplitude: float, amplitude of the sine wave, default: None (do not use the sine wave)
-        sine_period: float, period of the sine wave, default: None (do not use the sine wave)
         measurement_error: float, constant measurement error of sensor 1, default: 0.25 deg C
-        
+
         """
         self.data = data
-        
-        if theta_initial is None:
-            self.theta_initial={
-                "Ua": 0.0535,
-                "Ub": 0.0148,
-                "inv_CpH": 1 / 6.911,
-                "inv_CpS": 1 / 0.318,
-                "Uc": 0.001,
-            }
-        else:
-            self.theta_initial = theta_initial
-        
+
         # TODO: Move alpha to the data object?
         self.alpha = alpha
-        
+
         # Make sure that the number of states is either 2 or 4
-        if number_of_states not in [2, 4, ]:
+        if number_of_states not in [2, 4]:
             raise ValueError("number_of_states must be 2 or 4.")
         self.number_of_states = number_of_states
-        
-        # Make sure that the sine amplitude and period are reasonable
-        if sine_amplitude is not None and sine_period is not None:
-            self.sine_period_max = 10  # minutes
-            self.sine_period_min = 10 / 60  # minutes
 
-            assert sine_amplitude <= 50, "Sine amplitude must be less than 50."
-            assert sine_amplitude >= 0, "Sine amplitude must be greater than 0."
-
-            assert sine_period <= self.sine_period_max, "Sine period must be less than " + str(
-                self.sine_period_max
-            )
-            assert (
-                sine_period >= self.sine_period_min
-            ), "Sine period must be greater than " + str(self.sine_period_min)
-        elif sine_amplitude is not None or sine_period is not None:
-            raise ValueError("If sine wave is used, both amplitude and period must be provided.")
-        else:
-            self.sine_period_max = None
-            self.sine_period_min = None
-        self.sine_amplitude = sine_amplitude
-        self.sine_period = sine_period
-        
         self.reparam = reparam
         self.measurement_error = measurement_error
-        
+
         self.model = None
-    
+
+        # Define default theta_initial for model formulations
+        theta0_orig = {
+            "Ua": 0.0535,
+            "Ub": 0.0148,
+            "inv_CpH": 1 / 6.911,
+            "inv_CpS": 1 / 0.318,
+            "Uc": 0.001,
+        }
+
+        theta0_reparam = {
+            "beta_1": theta0_orig["Ua"] * theta0_orig["inv_CpH"],
+            "beta_2": theta0_orig["Ub"] * theta0_orig["inv_CpH"],
+            "beta_3": theta0_orig["Ub"] * theta0_orig["inv_CpS"],
+            "beta_4": alpha * pyovalue(data.P1) * theta0_orig["inv_CpH"],
+            "beta_5": theta0_orig["Uc"] / theta0_orig["inv_CpH"],
+        }
+        if theta_initial is None:
+            if self.reparam:
+                self.theta_initial = theta0_reparam
+            else:
+                self.theta_initial = theta0_orig
+        else:
+            self.theta_initial = theta_initial
+
     def get_labeled_model(self):
         if self.model is None:
             self.create_model()
             self.finalize_model()
             self.label_experiment()
         return self.model
-    
+
     def create_model(self):
         """
         Method to create an unlabled model of the TC Lab system.
-        
+
         """
         m = self.model = ConcreteModel()
-        
+
         #########################################
         # Begin model constants definition
         m.Tamb = Param(initialize=self.data.Tamb)
         m.P1 = Param(initialize=self.data.P1)
         m.alpha = Param(initialize=self.alpha)
         m.P2 = Param(initialize=self.data.P2)
-        
+
         m.Tmax = 85  # Maximum temparture (Deg C)
-        
+
         # End model constants
         #########################################
-        
+
         ################################
         # Defining state variables
         m.t = ContinuousSet(initialize=self.data.time)
-        
+
         # Temperature states for the fins
         m.Th1 = Var(m.t, bounds=[0, m.Tmax], initialize=m.Tamb.value)
         m.Ts1 = Var(m.t, bounds=[0, m.Tmax], initialize=m.Tamb.value)
@@ -391,7 +378,7 @@ class TC_Lab_experiment(Experiment):
         if self.number_of_states == 4:
             m.Th2 = Var(m.t, bounds=[0, m.Tmax], initialize=m.Tamb.value)
             m.Ts2 = Var(m.t, bounds=[0, m.Tmax], initialize=m.Tamb.value)
-        
+
         # Derivatives of the temperature state variables
         m.Th1dot = DerivativeVar(m.Th1, wrt=m.t)
         m.Ts1dot = DerivativeVar(m.Ts1, wrt=m.t)
@@ -399,84 +386,88 @@ class TC_Lab_experiment(Experiment):
         if self.number_of_states == 4:
             m.Th2dot = DerivativeVar(m.Th2, wrt=m.t)
             m.Ts2dot = DerivativeVar(m.Ts2, wrt=m.t)
-        
+
         # End state variable definition
         ################################
 
         ####################################
         # Defining experimental inputs
-        
+
         # Add control variables (experimental design decisions)
-        m.U1 = Var(m.t, bounds=(0, 100), initialize=helper(self.data.u1, self.data.time))
+        m.U1 = Var(
+            m.t, bounds=(0, 100), initialize=helper(self.data.u1, self.data.time)
+        )
         m.U1.fix()  # Fixed for parameter estimation
 
         if self.number_of_states == 4:
-            m.U2 = Var(m.t, bounds=(0, 100), initialize=helper(self.data.u2, self.data.time))
+            m.U2 = Var(
+                m.t, bounds=(0, 100), initialize=helper(self.data.u2, self.data.time)
+            )
             m.U2.fix()  # Fixed for parameter estimation
-        
+
         # End experimental input definition
         ####################################
-        
+
         ####################################
         # Defining unknown model parameters
         # (estimated during parameter estimation)
-        
+
         # Heat transfer coefficients
         if not self.reparam:
             m.Ua = Var(initialize=self.theta_initial["Ua"], bounds=(1e-6, 0.1))
             m.Ua.fix()
             m.Ub = Var(initialize=self.theta_initial["Ub"], bounds=(0.01, 0.05))
             m.Ub.fix()
-            
+
             if self.number_of_states == 4:
                 m.Uc = Var(initialize=self.theta_initial["Uc"], bounds=(0, 1e4))
                 m.Uc.fix()
-            
+
             # Inverse of the heat capacity coefficients (1/CpH and 1/CpS)
             m.inv_CpH = Var(initialize=self.theta_initial["inv_CpH"], bounds=(0.1, 0.4))
             m.inv_CpH.fix()
             m.inv_CpS = Var(initialize=self.theta_initial["inv_CpS"], bounds=(1, 10))
             m.inv_CpS.fix()
         else:
-            if all(k in self.theta_initial for k in ("beta_1", "beta_2", "beta_3", "beta_4")):
-                m.beta_1 = Var(initialize=self.theta_initial["beta_1"], bounds=(1e-3, 1))
-                m.beta_1.fix()
-                m.beta_2 = Var(initialize=self.theta_initial["beta_2"], bounds=(5e-3, 0.1))
-                m.beta_2.fix()
-                m.beta_3 = Var(initialize=self.theta_initial["beta_3"], bounds=(1e-3, 1))
-                m.beta_3.fix()
-                m.beta_4 = Var(initialize=self.theta_initial["beta_4"], bounds=(1e-3, 1))
-                m.beta_4.fix()
-            else: 
-                # REPARAMETRIZATION
-                m.beta_1 = Var(initialize=self.theta_initial["Ua"] * self.theta_initial["inv_CpH"], bounds=(0.01, 10))
-                m.beta_1.fix()
-                m.beta_2 = Var(initialize=self.theta_initial["Ub"] * self.theta_initial["inv_CpH"], bounds=(0.01, 10))
-                m.beta_2.fix()
-                m.beta_3 = Var(initialize=self.theta_initial["Ub"] * self.theta_initial["inv_CpS"], bounds=(0.01, 10))
-                m.beta_3.fix()
-                m.beta_4 = Var(initialize=self.alpha * pyovalue(m.P1) * self.theta_initial["inv_CpH"], bounds=(0.01, 10))
-                m.beta_4.fix()
+            m.beta_1 = Var(initialize=self.theta_initial["beta_1"], bounds=(1e-3, 1))
+            m.beta_1.fix()
+            m.beta_2 = Var(initialize=self.theta_initial["beta_2"], bounds=(1e-3, 0.1))
+            m.beta_2.fix()
+            m.beta_3 = Var(initialize=self.theta_initial["beta_3"], bounds=(1e-3, 1))
+            m.beta_3.fix()
+            m.beta_4 = Var(initialize=self.theta_initial["beta_4"], bounds=(1e-3, 1))
+            m.beta_4.fix()
 
             if self.number_of_states == 4:
-                m.beta_5 = Var(initialize=self.theta_initial["Uc"] / self.theta_initial["inv_CpH"], bounds=(0, 1e6))
+                m.beta_5 = Var(
+                    initialize=self.theta_initial["Uc"] / self.theta_initial["inv_CpH"],
+                    bounds=(0, 1e6),
+                )
                 m.beta_5.fix()
-        
+
         # End unknown parameter definition
         ####################################
-        
+
         ################################
         # Defining model equations
-        
+
         # First fin energy balance
         @m.Constraint(m.t)
         def Th1_ode(m, t):
             if not self.reparam:
-                rhs_expr = (m.Ua * (m.Tamb - m.Th1[t]) + m.Ub * (m.Ts1[t] - m.Th1[t]) + m.alpha * m.P1 * m.U1[t]) * m.inv_CpH
+                rhs_expr = (
+                    m.Ua * (m.Tamb - m.Th1[t])
+                    + m.Ub * (m.Ts1[t] - m.Th1[t])
+                    + m.alpha * m.P1 * m.U1[t]
+                ) * m.inv_CpH
             else:
                 # REPARAM
-                rhs_expr = m.beta_1 * (m.Tamb - m.Th1[t]) + m.beta_2 * (m.Ts1[t] - m.Th1[t]) + m.beta_4 * m.U1[t]
-                        
+                rhs_expr = (
+                    m.beta_1 * (m.Tamb - m.Th1[t])
+                    + m.beta_2 * (m.Ts1[t] - m.Th1[t])
+                    + m.beta_4 * m.U1[t]
+                )
+
             # If we use the 4-state model, we add heat transfer from sensor 2 to the energy balance on fin 1
             if self.number_of_states == 4:
                 if not self.reparam:
@@ -484,9 +475,9 @@ class TC_Lab_experiment(Experiment):
                 else:
                     # REPARAM
                     rhs_expr += m.beta_5 * (m.Th2[t] - m.Th1[t])
-            
+
             return m.Th1dot[t] == rhs_expr
-        
+
         # First sensor energy balance
         @m.Constraint(m.t)
         def Ts1_ode(m, t):
@@ -495,18 +486,33 @@ class TC_Lab_experiment(Experiment):
             else:
                 # REPARAM
                 return m.Ts1dot[t] == m.beta_3 * (m.Th1[t] - m.Ts1[t])
-        
+
         # Second fin/sensor (only active for the 4-state model
         if self.number_of_states == 4:
             # Second fin energy balance
             @m.Constraint(m.t)
             def Th2_ode(m, t):
                 if not self.reparam:
-                    return m.Th2dot[t] == (m.Ua * (m.Tamb - m.Th2[t]) + m.Ub * (m.Ts2[t] - m.Th2[t]) + m.Uc * (m.Th1[t] - m.Th2[t]) + m.alpha * m.P2 * m.U2[t]) * m.inv_CpH
+                    return (
+                        m.Th2dot[t]
+                        == (
+                            m.Ua * (m.Tamb - m.Th2[t])
+                            + m.Ub * (m.Ts2[t] - m.Th2[t])
+                            + m.Uc * (m.Th1[t] - m.Th2[t])
+                            + m.alpha * m.P2 * m.U2[t]
+                        )
+                        * m.inv_CpH
+                    )
                 else:
                     # REPARAM
-                    return m.Th2dot[t] == m.beta_1 * (m.Tamb - m.Th2[t]) + m.beta_2 * (m.Ts2[t] - m.Th2[t]) + m.beta_5 * (m.Th1[t] - m.Th2[t]) + m.beta_4 * m.U2[t]
-           
+                    return (
+                        m.Th2dot[t]
+                        == m.beta_1 * (m.Tamb - m.Th2[t])
+                        + m.beta_2 * (m.Ts2[t] - m.Th2[t])
+                        + m.beta_5 * (m.Th1[t] - m.Th2[t])
+                        + m.beta_4 * m.U2[t]
+                    )
+
             # Second sensor energy balance
             @m.Constraint(m.t)
             def Ts2_ode(m, t):
@@ -518,17 +524,17 @@ class TC_Lab_experiment(Experiment):
 
         # End model equation definition
         ################################
-        
+
         return m
-    
+
     def finalize_model(self):
         """
-        Finalizing the TC Lab model. Here, we will set the 
+        Finalizing the TC Lab model. Here, we will set the
         experimental conditions and discretize the dae model.
-        
+
         """
         m = self.model
-        
+
         ####################################
         # Set initial conditions
         if self.data.time[0] == 0:
@@ -553,34 +559,7 @@ class TC_Lab_experiment(Experiment):
 
         # End initial conditions definition
         ####################################
-        
-        ########################################
-        # Defining optional sine wave equations
-        # (only when sine wave control is used)
-        
-        if self.sine_amplitude is not None and self.sine_period is not None:
-            # Add measurement control decision variables
-            m.u1_period = Var(
-                initialize=self.sine_period, bounds=(self.sine_period_min, self.sine_period_max)
-            )  # minutes
-            m.u1_amplitude = Var(initialize=self.sine_amplitude, bounds=(0, 50))  # % power
-            
-            # Fixed for parameter estimation
-            m.u1_period.fix()
-            m.u1_amplitude.fix()
 
-            # Add constraint to calculate u1
-            @m.Constraint(m.t)
-            def u1_constraint(m, t):
-                return m.U1[t] == 50 + m.u1_amplitude * sin(2 * np.pi / (m.u1_period * 60) * t)
-            
-            m.U1.unfix()  # Unfixed for because of above constraints
-        
-        # TODO: Add second sine wave functionality for 4-state model
-        
-        # End optional sine wave constraints
-        ########################################
-        
         #########################################
         # Initialize the model using integration
         m.var_input = Suffix(direction=Suffix.LOCAL)
@@ -602,99 +581,99 @@ class TC_Lab_experiment(Experiment):
 
         # Simulate to initialize
         # Makes the solver more efficient
-        if self.sine_amplitude is None or self.sine_period is None:
-            sim = Simulator(m, package='scipy')
-            tsim, profiles = sim.simulate(
-                numpoints=100, integrator='vode', varying_inputs=m.var_input
-            )
-            sim.initialize_model()
-        else:
-            # sim = Simulator(m, package='casadi')
-            # tsim, profiles = sim.simulate(
-            #     numpoints=100, integrator='idas', varying_inputs=m.var_input
-            # )
-            # sim.initialize_model()
-            pass
-        
+        sim = Simulator(m, package='scipy')
+        tsim, profiles = sim.simulate(
+            numpoints=100, integrator='vode', varying_inputs=m.var_input
+        )
+        sim.initialize_model()
+
         TransformationFactory('dae.finite_difference').apply_to(
             m, scheme='BACKWARD', nfe=len(self.data.time) - 1
         )
-            
+
         # End dynamic model initialization
         #########################################
-        
+
         # TODO: Add "optimize" mode equations OUTSIDE of the get_labeled_model workflow
-    
+
     def label_experiment(self):
         """
-        Annotating (labeling) the model with experimental 
-        data, associated measurement error, experimental 
+        Annotating (labeling) the model with experimental
+        data, associated measurement error, experimental
         design decisions, and unknown model parameters.
 
         """
         m = self.model
-        
+
         #################################
         # Labeling experiment outputs
         # (experiment measurements)
-        
+
         m.experiment_outputs = Suffix(direction=Suffix.LOCAL)
         # Add sensor 1 temperature (m.Ts1) to experiment outputs
-        m.experiment_outputs.update((m.Ts1[t], self.data.T1[ind]) for ind, t in enumerate(self.data.time))
+        m.experiment_outputs.update(
+            (m.Ts1[t], self.data.T1[ind]) for ind, t in enumerate(self.data.time)
+        )
         if self.number_of_states == 4:
-            m.experiment_outputs.update((m.Ts2[t], self.data.T2[ind]) for ind, t in enumerate(self.data.time))
-        
+            m.experiment_outputs.update(
+                (m.Ts2[t], self.data.T2[ind]) for ind, t in enumerate(self.data.time)
+            )
+
         # End experiment outputs
         #################################
-        
+
         #################################
         # Labeling unknown parameters
-        
+
         m.unknown_parameters = Suffix(direction=Suffix.LOCAL)
         # Add labels to all unknown parameters with nominal value as the value
         if not self.reparam:
-            m.unknown_parameters.update((k, k.value) for k in [m.Ua, m.Ub, m.inv_CpH, m.inv_CpS])
+            m.unknown_parameters.update(
+                (k, k.value) for k in [m.Ua, m.Ub, m.inv_CpH, m.inv_CpS]
+            )
             if self.number_of_states == 4:
                 m.unknown_parameters[m.Uc] = m.Uc.value
         else:
-        # REPARAM
-            m.unknown_parameters.update((k, k.value) for k in [m.beta_1, m.beta_2, m.beta_3, m.beta_4])
+            # REPARAM
+            m.unknown_parameters.update(
+                (k, k.value) for k in [m.beta_1, m.beta_2, m.beta_3, m.beta_4]
+            )
             if self.number_of_states == 4:
                 m.unknown_parameters[m.beta_5] = m.beta_5.value
-        
+
         # End unknown parameters
         #################################
-        
+
         #################################
         # Labeling experiment inputs
         # (experiment design decisions)
-        
+
         m.experiment_inputs = Suffix(direction=Suffix.LOCAL)
         # Add experimental input label for control variable (m.U1)
-        if self.sine_amplitude is not None and self.sine_period is not None:
-            m.experiment_inputs[m.u1_period] = None
-            m.experiment_inputs[m.u1_amplitude] = None
-        else:    
-            m.experiment_inputs.update((m.U1[t], None) for t in self.data.time)
-            if self.number_of_states == 4:
-                m.experiment_inputs.update((m.U2[t], None) for t in self.data.time)
-        
+        m.experiment_inputs.update((m.U1[t], None) for t in self.data.time)
+        if self.number_of_states == 4:
+            m.experiment_inputs.update((m.U2[t], None) for t in self.data.time)
+
         # End experiment inputs
         #################################
-        
+
         #################################
         # Labeling measurement error
         # (for experiment outputs)
-        
+
         m.measurement_error = Suffix(direction=Suffix.LOCAL)
         # Add sensor 1 temperature (m.Ts1) measurement error (assuming constant error of 0.25 deg C)
-        m.measurement_error.update((m.Ts1[t], self.measurement_error) for t in self.data.time)
+        m.measurement_error.update(
+            (m.Ts1[t], self.measurement_error) for t in self.data.time
+        )
         if self.number_of_states == 4:
-            m.measurement_error.update((m.Ts2[t], 1) for ind, t in enumerate(self.data.time))
-        
+            m.measurement_error.update(
+                (m.Ts2[t], 1) for ind, t in enumerate(self.data.time)
+            )
+
         # End measurement error
         #################################
-        
+
 
 ### -------------- Part 5: Extract and visualize results -------------- ###
 
@@ -758,12 +737,16 @@ def extract_plot_results(tc_exp_data, model, number_of_states=2, reparam=False):
     if doe_results is not None:
         param_scenarios = doe_results["solution"].get("param_scenarios", [])
         if len(param_scenarios) == 0:
-            raise ValueError("No parameter scenarios found in optimize_experiments results.")
+            raise ValueError(
+                "No parameter scenarios found in optimize_experiments results."
+            )
 
         scenario = param_scenarios[0]
         experiments = scenario.get("experiments", [])
         if len(experiments) == 0:
-            raise ValueError("No experiment entries found in optimize_experiments results.")
+            raise ValueError(
+                "No experiment entries found in optimize_experiments results."
+            )
 
         if tc_exp_data is None:
             exp_list = []
@@ -801,7 +784,9 @@ def extract_plot_results(tc_exp_data, model, number_of_states=2, reparam=False):
             )
 
         for i, exp_result in enumerate(experiments):
-            exp_data = empty_exp if len(exp_list) == 0 else exp_list[min(i, len(exp_list) - 1)]
+            exp_data = (
+                empty_exp if len(exp_list) == 0 else exp_list[min(i, len(exp_list) - 1)]
+            )
             exp_id = exp_result.get("exp_id", i)
             suffix = f" (exp {exp_id+1})"
             color = cmap(i % 10)
@@ -888,10 +873,7 @@ def extract_plot_results(tc_exp_data, model, number_of_states=2, reparam=False):
                 )
             if mod_i.u1 is not None:
                 ax_u.plot(
-                    mod_i.time,
-                    mod_i.u1,
-                    label="$u_1$ optimized" + suffix,
-                    color=color,
+                    mod_i.time, mod_i.u1, label="$u_1$ optimized" + suffix, color=color
                 )
             if exp_data.u2 is not None and exp_data.time is not None:
                 ax_u.scatter(
@@ -1060,11 +1042,6 @@ def extract_plot_results(tc_exp_data, model, number_of_states=2, reparam=False):
         print("CpH =", round(1 / pyovalue(model.inv_CpH), 4), "Joules/°C")
         print("CpS =", round(1 / pyovalue(model.inv_CpS), 4), "Joules/°C")
 
-    if hasattr(model, 'u1_period'):
-        print("u1_period =", round(pyovalue(model.u1_period), 2), "minutes")
-    if hasattr(model, 'u1_amplitude'):
-        print("u1_amplitude =", round(pyovalue(model.u1_amplitude), 4), "% power")
-
     print(" ")  # New line
 
     return mod
@@ -1098,10 +1075,11 @@ def results_summary(result, reparam=False):
     eigvec_df = pd.DataFrame(
         eigenvectors,
         index=params,
-        columns=[f"eigvec_{i+1}" for i in range(eigenvectors.shape[1])]
-    )    
+        columns=[f"eigvec_{i+1}" for i in range(eigenvectors.shape[1])],
+    )
     print("\nEigenvector matrix:\n", eigvec_df.round(4))
-    
+
+
 ### ------ Part 5b: Extract and visualize multistart sampling and profile likelihood results ----- ###
 def extract_multistart_sampling(
     results_df,
@@ -1186,16 +1164,12 @@ def extract_multistart_sampling(
 
     return fig, axs
 
+
 import scipy.stats as stats
 import matplotlib.pyplot as plt
 
 
-def plot_profile_likelihood(
-    profile_results,
-    alpha=0.95,
-    xlims=None,
-    ylims=None,
-):
+def plot_profile_likelihood(profile_results, alpha=0.95, xlims=None, ylims=None):
     """
     Plot profile likelihood curves with optional x/y limits for each parameter.
 
@@ -1203,11 +1177,11 @@ def plot_profile_likelihood(
     ----------
     profile_results : object
         Profile likelihood results from parmest.
-    
+
     alpha : float, optional
         Confidence level used for the profile likelihood plot.
         Default is 0.95.
-    
+
     xlims : list of tuple or None, optional
         x-axis limits for each parameter subplot.
         Example:
@@ -1218,7 +1192,7 @@ def plot_profile_likelihood(
                 (1, 3),
             ]
         If None, all plots use default full x-axis range.
-    
+
     ylims : list of tuple or None, optional
         y-axis limits for each parameter subplot.
         Example:
@@ -1253,6 +1227,15 @@ def plot_profile_likelihood(
     # Flatten axes in case axes is a 2D array from plt.subplots(..., squeeze=False)
     axes_flat = axes.flatten()
 
+    # Label the threshold dashed line only on the top subplot
+    top_ax = axes_flat[0]
+    for line in top_ax.lines:
+        if line.get_linestyle() == "--":
+            line.set_label("threshold")
+            break
+
+    top_ax.legend(loc="best", prop={"size": 12})
+
     if xlims is not None:
         for ax, xlim in zip(axes_flat, xlims):
             if xlim is not None:
@@ -1268,7 +1251,9 @@ def plot_profile_likelihood(
 
     return fig, axes
 
+
 ### ---------- Part 6: Extract the original parameters and covariance ---------- ###
+
 
 def reformulate_parameters(orig_params, alpha, P1):
     """
@@ -1340,45 +1325,45 @@ def recover_original_parameters(reform_params, alpha, P1):
     CpS = Ub / reform_params["beta_3"]
 
     # Store them in a dictionary
-    orig_theta_vals = {"Ua": Ua, "Ub": Ub, "inv_CpH": 1/CpH, "inv_CpS": 1/CpS}
+    orig_theta_vals = {"Ua": Ua, "Ub": Ub, "inv_CpH": 1 / CpH, "inv_CpS": 1 / CpS}
 
     return orig_theta_vals
 
 
 def recover_original_covariance(reform_params, cov_reform, alpha, P1):
     """
-        Computes the covariance matrix of the original parameters
+    Computes the covariance matrix of the original parameters
 
-        Parameters
-        ----------
-        reform_params: dict,
-            Keys are reformulated parameter names and values are
-            the parameter estimates
-        cov_reform: Pandas.DataFrame,
-            Covariance matrix of the reformulated parameters
-        alpha: float,
-            alpha value
-        P1: float,
-            P1 value
+    Parameters
+    ----------
+    reform_params: dict,
+        Keys are reformulated parameter names and values are
+        the parameter estimates
+    cov_reform: Pandas.DataFrame,
+        Covariance matrix of the reformulated parameters
+    alpha: float,
+        alpha value
+    P1: float,
+        P1 value
 
-        Returns
-        -------
-        cov_orig: Pandas.DataFrame,
-            covariance matrix of the original parameters
+    Returns
+    -------
+    cov_orig: Pandas.DataFrame,
+        covariance matrix of the original parameters
     """
 
     # derivatives of Ua with respect to the reformulated parameters
     dUa_dbeta_1 = alpha * P1 / reform_params['beta_4']
     dUa_dbeta_2 = 0
     dUa_dbeta_3 = 0
-    dUa_dbeta_4 = - alpha * P1 * reform_params['beta_1'] / (reform_params['beta_4'] ** 2)
+    dUa_dbeta_4 = -alpha * P1 * reform_params['beta_1'] / (reform_params['beta_4'] ** 2)
     dUa_dbeta = [dUa_dbeta_1, dUa_dbeta_2, dUa_dbeta_3, dUa_dbeta_4]
 
     # derivatives of Ub with respect to the reformulated parameters
     dUb_dbeta_1 = 0
     dUb_dbeta_2 = alpha * P1 / reform_params['beta_4']
     dUb_dbeta_3 = 0
-    dUb_dbeta_4 = - alpha * P1 * reform_params['beta_2'] / (reform_params['beta_4'] ** 2)
+    dUb_dbeta_4 = -alpha * P1 * reform_params['beta_2'] / (reform_params['beta_4'] ** 2)
     dUb_dbeta = [dUb_dbeta_1, dUb_dbeta_2, dUb_dbeta_3, dUb_dbeta_4]
 
     # derivatives of inv_CpH with respect to the reformulated parameters
@@ -1386,15 +1371,28 @@ def recover_original_covariance(reform_params, cov_reform, alpha, P1):
     dinv_CpH_dbeta_2 = 0
     dinv_CpH_dbeta_3 = 0
     dinv_CpH_dbeta_4 = 1 / (alpha * P1)
-    dinv_CpH_dbeta = [dinv_CpH_dbeta_1, dinv_CpH_dbeta_2, dinv_CpH_dbeta_3, dinv_CpH_dbeta_4]
+    dinv_CpH_dbeta = [
+        dinv_CpH_dbeta_1,
+        dinv_CpH_dbeta_2,
+        dinv_CpH_dbeta_3,
+        dinv_CpH_dbeta_4,
+    ]
 
     # derivatives of inv_CpS with respect to the reformulated parameters
     dinv_CpS_dbeta_1 = 0
-    dinv_CpS_dbeta_2 = (- reform_params['beta_3'] * reform_params['beta_4'] /
-                        (alpha * P1 * (reform_params['beta_2'] ** 2)))
+    dinv_CpS_dbeta_2 = (
+        -reform_params['beta_3']
+        * reform_params['beta_4']
+        / (alpha * P1 * (reform_params['beta_2'] ** 2))
+    )
     dinv_CpS_dbeta_3 = reform_params['beta_4'] / (alpha * P1 * reform_params['beta_2'])
     dinv_CpS_dbeta_4 = reform_params['beta_3'] / (alpha * P1 * reform_params['beta_2'])
-    dinv_CpS_dbeta = [dinv_CpS_dbeta_1, dinv_CpS_dbeta_2, dinv_CpS_dbeta_3, dinv_CpS_dbeta_4]
+    dinv_CpS_dbeta = [
+        dinv_CpS_dbeta_1,
+        dinv_CpS_dbeta_2,
+        dinv_CpS_dbeta_3,
+        dinv_CpS_dbeta_4,
+    ]
 
     dtheta_dbeta = np.zeros((4, 4))
     dtheta_dbeta[0, :] = dUa_dbeta
@@ -1406,7 +1404,39 @@ def recover_original_covariance(reform_params, cov_reform, alpha, P1):
     cov_theta = dtheta_dbeta @ cov_reform @ dtheta_dbeta.T
     cov_orig = pd.DataFrame(
         cov_theta.to_numpy(),
-        index=["Ua", "Ub", "Inv_CpH", "inv_CpS"],
-        columns=["Ua", "Ub", "Inv_CpH", "inv_CpS"], )
+        index=["Ua", "Ub", "inv_CpH", "inv_CpS"],
+        columns=["Ua", "Ub", "inv_CpH", "inv_CpS"],
+    )
 
     return cov_orig
+
+
+def extract_trace_covariance(cov, method):
+    """Computes the trace of the covariance matrix
+
+    Parameters
+    ----------
+    cov: Pandas.DataFrame,
+        Covariance matrix of the parameters
+    method: str,
+        The method used to compute the covariance matrix
+    """
+
+    # check if the covariance matrix is positive semi-definite
+    eigen_values = np.linalg.eigvalsh(cov)
+    if any(eig_val < -1e-10 for eig_val in eigen_values):
+        print(
+            f"\nWARNING: The covariance matrix from {method} is "
+            f"not positive semi-definite.\n",
+            cov,
+        )
+        print(
+            f"The trace of the covariance matrix from the {method} " f"method is:",
+            format(np.trace(cov), ".3e"),
+        )
+    else:
+        print(f"\nThe covariance matrix from the {method} method is:\n", cov)
+        print(
+            f"The trace of the covariance matrix from the {method} " f"method is:",
+            format(np.trace(cov), ".3e"),
+        )
