@@ -85,7 +85,7 @@ Keep failed attempts and failed chunks in subsequent summaries.
 | OU likelihood | 48 IO fits and retained observation times | `run_ou.py`, `summarize_ou.py`; saved-trajectory likelihood and covariance audit |
 | Synthetic coverage | Four cold generators, three true noise processes, 300 draws each | `run_coverage.py`, `summarize_coverage.py`; complete terminal accounting before summarizing 3,600 draws |
 | Assumption sensitivity | 241 tasks in `sensitivity_config.json` and baseline fits | `run_sensitivity.py`, `audit_sensitivity.py`; independent chain initial-state propagation, finite-difference information/rank, all-start/SSE and held-out checks |
-| Prediction uncertainty | Baseline/OU fits and completed bootstrap arrays | `run_prediction_uncertainty.py`; 131 jobs, global estimability checks and separate mean/observation bands |
+| Prediction uncertainty | Baseline/OU fits and completed bootstrap arrays | `run_prediction_uncertainty.py`, `audit_prediction_uncertainty.py`; 131 jobs, global estimability checks, separate mean/observation bands and all-point audits |
 | Parameter design | Joint fits and `design_config.json` | `run_design.py`; 112 jobs, common resources, all-model constraints and dense tail simulation |
 | Order discrimination | Joint fits and both design configurations | `run_discrimination.py --phase designs`, then `--phase refits`; 12 designs must pass before 72 directional alternative fits |
 

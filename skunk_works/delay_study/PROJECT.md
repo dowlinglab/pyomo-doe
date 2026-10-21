@@ -29,8 +29,8 @@ scope, and `results/manifest.json` will identify manuscript results.
 - Notebook migration committed in `58b4fa5`: 13 deterministic Python exports,
   scientific-cell AST equality, and a successful migrated simulation run.
 - Exact LTI models committed in `451749f`; inference runner in `275fe0a`.
-  One hundred and four focused checks pass after adding exact-draft expansion,
-  citation-offset and independent nuisance-audit checks. They cover independent
+  One hundred and twelve focused checks pass after adding exact-draft expansion,
+  citation-offset and independent nuisance/prediction-audit checks. They cover independent
   integrator/analytic agreement,
   transformations, synthetic recovery, null directions, profile recovery,
   resampling, OU likelihoods, coverage accounting and input-design gradients.
@@ -221,6 +221,20 @@ a HAC audit or coverage guarantee. It refuses active/incomplete runs and
 requires an explicit flag for a filtered trial. Four new checks include
 regular and rank-deficient cases and deliberate covariance corruption. Production
 sensitivity outputs have not yet been computed or audited.
+
+The prepared `audit_prediction_uncertainty.py` checks every saved mean,
+variance, interval endpoint, conditioning/estimability flag and target summary.
+It assembles local/HAC covariance independently, resets score lags at record
+boundaries, uses identifiable-quotient degrees of freedom, and whitens OU
+sensitivities directly. Bootstrap endpoints are checked against saved draws;
+Gaussian-mixture prediction endpoints must satisfy their defining CDF rather
+than merely reproduce the producer's inversion helper. It reuses the separately
+verified simulator/sensitivities and recorded observed OU covariance. Eight
+new checks cover dense irregular-time OU agreement, HAC/rank algebra, deliberate
+band corruption and saved synthetic artifacts from all four output branches.
+The full 112-check suite passed in 7.78 s. This prepares the audit; none of the
+131 production prediction jobs has been claimed complete or audited. Run the
+full auditor only after production is terminal and within the worker budget.
 
 One-shot follow-up queue **session 48705** is now confirmed live, waiting for
 coverage session 19175 to finish. It runs from immutable commit **5178dc5**;
