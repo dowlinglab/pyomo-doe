@@ -365,7 +365,7 @@ inspected. `baseline_numeric_audit.json` and `baseline_visual_audit.json` retain
 the separate checks. The remaining full document and future figures need their
 own final audit; this is not human scientific review.
 
-The working manuscript is now **25 pages**, compiled without warnings. New
+The last compiled working manuscript is **28 pages**, without warnings. New
 generated tables cover calibration errors, parameters, coordinate metrics,
 conditional delay uncertainty and OU innovations. `audit_tables.py` checked
 150 printed cells using independent result paths, including independent physical
@@ -388,6 +388,15 @@ grayscale and rendered working pages 9/11/13/14/18 were inspected; receipts
 identify the exact temporary 25-page PDF snapshot. A wording correction
 clarifies that the onset rate excludes a uniform O(n^-1) bound, rather than
 claiming the temperature response fails to converge uniformly.
+The literature comparison now has seven question-driven rows that separate
+inspected theory, assumptions and our TC-Lab use. Rendered pages 26/27 were
+checked after fixing stretched narrow-column text. Raue physical page 4,
+printed 1926, was additionally rendered to verify equation (10) and its nuisance
+reoptimization paragraph. `literature/visual_source_checks.json` retains the
+source-page and working-PDF hashes. The exact final-draft packet still needs
+all citation occurrences, claim bindings, available fine evidence, explicit
+external-source gaps and scoped export. No full-document final QA, final
+no-ai-slop pass, push or completion email has occurred.
 Added derivations cover heater-calibration scale ambiguity, ambient/history
 nuisance information, zero-mean colored-error least-squares interpretation,
 quartic behavior at coincident poles, and the onset convergence coefficient.

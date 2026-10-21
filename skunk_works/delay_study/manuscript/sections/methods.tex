@@ -42,6 +42,12 @@ $5\leq\tau\leq600\,\mathrm{s}$, and
 $0.01\leq\theta\leq200\,\mathrm{s}$. The physical-coordinate bounds were
 $0.032/1.5\leq\Ua\leq0.032/0.2\,\mathrm{W\,K^{-1}}$,
 $0.1\leq\Cp\leq100\,\mathrm{J\,K^{-1}}$, and the same delay bounds.
+The original model used $\Ua\in[0.005,0.3]$ and
+$\Ub\in[0.0001,1]$ in $\mathrm{W\,K^{-1}}$, with
+$\CpH\in[0.01,100]$ and $\CpS\in[0.001,20]$ in
+$\mathrm{J\,K^{-1}}$. The reduced physical rectangle is not the exact image
+of the IO rectangle. Same-point covariance and information comparisons separate
+coordinate effects from changes in the feasible parameter domain.
 We retained convergence status and active bounds rather than interpreting every
 optimizer return as a successful estimate.
 
@@ -195,7 +201,9 @@ model refit its three parameters against a fixed one-stage generating mean,
 using 24 starts under the same future covariance. It compares constant,
 multisine, and both selected discrimination designs against two-stage,
 twelve-stage and pure-delay alternatives. This directional subset does not
-cover every generating model or parameter point. A converged refit distance
+cover every generating model or parameter point. The one-stage order was chosen
+as a representative because it has the smallest cold joint calibration error;
+this choice does not establish it as the true system. A converged refit distance
 is an upper bound on the globally closest alternative mean; we assign it no
 simple-hypothesis error probability or chi-squared calibration.
 

@@ -1,0 +1,118 @@
+\section{Comparison of theoretical assumptions}
+\label{sec:literature-comparison}
+The review covers inspected passages from seven cited works. Two library
+carriers supply the profile paper and a continuous-time identification chapter;
+five further primary PDFs were inspected outside the ingested library. This
+counts works and carriers, without implying that every page was read. The
+source and search records retain exact queries, dates, versions, page locations
+and access gaps. Table~\ref{tab:literature-comparison} separates the inspected
+theory from its use in this study.
+
+\begingroup
+\small
+\begin{longtable}{>{\raggedright\arraybackslash}p{.17\linewidth}>{\raggedright\arraybackslash}p{.25\linewidth}>{\raggedright\arraybackslash}p{.25\linewidth}>{\raggedright\arraybackslash}p{.19\linewidth}}
+ \caption{Questions, source assumptions and the scope of transfer to TC-Lab.
+ Page numbers are physical PDF pages in the inspected source. The last column
+ gives this study's interpretation rather than a result established by the
+ cited work.}\label{tab:literature-comparison}\\
+ \toprule
+ Question and source & Inspected theory & Conditions or distinction & TC-Lab use and limit \\
+ \midrule
+ \endfirsthead
+ \toprule
+ Question and source & Inspected theory & Conditions or distinction & TC-Lab use and limit \\
+ \midrule
+ \endhead
+ \bottomrule
+ \endfoot
+ What produces a residual?\newline
+ \citet{garnier-2008-direct}, pp.~27--29
+ & The input-driven response and residual process are separate descriptions.
+ Residuals can combine measurement error, disturbances and model inadequacy.
+ & The chapter provides an identification framework, without selecting a
+ correct residual mechanism for these experiments.
+ & Treat covariance fits as working assumptions; examine transfer to other
+ records separately. \\[.6em]
+
+ Can parameters be separated?\newline
+ \citet{raue-2009-structural}, pp.~1--5
+ & Profile likelihood fixes a parameter and reoptimizes nuisance parameters;
+ its shape can differ from local quadratic curvature.
+ & A likelihood and a numerical exploration are required. A sampled crossing
+ alone cannot certify every nuisance minimum or mode.
+ & Combine profiles with exact transfer equivalence and sensitivity rank;
+ retain disconnected components. \\[.6em]
+
+ What should information target?\newline
+ \citet{hjalmarsson-2009-system}, pp.~8--9
+ & Application loss and confidence regions can concern useful parameter
+ combinations rather than uniform precision in every coordinate.
+ & The inspected prediction-error information formula assumes the true system
+ is in the model set and the predictor is differentiable.
+ & Target delay or thermal prediction while checking mean-model adequacy and
+ the chosen parameter metric. \\[.6em]
+
+ How is a bounded design optimized?\newline
+ \citet{manchester-2010-input}, pp.~1--5
+ & Finite-horizon amplitude-constrained information design is nonconvex; the
+ source develops a convex relaxation.
+ & The inspected source is the eight-page author preprint. Its relaxation
+ guarantees concern its own construction and assumptions.
+ & Our multistart nonlinear solutions have no inherited approximation or
+ global-optimality guarantee. \\[.6em]
+
+ What does a chain represent?\newline
+ \citet{hurtado-2019-generalizations}, pp.~11--12
+ & Erlang dwell times admit a first-order ODE-chain representation, with
+ equivalence to an integral description.
+ & The source treats mean-field transitions. Our constant-rate input kernel
+ uses the corresponding Erlang construction.
+ & Derive kernel moments and limits; a fitted stage count alone does not
+ establish a thermal transport mechanism. \\[.6em]
+
+ How can serial dependence affect covariance?\newline
+ \citet{newey-1987-simple}, pp.~1--3
+ & Bartlett-weighted long-run covariance estimation is positive semidefinite;
+ consistency has explicit score, moment and dependence conditions.
+ & Asymptotic bandwidth conditions are distinct from choosing several fixed
+ bandwidths for a finite dataset.
+ & Compare HAC sensitivity without treating it as proof of coverage or a
+ correction for mean-model bias. \\[.6em]
+
+ What dependence does resampling retain?\newline
+ \citet{politis-1994-stationary}, pp.~1--3
+ & Periodic extension supports circular resampling. Remark~2 describes the
+ fixed-length relative of the geometric stationary-bootstrap scheme.
+ & The schemes differ. Equal marginal weights at record edges do not establish
+ nonlinear interval coverage with model discrepancy.
+ & Vary fixed block lengths and retain within-record centering; keep the
+ bootstrap uncertainty conditional. \\
+\end{longtable}
+\endgroup
+
+The sources address different parts of the same inference problem. A
+continuous-time response model defines the quantities that can be identified;
+an information objective then assigns precision to local directions or
+predictions. A profile explores beyond that local quadratic approximation.
+The original TC-Lab model's exact equivalent family remains indistinguishable
+under every input in the stated experiment, so selecting a larger determinant
+cannot resolve its physical ambiguity.
+
+Covariance estimation and resampling also answer different questions. HAC
+uses residual score products to estimate estimator variability; a circular
+bootstrap generates new records from resampled residual blocks. Both require
+assumptions about the errors around the fitted mean. A systematic error on a
+different experiment is evidence about mean transfer and experimental
+conditions, rather than evidence that either covariance procedure has measured
+that discrepancy.
+
+The next measurement questions follow from these limits. An independent
+heater-power calibration would address the absolute conductance--capacity
+scale. Ambient and command prehistory records would constrain startup nuisance
+assumptions. A measurement equation connecting the second sensor to a modeled
+state is needed before using it to select an original physical family member.
+Further literature on adaptive design or dependent-data inference becomes
+useful after specifying which observable and inferential target the next
+experiment is intended to improve. The adaptive-design journal paper and the
+unavailable bootstrap source listed in the search record remain reading leads,
+without theorem claims assigned to unread versions.
