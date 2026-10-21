@@ -34,3 +34,33 @@ def test_one_stage_grid_includes_both_pole_labels():
     grid = profile_grid(record, 2)
     assert np.min(abs(grid-np.log(result["parameters"]["theta"]))) < 1e-12
     assert np.min(abs(grid-np.log(result["parameters"]["tau"]))) < 1e-12
+
+
+def test_original_recovery_retains_failed_attempt_and_uses_complex_jacobian(monkeypatch):
+    import profiles
+    datasets = [load("step")]
+    spec = ModelSpec(family="original", order=0, coordinates="physics")
+    result = fit(datasets, spec, n_starts=1)
+    record = {"fit": result, "uncertainty": uncertainty(result, datasets)}
+    center = np.log(result["parameters"]["Ua"])
+    monkeypatch.setattr(profiles, "profile_grid", lambda *a, **kw: np.array([center]))
+    original_solver = profiles.least_squares
+    calls = []
+
+    def interrupted_first_attempt(*args, **kwargs):
+        calls.append(kwargs)
+        solution = original_solver(*args, **kwargs)
+        if len(calls) == 1:
+            # Simulate an exhausted attempt without discarding its diagnostics.
+            solution.success = False
+            solution.status = 0
+        return solution
+
+    monkeypatch.setattr(profiles, "least_squares", interrupted_first_attempt)
+    output = profiles.profile(record, datasets, 0, n_starts=1, recover_original=True)
+    attempts = output["points"][0]["attempts"]
+    assert [a["phase"] for a in attempts] == ["initial", "recovery"]
+    assert not attempts[0]["success"] and attempts[1]["success"]
+    assert calls[1]["jac"] == "cs" and calls[1]["x_scale"] == "jac"
+    assert calls[1]["max_nfev"] == 10*calls[0]["max_nfev"]
+    assert abs(output["points"][0]["sse"]-result["sse"]) < 1e-5

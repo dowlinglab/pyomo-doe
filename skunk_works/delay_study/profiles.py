@@ -58,7 +58,8 @@ def interval_components(log_values, statistic, threshold, lower_bound, upper_bou
     return components
 
 
-def profile(record, datasets, parameter_index, grid_points=61, n_starts=4, seed=532, max_nfev=600):
+def profile(record, datasets, parameter_index, grid_points=61, n_starts=4, seed=532, max_nfev=600,
+            recover_original=False):
     result = record["fit"]
     spec = ModelSpec(**result["spec"])
     p = np.array([result["parameters"][name] for name in spec.names])
@@ -83,7 +84,7 @@ def profile(record, datasets, parameter_index, grid_points=61, n_starts=4, seed=
         best = None
 
         def assemble(other):
-            q = center.copy()
+            q = center.astype(np.result_type(center, other), copy=True)
             q[j] = value
             q[nuisance] = other
             return q
@@ -98,10 +99,29 @@ def profile(record, datasets, parameter_index, grid_points=61, n_starts=4, seed=
             sse = float(fitted.fun@fitted.fun)
             attempt = {"success": bool(fitted.success), "sse": sse, "nfev": int(fitted.nfev),
                        "status": int(fitted.status), "optimality": float(fitted.optimality),
-                       "parameters": np.exp(assemble(fitted.x)).tolist()}
+                       "parameters": np.exp(assemble(fitted.x)).tolist(),
+                       "phase": "initial", "jacobian": "3-point", "max_nfev": max_nfev}
             attempts.append(attempt)
             if fitted.success and (best is None or sse < best["sse"]):
                 best = attempt
+        if best is None and recover_original and spec.family == "original":
+            # Keep failed initial attempts. The original parameterization has an
+            # exact redundant direction under these initial conditions; avoid
+            # differencing cancellation and scale by the actual Jacobian.
+            recovery_starts = [np.log(a["parameters"])[nuisance] for a in sorted(attempts, key=lambda a: a["sse"])]
+            for start in recovery_starts:
+                fitted = least_squares(objective, np.clip(start, lo[nuisance]+1e-10, hi[nuisance]-1e-10),
+                                       bounds=(lo[nuisance], hi[nuisance]), jac="cs", x_scale="jac",
+                                       ftol=1e-10, xtol=1e-10, gtol=1e-7, max_nfev=10*max_nfev)
+                sse = float(fitted.fun@fitted.fun)
+                attempt = {"success": bool(fitted.success), "sse": sse, "nfev": int(fitted.nfev),
+                           "status": int(fitted.status), "optimality": float(fitted.optimality),
+                           "parameters": np.exp(assemble(fitted.x)).tolist(),
+                           "phase": "recovery", "jacobian": "complex-step", "x_scale": "jac",
+                           "max_nfev": 10*max_nfev}
+                attempts.append(attempt)
+                if fitted.success and (best is None or sse < best["sse"]):
+                    best = attempt
         if best is None:
             raise RuntimeError("Profile nuisance fits failed at "+str(np.exp(value)))
         solved[index] = np.log(best["parameters"])
@@ -119,6 +139,7 @@ def profile(record, datasets, parameter_index, grid_points=61, n_starts=4, seed=
     return {"spec": asdict(spec), "profiled_parameter": spec.names[j], "parameter_index": j,
             "baseline_sse": baseline, "n_conditional": result["n"], "point_count": len(points),
             "starts_per_point": n_starts, "seed": seed, "points": points, "chi2_95_df1": threshold,
+            "original_recovery_enabled": recover_original,
             "intervals_unknown_sigma_iid": interval_components(grid, statistics_unknown, threshold, lo[j], hi[j]),
             "intervals_known_sigma_iid": interval_components(grid, statistics_known, threshold, lo[j], hi[j]),
             "minimum_profile_minus_baseline_sse": float(min(point["sse"] for point in points)-baseline),

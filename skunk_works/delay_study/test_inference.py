@@ -73,3 +73,12 @@ def test_constant_input_equilibrated_delay_is_unidentifiable_and_serializable():
         assert output["std_native_iid"][-1] is None
         assert output["cov_log_iid_unknown_sigma"] is None
         json.dumps(output, allow_nan=False)
+
+
+def test_repeated_pole_has_singular_local_sensitivity_without_a_continuum():
+    order = 3
+    parameters = np.array([.78, 20., 60.])
+    J = sensitivities(parameters, [load("sine")], ModelSpec(order=order))
+    assert np.max(abs(J[:, 2]-order*J[:, 1])) < 1e-8
+    singular = np.linalg.svd(J, compute_uv=False)
+    assert singular[2]/singular[0] < 1e-12
