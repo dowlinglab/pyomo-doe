@@ -323,6 +323,18 @@ are unchanged. Eleven affected working pages were read in a warning-free
 review. It does not replace final empirical writing, exact-draft citation
 binding or full-document review after all phases finish.
 
+Discussion of the completed bootstrap, working-OU and validation phases is now
+drafted. It distinguishes block-length sensitivity from contrasts that also
+change the error scale, and explains why within-record centering omits the
+between-record offsets observed in validation. The discussion retains the
+negative OU innovation diagnostic and the absence of a prospective file-mean
+correction. No new intervals, coverage rates or future-design outcomes were
+introduced. The measured bootstrap source/configuration and existing artifact
+audits support this bounded interpretation. Working pages 25/26 were read in
+a warning-free 36-page build; `manuscript/discussion_partial_review.json`
+records the source/citation checks and no-ai-slop pass. The final discussion
+still needs the remaining empirical phases and author review.
+
 While coverage runs: complete the design-driver review, literature synthesis,
 noise/validation and structural summaries, result figures/tables, ambient and
 heater-calibration uncertainty derivations, and manuscript editing. Further

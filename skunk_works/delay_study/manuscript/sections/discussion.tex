@@ -21,7 +21,38 @@ and constant input. Future laboratory records should include the heater history
 before the fitting window and an independent ambient measurement. These records
 would reduce dependence on assumptions made at the first sample.
 
-The remaining discussion will assess the completed resampling, held-out
-prediction, numerical sensitivity, and prospective-design results. Conditional
-precision under a chosen residual model must be considered alongside error on
-experiments excluded from calibration.
+The conditional delay and physical-family-boundary intervals vary with residual
+block length (Figs.~\ref{fig:delay-intervals} and~\ref{fig:family-boundaries}).
+The circular bootstrap resamples centered residuals within each calibration
+record and retains dependence within each block. The Gaussian comparator uses
+a fixed hypothetical noise scale, whereas the block methods use empirical
+centered residuals. Their contrast can therefore reflect both error scale and
+serial dependence. Centering also
+removes each calibration record's mean residual. This construction therefore
+does not estimate the between-record offsets seen in validation, even when its
+percentile intervals are wider than those from independent Gaussian simulation.
+Selecting the widest of these conditional intervals would not supply a
+probability model for the omitted discrepancy.
+
+Fitting an OU correlation length
+changes the weighting of thermal trajectories and their local uncertainty, but
+the remaining negative innovation correlation challenges that combined
+mean/covariance model. The fitted length cannot yet be interpreted as a measured
+physical disturbance time scale. Neither a Gaussian likelihood improvement nor
+a HAC variance calculation establishes that the observed error process satisfies
+the assumptions needed for confidence coverage.
+
+Transfer to the held-out files is a stronger concern than the small differences
+among the representative cold model orders. The pooled error and its file-mean
+decomposition (Table~\ref{tab:validation-summary}) show why narrower calibration
+intervals alone would be insufficient evidence for using a formulation on a new
+record. Subtracting each held-out mean error would use information unavailable
+before that record was observed. Independent ambient, command-history and
+heater-power measurements could help distinguish candidate explanations;
+the supplied filenames and temperature offsets do not identify one.
+
+The remaining discussion will incorporate the independent synthetic coverage,
+ambient/history and numerical sensitivity, prediction-band, and prospective-design
+results after their audits finish. Those results must retain the distinction
+between uncertainty around a chosen mean model and failure of that mean to
+transfer to another record.
