@@ -87,7 +87,7 @@ Keep failed attempts and failed chunks in subsequent summaries.
 | Assumption sensitivity | 241 tasks in `sensitivity_config.json` and baseline fits | `run_sensitivity.py`, `audit_sensitivity.py`; independent chain initial-state propagation, finite-difference information/rank, all-start/SSE and held-out checks |
 | Prediction uncertainty | Baseline/OU fits and completed bootstrap arrays | `run_prediction_uncertainty.py`, `audit_prediction_uncertainty.py`; 131 jobs, global estimability checks, separate mean/observation bands and all-point audits |
 | Parameter design | Joint fits and `design_config.json` | `run_design.py`, `audit_design.py`; 112 jobs, direct information/resource/selection audits and all-model dense tail simulation |
-| Order discrimination | Joint fits and both design configurations | `run_discrimination.py --phase designs`, then `--phase refits`; 12 designs must pass before 72 directional alternative fits |
+| Order discrimination | Joint fits and both design configurations | `run_discrimination.py --phase designs`, then `--phase refits`; `audit_discrimination.py --phase designs/refits` directly checks saved means, distances, resources and all attempts; 12 designs must pass before 72 directional alternative fits |
 
 Selected-profile refinement produces a **separate** catalog; do not overwrite
 the first-pass catalog or use its flagged coarse physical endpoints as final
@@ -105,6 +105,14 @@ bounds keep every requested dataset in the denominator. Bootstrap summaries are
 separate from synthetic coverage; the latter does not measure coverage of the
 real-data block-bootstrap intervals. The sensitivity auditor needs
 `--allow-trial` to label a filtered run as a trial audit.
+
+The discrimination auditor also requires `--allow-trial` for filtered outputs.
+Its refit audit requires all twelve source designs to match their completed
+manifest and independent audit. It recomputes every recorded attempt's precision
+distance and active bounds, but does not independently differentiate the saved
+optimizer optimality scalar. A smallest converged refit distance is an upper
+bound on the global closest alternative; only the fixed-mean distance receives
+the ideal common-Gaussian equal-prior error calculation.
 
 Compare recomputed objectives, trajectories and audited quantities using the
 recorded tolerances. Elapsed times, timestamps, paths and some floating-point

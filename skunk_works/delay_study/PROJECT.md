@@ -29,8 +29,8 @@ scope, and `results/manifest.json` will identify manuscript results.
 - Notebook migration committed in `58b4fa5`: 13 deterministic Python exports,
   scientific-cell AST equality, and a successful migrated simulation run.
 - Exact LTI models committed in `451749f`; inference runner in `275fe0a`.
-  One hundred and twenty-two focused checks pass after adding exact-draft expansion,
-  citation-offset, independent nuisance/prediction/design audits, and explicit
+  One hundred and twenty-eight focused checks pass after adding exact-draft expansion,
+  citation-offset, independent nuisance/prediction/design/discrimination audits, and explicit
   profile-catalog selection checks. They cover independent integrator/analytic agreement,
   transformations, synthetic recovery, null directions, profile recovery,
   resampling, OU likelihoods, coverage accounting and input-design gradients.
@@ -276,6 +276,21 @@ pass. An equilibrated constant-input counterexample has positive separation at
 the original fitted parameters but zero separation after refitting, demonstrating
 why fixed-mean scores alone can exaggerate discrimination. This phase also waits
 for an inspected trial after the active pool releases; nothing runs on hardware.
+
+The prepared `audit_discrimination.py` checks all saved fixed-pair distances
+using direct mean simulation and independently assembled Gaussian precision.
+It checks all candidate resources/dense maxima, each optimization objective and
+coarse constraint, and best-converged-feasible selection. The refit branch
+recomputes every attempt distance, declared box/active-bound and evaluation-budget
+flags, the smallest converged selection and fixed-parameter upper bound. It also
+requires the exact zero-distance witness for equilibrated constant input. Selected
+waveforms bind to the twelve complete source designs and their independent audit.
+Six short checks include dense irregular-time covariance agreement, real saved
+synthetic design/refit artifacts and deliberate distance, probability, budget,
+active-bound and source-waveform corruption. These prepare validation; no
+production discrimination outputs have yet been computed or audited. The scope
+excludes global optimality and an independent derivative check of each saved
+refit optimality scalar.
 
 While coverage runs: complete the design-driver review, literature synthesis,
 noise/validation and structural summaries, result figures/tables, ambient and
