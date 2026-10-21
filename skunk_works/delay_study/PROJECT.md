@@ -23,8 +23,8 @@ scope, and `results/manifest.json` will identify manuscript results.
 - Notebook migration committed in `58b4fa5`: 13 deterministic Python exports,
   scientific-cell AST equality, and a successful migrated simulation run.
 - Exact LTI models committed in `451749f`; inference runner in `275fe0a`.
-  Ninety-seven focused checks pass after verifying the regular-quotient domain
-  of all rank-deficient baseline cases. They cover independent integrator/analytic agreement,
+  One hundred focused checks pass after adding exact-draft expansion and
+  citation-offset checks. They cover independent integrator/analytic agreement,
   transformations, synthetic recovery, null directions, profile recovery,
   resampling, OU likelihoods, coverage accounting and input-design gradients.
 - First full sweep finished 95/99 cases; four uncertainty serialization failures
@@ -409,6 +409,19 @@ pooling definition. A derived IID-component filtering example explains how an
 OU filter can induce lag-one correlation near -1/2 without identifying the
 actual residual mechanism. The source-snapshot and visual-QA receipts identify
 the exact 32-page temporary PDF; the final document still needs full review.
+
+The exact-draft preflight expands controlled LaTeX inputs without executing
+them, hashes every included source, checks citation offsets and bibliography
+keys, and retains the chapter-to-book carrier alias. The current working draft
+has 24 citation occurrences across seven works and 21 included TeX files.
+This is a preflight count, not a completed evidence or scientific-support audit.
+Run `prepare_manuscript_audit.py` again after the final editorial pass, then save
+that exact flattened text with `set_packet_draft` and audit every occurrence.
+Two works have mapped ingested carriers; five primary PDFs were read externally.
+Keep source-availability and fine-grounding gaps explicit rather than relabeling
+an externally inspected PDF as an ingested source. Raw evidence exports may
+contain copyrighted passages and belong in ignored `_private/`, with a scoped
+public receipt and the manuscript bibliography retaining checked metadata.
 
 Do not expand the numerical comparison matrix further by default. Complete the
 already declared coverage, sensitivity, prediction, parameter-design, selected
