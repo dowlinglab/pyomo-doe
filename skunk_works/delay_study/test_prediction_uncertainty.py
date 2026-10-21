@@ -1,4 +1,7 @@
 """Prediction-space invariance and failures hidden by a parameter pseudoinverse."""
+import json
+from pathlib import Path
+
 import numpy as np
 from scipy.special import ndtr
 from scipy.stats import norm
@@ -14,6 +17,34 @@ def quotient(J, sigma=.25):
     _, s, Vh = np.linalg.svd(J, full_matrices=False)
     keep = s > s[0]*1e-8
     return (Vh[keep].T/s[keep]**2)@Vh[keep]*sigma**2, Vh[~keep].T
+
+
+def test_rank_loss_in_the_declared_baseline_has_a_proven_regular_quotient():
+    # A repeated-pole singularity is not automatically a regular structural
+    # quotient. Verify the actual study domain before using pseudoinverse
+    # output variances; the separate repeated-pole example is not a fitted case.
+    rank_deficient = 0
+    for path in (Path(__file__).parent/"results/fits").glob("*.json"):
+        record = json.loads(path.read_text())
+        spec = ModelSpec(**record["fit"]["spec"])
+        if spec.coordinates != "io" and spec.family != "original":
+            continue
+        rank = record["uncertainty"]["rank_relative_1e-8"]
+        if rank == len(spec.names):
+            continue
+        rank_deficient += 1
+        data = [load(name) for name in record["datasets"]]
+        if spec.family == "original":
+            assert rank == 3
+            assert all(experiment.temperature[0] == experiment.ambient for experiment in data)
+            p = [record["fit"]["parameters"][name] for name in spec.names]
+            _, a, b = original_transfer(p)
+            assert a*a > 4*b
+        else:
+            assert rank == 2
+            assert spec.initialization == "input_equilibrated"
+            assert all(np.ptp(experiment.input) == 0 for experiment in data)
+    assert rank_deficient == 11
 
 
 def test_original_gauge_preserves_prediction_variance_of_identifiable_transfer():

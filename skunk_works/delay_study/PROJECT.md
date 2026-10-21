@@ -23,8 +23,8 @@ scope, and `results/manifest.json` will identify manuscript results.
 - Notebook migration committed in `58b4fa5`: 13 deterministic Python exports,
   scientific-cell AST equality, and a successful migrated simulation run.
 - Exact LTI models committed in `451749f`; inference runner in `275fe0a`.
-  Ninety-six focused checks pass after adding failure-aware coverage summaries
-  and coordinate-invariant design checks. They cover independent integrator/analytic agreement,
+  Ninety-seven focused checks pass after verifying the regular-quotient domain
+  of all rank-deficient baseline cases. They cover independent integrator/analytic agreement,
   transformations, synthetic recovery, null directions, profile recovery,
   resampling, OU likelihoods, coverage accounting and input-design gradients.
 - First full sweep finished 95/99 cases; four uncertainty serialization failures
@@ -365,7 +365,7 @@ inspected. `baseline_numeric_audit.json` and `baseline_visual_audit.json` retain
 the separate checks. The remaining full document and future figures need their
 own final audit; this is not human scientific review.
 
-The last compiled working manuscript is **28 pages**, without warnings. New
+The last compiled working manuscript is **32 pages**, without warnings. New
 generated tables cover calibration errors, parameters, coordinate metrics,
 conditional delay uncertainty and OU innovations. `audit_tables.py` checked
 150 printed cells using independent result paths, including independent physical
@@ -397,6 +397,25 @@ source-page and working-PDF hashes. The exact final-draft packet still needs
 all citation occurrences, claim bindings, available fine evidence, explicit
 external-source gaps and scoped export. No full-document final QA, final
 no-ai-slop pass, push or completion email has occurred.
+Held-out error and working-OU correlation figures now use source `66d9f4d`.
+Their independent audit recomputes 701 values from saved prediction trajectories
+and raw file metadata; maximum error is 7.2e-15. Four rendered working pages
+11/12/13/23 and both grayscale previews pass partial QA. Pooled held-out RMSE is
+3.36-3.41 C for the four representative joint cold models, compared with
+0.41-0.53 C on calibration. Per-file mean residuals contribute 80.1-84.8 percent
+of pooled squared error algebraically; this is not a causal diagnosis or
+prospective bias correction. Generated tables retain every file code and the
+pooling definition. A derived IID-component filtering example explains how an
+OU filter can induce lag-one correlation near -1/2 without identifying the
+actual residual mechanism. The source-snapshot and visual-QA receipts identify
+the exact 32-page temporary PDF; the final document still needs full review.
+
+Do not expand the numerical comparison matrix further by default. Complete the
+already declared coverage, sensitivity, prediction, parameter-design, selected
+profile refinement and discrimination phases, resolve numerical issues found by
+their trials/audits, and finish the evidence packet, report and delivery. An
+OU-plus-nugget fit, per-file retrospective refits and hardware experiments remain
+future questions rather than additional completion requirements.
 Added derivations cover heater-calibration scale ambiguity, ambient/history
 nuisance information, zero-mean colored-error least-squares interpretation,
 quartic behavior at coincident poles, and the onset convergence coefficient.
