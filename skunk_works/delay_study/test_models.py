@@ -3,6 +3,7 @@ import json
 from pathlib import Path
 
 import numpy as np
+import pytest
 from numpy.testing import assert_allclose
 from scipy.integrate import solve_ivp
 from scipy.special import gammainc
@@ -102,6 +103,46 @@ def test_pure_delay_step_analytic_and_chain_limit():
     limit = simulate_pure_delay(data, p)
     errors = [np.linalg.norm(simulate_chain(data, p, n)-limit) for n in (2, 8, 32)]
     assert errors[2] < errors[1] < errors[0]
+
+
+@pytest.mark.parametrize("hold", ["left", "right"])
+@pytest.mark.parametrize("initialization", ["cold", "input_equilibrated"])
+def test_pure_delay_piecewise_constant_holds_against_convolution(hold, initialization):
+    time = np.array([0., .7, 2.2, 3., 4.8, 8.1, 10.])
+    command = np.array([15., 20., 80., 25., 100., 60., 0.])
+    data = Experiment("irregular_hold", time, np.full(len(time), 23.), command, 22.)
+    K, tau, theta = .8, 3., 1.3
+    expected = []
+    for t in time:
+        value = 22+np.exp(-t/tau)
+        # Independent convolution of delayed constant forcing segments.
+        prehistory = 0. if initialization == "cold" else command[0]
+        segments = [(0., theta, prehistory)]
+        segments.extend((a+theta, b+theta, command[i+int(hold == "right")])
+                        for i, (a, b) in enumerate(zip(time[:-1], time[1:])))
+        for a, b, u in segments:
+            b = min(b, t)
+            if b > a:
+                value += K*u*(np.exp(-(t-b)/tau)-np.exp(-(t-a)/tau))
+        expected.append(value)
+    assert_allclose(simulate_pure_delay(data, [K, tau, theta], initialization, hold), expected, atol=2e-13)
+
+
+def test_pure_delay_does_not_silently_ignore_a_numerical_method():
+    from inference import ModelSpec, predict
+    with pytest.raises(ValueError, match="exact shifted-knot"):
+        predict(synthetic(), [.8, 15., 7.3], ModelSpec(family="pure_delay", order=0, method="backward_euler"))
+
+
+def test_pure_delay_linear_hold_preserves_completed_baseline():
+    import pandas as pd
+    root = Path(__file__).resolve().parent
+    record = json.loads((root/"results/fits/joint__pure_delay_n0_io_cold_linear_exact.json").read_text())
+    parameters = [record["fit"]["parameters"][name] for name in ("K", "tau", "theta")]
+    frame = pd.read_csv(root/"results"/record["prediction_file"])
+    for name in ("sine", "step"):
+        saved = frame[(frame.role == "calibration") & (frame.experiment == name)]
+        assert_allclose(simulate_pure_delay(load(name), parameters), saved.predicted_C, atol=2e-12)
 
 
 def test_complex_step_sensitivity_matches_central_difference():

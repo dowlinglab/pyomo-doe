@@ -40,6 +40,8 @@ def predict(data, parameters, spec):
     if spec.family == "original":
         return simulate_original(data, parameters, spec.hold, spec.method)
     if spec.family == "pure_delay":
+        if spec.method != "exact":
+            raise ValueError("The pure-delay model supports exact shifted-knot propagation only")
         p = to_io(parameters, power=data.power) if spec.coordinates == "physics" else parameters
         return simulate_pure_delay(data, p, spec.initialization, spec.hold)
     raise ValueError("Unknown model family")

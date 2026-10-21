@@ -152,15 +152,15 @@ def equivalent_original(K, a, b, sensor_time):
 
 
 def simulate_pure_delay(data: Experiment, parameters, initialization="cold", hold="linear"):
-    """Exact scalar integration for FOPDT with shifted piecewise-linear input.
+    """Exact scalar integration for FOPDT with shifted reconstructed input.
 
     An input step at the beginning is split at its delayed arrival. It is not
     smeared across the preceding interval. Constant prehistory is explicitly
     either zero or the first input, matching the two lag-chain assumptions.
     """
     K, tau, theta = np.asarray(parameters, dtype=float)
-    if min(K, tau, theta) <= 0 or hold != "linear":
-        raise ValueError("Positive parameters and linear hold required")
+    if min(K, tau, theta) <= 0 or hold not in {"linear", "left", "right"}:
+        raise ValueError("Positive parameters and a declared input hold required")
     if initialization not in {"cold", "input_equilibrated"}:
         raise ValueError("Unknown delay initialization")
     time = data.time-data.time[0]
@@ -173,9 +173,15 @@ def simulate_pure_delay(data: Experiment, parameters, initialization="cold", hol
         dt = right-left
         if (left+right)/2 < theta:
             uleft = uright = left_value
-        else:
+        elif hold == "linear":
             uleft = np.interp(left-theta, time, data.input)
             uright = np.interp(right-theta, time, data.input)
+        else:
+            # Every shifted input jump is already a propagation knot. Sampling
+            # the interval midpoint selects an unambiguous original interval.
+            index = np.searchsorted(time, (left+right)/2-theta, side="right")-1
+            index += int(hold == "right")
+            uleft = uright = data.input[min(index, len(data.input)-1)]
         decay = np.exp(-dt/tau)
         gain = -np.expm1(-dt/tau)
         states[i+1] = decay*states[i]+K*gain*uleft+K*(dt-tau*gain)*(uright-uleft)/dt
