@@ -1,0 +1,22 @@
+{
+  "cases": [
+    "joint__chain_n1_io_cold_linear_exact",
+    "joint__chain_n2_io_cold_linear_exact",
+    "joint__chain_n12_io_cold_linear_exact",
+    "joint__pure_delay_n0_io_cold_linear_exact"
+  ],
+  "noise_scenarios": {
+    "iid": {"kind": "iid", "sigma_C": 0.25},
+    "ou10": {"kind": "ou", "sigma_C": 0.25, "length_s": 10.0},
+    "ou60": {"kind": "ou", "sigma_C": 0.25, "length_s": 60.0}
+  },
+  "replicates": 500,
+  "chunk_size": 10,
+  "fit_starts": 12,
+  "profile_grid_points": 61,
+  "profile_starts": 4,
+  "max_nfev": 600,
+  "hac_bandwidth_samples": [10, 30, 60],
+  "seed": 726532,
+  "workers": 4
+}
