@@ -23,8 +23,8 @@ scope, and `results/manifest.json` will identify manuscript results.
 - Notebook migration committed in `58b4fa5`: 13 deterministic Python exports,
   scientific-cell AST equality, and a successful migrated simulation run.
 - Exact LTI models committed in `451749f`; inference runner in `275fe0a`.
-  Ninety-one focused checks passed on October 21 after the exact-family,
-  profile-refinement and discrimination checks were added. They cover independent integrator/analytic agreement,
+  Ninety-six focused checks pass after adding failure-aware coverage summaries
+  and coordinate-invariant design checks. They cover independent integrator/analytic agreement,
   transformations, synthetic recovery, null directions, profile recovery,
   resampling, OU likelihoods, coverage accounting and input-design gradients.
 - First full sweep finished 95/99 cases; four uncertainty serialization failures
@@ -248,6 +248,19 @@ all six cold one-stage delay profiles, and joint cold n2/n12/pure-delay examples
 It has **not been launched** while coverage owns the four-worker budget. The
 separate auditor must pass before `selected_profile_index.json` can replace any
 profile selection for later tables or plots; the original catalog remains intact.
+
+The prepared coverage summarizer refuses an active or interrupted run and checks
+all replicate identities, generating truths, seeds, physical transformations and
+likelihood arithmetic. It reconciles saved files with each terminal chunk so
+file loss cannot be relabeled as an optimizer failure. Its 384 planned summary
+rows retain failed/undefined outcomes in unconditional bounds and give
+method-defined coverage, Wilson intervals, bias/empirical SD, widths and a
+secondary grid-interpolation sensitivity. It has not summarized production
+outcomes while the prespecified run is still active. Four new accounting tests
+pass. A separate design check verifies that log D, delay-target and transformed
+prediction utilities and gradients agree in IO and physical metrics, while E
+changes with the metric. The methods section now records the complete planned
+coverage, parameter-design and discrimination matrices.
 
 The small deterministic onset phase from `a0f01fe` is complete in
 `results/onset_limit`: 18 exact Erlang-CDF calculations, independently checked

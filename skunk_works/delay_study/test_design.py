@@ -1,4 +1,5 @@
 """Check design linearization, gradients and actual resource constraints."""
+from dataclasses import replace
 import numpy as np
 import pytest
 
@@ -16,6 +17,27 @@ def example(initialization="cold", noise_length=None):
     spec = ModelSpec(order=2, initialization=initialization)
     scenario = build_scenario("synthetic", parameters, spec, time, basis, noise_length=noise_length)
     return time, knots, basis, parameters, spec, scenario
+
+
+def test_corresponding_physical_design_preserves_D_delay_and_prediction_utilities():
+    _, knots, _, _, _, base = example()
+    M = np.array([[-1., 0., 0.], [-1., 1., 0.], [0., 0., 1.]])
+    amplitudes = candidates(knots)["multisine"]
+    prior = np.diag([200., 100., 3.])
+    io = replace(base, prior_information=prior)
+    physical = replace(base, name="same_response_physical_log_metric",
+                       sensitivity_map=np.einsum("tpk,pq->tqk", base.sensitivity_map, M),
+                       prior_information=M.T@prior@M)
+    A = np.diag([1., 2., 3.])
+    for historical in (False, True):
+        for criterion in ("D", "theta", "prediction"):
+            value, gradient = score_and_gradient(io, amplitudes, criterion, historical, A)
+            alternate, alternate_gradient = score_and_gradient(physical, amplitudes, criterion, historical, M.T@A@M)
+            assert abs(value-alternate) < 1e-10
+            assert np.allclose(gradient, alternate_gradient, rtol=1e-10, atol=1e-12)
+        first = score_and_gradient(io, amplitudes, "E", historical)[0]
+        second = score_and_gradient(physical, amplitudes, "E", historical)[0]
+        assert abs(first-second) > .01
 
 
 @pytest.mark.parametrize("initialization", ["cold", "input_equilibrated"])

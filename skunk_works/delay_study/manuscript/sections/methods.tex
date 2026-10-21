@@ -105,9 +105,98 @@ the paper's stationary-bootstrap theory establishes coverage for our nonlinear
 fits with model discrepancy. We assess selected interval procedures separately
 using independent synthetic datasets.
 
+The independent coverage design prespecified 300 synthetic datasets for each
+of four joint cold generating models (one, two and twelve stages, plus pure
+delay) and three true error processes: IID Gaussian, stationary OU with 10 s
+length, and stationary OU with 60 s length. Every process has marginal standard
+deviation $0.25\,{}^\circ\mathrm C$. We used the recorded input and observation
+times, fixed the conditioned initial temperatures exactly, and refitted each
+synthetic dataset before constructing local and profile intervals. The
+comparison includes known-variance and estimated-variance IID log-Wald
+intervals, three HAC bandwidths, and both delay-profile variance conventions.
+Physical intervals use the exact parameter transformation.
+
+All 3,600 requested datasets remain in the coverage denominator. We report
+coverage among defined intervals, its Wilson binomial interval, and worst/best
+unconditional bounds that count failed or undefined outcomes as uncovered or
+covered, respectively. Failed worker chunks and missing result files are
+distinguished: a completed chunk with a missing file fails the integrity audit.
+Disconnected profile widths sum the accepted components; envelope widths also
+include excluded gaps. A secondary three-point quadratic interpolation checks
+whether finite-grid interpolation changes coverage classification at the known
+true delay. It does not replace nuisance reoptimization or certify endpoint
+accuracy. The study conditions on these generating points and does not estimate
+coverage under real between-record model discrepancy.
+Bootstrap intervals remain real-data sensitivity comparisons; their
+repeated-sampling coverage is unmeasured by this experiment.
+
 \subsection{Prospective experiment design}
-The experiment-design phase compares finite-horizon input candidates using
-scaled parameter information and separate model-discrimination criteria.
-All designs are simulations. The final design specification, numerical results,
-and constraint checks will be inserted after that phase completes; no proposed
-waveform has been applied to laboratory hardware.
+The prespecified input-design horizon is 900 s with 1 s observations and 19
+command knots at 50 s intervals, joined linearly. Command amplitudes lie between
+0 and 100\%, their time average is 50\%, and the slew limit is one percentage
+point per second. Ambient and initial measured temperature are fixed at
+$25\,{}^\circ\mathrm C$. We constrain the predicted mean temperature below
+$85\,{}^\circ\mathrm C$ for all sixteen joint fitted mean/startup combinations,
+regardless of the model used for the utility. These are assumed simulation
+constraints, without a hardware safety certification or uncertainty margin.
+An independent 0.25 s forward simulation also checks a 300 s shutdown tail,
+ramping the last command to zero at the same slew limit.
+
+For a future sensitivity matrix $J(u)$ and assumed covariance $R$, the local
+information is $F(u)=J(u)^\top R^{-1}J(u)$, optionally augmented by information
+from the two historical calibration experiments under the same model and
+covariance. This added information is not a Bayesian distribution over
+parameters. The four utilities are $\log\det F$, $\log\lambda_{\min}(F)$,
+$-\log[(F^{-1})_{\theta\theta}]$, and
+$-\log\operatorname{tr}(A F^{-1})$. Here $A$ is the scenario-specific average
+thermal-mean sensitivity outer product for a future constant 50\% reference.
+The variance target concerns mean prediction, without future measurement noise.
+The third utility targets log-delay variance.
+Null-space compatibility is checked before a target-specific pseudoinverse is
+used. Parameter metrics are natural logarithms of $(K,\tau,\theta)$.
+
+Nominal designs use cold one-stage, two-stage, twelve-stage and pure-delay
+fits with IID, OU10 s or OU60 s working correlations, each with marginal
+standard deviation $0.25\,{}^\circ\mathrm C$. Ensemble designs use all 48
+model/startup/covariance scenarios. We aggregate scenario-relative log utilities
+by their mean or minimum. Four utilities and two historical-information settings
+give 112 planned designs. Six common command starts include constant, sine,
+multisine, random binary and alternating knot patterns, each satisfying the
+amplitude, dose and slew rules. Constant input supplies the normalization
+reference where its utility is finite; otherwise we use the multisine.
+Multistart SLSQP uses
+analytic input gradients and retains convergence and constraint violations;
+its local solutions have no global-optimality certificate. Minimum aggregation
+is nonsmooth at scenario ties.
+
+The physical and IO log-coordinate information matrices are related by the
+congruence in Appendix~\ref{sec:structural}. Because $|\det M|=1$, the
+log-determinant utility is equal at corresponding points. Delay variance and
+properly transformed prediction loss are also invariant. The smallest
+eigenvalue depends on the chosen metric. Thus a coordinate change can alter
+an E-criterion without changing the underlying prediction experiment.
+
+We separate parameter precision from discrimination of stage count. For two
+fixed future means with the same assumed covariance, define
+\[
+ D_{ij}^2(u)=[\mu_i(u)-\mu_j(u)]^\top R^{-1}[\mu_i(u)-\mu_j(u)].
+\]
+The Gaussian log-likelihood ratio has mean $\pm D_{ij}^2/2$ and variance
+$D_{ij}^2$ under these two simple hypotheses. Equal-prior minimum classification
+error is therefore $\Phi(-D_{ij}/2)$. This ideal calculation assumes fixed known
+means and covariance; it is not a testing-power estimate after parameter
+estimation or under TC-Lab discrepancy.
+
+Twelve additional local designs aggregate relative log squared separation for
+all six pairs among one-stage, two-stage, twelve-stage and pure-delay means,
+at both startups and all three working covariances. The multisine supplies the
+normalizing reference. A bounded 72-case diagnostic then lets each alternative
+model refit its three parameters against a fixed one-stage generating mean,
+using 24 starts under the same future covariance. It compares constant,
+multisine, and both selected discrimination designs against two-stage,
+twelve-stage and pure-delay alternatives. This directional subset does not
+cover every generating model or parameter point. A converged refit distance
+is an upper bound on the globally closest alternative mean; we assign it no
+simple-hypothesis error probability or chi-squared calibration.
+
+No proposed waveform has been applied to laboratory hardware.
