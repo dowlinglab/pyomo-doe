@@ -1,0 +1,884 @@
+{
+  "identity": {
+    "sources": {
+      "models.py": "345d0e68f7de3f59c1e3293f703d7658f45aa19149301440d1fe228a91ac25a0",
+      "data.py": "ac6b9a57de386352f5f7a8a678101d84dd90cfa3f0c04e936aa08c7e905c8e7a",
+      "inference.py": "78295ac16b4fc10a05444d842e31faadba6348fd866bf0bf98144786ccbd18e3",
+      "noise.py": "7847d0210b58565a6c0b3ad345b3d294bcfcc85f9e21f620cc7838e9b5b27717",
+      "ou_inference.py": "b3578132855e8af9cc9ef663f6e8051050ca8200f0a91c98e7e567793c1f4f72",
+      "run_ou.py": "261df6871ab35fc73cd9816aa9a2613b51f34155533c85cc410741e4018f982b",
+      "run_fits.py": "2451a77e22d73169abe37e313490989692580c39233b0779f8c41956b4511ef5"
+    },
+    "config_sha256": "0682ac2fd1c78f708fd4153729c23f1f9a85c02522eba0591c2c7e37a1f8c9fa",
+    "starts_override": null
+  },
+  "fit_file": "joint__chain_n8_io_cold_linear_exact.json",
+  "fit_sha256": "65e4bc7a5cbc7978b89cb5882f027f9f4123f8694c8a32cec041e4540be17acc",
+  "calibration": "joint",
+  "datasets": [
+    "sine",
+    "step"
+  ],
+  "spec": {
+    "family": "chain",
+    "order": 8,
+    "coordinates": "io",
+    "initialization": "cold",
+    "hold": "linear",
+    "method": "exact"
+  },
+  "starts_override": null,
+  "fit": {
+    "parameters": {
+      "K": 0.7783509346999009,
+      "tau": 157.79266412895305,
+      "theta": 14.54626036619302
+    },
+    "correlation_length_s": 27.24062496572864,
+    "sigma_stationary_ML_C": 0.508697893935612,
+    "negative_log_likelihood": -1043.1505835893777,
+    "n_conditional": 1800,
+    "raw_sse_C2": 478.3886738352362,
+    "weighted_sse_C2": 465.79238513014894,
+    "logdet_correlation": -4761.236404604139,
+    "active_bounds_log": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "noise_length_box_s": [
+      0.05,
+      3000.0
+    ],
+    "IID_lower_length_candidate_nll": 1352.7529324146205,
+    "requires_revisit": false,
+    "selected_projected_gradient_max_abs": 4.3343311290300335e-05,
+    "stationarity_warning": false,
+    "attempts": [
+      {
+        "start": 0,
+        "initial_parameters_and_length": [
+          0.7775652278953195,
+          156.61423311036546,
+          14.688796167479094,
+          0.05000000000500001
+        ],
+        "parameters_and_length": [
+          0.7775652278953195,
+          156.61423311036518,
+          14.688796167479179,
+          0.05000000000500003
+        ],
+        "negative_log_likelihood": 1352.7529324146192,
+        "success": true,
+        "solver": "L-BFGS-B",
+        "solver_status": 0,
+        "message": "CONVERGENCE: REL_REDUCTION_OF_F_<=_FACTR*EPSMCH",
+        "iterations": 1,
+        "function_evaluations": 17,
+        "projected_gradient_max_abs": 0.00099484270162975
+      },
+      {
+        "start": 1,
+        "initial_parameters_and_length": [
+          0.7775652278953195,
+          156.61423311036546,
+          14.688796167479094,
+          0.2
+        ],
+        "parameters_and_length": [
+          0.7783509310614023,
+          157.79266197900324,
+          14.546260233109164,
+          27.240621563904046
+        ],
+        "negative_log_likelihood": -1043.1505835893693,
+        "success": true,
+        "solver": "L-BFGS-B",
+        "solver_status": 0,
+        "message": "CONVERGENCE: REL_REDUCTION_OF_F_<=_FACTR*EPSMCH",
+        "iterations": 20,
+        "function_evaluations": 39,
+        "projected_gradient_max_abs": 0.00028202842463542765
+      },
+      {
+        "start": 2,
+        "initial_parameters_and_length": [
+          0.7775652278953195,
+          156.61423311036546,
+          14.688796167479094,
+          1.0
+        ],
+        "parameters_and_length": [
+          0.778350937729427,
+          157.79266114589336,
+          14.546259250289753,
+          27.240622063072706
+        ],
+        "negative_log_likelihood": -1043.1505835893608,
+        "success": true,
+        "solver": "L-BFGS-B",
+        "solver_status": 0,
+        "message": "CONVERGENCE: REL_REDUCTION_OF_F_<=_FACTR*EPSMCH",
+        "iterations": 30,
+        "function_evaluations": 50,
+        "projected_gradient_max_abs": 0.0012815776897241449
+      },
+      {
+        "start": 3,
+        "initial_parameters_and_length": [
+          0.7775652278953195,
+          156.61423311036546,
+          14.688796167479094,
+          3.0000000000000004
+        ],
+        "parameters_and_length": [
+          0.7783509325684087,
+          157.79266160499031,
+          14.546260591437166,
+          27.24062888914824
+        ],
+        "negative_log_likelihood": -1043.1505835893754,
+        "success": true,
+        "solver": "L-BFGS-B",
+        "solver_status": 0,
+        "message": "CONVERGENCE: REL_REDUCTION_OF_F_<=_FACTR*EPSMCH",
+        "iterations": 27,
+        "function_evaluations": 52,
+        "projected_gradient_max_abs": 0.00010667282839449399
+      },
+      {
+        "start": 4,
+        "initial_parameters_and_length": [
+          0.7775652278953195,
+          156.61423311036546,
+          14.688796167479094,
+          10.000000000000002
+        ],
+        "parameters_and_length": [
+          0.7783509343467184,
+          157.79266437161868,
+          14.54625960836818,
+          27.2406265221721
+        ],
+        "negative_log_likelihood": -1043.1505835893645,
+        "success": true,
+        "solver": "L-BFGS-B",
+        "solver_status": 0,
+        "message": "CONVERGENCE: NORM_OF_PROJECTED_GRADIENT_<=_PGTOL",
+        "iterations": 19,
+        "function_evaluations": 25,
+        "projected_gradient_max_abs": 7.05390124267069e-06
+      },
+      {
+        "start": 5,
+        "initial_parameters_and_length": [
+          0.7775652278953195,
+          156.61423311036546,
+          14.688796167479094,
+          30.000000000000004
+        ],
+        "parameters_and_length": [
+          0.7783509346127211,
+          157.79266466005356,
+          14.546259529441324,
+          27.240626658046704
+        ],
+        "negative_log_likelihood": -1043.1505835893718,
+        "success": true,
+        "solver": "L-BFGS-B",
+        "solver_status": 0,
+        "message": "CONVERGENCE: NORM_OF_PROJECTED_GRADIENT_<=_PGTOL",
+        "iterations": 17,
+        "function_evaluations": 22,
+        "projected_gradient_max_abs": 5.596999130830227e-06
+      },
+      {
+        "start": 6,
+        "initial_parameters_and_length": [
+          0.7775652278953195,
+          156.61423311036546,
+          14.688796167479094,
+          100.00000000000004
+        ],
+        "parameters_and_length": [
+          0.7783509348827066,
+          157.79266478684255,
+          14.546259608404613,
+          27.24062663767719
+        ],
+        "negative_log_likelihood": -1043.1505835893686,
+        "success": true,
+        "solver": "L-BFGS-B",
+        "solver_status": 0,
+        "message": "CONVERGENCE: REL_REDUCTION_OF_F_<=_FACTR*EPSMCH",
+        "iterations": 16,
+        "function_evaluations": 23,
+        "projected_gradient_max_abs": 2.8849129876107327e-05
+      },
+      {
+        "start": 7,
+        "initial_parameters_and_length": [
+          0.7775652278953195,
+          156.61423311036546,
+          14.688796167479094,
+          499.99999999999983
+        ],
+        "parameters_and_length": [
+          0.7783509350430617,
+          157.79266482928458,
+          14.546259160762997,
+          27.240626278560455
+        ],
+        "negative_log_likelihood": -1043.1505835893756,
+        "success": true,
+        "solver": "L-BFGS-B",
+        "solver_status": 0,
+        "message": "CONVERGENCE: REL_REDUCTION_OF_F_<=_FACTR*EPSMCH",
+        "iterations": 28,
+        "function_evaluations": 38,
+        "projected_gradient_max_abs": 8.962847482507641e-05
+      },
+      {
+        "start": 8,
+        "initial_parameters_and_length": [
+          0.32415716718017873,
+          97.04863873442787,
+          30.80763024785896,
+          0.21286129534465376
+        ],
+        "parameters_and_length": [
+          0.7783509349650694,
+          157.7926651145314,
+          14.546259352439016,
+          27.240625387309368
+        ],
+        "negative_log_likelihood": -1043.1505835893713,
+        "success": true,
+        "solver": "L-BFGS-B",
+        "solver_status": 0,
+        "message": "CONVERGENCE: REL_REDUCTION_OF_F_<=_FACTR*EPSMCH",
+        "iterations": 43,
+        "function_evaluations": 72,
+        "projected_gradient_max_abs": 1.724164039274001e-05
+      },
+      {
+        "start": 9,
+        "initial_parameters_and_length": [
+          1.3623659721520238,
+          26.562619937795148,
+          196.23085196621105,
+          4.439004022153008
+        ],
+        "parameters_and_length": [
+          0.2,
+          600.0,
+          199.99999999999991,
+          2999.9999999999977
+        ],
+        "negative_log_likelihood": -385.4406624998719,
+        "success": true,
+        "solver": "L-BFGS-B",
+        "solver_status": 0,
+        "message": "CONVERGENCE: NORM_OF_PROJECTED_GRADIENT_<=_PGTOL",
+        "iterations": 1,
+        "function_evaluations": 2,
+        "projected_gradient_max_abs": 0.0
+      },
+      {
+        "start": 10,
+        "initial_parameters_and_length": [
+          0.33924230317208576,
+          45.56115942077504,
+          85.21018306756578,
+          34.28789868993312
+        ],
+        "parameters_and_length": [
+          0.7783509297000365,
+          157.79266252951004,
+          14.546258914725815,
+          27.24062102981089
+        ],
+        "negative_log_likelihood": -1043.1505835893724,
+        "success": true,
+        "solver": "L-BFGS-B",
+        "solver_status": 0,
+        "message": "CONVERGENCE: REL_REDUCTION_OF_F_<=_FACTR*EPSMCH",
+        "iterations": 33,
+        "function_evaluations": 60,
+        "projected_gradient_max_abs": 0.0005437805137944451
+      },
+      {
+        "start": 11,
+        "initial_parameters_and_length": [
+          0.4059918881790148,
+          309.8492435008362,
+          0.03910242801972465,
+          312.12800960507724
+        ],
+        "parameters_and_length": [
+          0.7783509347582701,
+          157.7926646818005,
+          14.546259601050483,
+          27.24062700343612
+        ],
+        "negative_log_likelihood": -1043.1505835893722,
+        "success": true,
+        "solver": "L-BFGS-B",
+        "solver_status": 0,
+        "message": "CONVERGENCE: REL_REDUCTION_OF_F_<=_FACTR*EPSMCH",
+        "iterations": 51,
+        "function_evaluations": 78,
+        "projected_gradient_max_abs": 2.5681603347038617e-05
+      },
+      {
+        "start": 12,
+        "initial_parameters_and_length": [
+          1.2722314333104667,
+          144.5420920465039,
+          1.8248124869026403,
+          1489.082673713299
+        ],
+        "parameters_and_length": [
+          0.7783509318904929,
+          157.79266405455027,
+          14.546259907923838,
+          27.240621873638045
+        ],
+        "negative_log_likelihood": -1043.1505835893734,
+        "success": true,
+        "solver": "L-BFGS-B",
+        "solver_status": 0,
+        "message": "CONVERGENCE: REL_REDUCTION_OF_F_<=_FACTR*EPSMCH",
+        "iterations": 31,
+        "function_evaluations": 52,
+        "projected_gradient_max_abs": 0.00047330490747299336
+      },
+      {
+        "start": 13,
+        "initial_parameters_and_length": [
+          1.0165644754037952,
+          187.30726194945666,
+          0.1349099823888856,
+          51.4028748843354
+        ],
+        "parameters_and_length": [
+          0.7783509317679108,
+          157.79265874941368,
+          14.546260315975957,
+          27.240631718154283
+        ],
+        "negative_log_likelihood": -1043.1505835893627,
+        "success": true,
+        "solver": "L-BFGS-B",
+        "solver_status": 0,
+        "message": "CONVERGENCE: REL_REDUCTION_OF_F_<=_FACTR*EPSMCH",
+        "iterations": 44,
+        "function_evaluations": 80,
+        "projected_gradient_max_abs": 0.0004893081282943967
+      },
+      {
+        "start": 14,
+        "initial_parameters_and_length": [
+          0.6268731616585443,
+          454.371374781912,
+          0.02193050774675631,
+          1.0469132319596481
+        ],
+        "parameters_and_length": [
+          0.7783509346999009,
+          157.79266412895305,
+          14.54626036619302,
+          27.24062496572864
+        ],
+        "negative_log_likelihood": -1043.1505835893777,
+        "success": true,
+        "solver": "L-BFGS-B",
+        "solver_status": 0,
+        "message": "CONVERGENCE: REL_REDUCTION_OF_F_<=_FACTR*EPSMCH",
+        "iterations": 47,
+        "function_evaluations": 90,
+        "projected_gradient_max_abs": 4.3343311290300335e-05
+      },
+      {
+        "start": 15,
+        "initial_parameters_and_length": [
+          0.20846856282199866,
+          360.66262155625793,
+          16.786545931545263,
+          2.0620450984676113
+        ],
+        "parameters_and_length": [
+          0.7783509345594574,
+          157.792664640418,
+          14.546259526329827,
+          27.24062675832032
+        ],
+        "negative_log_likelihood": -1043.1505835893736,
+        "success": true,
+        "solver": "L-BFGS-B",
+        "solver_status": 0,
+        "message": "CONVERGENCE: NORM_OF_PROJECTED_GRADIENT_<=_PGTOL",
+        "iterations": 49,
+        "function_evaluations": 78,
+        "projected_gradient_max_abs": 6.779048362659523e-07
+      },
+      {
+        "start": 16,
+        "initial_parameters_and_length": [
+          0.7078935443523581,
+          32.35621009310463,
+          4.6648607364583565,
+          12.333313229104697
+        ],
+        "parameters_and_length": [
+          0.2,
+          600.0,
+          199.99999999999991,
+          2999.9999999999977
+        ],
+        "negative_log_likelihood": -385.4406624998719,
+        "success": true,
+        "solver": "L-BFGS-B",
+        "solver_status": 0,
+        "message": "CONVERGENCE: NORM_OF_PROJECTED_GRADIENT_<=_PGTOL",
+        "iterations": 1,
+        "function_evaluations": 2,
+        "projected_gradient_max_abs": 0.0
+      },
+      {
+        "start": 17,
+        "initial_parameters_and_length": [
+          1.0964839165265812,
+          16.16025877997356,
+          0.01305012469853776,
+          0.6067681502099882
+        ],
+        "parameters_and_length": [
+          0.7783509316004169,
+          157.79266318791375,
+          14.546259278700916,
+          27.240623026667674
+        ],
+        "negative_log_likelihood": -1043.1505835893738,
+        "success": true,
+        "solver": "L-BFGS-B",
+        "solver_status": 0,
+        "message": "CONVERGENCE: REL_REDUCTION_OF_F_<=_FACTR*EPSMCH",
+        "iterations": 41,
+        "function_evaluations": 75,
+        "projected_gradient_max_abs": 0.00031200735941183666
+      },
+      {
+        "start": 18,
+        "initial_parameters_and_length": [
+          0.5620809709998189,
+          11.362754424334018,
+          0.47598046436278596,
+          2164.5422134698306
+        ],
+        "parameters_and_length": [
+          0.7783509345494497,
+          157.79266444423666,
+          14.546260602006384,
+          27.24062321195239
+        ],
+        "negative_log_likelihood": -1043.1505835893686,
+        "success": true,
+        "solver": "L-BFGS-B",
+        "solver_status": 0,
+        "message": "CONVERGENCE: REL_REDUCTION_OF_F_<=_FACTR*EPSMCH",
+        "iterations": 33,
+        "function_evaluations": 62,
+        "projected_gradient_max_abs": 0.0001023519862997091
+      },
+      {
+        "start": 19,
+        "initial_parameters_and_length": [
+          0.2291540488194762,
+          56.55397491109086,
+          7.2589272402872735,
+          610.8925940606258
+        ],
+        "parameters_and_length": [
+          0.778350934651976,
+          157.79266441628468,
+          14.546259614730033,
+          27.240625818412024
+        ],
+        "negative_log_likelihood": -1043.1505835893706,
+        "success": true,
+        "solver": "L-BFGS-B",
+        "solver_status": 0,
+        "message": "CONVERGENCE: REL_REDUCTION_OF_F_<=_FACTR*EPSMCH",
+        "iterations": 30,
+        "function_evaluations": 45,
+        "projected_gradient_max_abs": 4.803215915671899e-05
+      },
+      {
+        "start": 20,
+        "initial_parameters_and_length": [
+          0.44136446078030694,
+          6.466685327946742,
+          35.958001651133515,
+          0.0829076826378698
+        ],
+        "parameters_and_length": [
+          0.7783509374212931,
+          157.7926660157644,
+          14.54625859438267,
+          27.240624104072847
+        ],
+        "negative_log_likelihood": -1043.1505835893747,
+        "success": true,
+        "solver": "L-BFGS-B",
+        "solver_status": 0,
+        "message": "CONVERGENCE: REL_REDUCTION_OF_F_<=_FACTR*EPSMCH",
+        "iterations": 39,
+        "function_evaluations": 69,
+        "projected_gradient_max_abs": 0.0003815461402609799
+      },
+      {
+        "start": 21,
+        "initial_parameters_and_length": [
+          0.2693156206127567,
+          7.119376279162134,
+          0.9139223514621914,
+          0.15550340153814515
+        ],
+        "parameters_and_length": [
+          0.778350934236743,
+          157.79266425219964,
+          14.546259702360487,
+          27.240625634449415
+        ],
+        "negative_log_likelihood": -1043.150583589374,
+        "success": true,
+        "solver": "L-BFGS-B",
+        "solver_status": 0,
+        "message": "CONVERGENCE: REL_REDUCTION_OF_F_<=_FACTR*EPSMCH",
+        "iterations": 24,
+        "function_evaluations": 43,
+        "projected_gradient_max_abs": 1.2149860481258656e-05
+      },
+      {
+        "start": 22,
+        "initial_parameters_and_length": [
+          0.8441984112903494,
+          18.341559882482475,
+          0.07470904705825412,
+          130.7889908894145
+        ],
+        "parameters_and_length": [
+          0.7783509345865872,
+          157.79266462221065,
+          14.546259581597536,
+          27.240626125157767
+        ],
+        "negative_log_likelihood": -1043.1505835893745,
+        "success": true,
+        "solver": "L-BFGS-B",
+        "solver_status": 0,
+        "message": "CONVERGENCE: NORM_OF_PROJECTED_GRADIENT_<=_PGTOL",
+        "iterations": 42,
+        "function_evaluations": 79,
+        "projected_gradient_max_abs": 5.8246047558441205e-06
+      },
+      {
+        "start": 23,
+        "initial_parameters_and_length": [
+          0.5069939080476162,
+          127.84897710939812,
+          0.2887510737019701,
+          10.996880891777122
+        ],
+        "parameters_and_length": [
+          0.778350932089105,
+          157.79266236157136,
+          14.546259402353483,
+          27.24062689481322
+        ],
+        "negative_log_likelihood": -1043.1505835893727,
+        "success": true,
+        "solver": "L-BFGS-B",
+        "solver_status": 0,
+        "message": "CONVERGENCE: REL_REDUCTION_OF_F_<=_FACTR*EPSMCH",
+        "iterations": 43,
+        "function_evaluations": 70,
+        "projected_gradient_max_abs": 0.0001272314575544442
+      }
+    ],
+    "seed": 532,
+    "elapsed_seconds": 5.979599084,
+    "notice": "Working stationary Gaussian OU residual model, independent across experiments. First temperatures, ambient and heater calibration are fixed. Better likelihood does not establish thermal model adequacy. All solver outcomes retained; multistart supplies no global certificate.",
+    "physics_parameters": {
+      "Ua": 0.04111256063736577,
+      "Cp": 6.487260472133073,
+      "theta": 14.54626036619302
+    },
+    "rmse_raw_C": 0.515530295389146,
+    "aic_nominal": -2076.3011671787553,
+    "aicc_nominal": -2076.267722362702,
+    "bic_nominal": -2048.823457459334,
+    "iid_baseline_nll": 1352.7529360434648,
+    "twice_nll_improvement_over_iid": 4791.807039265685,
+    "information_criterion_notice": "Nominal parameter count includes the three mean coordinates, length and variance. Rank loss, active bounds, prehistory assumptions, model error and the IID boundary limit prevent routine regular model-selection/test interpretations."
+  },
+  "uncertainty": {
+    "parameters_log_order": [
+      "K",
+      "tau",
+      "theta",
+      "correlation_length_s"
+    ],
+    "mean_rank_relative_1e-8": 3,
+    "mean_singular_values_noise_scaled": [
+      400.4216995392472,
+      92.11603920857972,
+      23.331999725022847
+    ],
+    "mean_cov_log_conditional_noise": [
+      [
+        1.120448193353293e-05,
+        2.6347089481440392e-05,
+        -3.219724503823721e-05
+      ],
+      [
+        2.634708948144039e-05,
+        0.00014958751635907728,
+        -0.0002464420756084019
+      ],
+      [
+        -3.219724503823721e-05,
+        -0.00024644207560840195,
+        0.0018002394853051224
+      ]
+    ],
+    "physics_mean_cov_log_conditional_noise": [
+      [
+        1.120448193353293e-05,
+        -1.5142607547907462e-05,
+        3.219724503823721e-05
+      ],
+      [
+        -1.5142607547907459e-05,
+        0.00010809781932972942,
+        -0.0002142448305701647
+      ],
+      [
+        3.219724503823721e-05,
+        -0.00021424483057016475,
+        0.0018002394853051224
+      ]
+    ],
+    "mean_nonestimable_native_parameters": [],
+    "mean_std_native_conditional_noise": [
+      0.0026053815995220274,
+      1.9298985708456167,
+      0.6171866141885332
+    ],
+    "observed_profile_variance_hessian_log": [
+      [
+        154468.4747245935,
+        -29252.714501667186,
+        -1241.8569046177197,
+        105.90088379046847
+      ],
+      [
+        -29252.714501667186,
+        14399.339357244116,
+        1416.8168884808806,
+        -112.0565428963971
+      ],
+      [
+        -1241.8569046177197,
+        1416.8168884808806,
+        672.7730432870516,
+        -6.409321926703626
+      ],
+      [
+        105.90088379046847,
+        -112.0565428963971,
+        -6.409321926703626,
+        33.65986806898036
+      ]
+    ],
+    "observed_hessian_eigenvalues": [
+      32.53154348596878,
+      495.7918224710271,
+      8699.532739375038,
+      160346.3908878616
+    ],
+    "observed_hessian_eigenvectors_columns": [
+      [
+        0.0015363336017336405,
+        0.018603012964189692,
+        0.19594199276742544,
+        -0.9804378119279411
+      ],
+      [
+        0.012338124480552883,
+        0.13988240723074225,
+        0.9703748746205441,
+        0.19660438839659375
+      ],
+      [
+        -0.014314577999267494,
+        -0.9898652312524595,
+        0.14097560911328158,
+        0.00936986922834853
+      ],
+      [
+        0.9998202354523884,
+        -0.015926833128441148,
+        -0.010257475841206325,
+        -0.0007854653374939643
+      ]
+    ],
+    "observed_cov_log_mean_and_length": [
+      [
+        1.1178715545058706e-05,
+        2.6485208367418698e-05,
+        -3.469962694809438e-05,
+        4.639364446208155e-05
+      ],
+      [
+        2.64852083674187e-05,
+        0.00015262568427863886,
+        -0.000268972644201621,
+        0.0003735596132475542
+      ],
+      [
+        -3.469962694809437e-05,
+        -0.00026897264420162095,
+        0.0019848833650878014,
+        -0.0004083101864796868
+      ],
+      [
+        4.639364446208155e-05,
+        0.0003735596132475542,
+        -0.0004083101864796868,
+        0.030728869088989044
+      ]
+    ],
+    "physics_observed_cov_log_mean_and_length": [
+      [
+        1.1178715545058706e-05,
+        -1.5306492822359994e-05,
+        3.469962694809438e-05,
+        -4.639364446208155e-05
+      ],
+      [
+        -1.5306492822359994e-05,
+        0.00011083398308886017,
+        -0.00023427301725352664,
+        0.00032716596878547266
+      ],
+      [
+        3.469962694809437e-05,
+        -0.00023427301725352658,
+        0.0019848833650878014,
+        -0.0004083101864796868
+      ],
+      [
+        -4.639364446208155e-05,
+        0.00032716596878547266,
+        -0.0004083101864796868,
+        0.030728869088989044
+      ]
+    ],
+    "hessian_step_sizes_log": [
+      0.0001,
+      5e-05
+    ],
+    "hessian_relative_step_disagreement": 6.17225856493239e-07,
+    "hessian_raw_relative_asymmetry": [
+      1.985446660395102e-07,
+      4.963706141991127e-08
+    ],
+    "notice": "Conditional mean information holds fitted OU scale/length fixed. Observed curvature profiles variance and includes mean/length coupling; it is local and can be nonpositive or step sensitive. Active bounds, pole-label modes and mean misspecification invalidate routine symmetric confidence interpretations."
+  },
+  "validation": [
+    {
+      "dataset": "validation_experiment_env_2_sin_2_50_run_1.csv",
+      "n": 899,
+      "rmse_C": 3.5156148889879586,
+      "bias_C": 3.069185775627818,
+      "max_abs_error_C": 5.788710796288555
+    },
+    {
+      "dataset": "validation_experiment_env_2_sin_2_50_run_2.csv",
+      "n": 900,
+      "rmse_C": 4.397868242180283,
+      "bias_C": 4.010564363271263,
+      "max_abs_error_C": 6.7254749488315255
+    },
+    {
+      "dataset": "validation_experiment_env_2_sin_2_50_run_3.csv",
+      "n": 900,
+      "rmse_C": 4.120200784146981,
+      "bias_C": 3.6924677201734335,
+      "max_abs_error_C": 6.590147470330393
+    },
+    {
+      "dataset": "validation_experiment_env_2_sin_50_50_run_1.csv",
+      "n": 900,
+      "rmse_C": 3.894873523075813,
+      "bias_C": 3.493164295059573,
+      "max_abs_error_C": 5.909885033440844
+    },
+    {
+      "dataset": "validation_experiment_env_2_sin_50_50_run_2.csv",
+      "n": 898,
+      "rmse_C": 4.549920056815277,
+      "bias_C": 4.1892870006954785,
+      "max_abs_error_C": 6.566828048655694
+    },
+    {
+      "dataset": "validation_experiment_env_2_sin_50_50_run_3.csv",
+      "n": 898,
+      "rmse_C": 4.129899416510972,
+      "bias_C": 3.737965759844011,
+      "max_abs_error_C": 6.220956172483682
+    },
+    {
+      "dataset": "validation_experiment_env_2_sin_5_50_run_2.csv",
+      "n": 900,
+      "rmse_C": 1.4683181883469816,
+      "bias_C": 1.2694935377558623,
+      "max_abs_error_C": 2.7310287791737267
+    },
+    {
+      "dataset": "validation_experiment_env_2_sin_5_50_run_3.csv",
+      "n": 900,
+      "rmse_C": 2.2018902706247734,
+      "bias_C": 1.9712739617555533,
+      "max_abs_error_C": 3.7360911438372284
+    },
+    {
+      "dataset": "validation_experiment_env_2_step_50_run_2.csv",
+      "n": 900,
+      "rmse_C": 0.43776824445529494,
+      "bias_C": 0.26243667715197044,
+      "max_abs_error_C": 0.7739541673277941
+    },
+    {
+      "dataset": "validation_experiment_env_2_step_50_run_3.csv",
+      "n": 900,
+      "rmse_C": 2.5779898642026327,
+      "bias_C": 2.1856387262765495,
+      "max_abs_error_C": 3.9652044722610853
+    },
+    {
+      "dataset": "validation_experiment_sin_5_50.csv",
+      "n": 989,
+      "rmse_C": 3.2180199033238246,
+      "bias_C": 2.959556010002599,
+      "max_abs_error_C": 5.635102007607713
+    }
+  ],
+  "prediction_file": "predictions/joint__chain_n8_io_cold_linear_exact.csv.gz",
+  "prediction_sha256": "ed313ba2d9f82c5606daff765a2eb1b5cd56a690056e8694ef7762ee36e7e9ca",
+  "prediction_notice": "Thermal mean prediction; first-sample innovation undefined because that temperature conditions the initial state. Noise covariance changes inference, not the definition of the thermal output."
+}
