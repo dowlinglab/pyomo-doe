@@ -99,7 +99,7 @@ def main():
         suffix = item["file"].removeprefix("validation_experiment_")
         table.append(item["code"]+r" & \path{"+suffix+"} & "+f"{item['duration_s']:.1f} & {item['conditioned_initial_C']:.2f} & {item['residual_count']}"+r" \\")
     table.extend([r"\bottomrule", r"\end{tabular}",
-                  r"\caption{Validation-file codes. Restore the common prefix \path{validation_experiment_} to each supplied filename. $N$ excludes the initial temperature, which also supplies the assumed ambient for that file; it is not an independent ambient measurement. File labels do not establish independent replication or a change in physical environment.}",
+                  r"\caption{Validation-file codes. Restore the common prefix \texttt{validation\_experiment\_} to each supplied filename. $N$ excludes the initial temperature, which also supplies the assumed ambient for that file; it is not an independent ambient measurement. File labels do not establish independent replication or a change in physical environment.}",
                   r"\label{tab:validation-files}", r"\end{table}", ""])
     table_path.write_text("\n".join(table))
     summary_path = args.tables/"validation_summary.tex"

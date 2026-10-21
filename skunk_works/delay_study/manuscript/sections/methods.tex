@@ -76,6 +76,32 @@ in these finite records do not establish those assumptions or nominal coverage.
 These calculations assess sensitivity to
 serial dependence; they do not correct a biased mean model.
 
+\subsection{A working OU residual likelihood}
+We also fitted the 48 IO calibration cases with stationary Gaussian residual
+covariance $R_{ij}=\sigma^2\exp(-|t_i-t_j|/\ell)$ within each experiment,
+independently across experiments. Actual retained observation times are used.
+For residuals $e_i$, set $w_1=e_1$ and
+\[
+ \phi_i=e^{-(t_i-t_{i-1})/\ell},\qquad
+ w_i=\frac{e_i-\phi_i e_{i-1}}{\sqrt{1-\phi_i^2}}.
+\]
+With $q=\sum_j\|\bm w_j\|^2$ over records and $N$ retained observations,
+profiling the common variance gives $\hat\sigma^2=q/N$ and negative
+log-likelihood
+\[
+ \mathcal L=\frac12\left[
+ N\{\log(2\pi)+1+\log(q/N)\}
+ +\sum_j\sum_{i=2}^{N_j}\log(1-\phi_{ij}^2)\right].
+\]
+The determinant term is retained while optimizing the three log mean parameters
+and $\log\ell$, with $\ell\in[0.05,3000]$ s, 24 starts and the same seed.
+All solver attempts and boundary diagnostics are retained. We compare
+conditional mean information at fixed fitted noise with observed curvature
+that profiles variance and includes mean--length coupling. Two Hessian steps,
+$10^{-4}$ and $5\times10^{-5}$ in log coordinates, check numerical sensitivity.
+A fitted OU length or improved likelihood does not establish a residual
+mechanism; raw and filtered correlation diagnostics assess this working model.
+
 \subsection{Likelihood profiles and resampling}
 For each native parameter we fixed its value and reoptimized all nuisance
 parameters, following the profile construction of \citet{raue-2009-structural}.
@@ -135,6 +161,30 @@ accuracy. The study conditions on these generating points and does not estimate
 coverage under real between-record model discrepancy.
 Bootstrap intervals remain real-data sensitivity comparisons; their
 repeated-sampling coverage is unmeasured by this experiment.
+
+\subsection{Conditional prediction uncertainty}
+For target mean sensitivity $\bm j(t)$, local mean variance is
+$\bm j(t)C\bm j(t)^\top$. We use covariance on the identifiable quotient with
+residual degrees of freedom $N-\operatorname{rank}(J)$, checking that the target
+annihilates each structural null direction. Known global ambiguities require
+an additional check: an equilibrated constant-input calibration leaves delay
+free, so we withhold bands for a varying-input target even if its local delay
+derivative happens to vanish at the selected parameter. The original model's
+zero-state physical equivalence preserves predictions globally and permits
+finite prediction uncertainty on its quotient.
+
+Local pointwise normal mean bands are compared with percentile mean bands from
+saved joint-fit bootstrap trajectories. An additional independent future error
+law is required for observation prediction bands. We add its plug-in marginal
+variance under IID or working OU assumptions; HAC supplies mean bands without
+inventing a future error distribution. For Gaussian parametric bootstrap draws,
+future-observation quantiles are computed from the declared equal-weight mixture
+of 400 Gaussian trajectory components. This is a numerical mixture calculation,
+with the inferential accuracy of the bootstrap still conditional and unproven.
+Circular-block draws supply mean bands only. The first observation is excluded
+from all bands because it conditions the state. Existing-record pointwise
+containment is descriptive, without a repeated-experiment or simultaneous
+coverage interpretation.
 
 \subsection{Prospective experiment design}
 The prespecified input-design horizon is 900 s with 1 s observations and 19
