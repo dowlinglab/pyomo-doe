@@ -15,6 +15,7 @@ from scipy.stats import norm
 
 import figure_style as fs
 from run_fits import save_json
+from profile_catalog import ProfileCatalog
 
 HERE = Path(__file__).resolve().parent
 
@@ -23,6 +24,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--results", type=Path, default=HERE/"results")
     parser.add_argument("--output", type=Path, default=HERE/"manuscript/figures")
+    parser.add_argument("--profile-index",type=Path,help="Catalog filename relative to --results, or an absolute path; defaults to the preserved first pass")
     args = parser.parse_args()
     args.output.mkdir(parents=True, exist_ok=True)
     sources, data, names = {}, {}, []
@@ -45,9 +47,10 @@ def main():
 
     # Show each pole-label mode on its own declared x window. A full union is
     # retained in the source; the table does not collapse it to an envelope.
-    index = read(args.results/"profile_index.json")["profiles"]
+    catalog = ProfileCatalog(args.results,args.profile_index)
+    sources.update(catalog.inputs)
     profile_name = "joint__chain_n1_io_cold_linear_exact__theta.json"
-    profile_path = args.results/index[profile_name]["path"]
+    profile_path = catalog.profile_path(profile_name)
     profile = read(profile_path)["profile"]
     x = np.array([p["parameter_value"] for p in profile["points"]])
     known = np.array([p["lr_known_sigma_iid"] for p in profile["points"]])
@@ -91,7 +94,7 @@ def main():
                 raise RuntimeError("Missing bootstrap interval")
             row = selected.iloc[0]
             rows.append({"method": method, "lower": float(row.lower), "center": float(row['median']), "upper": float(row.upper)})
-        path = args.results/index[key+"__theta.json"]["path"]
+        path = catalog.profile_path(key+"__theta.json")
         likelihood = read(path)["profile"]
         point = record["fit"]["parameters"]["theta"]
         component = next(c for c in likelihood["intervals_unknown_sigma_iid"] if c["lower"] <= point <= c["upper"])
@@ -185,8 +188,8 @@ def main():
 
     path = args.output/"uncertainty_plot_data.json"
     save_json(path, data)
-    manifest = {"producer_sha256": {name: hashlib.sha256((HERE/name).read_bytes()).hexdigest() for name in ("plot_uncertainty.py", "figure_style.py")},
-                "input_sha256": sources, "plot_data_sha256": hashlib.sha256(path.read_bytes()).hexdigest(), "figures": names,
+    manifest = {"producer_sha256": {name: hashlib.sha256((HERE/name).read_bytes()).hexdigest() for name in ("plot_uncertainty.py", "figure_style.py", "profile_catalog.py")},
+                "input_sha256": sources, "profile_catalog":catalog.selection,"plot_data_sha256": hashlib.sha256(path.read_bytes()).hexdigest(), "figures": names,
                 "status": "generated_awaiting_independent_numeric_and_visual_audit"}
     snapshot = HERE.parents[1]/"snapshot.json"
     if snapshot.exists():

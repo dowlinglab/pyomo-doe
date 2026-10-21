@@ -119,11 +119,14 @@ def main():
     if any(errors[key] > tolerances[key] for key in errors):
         raise RuntimeError("Refined profile arithmetic/forward audit failed: "+json.dumps(errors))
     audit = {"status": "passed", "refined_profiles": len(checks), "maximum_errors": errors,
+             "auditor_sha256": sha(Path(__file__)),
              "tolerances": tolerances, "profiles": checks, "input_sha256": inputs,
              "notice": "Verified arithmetic, new-point forward SSE, and complete inclusion of the fitted-transfer equivalence components inside the declared box. No claim of unique physical confidence, global nuisance minima, or absence of unobserved modes. First-pass catalog and files remain preserved."}
     save_json(root/"profile_refinement_audit.json", audit)
     catalog["refinement_manifest_sha256"] = sha(refined/"manifest.json")
+    catalog["refinement_manifest_path"] = str((refined/"manifest.json").relative_to(root))
     catalog["refinement_audit_sha256"] = sha(root/"profile_refinement_audit.json")
+    catalog["refinement_audit_path"] = "profile_refinement_audit.json"
     catalog["selection_notice"] = "Eighteen audited refinements plus 282 preserved first-pass selections; use the first-pass catalog to reproduce earlier draft figures."
     save_json(root/"selected_profile_index.json", catalog)
     print(json.dumps({"status": "passed", "selected_profiles": len(catalog["profiles"]), "refined_profiles": len(checks), "maximum_errors": errors}))

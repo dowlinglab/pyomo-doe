@@ -9,8 +9,11 @@ import numpy as np
 import pandas as pd
 
 from run_fits import save_json
+from profile_catalog import ProfileCatalog
 
 HERE = Path(__file__).resolve().parent
+EXPECTED_TABLES = ("calibration_rmse.tex","joint_parameters.tex","coordinate_metrics.tex",
+                   "delay_uncertainty.tex","ou_diagnostics.tex")
 
 
 def cells(path):
@@ -19,6 +22,8 @@ def cells(path):
         if line.startswith("$n=") or line.startswith("Pure delay &"):
             row = [value.strip().rstrip("\\").strip() for value in line.split("&")]
             order = 0 if row[0] == "Pure delay" else int(re.search(r"n=(\d+)", row[0])[1])
+            if order in result:
+                raise RuntimeError("Duplicate table model row: "+str(path))
             result[order] = row[1:]
     return result
 
@@ -33,10 +38,24 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--results", type=Path, default=HERE/"results")
     parser.add_argument("--tables", type=Path, default=HERE/"manuscript/tables")
+    parser.add_argument("--profile-index",type=Path,help="Catalog filename relative to --results, or an absolute path; defaults to the preserved first pass")
     args = parser.parse_args()
     summary = pd.read_csv(args.results/"fit_summary.csv").set_index("case")
     boot = pd.read_csv(args.results/"bootstrap/summary.csv")
-    index = json.loads((args.results/"profile_index.json").read_text())["profiles"]
+    manifest_path = args.tables/"table_manifest.json"
+    manifest = json.loads(manifest_path.read_text())
+    catalog = ProfileCatalog(args.results,args.profile_index)
+    catalog.verify_manifest(manifest)
+    if set(manifest["outputs"]) != set(EXPECTED_TABLES):
+        raise RuntimeError("The baseline producer must own exactly its five tables")
+    for name in EXPECTED_TABLES:
+        path = args.tables/name
+        if hashlib.sha256(path.read_bytes()).hexdigest() != manifest["outputs"][name]:
+            raise RuntimeError("Table bytes changed after generation: "+name)
+        expected_rows = {1,2,3,4,6,8,12,0} if name not in {"delay_uncertainty.tex","ou_diagnostics.tex"} else {1,2,12,0}
+        parsed = cells(path)
+        if set(parsed) != expected_rows or any(len(row) != (5 if name == "joint_parameters.tex" else 4) for row in parsed.values()):
+            raise RuntimeError("Incomplete table model rows: "+name)
     checks, worst_rounding_fraction = 0, 0.
 
     def check(cell, expected, significant=None, decimals=None):
@@ -77,8 +96,7 @@ def main():
             check(cell, reference, significant=4)
         check(row[3], abs(summary.loc[case(order), "sse"]-summary.loc[case(order, "physics"), "sse"]), significant=2)
     for order, row in cells(args.tables/"delay_uncertainty.tex").items():
-        selected = index[case(order)+"__theta.json"]
-        p = json.loads((args.results/selected["path"]).read_text())["profile"]
+        p = json.loads(catalog.profile_path(case(order)+"__theta.json").read_text())["profile"]
         displayed = re.findall(r"\[([\d.]+),([\d.]+)\]", row[0])
         components = p["intervals_unknown_sigma_iid"]
         if len(displayed) != len(components):
@@ -104,7 +122,10 @@ def main():
             check(cell, reference, significant=4)
     result = {"status": "passed", "numeric_cells_checked": checks, "maximum_fraction_of_rounding_radius": worst_rounding_fraction,
               "producer_sha256": hashlib.sha256((HERE/"audit_tables.py").read_bytes()).hexdigest(),
-              "table_sha256": {p.name: hashlib.sha256(p.read_bytes()).hexdigest() for p in args.tables.glob("*.tex")},
+              "table_sha256": {name: hashlib.sha256((args.tables/name).read_bytes()).hexdigest() for name in EXPECTED_TABLES},
+              "table_manifest_sha256":hashlib.sha256(manifest_path.read_bytes()).hexdigest(),
+              "profile_catalog":catalog.selection,"profile_selection_input_sha256":catalog.inputs,
+              "support_source_sha256":hashlib.sha256((HERE/"profile_catalog.py").read_bytes()).hexdigest(),
               "independence": "RMSE/SSE use summary CSV paths; parameters use independent physical fits; physical condition numbers use independent sensitivity SVDs; moment conditioning uses transformed covariance rather than the producer's information congruence; OU SD uses the observed Hessian inverse. Profile/bootstrap cells are checked against their separately audited saved sources.",
               "notice": "Printed numerical/rounding checks are separate from layout inspection and scientific review."}
     save_json(args.tables/"table_numeric_audit.json", result)

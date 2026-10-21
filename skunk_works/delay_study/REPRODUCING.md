@@ -91,7 +91,13 @@ Keep failed attempts and failed chunks in subsequent summaries.
 
 Selected-profile refinement produces a **separate** catalog; do not overwrite
 the first-pass catalog or use its flagged coarse physical endpoints as final
-confidence limits. A family-equivalence witness is a feasible equal-prediction
+confidence limits. Pass `--profile-index selected_profile_index.json` to
+`render_tables.py`, `plot_uncertainty.py` and their paired auditors after the
+refinement audit passes. Defaults preserve the first-pass catalog; adding a
+refinement file does not silently alter a figure or table. Manifests record
+the selected catalog, and a paired audit rejects a different selection. The
+baseline table producer owns exactly five files in the shared table directory.
+A family-equivalence witness is a feasible equal-prediction
 point, not proof of a globally minimized nuisance objective.
 
 Coverage summarization rejects active, interrupted or filtered runs. Its failure

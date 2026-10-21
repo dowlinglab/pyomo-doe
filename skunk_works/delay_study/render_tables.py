@@ -10,9 +10,12 @@ import numpy as np
 import pandas as pd
 
 from run_fits import save_json
+from profile_catalog import ProfileCatalog
 
 HERE = Path(__file__).resolve().parent
 ORDERS = [1, 2, 3, 4, 6, 8, 12, 0]
+TABLE_FILENAMES = ("joint_parameters.tex","calibration_rmse.tex","coordinate_metrics.tex",
+                   "delay_uncertainty.tex","ou_diagnostics.tex")
 
 
 def key(order, coordinates="io", initialization="cold", calibration="joint"):
@@ -50,6 +53,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--results", type=Path, default=HERE/"results")
     parser.add_argument("--output", type=Path, default=HERE/"manuscript/tables")
+    parser.add_argument("--profile-index",type=Path,help="Catalog filename relative to --results, or an absolute path; defaults to the preserved first pass")
     args = parser.parse_args()
     args.output.mkdir(parents=True, exist_ok=True)
     sources = {}
@@ -61,7 +65,8 @@ def main():
     def fit(order, coordinates="io", initialization="cold", calibration="joint"):
         return read(args.results/"fits"/(key(order, coordinates, initialization, calibration)+".json"))
 
-    profile_index = read(args.results/"profile_index.json")["profiles"]
+    catalog = ProfileCatalog(args.results,args.profile_index)
+    sources.update(catalog.inputs)
     boot_path = args.results/"bootstrap/summary.csv"
     sources[str(boot_path)] = hashlib.sha256(boot_path.read_bytes()).hexdigest()
     bootstrap = pd.read_csv(boot_path)
@@ -89,7 +94,7 @@ def main():
                                ["$"+mantissa+r"\times10^{"+str(int(exponent))+"}$"])
         if order in (1, 2, 12, 0):
             profile_name = key(order)+"__theta.json"
-            profile = read(args.results/profile_index[profile_name]["path"])["profile"]
+            profile = read(catalog.profile_path(profile_name))["profile"]
             distributions = []
             for method in ("parametric", "block60"):
                 selected = bootstrap[(bootstrap.case == key(order)) & (bootstrap.method == method) &
@@ -132,8 +137,10 @@ def main():
                 "Working OU fits to the two joint cold records. The scale is the maximum-likelihood stationary residual standard deviation. ACF1 is the centered sample lag-one correlation of filtered innovations. Strong remaining negative correlation challenges this one-component residual covariance; a high fitted likelihood does not validate it.",
                 "tab:ou-diagnostics")
     save_json(args.output/"table_manifest.json", {"producer_sha256": hashlib.sha256((HERE/"render_tables.py").read_bytes()).hexdigest(),
+                                                  "support_sources_sha256":{"profile_catalog.py":hashlib.sha256((HERE/"profile_catalog.py").read_bytes()).hexdigest()},
                                                   "input_sha256": sources,
-                                                  "outputs": {p.name: hashlib.sha256(p.read_bytes()).hexdigest() for p in args.output.glob("*.tex")},
+                                                  "profile_catalog":catalog.selection,
+                                                  "outputs": {name: hashlib.sha256((args.output/name).read_bytes()).hexdigest() for name in TABLE_FILENAMES},
                                                   "status": "generated_awaiting_numeric_and_rendered_audit"})
 
 

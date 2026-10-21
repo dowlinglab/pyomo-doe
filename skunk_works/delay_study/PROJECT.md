@@ -29,9 +29,9 @@ scope, and `results/manifest.json` will identify manuscript results.
 - Notebook migration committed in `58b4fa5`: 13 deterministic Python exports,
   scientific-cell AST equality, and a successful migrated simulation run.
 - Exact LTI models committed in `451749f`; inference runner in `275fe0a`.
-  One hundred and sixteen focused checks pass after adding exact-draft expansion,
-  citation-offset and independent nuisance/prediction/design-audit checks. They cover independent
-  integrator/analytic agreement,
+  One hundred and twenty-two focused checks pass after adding exact-draft expansion,
+  citation-offset, independent nuisance/prediction/design audits, and explicit
+  profile-catalog selection checks. They cover independent integrator/analytic agreement,
   transformations, synthetic recovery, null directions, profile recovery,
   resampling, OU likelihoods, coverage accounting and input-design gradients.
 - First full sweep finished 95/99 cases; four uncertainty serialization failures
@@ -302,6 +302,24 @@ all six cold one-stage delay profiles, and joint cold n2/n12/pure-delay examples
 It has **not been launched** while coverage owns the four-worker budget. The
 separate auditor must pass before `selected_profile_index.json` can replace any
 profile selection for later tables or plots; the original catalog remains intact.
+
+Profile-dependent table/figure producers and their paired auditors now accept
+`--profile-index selected_profile_index.json` explicitly. Their default remains
+the preserved first-pass catalog for reproduction; no automatic switch occurs
+when refinement files appear. `profile_catalog.py` checks all 300 selections,
+consumed file hashes, the complete audited 18-profile refinement and unchanged
+282 selections, and rejects flagged coarse physical endpoints or a mismatched
+artifact catalog. Refinement catalogs retain receipt paths as well as hashes,
+so an audited retry directory can be selected. The baseline table producer and
+auditor own exactly five files; they no longer claim other producers' tables.
+A missing or duplicate model row now fails the table audit. Six new checks pass;
+the full suite is 122/122. `baseline/profile_catalog_migration_receipt.json`
+records five byte-identical regenerated tables, 150 printed cells and 434
+preserved figure values checked against the original selection. Existing
+manuscript artifacts were not replaced. After the refinement audit passes,
+regenerate the five tables and four uncertainty figures with the explicit
+selected catalog, rerun their paired numeric audits with the same flag, and
+perform fresh visual QA before updating manuscript interval claims.
 
 The prepared coverage summarizer refuses an active or interrupted run and checks
 all replicate identities, generating truths, seeds, physical transformations and
