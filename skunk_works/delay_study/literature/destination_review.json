@@ -1,0 +1,18 @@
+{
+  "scope": "Destination review after full-draft binding was rejected as connector disclosure",
+  "native_server_transport": "local stdio",
+  "native_command": "/Users/adowling/Library/Application Support/shared-literature-rag/env/bin/python",
+  "native_arguments": [
+    "-m",
+    "lab_rag.mcp_server",
+    "--config",
+    "/Users/adowling/Library/Application Support/shared-literature-rag/config.json"
+  ],
+  "runtime_package": "shared-literature-rag 0.5.8 maintenance",
+  "runtime_source_fingerprint": "c53337a5bbae2d6d961275f89042946345fe0ca5edbad5dbe8c76b4f55697a19",
+  "packet_authority_local_state": "/Users/adowling/Library/Application Support/shared-literature-rag/state-0.5.8-maintenance-2026-10-19",
+  "source_module_sha256": "755fa86d591caf5bd319ce275d8d5f4887c161d3e014d57709215d61f466d050",
+  "finding": "The configured native tool executes on this Mac. set_packet_draft writes the exact draft to a private local evidence-packet revision through the normal API; it does not upload the manuscript to a remote literature service or publish it to the shared PDF corpus.",
+  "authorization_basis": "User explicitly requested the literature skill for the unattended study; that skill requires exact-draft private evidence binding. The retry uses the same native API, without changing runtime, transport, private-state location or publication policy.",
+  "review_status": "Agent destination/data-flow inspection, not an approval override"
+}

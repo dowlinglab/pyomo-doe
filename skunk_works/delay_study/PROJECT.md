@@ -57,10 +57,7 @@ propagator's existing one-nanosecond resolution before deduplication resolved
 those exceptions; `results/design_final` is the separately measured corrected
 matrix. Neither repair establishes a continuous-time bound.
 
-The latest full numerical suite passed **141/141 in 8.99 s**. Subsequent changes
-are report formatting, a one-job worker cap and manuscript notation/prose;
-run the appropriate final checks once, without repeatedly redoing unchanged fits.
-The one-job cap leaves full discrimination pools at four workers.
+The final full numerical suite passed **141/141 in 9.03 s**, saved in results/final_tests.xml. Fresh 24-start joint fits for the finite-chain n2, pure-delay and original physical families exactly reproduced saved objectives and predictions; results/final_reproduction/audit.json and its frozen source receipt retain the scope. This is not a full-matrix rerun. No additional numerical tests are needed absent changes or a new failure. The one-job cap leaves full discrimination pools at four workers.
 
 ## Report artifacts and verification
 
@@ -89,11 +86,7 @@ compiler run or a partial receipt is not final all-page QA or human review.
 
 Use the configured lab literature skill, without installing or reconfiguring
 its runtime or ingesting/publishing new source PDFs. Packet:
-`6f11d88ebd8741c892fea8fffc243d7d`. Fresh native summary inspection confirmed head
-`38a5811a157d16b7d0ffb039919d3516a445e2d087ac957e4fbebf0749fddab1`, no draft,
-zero claims/citation occurrences/packet evidence, one research note and two saved
-searches. That inspection completed; no native literature call is live now.
-Use the actual head after any mutation, not the original revision.
+`6f11d88ebd8741c892fea8fffc243d7d`. The exact draft is now saved through the native API. All 24 occurrences have exact-span agent claims and inventory coverage review; 17 explicit issues retain missing ingested carriers for five externally inspected works. Latest completed claim/issue revision: 27bbc96ec524d7f22cd6383a97ffc45b90b71c8b96ffc901d46d931e6bb70df8. Evidence planning batch 6a1c85fa62e0408b915223d72961c147 is live in functions cell 750; do not restart it. The batch contains seven claim-bound uses of the two inspected reusable passages, with support versus context relations kept distinct. Inspect every saved plan before grounding. Use the actual head after any mutation, not this earlier revision.
 
 Runtime: configured maintenance 0.5.8; private state is
 `/Users/adowling/Library/Application Support/shared-literature-rag/state-0.5.8-maintenance-2026-10-19`.
@@ -114,11 +107,7 @@ Chapter/book aliases and inspected preprint/journal distinctions must survive
 export. Four DOI identities passed Crossref checks; three additional identities
 were checked against primary pages. Do not claim seven Crossref checks.
 
-After final all-page review, bind the exact expanded draft using
-`set_packet_draft`, account for every citation occurrence, record exact-span
-claims with support assessments, ground supported Raue/chapter clauses through
-normal inspected plan/ground operations, and retain explicit external-source
-availability gaps. Bounded evidence/grounding batch tools are available; inspect
+Exact draft and claim/inventory binding has completed. Finish the live evidence-planning batch, inspect its plans, then ground the supported/context Raue/chapter clauses through normal native operations while retaining external-source availability gaps. Bounded evidence/grounding batch tools are available; inspect
 plans before applying them. Export private Markdown/JSON/scoped BibTeX into
 ignored `_private/`, inspect it, and save only scoped public receipts/hash metadata.
 Raw source passages and PDFs do not belong in Git. Mechanical quote matching,
@@ -153,3 +142,5 @@ Numerical runtime is pinned in `environment.json`; verified interpreter:
 a measured snapshot. At most four long numerical worker processes total;
 independent short checks may use one thread as described in REPRODUCING.md.
 Source libraries and research state outside this repository are not task outputs.
+
+The first exact-draft API attempt was rejected as remote connector disclosure. A configuration/runtime/source-flow check proved this is the configured local stdio server and private local packet storage; the unchanged native API retry then succeeded. literature/destination_review.json preserves the evidence. No transport, shared runtime or publication setting was changed, and no rejected action was routed through another execution path.
