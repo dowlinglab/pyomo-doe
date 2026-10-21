@@ -64,6 +64,11 @@ changes its condition number. Moment coordinates do not improve this particular
 metric at these fitted points. These differences concern the coordinate metric;
 they do not distinguish observationally equivalent model explanations.
 \input{tables/coordinate_metrics}
+Table~\ref{tab:coordinate-correlations} shows the corresponding local parameter
+correlations. Transforming the capacity combines gain and time-constant
+uncertainty, so the physical-coordinate correlations need not resemble the IO
+correlations even though the predicted thermal response is unchanged.
+\input{tables/coordinate_correlations}
 
 The positive information spectra are similar across the reduced cold models,
 while their native local dimensions differ from the original model and the
@@ -111,6 +116,46 @@ $1.8\times10^{-12}\,{}^\circ\mathrm C$. Conductance $\Ua$ remained fixed while
 $\Ub$, $\CpH$ and $\CpS$ varied. Appendix~\ref{sec:structural} gives the
 analytic family and its positivity limits; sampled ranges are not confidence
 intervals.
+
+Figure~\ref{fig:physical-family} shows the joint family and the forward numerical
+agreement along it. A selected optimizer point is one compatible member.
+By contrast, the family's limiting capacities and maximum coupling are functions
+of identifiable transfer coefficients. Table~\ref{tab:family-limits} and
+Fig.~\ref{fig:family-boundaries} propagate saved one-stage bootstrap draws to
+these boundary functions. Larger residual blocks widen their conditional
+percentile intervals. This quantifies uncertainty in the family limits without
+assigning an arbitrary member the status of a physical estimate.
+\input{tables/family_limits}
+
+\begin{figure}[p]
+ \centering
+ \includegraphics[width=\linewidth]{physical_family.pdf}
+ \caption{Different original physical parameters give the same measured
+ temperature response. The joint cold transfer function generates 403 positive
+ members parameterized by $r=\CpS/\Ub$. Panels (a)--(c) show the heater capacity,
+ sensor capacity and coupling conductance. Orange dots mark the member selected
+ by the original optimizer. Panel (d) shows maximum absolute prediction
+ differences over both calibration records, exposing floating-point agreement
+ rather than measurement precision. Of the displayed members, 401 fall inside
+ the original numerical fitting box. Strictly positive family endpoints are
+ approached but not attained; the curves are not confidence regions.}
+ \label{fig:physical-family}
+\end{figure}
+
+\begin{figure}[p]
+ \centering
+ \includegraphics[width=\linewidth]{family_boundary_intervals.pdf}
+ \caption{Uncertainty in identifiable physical-family boundaries can be
+ propagated without selecting a physical family member. Panels show the
+ heater-capacity infimum and supremum, sensor-capacity supremum and coupling
+ supremum. Each bar is a conditional 95\% percentile interval from 400 saved
+ joint cold one-stage bootstrap draws, expressed as percent change from its
+ fitted boundary value; dots mark medians. The strictly positive family
+ precedes rectangular numerical fit boxes. These are intervals for boundary
+ functions, excluding heater-calibration and model-discrepancy uncertainty;
+ they are not marginal intervals for $\CpH$, $\CpS$ or $\Ub$.}
+ \label{fig:family-boundaries}
+\end{figure}
 
 The analytic family also exposed an interpolation failure. All nine redundant
 physical-parameter profiles excluded some known equivalent family members from
@@ -166,6 +211,34 @@ the residual assumptions even when the fitted thermal trajectories remain close.
  are nominal conditional intervals under different assumptions, not a common
  unconditional physical uncertainty or simultaneous confidence statement.}
  \label{fig:delay-intervals}
+\end{figure}
+
+\subsection{Nonregular curvature and the delay-chain limit}
+Two deterministic checks distinguish local singularity from exact physical
+ambiguity (Fig.~\ref{fig:nonregular-limits}). Near a repeated pole, the squared
+temperature distance grows quartically along the fixed-mean perturbation,
+consistent with the canceled first derivative in Appendix~\ref{sec:structural}.
+The rank-deficient quadratic approximation misses this higher-order distinction.
+Separately, a cold constant step has a nonuniform onset limit as the chain
+approaches pure delay. At $t=\theta$, the pure-delay response has not risen,
+whereas the finite-chain rise decays as $n^{-1/2}$ with the derived coefficient.
+These are fixed-parameter model implications, rather than comparisons of
+refitted TC-Lab errors.
+
+\begin{figure}[p]
+ \centering
+ \includegraphics[width=\linewidth]{nonregular_limits.pdf}
+ \caption{Two deterministic limits challenge routine local approximations.
+ (a) Squared prediction distance over the recorded sine command for
+ $K=0.78$, $\tau=10+\delta$ and $\theta=10n-\delta$, with cold states.
+ The dotted quartic guide is anchored at the smallest positive two-stage
+ perturbation. (b) Exact cold constant-step temperature rise at $t=\theta$
+ for $K=0.78$, $\tau=150$ s, $\theta=18$ s and $u=50$ percentage points.
+ The reference coefficient is $A=Ku\theta/(\tau\sqrt{2\pi})$; the pure-delay
+ rise is zero at that instant. The calculations use separate parameter and
+ input settings and do not constitute fitted order selection or uncertainty
+ coverage.}
+ \label{fig:nonregular-limits}
 \end{figure}
 
 \subsection{The working correlated-noise model remains inadequate}
