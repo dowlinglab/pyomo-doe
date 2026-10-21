@@ -120,7 +120,9 @@ configuration and raw data into a temporary snapshot with read-only source files
 checks the pinned runtime, and records hashes and a reproduction command at the
 output. This makes the measured source independent of subsequent edits in this
 checkout. Never change the snapshot or the committed fit inputs during a job.
-Run at most four numerical workers total, including across different phases.
+Run at most four long-running numerical workers total, including across different
+phases. Brief unit checks may use one additional thread with BLAS capped at one;
+do not use elapsed times from overlapping work as performance benchmarks.
 
 ```
 OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 python skunk_works/delay_study/frozen_run.py run_profiles.py --fits skunk_works/delay_study/results/fits --output skunk_works/delay_study/results/profiles
@@ -181,6 +183,16 @@ bylines, obtain/check the published Gerencser/Hjalmarsson/Huang (2017) version
 (the downloaded 2019 arXiv revision differs in author order), and review primary
 sources for dependent-data uncertainty. `literature/source_review.json` needs
 its pending discovery statuses reconciled with these later source inspections.
+Raue's nuisance-reoptimization passage is now grounded in fine shard
+`2ec259a5dedd82b02a891e141629a060ac4cb8beabf6ff26a7c1077636036afe`.
+The published Newey-West (1987) scan was acquired from a University of Wisconsin
+course source, OCR-read and visually checked at physical pages 1-3 (printed
+703-705). Equation (5) supplies the Bartlett weights; Theorem 2 states conditions
+that our finite-bandwidth sensitivity checks do not establish. The source hashes,
+preprint/journal distinction, and access gaps for Kunsch and the adaptive-design
+journal paper are recorded in the literature receipts. A parallel bibliography
+lookup was cancelled after several minutes without a result; do not interpret
+that attempt as evidence of absence from the corpus.
 The configured literature server is maintenance 0.5.8; do not change its runtime,
 models, taxonomy, existing source records or configuration to bypass limitations.
 
@@ -206,3 +218,42 @@ from saved numerical outputs and replace status placeholders before delivery.
   parameter/model sensitivity of the proposed inputs.
 - Literature: source/claim/page audit distinguishing theoretical assumptions,
   our derivations, and observed TC-Lab results. Do not cite metadata-only leads.
+
+## Prepared next numerical phases
+
+All **33 focused checks passed** on the current code: exact models, inference,
+profiles and their recovery path, bootstrap resampling, and design maps/gradients
+and resource constraints. The new design utilities are in `design.py`; a full
+resumable design driver still needs to be written. The measured bootstrap source
+is unaffected because its run uses the earlier immutable snapshot.
+
+After the bootstrap pool stops, run the three failed original Ua profiles into a
+separate output folder, retaining the first pass. The retry is explicit:
+
+```
+OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 python skunk_works/delay_study/frozen_run.py run_profiles.py --fits skunk_works/delay_study/results/fits --output skunk_works/delay_study/results/profile_retries --only original_n0_physics_cold_linear_exact__Ua --original-recovery
+```
+
+The new option keeps the original attempts, then uses complex-step Jacobians,
+Jacobian-based variable scaling, and ten times the evaluation budget only when
+all initial original-model nuisance attempts fail. It does not accept failed
+optimizer returns. The new `run_structural.py` is prepared for deterministic
+equivalence-class curves, null-tangent checks, repeated-pole nonregularity, and
+chain convergence toward the pure-delay limit at a common parameter point.
+It locks its output and refuses changed provenance. Commit it before a frozen
+run; numerical outputs from that phase do not yet exist.
+
+The initial 8-page manuscript was rendered and all eight pages inspected. A long
+source filename caused one overfull line, which was corrected with breakable
+paths. Later mathematical additions compile without overfull-line or unresolved
+reference warnings, but they and the final results still require rendered review.
+The working `main.pdf` is ignored; save a separately named final report only
+after the full manuscript and no-ai-slop/source/result audits are complete.
+
+Priority work after these phases: ambient and prehistory sensitivity, a correlated
+residual likelihood using actual time intervals, per-file validation diagnostics,
+and finite-horizon input design. The extra sensor trace cannot be assumed to
+measure the original model's internal heater state. The supplied validation
+filenames mostly identify environment 2; a between-environment explanation for
+their errors is not established. Data resolution and unrecorded run conditions
+also need inspection before assigning all residual structure to white sensor noise.

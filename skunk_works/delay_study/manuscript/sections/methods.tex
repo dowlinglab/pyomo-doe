@@ -63,7 +63,11 @@ covariances are undefined. A diagnostic pseudoinverse is retained separately and
 is not used as a confidence interval for a null direction. We also computed
 heteroskedasticity and autocorrelation consistent sandwich estimates at lag
 bandwidths of 10, 30, and 60 samples, together with residual autocorrelation
-functions and Ljung--Box statistics. These calculations assess sensitivity to
+functions and Ljung--Box statistics. The sandwich uses Bartlett lag weights
+\citep{newey-1987-simple}. Its asymptotic justification requires zero-mean score
+moments, bounded moments, and suitable decay of dependence. Fixed bandwidths
+in these finite records do not establish those assumptions or nominal coverage.
+These calculations assess sensitivity to
 serial dependence; they do not correct a biased mean model.
 
 \subsection{Likelihood profiles and resampling}

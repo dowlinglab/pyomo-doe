@@ -71,3 +71,82 @@ are invariant under this invertible transformation. Numerical eigenvalues,
 eigenvectors, and condition numbers generally change with the coordinate metric.
 The matrix satisfies $|\det M|=1$, so log-coordinate information determinants
 at the same model point are equal in this particular transformation.
+
+\subsection{Repeated poles and a singular local information matrix}
+At a repeated thermal and delay pole, $\tau=\theta/n$, the transfer function
+is $(1+\tau s)^{-(n+1)}K$. The derivatives in unscaled coordinates satisfy
+\[
+ \frac{\partial\log G_n(s)}{\partial\tau}
+ =-\frac{s}{1+\tau s},\qquad
+ \frac{\partial\log G_n(s)}{\partial\theta}
+ =-\frac{s}{1+\theta s/n}.
+\]
+These two derivatives coincide at the repeated pole. The corresponding
+log-coordinate sensitivity columns are proportional with ratio $n$, producing
+a singular local information matrix under zero-state excitation.
+For $n>1$, the rational transfer function still uniquely specifies the distinct
+single and repeated poles away from their coincidence; at coincidence there is
+one common pole value. Local derivative rank loss at this exceptional point
+therefore does not by itself establish a continuum of exactly equivalent
+parameters. Nonregular local inference and structural nonuniqueness are separate
+questions. The exact matrix-exponential simulator avoids a partial-fraction
+formula that would divide by the pole separation.
+
+\subsection{Moment coordinates}
+Define the total mean response time $m=\tau+\theta$ and the delay fraction
+$f=\theta/m$. The inverse map is $\tau=m(1-f)$ and $\theta=mf$ with
+$m>0$ and $0<f<1$. If $\ell=\log[f/(1-f)]$, the Jacobian from
+$(\log m,\ell)$ to $(\log\tau,\log\theta)$ is
+\[
+ \begin{pmatrix}1&-f\\1&1-f\end{pmatrix}.
+\]
+This determinant-one map provides an alternative optimization metric without
+changing model predictions. Its rectangular bounds generally differ from the
+original rectangular bounds in $\tau$ and $\theta$.
+
+The impulse-time variance $v=\tau^2+\theta^2/n$ provides another summary of the
+transfer shape. Given $m$ and $v$, the possible delay values solve
+\[
+ \left(1+\frac1n\right)\theta^2-2m\theta+(m^2-v)=0.
+\]
+Two positive solutions can therefore share the first two moments. For $n=1$
+they exchange the two poles and give the same full transfer function. For
+$n>1$, higher moments can distinguish the branches. The minimum feasible
+variance, $v=m^2/(n+1)$, occurs at the repeated-pole condition above. These
+identities motivate comparing coordinate conditioning and response moments,
+while retaining the full dynamic model for estimation.
+
+\subsection{A measurement that could break the original equivalence}
+Suppose an additional sensor measured the model's heater state $T_{\mathrm H}$
+directly. Let $Y_{\mathrm H}(s)$ and $Y_{\mathrm S}(s)$ denote the Laplace
+transforms of the heater and sensor temperature deviations from ambient.
+For zero initial deviations, the second balance in Eq.~\eqref{eq:original} gives
+\[
+ \frac{Y_{\mathrm H}(s)}{Y_{\mathrm S}(s)}
+ =1+\frac{\CpS}{\Ub}s=1+rs,
+\]
+for nonzero transfer responses. Identifying this additional time constant $r$ would select one
+member of Eq.~\eqref{eq:equivalent} and hence recover all four physical
+parameters. This is an argument about the required observable. The supplied
+second TC-Lab temperature trace has not been established as a direct
+measurement of this model's heater state.
+
+\subsection{Dependent-residual sandwich calculation}
+For a full-rank sensitivity matrix, let $B=(J^\top J)^{-1}$ and define the
+score contribution $\bm q_t=J_t^\top e_t$ at residual index $t$ within an
+experiment. With lag bandwidth $L$, the matrix used between the two factors
+of $B$ is
+\[
+ S=\sum_t\bm q_t\bm q_t^\top+
+ \sum_{j=1}^{L}\left(1-\frac{j}{L+1}\right)
+ \sum_{t=j+1}^{N}
+ \left(\bm q_t\bm q_{t-j}^\top+\bm q_{t-j}\bm q_t^\top\right).
+\]
+For joint calibration we formed each lagged sum within its experiment, then
+added the experiment contributions; no lag joined separate experiments. The
+reported covariance is $[N/(N-k)]BSB$, where $k$ is the parameter count and
+$N$ is the total conditional residual count. The scalar degrees-of-freedom
+adjustment is an implementation choice. Bartlett weighting follows the
+positive-semidefinite construction of \citet{newey-1987-simple}; it does not
+establish that the TC-Lab score process satisfies the paper's consistency
+assumptions. Lags here count retained observations rather than elapsed seconds.
