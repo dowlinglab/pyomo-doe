@@ -74,6 +74,11 @@ User authorization here explicitly permits commits, a final push, and a Gmail
 message to the user; it supersedes the general practice of reserving those actions.
 
 Keep the study inside this branch. Preserve raw CSVs and reference outputs.
+The user additionally requested the **no-ai-slop** skill on October 20. Apply its
+editing rules and `eval.md` checks to the manuscript, summaries and completion
+email. Read each full draft before editing, remove filler and formulaic patterns,
+retain the lab's voice and technical precision, and preserve uncertainty and
+unfavorable findings. An editorial pass must not change a result or citation.
 Separate code migration from scientific changes and explain every numerical delta.
 Freeze source during measurements; record code/configuration/data hashes, seeds,
 versions, failures, and convergence evidence. Keep compute separate from plotting.
