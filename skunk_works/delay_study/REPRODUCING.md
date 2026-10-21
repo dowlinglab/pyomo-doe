@@ -30,6 +30,12 @@ uncertainty accounting, design criteria and artifact auditing. It does not rerun
 the full Monte Carlo study. The notebook exporter and its independent scientific
 cell checks are described in `notebook_scripts/README.md`.
 
+`frequency_information.py` implements transfer-function derivative and determinant
+identities used by the frequency-information appendix. Its three short checks
+compare numerical parameter perturbations and exact real periodic phase sums;
+they do not fit more data or assume the prospective-design records are in
+periodic steady state.
+
 ## Measured source and fresh output directories
 
 Each phase manifest identifies its numerical source/configuration and input

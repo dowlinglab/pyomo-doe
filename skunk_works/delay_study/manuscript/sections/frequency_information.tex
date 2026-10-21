@@ -1,0 +1,72 @@
+\section{Frequency sensitivity and local excitation requirements}
+\label{sec:frequency-information}
+The following identities are derived for the transfer functions in this study.
+They explain an ideal periodic steady-state experiment. They do not replace
+the finite-horizon, initialized simulations or their working covariance models.
+For positive frequency $\omega$, let $G=G_n(i\omega)$ and define the complex
+log-transfer sensitivity vector $\bm h=G^{-1}\partial G/\partial\bm\eta$,
+where $\bm\eta=(\log K,\log\tau,\log\theta)$. Direct differentiation gives
+\begin{equation}
+ \bm h_n(\omega)=\left(
+ 1,\;\frac{-i\omega\tau}{1+i\omega\tau},\;
+ \frac{-i\omega\theta}{1+i\omega\theta/n}
+ \right)^\top.
+ \label{eq:frequency-sensitivities}
+\end{equation}
+For the pure-delay model, the third component is $-i\omega\theta$.
+At zero frequency, only the gain sensitivity remains. At low frequency,
+\[
+ \log G_n(i\omega)=\log K-i\omega(\tau+\theta)
+ -\tfrac12\omega^2(\tau^2+\theta^2/n)+O(\omega^3).
+\]
+Thus the leading phase change depends on the sum of the thermal and delay
+lags. Their separation depends on higher-order frequency behavior; a small
+low-frequency fit error can coexist with poor precision for each lag.
+The $\theta^2/n$ term is absent in the pure-delay expansion.
+
+To separate this local frequency geometry from startup information, consider
+a single periodic input $u(t)=u_0+A\cos\omega t$ after transients have decayed.
+Let $\bm d=\partial G(i\omega)/\partial\bm\eta$ and suppose the $N$ observed
+phases have zero sine/cosine sums, zero sine--cosine cross sum, and equal
+sine/cosine sums of squares $N/2$.
+Under independent errors of known variance $\sigma^2$, the exact phase-sum
+information is
+\begin{equation}
+ F=\frac{N}{\sigma^2}\left[
+ (u_0K)^2\bm e_1\bm e_1^\top+
+ \frac{A^2}{2}\operatorname{Re}(\bm d\bm d^{*})\right],
+ \label{eq:periodic-information}
+\end{equation}
+where $*$ denotes conjugate transpose. A single tone without its DC offset
+contributes a matrix of rank at most two for the three real parameters.
+With nonzero offset and amplitude, the DC term supplies a separate gain direction:
+its constant sensitivity is orthogonal to the oscillatory components over these
+phases. The determinant that tests independence of the lag
+components is
+\begin{equation}
+ \begin{vmatrix}
+ \operatorname{Re}h_\tau&\operatorname{Re}h_\theta\\
+ \operatorname{Im}h_\tau&\operatorname{Im}h_\theta
+ \end{vmatrix}
+ =\frac{\omega^3\tau\theta(\tau-\theta/n)}
+ {(1+\omega^2\tau^2)(1+\omega^2\theta^2/n^2)}.
+ \label{eq:frequency-lag-area}
+\end{equation}
+It is nonzero away from $\tau=\theta/n$. In this ideal experiment, a DC
+component and one nonzero tone therefore give local full rank at a regular
+parameter point. For pure delay the determinant is
+$\omega^3\tau^2\theta/(1+\omega^2\tau^2)>0$.
+At the finite-chain repeated pole, $h_\theta=nh_\tau$ at every frequency;
+adding frequencies cannot remove that first-order rank deficiency.
+These are local differential statements. They do not remove the cold one-stage
+global pole-label ambiguity, calibrate a confidence interval, or establish an
+optimal input under amplitude, sampling and temperature constraints.
+
+The factor $G$ in $\bm d=G\bm h$ also matters: information depends on output
+sensitivity, rather than phase sensitivity alone. The time-domain designs
+evaluate that output sensitivity with retained observations, startup assumptions
+and a specified covariance. Constant-command startup records can carry transient
+information that is deliberately absent from the periodic steady-state calculation.
+Analytic derivatives, the determinant and the phase-sum information were checked
+against parameter perturbations, numerical determinants and explicit real
+sensitivity matrices. These checks contain no additional TC-Lab fits.

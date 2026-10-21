@@ -29,11 +29,12 @@ scope, and `results/manifest.json` will identify manuscript results.
 - Notebook migration committed in `58b4fa5`: 13 deterministic Python exports,
   scientific-cell AST equality, and a successful migrated simulation run.
 - Exact LTI models committed in `451749f`; inference runner in `275fe0a`.
-  One hundred and twenty-eight focused checks pass after adding exact-draft expansion,
+  One hundred and thirty-one focused checks pass after adding exact-draft expansion,
   citation-offset, independent nuisance/prediction/design/discrimination audits, and explicit
   profile-catalog selection checks. They cover independent integrator/analytic agreement,
   transformations, synthetic recovery, null directions, profile recovery,
-  resampling, OU likelihoods, coverage accounting and input-design gradients.
+  resampling, OU likelihoods, coverage accounting, input-design gradients and
+  exact frequency-sensitivity/periodic-information identities.
 - First full sweep finished 95/99 cases; four uncertainty serialization failures
   exposed a rank-deficient covariance roundoff issue. `baseline/initial_sweep_*`
   preserves the original manifest and numerical summary. Complete original
@@ -291,6 +292,20 @@ active-bound and source-waveform corruption. These prepare validation; no
 production discrimination outputs have yet been computed or audited. The scope
 excludes global optimality and an independent derivative check of each saved
 refit optimality scalar.
+
+The frequency-information appendix now derives log-transfer sensitivities, the
+low-frequency combined-lag expansion and an exact ideal periodic phase-sum
+information matrix. A DC component plus one nonzero tone gives local full rank
+away from the finite-chain repeated pole; a lone unoffset tone has rank at most
+two. At tau=theta/n the two lag sensitivity columns are proportional at every
+frequency, so more tones do not remove that first-order singularity. This does
+not resolve the n1 global pole exchange, prove finite-record precision, or replace
+the initialized constrained-design simulations. Three analytic checks compare
+parameter perturbations, determinants and explicit real phase sensitivities;
+there are no new fits or numerical pools. The full suite is 131/131 in 8.26 s.
+Working pages 32/33 of a warning-free 35-page build were visually read; the
+partial receipt is `manuscript/frequency_information_review.json`. Final full
+manuscript review remains pending.
 
 While coverage runs: complete the design-driver review, literature synthesis,
 noise/validation and structural summaries, result figures/tables, ambient and
