@@ -128,7 +128,8 @@ class DirectStudy:
             key = (model,np.asarray(amplitudes,dtype=float).tobytes())
             if key not in self.mean_cache:
                 self.mean_cache[key] = predict(self.experiment(amplitudes),parameters,spec)
-            violations.append(float(np.max(self.mean_cache[key])-self.config["maximum_temperature_C"]))
+            violations.append(float(np.max(self.mean_cache[key])-self.config["maximum_temperature_C"]
+                                    +self.config["optimization_temperature_guard_C"]))
         return max(violations)
 
     def dense(self,amplitudes):

@@ -140,7 +140,8 @@ def execute(task, destination, identity):
     safety = [scenario for scenario in SCENARIOS.values() if scenario.noise_length_s is None]
     starts = candidates(KNOTS, CONFIG["mean_input_percent"], CONFIG["seed"])
     result = optimize(selected, KNOTS, starts, criterion, prior, aggregation,
-                      mean_input=CONFIG["mean_input_percent"], maximum_temperature=CONFIG["maximum_temperature_C"],
+                      mean_input=CONFIG["mean_input_percent"],
+                      maximum_temperature=CONFIG["maximum_temperature_C"]-CONFIG["optimization_temperature_guard_C"],
                       maximum_slew=CONFIG["maximum_slew_percent_per_s"], maxiter=CONFIG["maximum_iterations"],
                       prediction_information=TARGETS, constraint_scenarios=safety)
     waveforms = dict(starts)
@@ -215,7 +216,7 @@ def main():
         manifest["status"] = "complete" if not manifest["failed"] else "complete_with_failures"
         manifest["finished_utc"] = datetime.now(timezone.utc).isoformat()
         save_json(args.output/"manifest.json", manifest)
-        return bool(manifest["failed"])
+        return bool(manifest["failed"] or any(row["requires_revisit"] for row in manifest["completed"].values()))
 
 
 if __name__ == "__main__":

@@ -234,6 +234,13 @@ regardless of the model used for the utility. These are assumed simulation
 constraints, without a hardware safety certification or uncertainty margin.
 An independent 0.25 s forward simulation also checks a 300 s shutdown tail,
 ramping the last command to zero at the same slew limit.
+The first design trial met its 1 s constraints but exceeded the assumed limit
+slightly between observations in that denser check. We retained that trial
+and tightened the optimization bound by $0.01\,{}^\circ\mathrm C$ for both
+parameter and discrimination designs. This numerical guard leaves the reported
+acceptance limit at $85\,{}^\circ\mathrm C$; every selected design must still
+pass the independent dense shutdown-tail check. The guard itself supplies no
+continuous-time bound or hardware guarantee.
 
 For a future sensitivity matrix $J(u)$ and assumed covariance $R$, the local
 information is $F(u)=J(u)^\top R^{-1}J(u)$, optionally augmented by information

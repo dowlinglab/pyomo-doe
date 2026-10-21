@@ -73,7 +73,7 @@ def execute(task, phase, output, identity):
         maps = [separation_map(first, second, time) for first, second in pairs]
         result = optimize_separation(maps, knots, starts, safety, starts[config["reference"]], aggregation,
                                      mean_input=design_config["mean_input_percent"],
-                                     maximum_temperature=design_config["maximum_temperature_C"],
+                                     maximum_temperature=design_config["maximum_temperature_C"]-design_config["optimization_temperature_guard_C"],
                                      maximum_slew=design_config["maximum_slew_percent_per_s"],
                                      maxiter=design_config["maximum_iterations"])
         waveforms = dict(starts)

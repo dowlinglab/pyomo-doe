@@ -15,13 +15,14 @@ must index those phases and manuscript artifacts without replacing their records
 - Research started **2026-10-21 01:39:03 UTC** (October 20, 9:39 PM Eastern).
   The requested 12-hour window ends no earlier than October 21, 9:39 AM Eastern.
   Do substantive research throughout the window; do not pad it with idle waits.
+  That minimum was met at 13:39:03 UTC; unfinished phases and delivery still
+  determine completion.
 - Hourly recovery automation: `tc-lab-overnight-research`, attached to this chat.
-- Operational recovery: `get_goal` reported `blocked` at 07:35 UTC, while both
-  recorded sessions were still live and useful work could continue. The current
-  heartbeat explicitly authorizes continuation. Goal tools cannot resume that
-  status; do not recreate the unfinished goal or treat it as an instruction to
-  stop the study. Continue through this chat/heartbeat, reconcile the existing
-  jobs, and mark completion only after the actual delivery requirements pass.
+- Operational recovery: `get_goal` reported `blocked` at 07:35 UTC while jobs
+  remained live. The user-authorized heartbeat continued the study; a fresh
+  14:04 UTC goal read confirmed `active`. Preserve that goal and reconcile jobs
+  rather than recreating the objective. Completion still requires every delivery
+  gate, independent of elapsed time.
 - Unchanged legacy simulations were run twice per dataset. `baseline/manifest.json`
   records source identity, versions and numerical results; duplicate trajectories
   were byte-identical. This is a behavior baseline, not a correctness certificate.
@@ -47,8 +48,8 @@ must index those phases and manuscript artifacts without replacing their records
   `results/comparison_receipt.json` verifies 95 prior objectives agree within
   1.14e-13. `results/fit_summary.csv` and `coordinate_comparison.csv` are generated
   by `summarize_fits.py`, not manually maintained tables.
-  Full profiles, bootstrap, structural checks and OU calibration have since
-  finished. Independent synthetic coverage is live; see the single phase-status
+  Full profiles, bootstrap, structural checks, OU calibration and synthetic
+  coverage have since finished. Sensitivity is live; see the single phase-status
   section below. The overnight study remains in progress; do not mark it
   complete early.
 - Literature packet: `6f11d88ebd8741c892fea8fffc243d7d`. Initial revision:
@@ -183,9 +184,10 @@ and physical transforms checked. Joint cold innovation lag-one correlations
 remain near -0.5, challenging the single-component OU covariance. All results
 and the audit are committed in `89c3e8c`. No push or completion email has been sent.
 
-The independent coverage production is **live**, execution session **19175**,
-from immutable source **23629a2**, output `results/coverage`. It has four workers;
-do not start another numerical pool. There are **3,600 synthetic datasets**:
+The independent coverage production **finished at 14:07:12 UTC**, execution
+session **19175** exited successfully, from immutable source **23629a2**, output
+`results/coverage`. All **3,600 synthetic datasets** and 360 chunks finished
+without failed draws or chunks:
 300 per combination of n1/n2/n12/pure delay and IID/OU10/OU60 noise, with
 three-coordinate local intervals and nuisance-reoptimized delay profiles.
 `results/coverage_pilot` preserves the 12-draw pilot and production-size receipt.
@@ -193,6 +195,13 @@ The initial draft's 500 was changed to 300 using solver timing and a binomial
 precision calculation before inspecting pilot coverage. Production seed 726533
 differs from pilot seed 726532. Nominal Monte Carlo standard error near 95%
 coverage is about 1.3 percentage points. Do not mix pilot and production draws.
+The frozen `84cf569` summary passed its 384-row arithmetic/source audit, with
+no failed/missing draws, zero LR arithmetic errors, physical-transform error
+3.33e-16 and maximum selected-minimum discrepancy 7.62e-11 squared C. Its CSV
+hash is bound in the audit. Figure generation from `19306cd` now accepts a
+byte-identical configuration at a different path only when it matches the
+production identity and an audited source digest; original inputs are still
+checked. Production figure numeric/visual review remains in progress.
 
 The 112-job experiment-design driver and configuration are now written. Run a
 frozen short trial and the full study once the coverage pool frees resources.
@@ -222,7 +231,7 @@ input-equilibrated memory from whole-system thermal equilibrium. Working pages
 2/3 were inspected in a warning-free 34-page build; the scoped receipt is
 `manuscript/model_assumption_review.json`. Final full-document QA remains pending.
 
-Additional committed follow-up phases await their trials: the 241-case
+Additional committed follow-up phases have passed their bounded trials: the 241-case
 `run_sensitivity.py` matrix (192 ambient/history cases and 49 input-hold/
 discretization cases), and 131 `run_prediction_uncertainty.py` jobs (51 local
 quotient cases, 48 OU cases, 32 joint bootstrap cases). All baseline linear-hold
@@ -242,7 +251,7 @@ SVD. It checks IID covariance arithmetic and exact pole-exchange predictions wit
 a HAC audit or coverage guarantee. It refuses active/incomplete runs and
 requires an explicit flag for a filtered trial. Four new checks include
 regular and rank-deficient cases and deliberate covariance corruption. Production
-sensitivity outputs have not yet been computed or audited.
+sensitivity outputs are live and have not yet received their terminal audit.
 
 The prepared `audit_prediction_uncertainty.py` checks every saved mean,
 variance, interval endpoint, conditioning/estimability flag and target summary.
@@ -258,16 +267,23 @@ The full 112-check suite passed in 7.78 s. This prepares the audit; none of the
 131 production prediction jobs has been claimed complete or audited. Run the
 full auditor only after production is terminal and within the worker budget.
 
-One-shot follow-up queue **session 48705** is now confirmed live, waiting for
-coverage session 19175 to finish. It runs from immutable commit **5178dc5**;
-its record is `/private/tmp/tclab-followup-trials/queue.json`. It confirms coverage
-liveness with the held OS lock and requires complete terminal chunk/draw counts
-after owner release. It then runs seven sequential bounded trials (design,
-nuisance, pure left hold, original/null-delay/OU/bootstrap prediction) and stops
-for agent review. It does not launch full studies automatically. Do not start
-another numerical pool while either coverage or these trials owns the budget.
-Inspect trial outputs and convergence/estimability/interval properties before
-running or reusing them in the full phases. Preserve any failed trial source.
+One-shot follow-up queue **session 48705** exited after all seven trials at
+14:08:40 UTC. It used immutable commit **5178dc5**, starting only after the
+coverage owner released its OS lock and all chunk/draw counts reconciled.
+Original trials are preserved in `/private/tmp/tclab-followup-trials` and copied
+to `results/followup_trials`. Both sensitivity trials and all four prediction
+trials passed their independent audits. The design trial converged under its
+1 s constraints but its dense audit flagged peaks up to 85.000274 C. That
+flagged source/result is preserved. A common 0.01 C optimization guard now
+tightens parameter/discrimination design constraints; dense acceptance remains
+85 C. It has no continuous-time or hardware guarantee. Run a fresh guarded
+trial before either full design phase; preserve any later flag for review.
+
+The full **241-case sensitivity phase is live in session 75251**, frozen at
+**84cf569**, output `results/sensitivity`. It owns the four-worker numerical
+budget. Do not start a different pool until its handle is terminal. Prediction
+trials passed; the full 131-case prediction phase is next eligible, followed by
+the separate profile/discrimination trials and the guarded design trial.
 
 `discrimination.py` and its driver prepare a separate model-order design phase:
 12 local fixed-mean designs compare all six pairs among n1/n2/n12/pure, using
@@ -385,15 +401,15 @@ likelihood arithmetic. It reconciles saved files with each terminal chunk so
 file loss cannot be relabeled as an optimizer failure. Its 384 planned summary
 rows retain failed/undefined outcomes in unconditional bounds and give
 method-defined coverage, Wilson intervals, bias/empirical SD, widths and a
-secondary grid-interpolation sensitivity. It has not summarized production
-outcomes while the prespecified run is still active. Four new accounting tests
+secondary grid-interpolation sensitivity. Production summarization began only
+after the prespecified run became terminal. Four new accounting tests
 pass. A separate design check verifies that log D, delay-target and transformed
 prediction utilities and gradients agree in IO and physical metrics, while E
 changes with the metric. The methods section now records the complete planned
 coverage, parameter-design and discrimination matrices.
 
 The prepared `plot_coverage.py` refuses active, partial or unbound summaries.
-After terminal summarization, it will show all 84 IO delay rows (four model
+After terminal summarization, it selects all 84 IO delay rows (four model
 points, three true covariances and seven interval methods), with conditional
 Wilson bars and a separate median-width view. Hollow symbols mark incomplete
 method denominators; NA remains undefined. Companion JSON/CSV retain exact
@@ -408,8 +424,8 @@ layout inspection corrected overlapping width labels. Shared width limits use
 all panels' data, with a regression check against clipping later noise rows.
 Its scoped receipt is
 `baseline/coverage_artifact_preflight.json`; it is not production outcome or
-final figure validation. No production coverage outcomes have been summarized
-or inspected while that run remains active.
+final figure validation. Production outcome summarization started only after
+the coverage run was terminal.
 
 The small deterministic onset phase from `a0f01fe` is complete in
 `results/onset_limit`: 18 exact Erlang-CDF calculations, independently checked
