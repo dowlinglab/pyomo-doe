@@ -163,8 +163,12 @@ def main():
                                         [[r"$\log K$", r"$\log\tau$", r"$\log\theta$"],
                                          [r"$\log U_a$", r"$\log C_p$", r"$\log\theta$"]]):
         array = np.array(vectors_data[key]).T
-        shown = ax.imshow(array, vmin=-1, vmax=1, cmap=fs.DIVERGING, aspect="auto",
-                          interpolation="nearest", resample=False)
+        # Vector cells avoid paletted-raster seams in the compiled PDF.
+        shown = ax.pcolormesh(np.arange(5)-.5, np.arange(4)-.5, array,
+                             vmin=-1, vmax=1, cmap=fs.DIVERGING, shading="flat",
+                             edgecolors="face", linewidth=.1, antialiased=False)
+        ax.set_xlim(-.5, 3.5)
+        ax.set_ylim(2.5, -.5)
         for (i, j), value in np.ndenumerate(array):
             ax.text(j, i, f"{value:.2f}", ha="center", va="center", color="white" if abs(value) > .6 else "black")
         ax.set_yticks([0, 1, 2])
