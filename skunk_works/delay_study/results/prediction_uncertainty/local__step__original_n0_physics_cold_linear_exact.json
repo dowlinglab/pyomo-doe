@@ -1,0 +1,639 @@
+{
+  "identity": {
+    "source_sha256": {
+      "data.py": "ac6b9a57de386352f5f7a8a678101d84dd90cfa3f0c04e936aa08c7e905c8e7a",
+      "models.py": "2f0a15e67498704a392c4b078a1e05626c69d50015dc41e99acf92b9e46d1458",
+      "inference.py": "74f0029b160b7ecb80ef361d544b0f21e5edea2fa071ec0ec1cca4458fea6aaf",
+      "noise.py": "7847d0210b58565a6c0b3ad345b3d294bcfcc85f9e21f620cc7838e9b5b27717",
+      "prediction_uncertainty.py": "acc9751c84106023376f5a083273cd414f09206496afda660fb47c3eb6d3f6e5",
+      "run_prediction_uncertainty.py": "eace240052396e0d7ee1179847508cd523ef936cb34fe88e6c001fbe7b35d82f",
+      "run_fits.py": "2451a77e22d73169abe37e313490989692580c39233b0779f8c41956b4511ef5"
+    },
+    "config_sha256": "facbf86f4372c568db30fbeb5fdc935a224fa141dec3e92424f21ab0c809f741"
+  },
+  "input_sha256": {
+    "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/results/fits/step__original_n0_physics_cold_linear_exact.json": "7c03a2110f54d934b6144fa356f3508fa55540f3b79cc1c16adec339ccdd9ee1"
+  },
+  "phase": "local",
+  "case": "step__original_n0_physics_cold_linear_exact",
+  "spec": {
+    "family": "original",
+    "order": 0,
+    "coordinates": "physics",
+    "initialization": "cold",
+    "hold": "linear",
+    "method": "exact"
+  },
+  "method": null,
+  "information": {
+    "rank": 3,
+    "residual_dof": 897,
+    "known_sigma_C": 0.25,
+    "estimated_future_iid_variance_C2": 0.02484081990904613,
+    "singular_values": [
+      865.3510426608336,
+      200.2642470923282,
+      23.375122336950046,
+      6.694510226559179e-14
+    ]
+  },
+  "bands_file": "bands/local__step__original_n0_physics_cold_linear_exact.csv.gz",
+  "bands_sha256": "a80c664e51e6f505a9d11eb3e97ffb42b069b920d99759d5995db45024ddc370",
+  "summaries": [
+    {
+      "role": "calibration",
+      "experiment": "step",
+      "method": "iid_known_sigma",
+      "conditional_points": 900,
+      "estimable_points": 900,
+      "mean_band_median_width_C": 0.05015403966662291,
+      "mean_band_maximum_width_C": 0.11399328350839255,
+      "observed_fraction_inside_prediction_band_defined_points": 1.0,
+      "coverage_notice": "Descriptive pointwise containment on this record, conditional on defined intervals. Calibration is optimistic; validation records do not establish independent repeated-experiment coverage."
+    },
+    {
+      "role": "calibration",
+      "experiment": "step",
+      "method": "iid_unknown_quotient_dof",
+      "conditional_points": 900,
+      "estimable_points": 900,
+      "mean_band_median_width_C": 0.03161905409408661,
+      "mean_band_maximum_width_C": 0.07186579229852441,
+      "observed_fraction_inside_prediction_band_defined_points": 0.9544444444444444,
+      "coverage_notice": "Descriptive pointwise containment on this record, conditional on defined intervals. Calibration is optimistic; validation records do not establish independent repeated-experiment coverage."
+    },
+    {
+      "role": "calibration",
+      "experiment": "step",
+      "method": "hac10_quotient_dof",
+      "conditional_points": 900,
+      "estimable_points": 900,
+      "mean_band_median_width_C": 0.08275732326408303,
+      "mean_band_maximum_width_C": 0.1837909035183216
+    },
+    {
+      "role": "calibration",
+      "experiment": "step",
+      "method": "hac30_quotient_dof",
+      "conditional_points": 900,
+      "estimable_points": 900,
+      "mean_band_median_width_C": 0.12932361449823304,
+      "mean_band_maximum_width_C": 0.2888447080445218
+    },
+    {
+      "role": "calibration",
+      "experiment": "step",
+      "method": "hac60_quotient_dof",
+      "conditional_points": 900,
+      "estimable_points": 900,
+      "mean_band_median_width_C": 0.16713550263242638,
+      "mean_band_maximum_width_C": 0.3587493207006389
+    },
+    {
+      "role": "validation",
+      "experiment": "validation_experiment_env_2_sin_2_50_run_1.csv",
+      "method": "iid_known_sigma",
+      "conditional_points": 899,
+      "estimable_points": 899,
+      "mean_band_median_width_C": 0.09864880984095237,
+      "mean_band_maximum_width_C": 0.2114341760803029,
+      "observed_fraction_inside_prediction_band_defined_points": 0.012235817575083427,
+      "coverage_notice": "Descriptive pointwise containment on this record, conditional on defined intervals. Calibration is optimistic; validation records do not establish independent repeated-experiment coverage."
+    },
+    {
+      "role": "validation",
+      "experiment": "validation_experiment_env_2_sin_2_50_run_1.csv",
+      "method": "iid_unknown_quotient_dof",
+      "conditional_points": 899,
+      "estimable_points": 899,
+      "mean_band_median_width_C": 0.0621920402705598,
+      "mean_band_maximum_width_C": 0.13329631461908775,
+      "observed_fraction_inside_prediction_band_defined_points": 0.008898776418242492,
+      "coverage_notice": "Descriptive pointwise containment on this record, conditional on defined intervals. Calibration is optimistic; validation records do not establish independent repeated-experiment coverage."
+    },
+    {
+      "role": "validation",
+      "experiment": "validation_experiment_env_2_sin_2_50_run_1.csv",
+      "method": "hac10_quotient_dof",
+      "conditional_points": 899,
+      "estimable_points": 899,
+      "mean_band_median_width_C": 0.16155245153090902,
+      "mean_band_maximum_width_C": 0.34102340205137693
+    },
+    {
+      "role": "validation",
+      "experiment": "validation_experiment_env_2_sin_2_50_run_1.csv",
+      "method": "hac30_quotient_dof",
+      "conditional_points": 899,
+      "estimable_points": 899,
+      "mean_band_median_width_C": 0.2550208833938825,
+      "mean_band_maximum_width_C": 0.5358499438552826
+    },
+    {
+      "role": "validation",
+      "experiment": "validation_experiment_env_2_sin_2_50_run_1.csv",
+      "method": "hac60_quotient_dof",
+      "conditional_points": 899,
+      "estimable_points": 899,
+      "mean_band_median_width_C": 0.3222350280433659,
+      "mean_band_maximum_width_C": 0.6654473547375801
+    },
+    {
+      "role": "validation",
+      "experiment": "validation_experiment_env_2_sin_2_50_run_2.csv",
+      "method": "iid_known_sigma",
+      "conditional_points": 900,
+      "estimable_points": 900,
+      "mean_band_median_width_C": 0.0986947050880218,
+      "mean_band_maximum_width_C": 0.21151191776394285,
+      "observed_fraction_inside_prediction_band_defined_points": 0.016666666666666666,
+      "coverage_notice": "Descriptive pointwise containment on this record, conditional on defined intervals. Calibration is optimistic; validation records do not establish independent repeated-experiment coverage."
+    },
+    {
+      "role": "validation",
+      "experiment": "validation_experiment_env_2_sin_2_50_run_2.csv",
+      "method": "iid_unknown_quotient_dof",
+      "conditional_points": 900,
+      "estimable_points": 900,
+      "mean_band_median_width_C": 0.0622209744164266,
+      "mean_band_maximum_width_C": 0.13334532599517956,
+      "observed_fraction_inside_prediction_band_defined_points": 0.011111111111111112,
+      "coverage_notice": "Descriptive pointwise containment on this record, conditional on defined intervals. Calibration is optimistic; validation records do not establish independent repeated-experiment coverage."
+    },
+    {
+      "role": "validation",
+      "experiment": "validation_experiment_env_2_sin_2_50_run_2.csv",
+      "method": "hac10_quotient_dof",
+      "conditional_points": 900,
+      "estimable_points": 900,
+      "mean_band_median_width_C": 0.16184403310492712,
+      "mean_band_maximum_width_C": 0.34114897303449254
+    },
+    {
+      "role": "validation",
+      "experiment": "validation_experiment_env_2_sin_2_50_run_2.csv",
+      "method": "hac30_quotient_dof",
+      "conditional_points": 900,
+      "estimable_points": 900,
+      "mean_band_median_width_C": 0.2551625036719969,
+      "mean_band_maximum_width_C": 0.536047139471961
+    },
+    {
+      "role": "validation",
+      "experiment": "validation_experiment_env_2_sin_2_50_run_2.csv",
+      "method": "hac60_quotient_dof",
+      "conditional_points": 900,
+      "estimable_points": 900,
+      "mean_band_median_width_C": 0.3227117425399513,
+      "mean_band_maximum_width_C": 0.6656921782239351
+    },
+    {
+      "role": "validation",
+      "experiment": "validation_experiment_env_2_sin_2_50_run_3.csv",
+      "method": "iid_known_sigma",
+      "conditional_points": 900,
+      "estimable_points": 900,
+      "mean_band_median_width_C": 0.09871074277032221,
+      "mean_band_maximum_width_C": 0.21143809295779192,
+      "observed_fraction_inside_prediction_band_defined_points": 0.013333333333333334,
+      "coverage_notice": "Descriptive pointwise containment on this record, conditional on defined intervals. Calibration is optimistic; validation records do not establish independent repeated-experiment coverage."
+    },
+    {
+      "role": "validation",
+      "experiment": "validation_experiment_env_2_sin_2_50_run_3.csv",
+      "method": "iid_unknown_quotient_dof",
+      "conditional_points": 900,
+      "estimable_points": 900,
+      "mean_band_median_width_C": 0.06223108519409237,
+      "mean_band_maximum_width_C": 0.13329878397074424,
+      "observed_fraction_inside_prediction_band_defined_points": 0.0077777777777777776,
+      "coverage_notice": "Descriptive pointwise containment on this record, conditional on defined intervals. Calibration is optimistic; validation records do not establish independent repeated-experiment coverage."
+    },
+    {
+      "role": "validation",
+      "experiment": "validation_experiment_env_2_sin_2_50_run_3.csv",
+      "method": "hac10_quotient_dof",
+      "conditional_points": 900,
+      "estimable_points": 900,
+      "mean_band_median_width_C": 0.16180429325350332,
+      "mean_band_maximum_width_C": 0.34102970004065014
+    },
+    {
+      "role": "validation",
+      "experiment": "validation_experiment_env_2_sin_2_50_run_3.csv",
+      "method": "hac30_quotient_dof",
+      "conditional_points": 900,
+      "estimable_points": 900,
+      "mean_band_median_width_C": 0.2551453428433561,
+      "mean_band_maximum_width_C": 0.53585985225385
+    },
+    {
+      "role": "validation",
+      "experiment": "validation_experiment_env_2_sin_2_50_run_3.csv",
+      "method": "hac60_quotient_dof",
+      "conditional_points": 900,
+      "estimable_points": 900,
+      "mean_band_median_width_C": 0.32267094584798883,
+      "mean_band_maximum_width_C": 0.6654596665960355
+    },
+    {
+      "role": "validation",
+      "experiment": "validation_experiment_env_2_sin_50_50_run_1.csv",
+      "method": "iid_known_sigma",
+      "conditional_points": 900,
+      "estimable_points": 900,
+      "mean_band_median_width_C": 0.05048835648069172,
+      "mean_band_maximum_width_C": 0.13005092923810224,
+      "observed_fraction_inside_prediction_band_defined_points": 0.03666666666666667,
+      "coverage_notice": "Descriptive pointwise containment on this record, conditional on defined intervals. Calibration is optimistic; validation records do not establish independent repeated-experiment coverage."
+    },
+    {
+      "role": "validation",
+      "experiment": "validation_experiment_env_2_sin_50_50_run_1.csv",
+      "method": "iid_unknown_quotient_dof",
+      "conditional_points": 900,
+      "estimable_points": 900,
+      "mean_band_median_width_C": 0.03182982039523097,
+      "mean_band_maximum_width_C": 0.0819891556871255,
+      "observed_fraction_inside_prediction_band_defined_points": 0.01888888888888889,
+      "coverage_notice": "Descriptive pointwise containment on this record, conditional on defined intervals. Calibration is optimistic; validation records do not establish independent repeated-experiment coverage."
+    },
+    {
+      "role": "validation",
+      "experiment": "validation_experiment_env_2_sin_50_50_run_1.csv",
+      "method": "hac10_quotient_dof",
+      "conditional_points": 900,
+      "estimable_points": 900,
+      "mean_band_median_width_C": 0.08315319661669918,
+      "mean_band_maximum_width_C": 0.20965800809028678
+    },
+    {
+      "role": "validation",
+      "experiment": "validation_experiment_env_2_sin_50_50_run_1.csv",
+      "method": "hac30_quotient_dof",
+      "conditional_points": 900,
+      "estimable_points": 900,
+      "mean_band_median_width_C": 0.13022958397620954,
+      "mean_band_maximum_width_C": 0.3295174346279026
+    },
+    {
+      "role": "validation",
+      "experiment": "validation_experiment_env_2_sin_50_50_run_1.csv",
+      "method": "hac60_quotient_dof",
+      "conditional_points": 900,
+      "estimable_points": 900,
+      "mean_band_median_width_C": 0.16858391453377664,
+      "mean_band_maximum_width_C": 0.40928613528679847
+    },
+    {
+      "role": "validation",
+      "experiment": "validation_experiment_env_2_sin_50_50_run_2.csv",
+      "method": "iid_known_sigma",
+      "conditional_points": 898,
+      "estimable_points": 898,
+      "mean_band_median_width_C": 0.050544813312590975,
+      "mean_band_maximum_width_C": 0.13008495214417337,
+      "observed_fraction_inside_prediction_band_defined_points": 0.01002227171492205,
+      "coverage_notice": "Descriptive pointwise containment on this record, conditional on defined intervals. Calibration is optimistic; validation records do not establish independent repeated-experiment coverage."
+    },
+    {
+      "role": "validation",
+      "experiment": "validation_experiment_env_2_sin_50_50_run_2.csv",
+      "method": "iid_unknown_quotient_dof",
+      "conditional_points": 898,
+      "estimable_points": 898,
+      "mean_band_median_width_C": 0.03186541297429102,
+      "mean_band_maximum_width_C": 0.08201060504822522,
+      "observed_fraction_inside_prediction_band_defined_points": 0.005567928730512249,
+      "coverage_notice": "Descriptive pointwise containment on this record, conditional on defined intervals. Calibration is optimistic; validation records do not establish independent repeated-experiment coverage."
+    },
+    {
+      "role": "validation",
+      "experiment": "validation_experiment_env_2_sin_50_50_run_2.csv",
+      "method": "hac10_quotient_dof",
+      "conditional_points": 898,
+      "estimable_points": 898,
+      "mean_band_median_width_C": 0.0831961670654735,
+      "mean_band_maximum_width_C": 0.20971276064948796
+    },
+    {
+      "role": "validation",
+      "experiment": "validation_experiment_env_2_sin_50_50_run_2.csv",
+      "method": "hac30_quotient_dof",
+      "conditional_points": 898,
+      "estimable_points": 898,
+      "mean_band_median_width_C": 0.13039613316963994,
+      "mean_band_maximum_width_C": 0.3296036011556396
+    },
+    {
+      "role": "validation",
+      "experiment": "validation_experiment_env_2_sin_50_50_run_2.csv",
+      "method": "hac60_quotient_dof",
+      "conditional_points": 898,
+      "estimable_points": 898,
+      "mean_band_median_width_C": 0.1690108747515353,
+      "mean_band_maximum_width_C": 0.4093933027152872
+    },
+    {
+      "role": "validation",
+      "experiment": "validation_experiment_env_2_sin_50_50_run_3.csv",
+      "method": "iid_known_sigma",
+      "conditional_points": 898,
+      "estimable_points": 898,
+      "mean_band_median_width_C": 0.05048755699242946,
+      "mean_band_maximum_width_C": 0.13011306733463357,
+      "observed_fraction_inside_prediction_band_defined_points": 0.015590200445434299,
+      "coverage_notice": "Descriptive pointwise containment on this record, conditional on defined intervals. Calibration is optimistic; validation records do not establish independent repeated-experiment coverage."
+    },
+    {
+      "role": "validation",
+      "experiment": "validation_experiment_env_2_sin_50_50_run_3.csv",
+      "method": "iid_unknown_quotient_dof",
+      "conditional_points": 898,
+      "estimable_points": 898,
+      "mean_band_median_width_C": 0.03182931636678887,
+      "mean_band_maximum_width_C": 0.08202832995600318,
+      "observed_fraction_inside_prediction_band_defined_points": 0.0066815144766146995,
+      "coverage_notice": "Descriptive pointwise containment on this record, conditional on defined intervals. Calibration is optimistic; validation records do not establish independent repeated-experiment coverage."
+    },
+    {
+      "role": "validation",
+      "experiment": "validation_experiment_env_2_sin_50_50_run_3.csv",
+      "method": "hac10_quotient_dof",
+      "conditional_points": 898,
+      "estimable_points": 898,
+      "mean_band_median_width_C": 0.08316877827586922,
+      "mean_band_maximum_width_C": 0.20975816155854687
+    },
+    {
+      "role": "validation",
+      "experiment": "validation_experiment_env_2_sin_50_50_run_3.csv",
+      "method": "hac30_quotient_dof",
+      "conditional_points": 898,
+      "estimable_points": 898,
+      "mean_band_median_width_C": 0.13022094350872493,
+      "mean_band_maximum_width_C": 0.32967487164982856
+    },
+    {
+      "role": "validation",
+      "experiment": "validation_experiment_env_2_sin_50_50_run_3.csv",
+      "method": "hac60_quotient_dof",
+      "conditional_points": 898,
+      "estimable_points": 898,
+      "mean_band_median_width_C": 0.16856523481381913,
+      "mean_band_maximum_width_C": 0.4094817200259726
+    },
+    {
+      "role": "validation",
+      "experiment": "validation_experiment_env_2_sin_5_50_run_2.csv",
+      "method": "iid_known_sigma",
+      "conditional_points": 900,
+      "estimable_points": 900,
+      "mean_band_median_width_C": 0.131630245414037,
+      "mean_band_maximum_width_C": 0.19646420665712583,
+      "observed_fraction_inside_prediction_band_defined_points": 0.03222222222222222,
+      "coverage_notice": "Descriptive pointwise containment on this record, conditional on defined intervals. Calibration is optimistic; validation records do not establish independent repeated-experiment coverage."
+    },
+    {
+      "role": "validation",
+      "experiment": "validation_experiment_env_2_sin_5_50_run_2.csv",
+      "method": "iid_unknown_quotient_dof",
+      "conditional_points": 900,
+      "estimable_points": 900,
+      "mean_band_median_width_C": 0.08298481792949985,
+      "mean_band_maximum_width_C": 0.12385866460874695,
+      "observed_fraction_inside_prediction_band_defined_points": 0.01888888888888889,
+      "coverage_notice": "Descriptive pointwise containment on this record, conditional on defined intervals. Calibration is optimistic; validation records do not establish independent repeated-experiment coverage."
+    },
+    {
+      "role": "validation",
+      "experiment": "validation_experiment_env_2_sin_5_50_run_2.csv",
+      "method": "hac10_quotient_dof",
+      "conditional_points": 900,
+      "estimable_points": 900,
+      "mean_band_median_width_C": 0.2168728311012842,
+      "mean_band_maximum_width_C": 0.3277411525800744
+    },
+    {
+      "role": "validation",
+      "experiment": "validation_experiment_env_2_sin_5_50_run_2.csv",
+      "method": "hac30_quotient_dof",
+      "conditional_points": 900,
+      "estimable_points": 900,
+      "mean_band_median_width_C": 0.34189849076686585,
+      "mean_band_maximum_width_C": 0.5158224760636898
+    },
+    {
+      "role": "validation",
+      "experiment": "validation_experiment_env_2_sin_5_50_run_2.csv",
+      "method": "hac60_quotient_dof",
+      "conditional_points": 900,
+      "estimable_points": 900,
+      "mean_band_median_width_C": 0.4332638326904501,
+      "mean_band_maximum_width_C": 0.6526229884916432
+    },
+    {
+      "role": "validation",
+      "experiment": "validation_experiment_env_2_sin_5_50_run_3.csv",
+      "method": "iid_known_sigma",
+      "conditional_points": 900,
+      "estimable_points": 900,
+      "mean_band_median_width_C": 0.13162751761117164,
+      "mean_band_maximum_width_C": 0.19645919731594574,
+      "observed_fraction_inside_prediction_band_defined_points": 0.017777777777777778,
+      "coverage_notice": "Descriptive pointwise containment on this record, conditional on defined intervals. Calibration is optimistic; validation records do not establish independent repeated-experiment coverage."
+    },
+    {
+      "role": "validation",
+      "experiment": "validation_experiment_env_2_sin_5_50_run_3.csv",
+      "method": "iid_unknown_quotient_dof",
+      "conditional_points": 900,
+      "estimable_points": 900,
+      "mean_band_median_width_C": 0.08298309821664418,
+      "mean_band_maximum_width_C": 0.12385550652555821,
+      "observed_fraction_inside_prediction_band_defined_points": 0.008888888888888889,
+      "coverage_notice": "Descriptive pointwise containment on this record, conditional on defined intervals. Calibration is optimistic; validation records do not establish independent repeated-experiment coverage."
+    },
+    {
+      "role": "validation",
+      "experiment": "validation_experiment_env_2_sin_5_50_run_3.csv",
+      "method": "hac10_quotient_dof",
+      "conditional_points": 900,
+      "estimable_points": 900,
+      "mean_band_median_width_C": 0.21686742587331764,
+      "mean_band_maximum_width_C": 0.3277287520822654
+    },
+    {
+      "role": "validation",
+      "experiment": "validation_experiment_env_2_sin_5_50_run_3.csv",
+      "method": "hac30_quotient_dof",
+      "conditional_points": 900,
+      "estimable_points": 900,
+      "mean_band_median_width_C": 0.34188082483083804,
+      "mean_band_maximum_width_C": 0.515803164925174
+    },
+    {
+      "role": "validation",
+      "experiment": "validation_experiment_env_2_sin_5_50_run_3.csv",
+      "method": "hac60_quotient_dof",
+      "conditional_points": 900,
+      "estimable_points": 900,
+      "mean_band_median_width_C": 0.4333153463510513,
+      "mean_band_maximum_width_C": 0.6525885163957668
+    },
+    {
+      "role": "validation",
+      "experiment": "validation_experiment_env_2_step_50_run_2.csv",
+      "method": "iid_known_sigma",
+      "conditional_points": 900,
+      "estimable_points": 900,
+      "mean_band_median_width_C": 0.05015403966662291,
+      "mean_band_maximum_width_C": 0.11399334682606366,
+      "observed_fraction_inside_prediction_band_defined_points": 0.19111111111111112,
+      "coverage_notice": "Descriptive pointwise containment on this record, conditional on defined intervals. Calibration is optimistic; validation records do not establish independent repeated-experiment coverage."
+    },
+    {
+      "role": "validation",
+      "experiment": "validation_experiment_env_2_step_50_run_2.csv",
+      "method": "iid_unknown_quotient_dof",
+      "conditional_points": 900,
+      "estimable_points": 900,
+      "mean_band_median_width_C": 0.03161905409408661,
+      "mean_band_maximum_width_C": 0.07186583221644582,
+      "observed_fraction_inside_prediction_band_defined_points": 0.03777777777777778,
+      "coverage_notice": "Descriptive pointwise containment on this record, conditional on defined intervals. Calibration is optimistic; validation records do not establish independent repeated-experiment coverage."
+    },
+    {
+      "role": "validation",
+      "experiment": "validation_experiment_env_2_step_50_run_2.csv",
+      "method": "hac10_quotient_dof",
+      "conditional_points": 900,
+      "estimable_points": 900,
+      "mean_band_median_width_C": 0.08275674959111967,
+      "mean_band_maximum_width_C": 0.18379116926873706
+    },
+    {
+      "role": "validation",
+      "experiment": "validation_experiment_env_2_step_50_run_2.csv",
+      "method": "hac30_quotient_dof",
+      "conditional_points": 900,
+      "estimable_points": 900,
+      "mean_band_median_width_C": 0.12932361449823304,
+      "mean_band_maximum_width_C": 0.28884496679083327
+    },
+    {
+      "role": "validation",
+      "experiment": "validation_experiment_env_2_step_50_run_2.csv",
+      "method": "hac60_quotient_dof",
+      "conditional_points": 900,
+      "estimable_points": 900,
+      "mean_band_median_width_C": 0.167132334210784,
+      "mean_band_maximum_width_C": 0.3587494671156861
+    },
+    {
+      "role": "validation",
+      "experiment": "validation_experiment_env_2_step_50_run_3.csv",
+      "method": "iid_known_sigma",
+      "conditional_points": 900,
+      "estimable_points": 900,
+      "mean_band_median_width_C": 0.05015403966662291,
+      "mean_band_maximum_width_C": 0.11399340242488876,
+      "observed_fraction_inside_prediction_band_defined_points": 0.03777777777777778,
+      "coverage_notice": "Descriptive pointwise containment on this record, conditional on defined intervals. Calibration is optimistic; validation records do not establish independent repeated-experiment coverage."
+    },
+    {
+      "role": "validation",
+      "experiment": "validation_experiment_env_2_step_50_run_3.csv",
+      "method": "iid_unknown_quotient_dof",
+      "conditional_points": 900,
+      "estimable_points": 900,
+      "mean_band_median_width_C": 0.03161905409408661,
+      "mean_band_maximum_width_C": 0.07186586726810162,
+      "observed_fraction_inside_prediction_band_defined_points": 0.014444444444444444,
+      "coverage_notice": "Descriptive pointwise containment on this record, conditional on defined intervals. Calibration is optimistic; validation records do not establish independent repeated-experiment coverage."
+    },
+    {
+      "role": "validation",
+      "experiment": "validation_experiment_env_2_step_50_run_3.csv",
+      "method": "hac10_quotient_dof",
+      "conditional_points": 900,
+      "estimable_points": 900,
+      "mean_band_median_width_C": 0.08275732326409013,
+      "mean_band_maximum_width_C": 0.18379142270773485
+    },
+    {
+      "role": "validation",
+      "experiment": "validation_experiment_env_2_step_50_run_3.csv",
+      "method": "hac30_quotient_dof",
+      "conditional_points": 900,
+      "estimable_points": 900,
+      "mean_band_median_width_C": 0.12932450573894982,
+      "mean_band_maximum_width_C": 0.2888452062714748
+    },
+    {
+      "role": "validation",
+      "experiment": "validation_experiment_env_2_step_50_run_3.csv",
+      "method": "hac60_quotient_dof",
+      "conditional_points": 900,
+      "estimable_points": 900,
+      "mean_band_median_width_C": 0.16713550263242638,
+      "mean_band_maximum_width_C": 0.3587495899034181
+    },
+    {
+      "role": "validation",
+      "experiment": "validation_experiment_sin_5_50.csv",
+      "method": "iid_known_sigma",
+      "conditional_points": 989,
+      "estimable_points": 989,
+      "mean_band_median_width_C": 0.13557243773325922,
+      "mean_band_maximum_width_C": 0.19644709534563276,
+      "observed_fraction_inside_prediction_band_defined_points": 0.019211324570273004,
+      "coverage_notice": "Descriptive pointwise containment on this record, conditional on defined intervals. Calibration is optimistic; validation records do not establish independent repeated-experiment coverage."
+    },
+    {
+      "role": "validation",
+      "experiment": "validation_experiment_sin_5_50.csv",
+      "method": "iid_unknown_quotient_dof",
+      "conditional_points": 989,
+      "estimable_points": 989,
+      "mean_band_median_width_C": 0.08547012904340079,
+      "mean_band_maximum_width_C": 0.12384787697354227,
+      "observed_fraction_inside_prediction_band_defined_points": 0.014155712841253791,
+      "coverage_notice": "Descriptive pointwise containment on this record, conditional on defined intervals. Calibration is optimistic; validation records do not establish independent repeated-experiment coverage."
+    },
+    {
+      "role": "validation",
+      "experiment": "validation_experiment_sin_5_50.csv",
+      "method": "hac10_quotient_dof",
+      "conditional_points": 989,
+      "estimable_points": 989,
+      "mean_band_median_width_C": 0.22365569229862103,
+      "mean_band_maximum_width_C": 0.32771266985618297
+    },
+    {
+      "role": "validation",
+      "experiment": "validation_experiment_sin_5_50.csv",
+      "method": "hac30_quotient_dof",
+      "conditional_points": 989,
+      "estimable_points": 989,
+      "mean_band_median_width_C": 0.35242436353193085,
+      "mean_band_maximum_width_C": 0.5157774246560081
+    },
+    {
+      "role": "validation",
+      "experiment": "validation_experiment_sin_5_50.csv",
+      "method": "hac60_quotient_dof",
+      "conditional_points": 989,
+      "estimable_points": 989,
+      "mean_band_median_width_C": 0.44445505676310404,
+      "mean_band_maximum_width_C": 0.6525659050887782
+    }
+  ],
+  "maximum_gaussian_mixture_cdf_residual": 0.0,
+  "working_known_sigma_C": 0.25,
+  "null_target_relative_tolerance": 1e-08,
+  "global_delay_policy": "If calibration leaves theta structurally unobservable, all bands for a varying-input target are withheld, even where the local derivative vanishes. Constant equilibrated targets are algebraically theta-independent. A finite exploration envelope is reported separately without confidence meaning.",
+  "notice": "Pointwise conditional bands, not simultaneous bands or model-discrepancy uncertainty. The first temperature conditions the state and has no reported interval. A pseudoinverse is used only for target sensitivities annihilating the calibration null space. HAC supplies a mean-estimator covariance and no future error law; its observation prediction bands are withheld. OU future-error scale/length are working fitted quantities, not established sensor noise.",
+  "bootstrap_notice": "Joint IO fits only, 400 saved draws for each selected method. Mean bands use percentile trajectories. Gaussian-parametric prediction quantiles invert the empirical equal-weight mean mixture plus fresh independent Gaussian error at the stated working_known_sigma_C. Block60 receives mean bands only. No arbitrary original physical gauge member is bootstrapped; the zero-state original transfer is represented by its cold n1 quotient.",
+  "null_envelope_notice": "Where baseline delay is unidentifiable, optional theta exploration extrema vary only theta over the numerical box with fitted K/tau fixed. This finite grid is not a confidence interval, a global bound or a probability distribution."
+}

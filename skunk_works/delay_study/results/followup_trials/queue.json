@@ -1,0 +1,99 @@
+{
+  "status": "trials_finished_pending_agent_review",
+  "source_commit": "5178dc53fd292fb91689fde181049c5012fe0a3c",
+  "dependency": "skunk_works/delay_study/results/coverage",
+  "started_utc": "2026-10-21T05:15:19.310829+00:00",
+  "trials": {
+    "design_nominal": {
+      "status": "finished_pending_agent_review",
+      "driver": "run_design.py",
+      "selector": "nominal__n2__cold__iid__D__prior0",
+      "started_utc": "2026-10-21T14:07:30.564410+00:00",
+      "exit_code": 0,
+      "phase_status": "complete",
+      "completed_jobs": 1,
+      "failed_jobs": 0,
+      "revisit_jobs": [
+        "nominal__n2__cold__iid__D__prior0"
+      ],
+      "finished_utc": "2026-10-21T14:07:53.830383+00:00"
+    },
+    "nuisance_joint": {
+      "status": "finished_pending_agent_review",
+      "driver": "run_sensitivity.py",
+      "selector": "joint__chain_n2_io_cold_linear_exact__ambient_history",
+      "started_utc": "2026-10-21T14:07:53.833391+00:00",
+      "exit_code": 0,
+      "phase_status": "complete",
+      "completed_jobs": 1,
+      "failed_jobs": 0,
+      "revisit_jobs": [],
+      "finished_utc": "2026-10-21T14:07:58.574463+00:00"
+    },
+    "pure_left_hold": {
+      "status": "finished_pending_agent_review",
+      "driver": "run_sensitivity.py",
+      "selector": "joint__pure_delay_n0_io_cold_left_exact",
+      "started_utc": "2026-10-21T14:07:58.576418+00:00",
+      "exit_code": 0,
+      "phase_status": "complete",
+      "completed_jobs": 1,
+      "failed_jobs": 0,
+      "revisit_jobs": [],
+      "finished_utc": "2026-10-21T14:08:19.887990+00:00"
+    },
+    "original_prediction": {
+      "status": "finished_pending_agent_review",
+      "driver": "run_prediction_uncertainty.py",
+      "selector": "local__joint__original_n0_physics_cold_linear_exact",
+      "started_utc": "2026-10-21T14:08:19.892631+00:00",
+      "exit_code": 0,
+      "phase_status": "complete",
+      "completed_jobs": 1,
+      "failed_jobs": 0,
+      "revisit_jobs": [],
+      "finished_utc": "2026-10-21T14:08:23.831971+00:00"
+    },
+    "null_delay_prediction": {
+      "status": "finished_pending_agent_review",
+      "driver": "run_prediction_uncertainty.py",
+      "selector": "local__step__chain_n2_io_input_equilibrated_linear_exact",
+      "started_utc": "2026-10-21T14:08:23.834628+00:00",
+      "exit_code": 0,
+      "phase_status": "complete",
+      "completed_jobs": 1,
+      "failed_jobs": 0,
+      "revisit_jobs": [],
+      "finished_utc": "2026-10-21T14:08:27.486126+00:00"
+    },
+    "ou_prediction": {
+      "status": "finished_pending_agent_review",
+      "driver": "run_prediction_uncertainty.py",
+      "selector": "ou__joint__chain_n2_io_cold_linear_exact",
+      "started_utc": "2026-10-21T14:08:27.488589+00:00",
+      "exit_code": 0,
+      "phase_status": "complete",
+      "completed_jobs": 1,
+      "failed_jobs": 0,
+      "revisit_jobs": [],
+      "finished_utc": "2026-10-21T14:08:30.489290+00:00"
+    },
+    "bootstrap_prediction": {
+      "status": "finished_pending_agent_review",
+      "driver": "run_prediction_uncertainty.py",
+      "selector": "bootstrap__joint__chain_n2_io_cold_linear_exact__parametric",
+      "started_utc": "2026-10-21T14:08:30.491058+00:00",
+      "exit_code": 0,
+      "phase_status": "complete",
+      "completed_jobs": 1,
+      "failed_jobs": 0,
+      "revisit_jobs": [],
+      "finished_utc": "2026-10-21T14:08:40.155841+00:00"
+    }
+  },
+  "notice": "Sequential bounded trials only. No full studies start without subsequent agent inspection. Coverage and trial numerical pools never overlap under this owner.",
+  "last_dependency_state": "terminal_complete_owner_released",
+  "last_observed_utc": "2026-10-21T14:07:30.557302+00:00",
+  "finished_utc": "2026-10-21T14:08:40.156853+00:00",
+  "archive_notice": "Immutable copies of original bounded trials from source 5178dc5. The design trial is retained with a dense-temperature revisit flag; six other trials passed their independent audits. Do not resume this archived queue."
+}

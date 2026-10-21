@@ -49,7 +49,7 @@ must index those phases and manuscript artifacts without replacing their records
   1.14e-13. `results/fit_summary.csv` and `coordinate_comparison.csv` are generated
   by `summarize_fits.py`, not manually maintained tables.
   Full profiles, bootstrap, structural checks, OU calibration and synthetic
-  coverage have since finished. Sensitivity is live; see the single phase-status
+  coverage have since finished. Sensitivity and prediction audits passed; see the single phase-status
   section below. The overnight study remains in progress; do not mark it
   complete early.
 - Literature packet: `6f11d88ebd8741c892fea8fffc243d7d`. Initial revision:
@@ -201,7 +201,7 @@ no failed/missing draws, zero LR arithmetic errors, physical-transform error
 hash is bound in the audit. Figure generation from `19306cd` now accepts a
 byte-identical configuration at a different path only when it matches the
 production identity and an audited source digest; original inputs are still
-checked. Production figure numeric/visual review remains in progress.
+checked. Production numeric audits passed (5,796 figure values, 48 table counts and three prose macros); color/grayscale figures and working PDF pages 7/9/17/18/24/25 passed scoped visual review. Receipts are saved with the manuscript. Final full-document QA remains pending.
 
 The 112-job experiment-design driver and configuration are now written. Run a
 frozen short trial and the full study once the coverage pool frees resources.
@@ -251,7 +251,7 @@ SVD. It checks IID covariance arithmetic and exact pole-exchange predictions wit
 a HAC audit or coverage guarantee. It refuses active/incomplete runs and
 requires an explicit flag for a filtered trial. Four new checks include
 regular and rank-deficient cases and deliberate covariance corruption. Production
-sensitivity outputs are live and have not yet received their terminal audit.
+sensitivity completed 241/241 cases without failures or revisit flags. Its independent audit passed all 241 cases: maximum trajectory difference 1.8e-12 C, SSE difference 3.4e-11 squared C, mixed information relative difference 1.4e-7 and covariance difference 1.2e-16. Full result interpretation and manuscript integration remain pending.
 
 The prepared `audit_prediction_uncertainty.py` checks every saved mean,
 variance, interval endpoint, conditioning/estimability flag and target summary.
@@ -263,9 +263,7 @@ than merely reproduce the producer's inversion helper. It reuses the separately
 verified simulator/sensitivities and recorded observed OU covariance. Eight
 new checks cover dense irregular-time OU agreement, HAC/rank algebra, deliberate
 band corruption and saved synthetic artifacts from all four output branches.
-The full 112-check suite passed in 7.78 s. This prepares the audit; none of the
-131 production prediction jobs has been claimed complete or audited. Run the
-full auditor only after production is terminal and within the worker budget.
+The full 112-check suite passed in 7.78 s. The full 131-case production run and its independent audit have now passed; all 4,220,249 saved points were checked. Reporting still distinguishes mean-estimator bands, future-observation bands and structurally undefined varying-input targets.
 
 One-shot follow-up queue **session 48705** exited after all seven trials at
 14:08:40 UTC. It used immutable commit **5178dc5**, starting only after the
@@ -276,14 +274,9 @@ trials passed their independent audits. The design trial converged under its
 1 s constraints but its dense audit flagged peaks up to 85.000274 C. That
 flagged source/result is preserved. A common 0.01 C optimization guard now
 tightens parameter/discrimination design constraints; dense acceptance remains
-85 C. It has no continuous-time or hardware guarantee. Run a fresh guarded
-trial before either full design phase; preserve any later flag for review.
+85 C. It has no continuous-time or hardware guarantee. The fresh guarded trial passed its separate audit in results/design_guard_trial; preserve any later flag for review.
 
-The full **241-case sensitivity phase is live in session 75251**, frozen at
-**84cf569**, output `results/sensitivity`. It owns the four-worker numerical
-budget. Do not start a different pool until its handle is terminal. Prediction
-trials passed; the full 131-case prediction phase is next eligible, followed by
-the separate profile/discrimination trials and the guarded design trial.
+The full **241-case sensitivity phase** from **84cf569** and the full **131-case prediction phase** from **19306cd** are terminal and independently audited. The selected 18-profile refinement from **c071c1f** has also exited successfully; its full audit is next before catalog publication. No numerical pool is live at this reconciliation. The guarded parameter-design trial passed; full design and the separate discrimination trial/design/refit pools remain.
 
 `discrimination.py` and its driver prepare a separate model-order design phase:
 12 local fixed-mean designs compare all six pairs among n1/n2/n12/pure, using
@@ -649,3 +642,11 @@ measure the original model's internal heater state. The supplied validation
 filenames mostly identify environment 2; a between-environment explanation for
 their errors is not established. Data resolution and unrecorded run conditions
 also need inspection before assigning all residual structure to white sensor noise.
+
+## Current phase reconciliation
+
+At this reconciliation, no prior numerical process remained live (process inventory checked). The full 131-case prediction-uncertainty run is terminal and independently audited: all 131 cases passed, with Gaussian-mixture CDF residual below 7.9e-12. The 241-case sensitivity and 3,600-dataset coverage phases are also terminal and audited. Their immutable output identities remain in their own manifests.
+
+The original design trial is preserved because it passed its 1 s constraints but exceeded 85 C by 0.000274 C on the independent 0.25 s grid. The committed 0.01 C optimization guard retains the independent 85 C acceptance limit. The guarded trial passed its separate audit; full parameter design is eligible after the selected-profile pool exits. The discrimination trial remains required before its full design/refit pools.
+
+The selected physical CpH refinement trial passed its producer flags and analytic-family inclusion check. The full 18-profile refinement exited successfully from source c071c1f, execution session 23765. Its separate full audit must pass before publishing selected_profile_index.json or regenerating profile-dependent manuscript figures/tables. First-pass files and trial outputs remain preserved.

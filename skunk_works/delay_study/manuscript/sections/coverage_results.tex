@@ -1,0 +1,69 @@
+\subsection{Synthetic coverage exposes sensitivity to serial dependence}
+\input{tables/coverage_values}
+All \CoverageTotalDatasets{} prespecified synthetic datasets finished without
+failed draws. Each of the 84 delay-method comparisons returned an interval for
+every requested dataset, so its method-defined and unconditional coverage rates
+coincide. Table~\ref{tab:coverage-delay} gives exact counts for four procedures;
+Fig.~\ref{fig:coverage-delay} includes all seven and their Monte Carlo uncertainty.
+
+Under IID Gaussian generation, the IID local and profile procedures gave
+coverage near the nominal reference. Applying those same procedures under OU
+generation produced severe undercoverage, especially at the longer correlation
+length. Estimating a common variance did not compensate for ignoring serial
+covariance. HAC intervals improved coverage under correlated generation, with
+substantial bandwidth sensitivity. Even the largest tested bandwidth fell below
+the nominal reference in the OU60 comparisons. The synthetic thermal mean is
+correct by construction here; these failures do not require between-record
+mean discrepancy.
+\input{tables/coverage_rates}
+
+The profile comparison retains a numerical limitation. Three-point quadratic
+interpolation changed \CoverageTwoStageOUKnownGridChanges{} of
+\CoverageReplicates{} coverage classifications for the two-stage known-variance
+profile under OU60 generation. This is a sensitivity check on the saved grid,
+without new nuisance optimization or an endpoint-accuracy certificate. Both
+primary and secondary classifications remain conditional diagnostics of an IID
+likelihood applied to correlated errors. The full CSV retains this diagnostic
+for every profile case; interpreting the known-variance profile rates as exact
+continuous-profile coverage would overstate their numerical verification.
+
+Figure~\ref{fig:coverage-width} compares median interval widths. The one-stage
+profile width sums its two accepted pole-label components rather than measuring
+the gap between them. A wider accepted set can therefore concern a different
+global parameter representation from a local interval around one pole label.
+These simulations fix four generating points, the recorded inputs/times and the
+initial-temperature, ambient and heater-calibration assumptions. They do not
+measure coverage of the real-data block-bootstrap intervals or uncertainty from
+the observed between-record discrepancy.
+
+\begin{figure}[p]
+ \centering
+ \includegraphics[width=\linewidth]{coverage_delay_coverage.pdf}
+ \caption{Serial dependence reduces coverage of IID-based delay intervals in
+ controlled simulation. Each point is covered/defined over
+ \CoverageReplicates{} requested datasets for one model and true error process;
+ bars are pointwise 95\% Wilson intervals for Monte Carlo sampling uncertainty.
+ All displayed procedures returned intervals for every dataset. The dashed line
+ is nominal 0.95 coverage. Known/fitted denote fixed or profiled IID variance;
+ local IID intervals are Gaussian log-Wald intervals and profiles retain all
+ accepted components. HAC labels give Bartlett bandwidths in retained samples.
+ All true errors have the same marginal standard deviation; rows change their
+ correlation law. The thermal mean and startup are correctly specified in each
+ generating scenario. Profile sets retain the declared finite-grid limitation.
+ These are generating-point results, without a universal or real-discrepancy
+ coverage guarantee.}
+ \label{fig:coverage-delay}
+\end{figure}
+
+\begin{figure}[p]
+ \centering
+ \includegraphics[width=\linewidth]{coverage_delay_width.pdf}
+ \caption{Median delay-interval widths depend on the uncertainty procedure and
+ true serial dependence. Models, methods and simulation denominators match
+ Fig.~\ref{fig:coverage-delay}. All panels share the same width scale. Profile
+ widths sum accepted component lengths, excluding intervening gaps; the
+ one-stage profile includes both pole-label modes. These width summaries do
+ not establish nominal coverage. Exact counts, width distributions, exploration
+ flags and interpolation sensitivity remain in the saved coverage summary.}
+ \label{fig:coverage-width}
+\end{figure}
