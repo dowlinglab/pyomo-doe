@@ -23,8 +23,8 @@ scope, and `results/manifest.json` will identify manuscript results.
 - Notebook migration committed in `58b4fa5`: 13 deterministic Python exports,
   scientific-cell AST equality, and a successful migrated simulation run.
 - Exact LTI models committed in `451749f`; inference runner in `275fe0a`.
-  Eighty-two focused checks passed on October 21 after the design-driver and
-  onset-limit checks were added. They cover independent integrator/analytic agreement,
+  Eighty-seven focused checks passed on October 21 after the exact-family and
+  targeted profile-refinement checks were added. They cover independent integrator/analytic agreement,
   transformations, synthetic recovery, null directions, profile recovery,
   resampling, OU likelihoods, coverage accounting and input-design gradients.
 - First full sweep finished 95/99 cases; four uncertainty serialization failures
@@ -227,6 +227,17 @@ are correct, but those endpoints must not be presented as confidence bounds.
 failures. Refine crossings if numerical endpoint claims are needed. Results and
 catalog are committed in `183e6b7`.
 
+`original_family_bounds.py` now partitions the equivalent physical family at
+all box-boundary roots and obtains exact compatible-coordinate ranges, including
+disconnected feasible intervals. `profile_refinement.py` inserts independently
+checked feasible witnesses and bisects observed likelihood crossings under both
+variance conventions. Four focused numerical tests and the full 87-test suite
+pass. The prepared 18-profile phase targets the nine offending physical profiles,
+all six cold one-stage delay profiles, and joint cold n2/n12/pure-delay examples.
+It has **not been launched** while coverage owns the four-worker budget. The
+separate auditor must pass before `selected_profile_index.json` can replace any
+profile selection for later tables or plots; the original catalog remains intact.
+
 The small deterministic onset phase from `a0f01fe` is complete in
 `results/onset_limit`: 18 exact Erlang-CDF calculations, independently checked
 against quadrature and state propagation. The derived onset error is n^-1/2;
@@ -330,13 +341,19 @@ inspected. `baseline_numeric_audit.json` and `baseline_visual_audit.json` retain
 the separate checks. The remaining full document and future figures need their
 own final audit; this is not human scientific review.
 
-The working manuscript is now **17 pages**, compiled without warnings. New
+The working manuscript is now **21 pages**, compiled without warnings. New
 generated tables cover calibration errors, parameters, coordinate metrics,
 conditional delay uncertainty and OU innovations. `audit_tables.py` checked
 150 printed cells using independent result paths, including independent physical
 fits and covariance-based moment conditioning. Pages 6, 9 and 10 were visually
 checked for tables; pages 14-16 for the added derivations. This is partial draft
 QA, not the final full-document review. The final PDF has not been named or sent.
+Four additional uncertainty figures display pole modes, conditional delay
+intervals, positive information spectra and weak directions. Their producer
+source is `6dd8633`, and an independent audit checks 434 plotted values. Color,
+grayscale and working PDF pages 10/12/13/14 were inspected. Vector heatmap cells
+avoid raster seams observed in the earlier PDF attempt. This adds partial
+figure QA, not a full-document final review or human scientific review.
 Added derivations cover heater-calibration scale ambiguity, ambient/history
 nuisance information, zero-mean colored-error least-squares interpretation,
 quartic behavior at coincident poles, and the onset convergence coefficient.
