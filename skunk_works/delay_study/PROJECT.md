@@ -474,6 +474,20 @@ an externally inspected PDF as an ingested source. Raw evidence exports may
 contain copyrighted passages and belong in ignored `_private/`, with a scoped
 public receipt and the manuscript bibliography retaining checked metadata.
 
+For the final packet, bounded planning/grounding tools were discovered in the
+configured runtime: `prepare_packet_evidence_batch` saves exact revision/claim-
+bound requests, and `run_packet_evidence_batch` plans them from one validated
+source view without shared grounding. Inspect every resulting plan before using
+`prepare_packet_grounding_batch` and `run_packet_grounding_batch`; the latter
+accepts at most 20 pending items per call and requires the current revision.
+Use the existing Raue/Garnier fine passages where they support the actual clause,
+without transferring one passage's support to unrelated source/metadata claims.
+The five externally read works still need explicit carrier/fine-availability
+issues, not invented source events. Read `research-common/bounded-work.md` in
+the literature skill for recovery after uncertain calls. These are discovered
+capabilities, not executed final-draft batches; no batch or claim has been saved
+against the unfinished draft. Recheck tool availability and the packet head.
+
 Do not expand the numerical comparison matrix further by default. Complete the
 already declared coverage, sensitivity, prediction, parameter-design, selected
 profile refinement and discrimination phases, resolve numerical issues found by

@@ -126,6 +126,13 @@ every citation occurrence and claim, and export the scoped audit. A draft change
 requires rebinding; bibliography identity and quote matching alone do not verify
 claim support.
 
+The configured literature runtime exposes bounded packet evidence/grounding
+batches. After exact-draft claim binding, plan a reviewed quote queue from one
+validated source view, inspect the plans, and apply at most 20 pending grounding
+items per call with the actual packet revision. Inspect saved batch/packet state
+after uncertain completion before retrying. This batches evidence operations;
+it does not authorize new PDF ingestion or remove source-availability gaps.
+
 Two cited works have ingested source carriers; five inspected primary PDFs are
 externally staged. Their available text and missing fine-grounding bindings must
 remain distinct. Keep copyrighted raw packet exports in ignored `_private/` and
