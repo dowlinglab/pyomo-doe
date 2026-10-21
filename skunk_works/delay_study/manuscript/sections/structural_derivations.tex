@@ -2,13 +2,13 @@
 \label{sec:structural}
 
 \subsection{Delay-chain moments and pure-delay limit}
-Let $r=n/\theta$ be the delay-state rate. The normalized chain kernel for
+Let $\lambda_n=n/\theta$ be the delay-state rate. The normalized chain kernel for
 $t\geq0$ is
 \[
- h_n(t)=\frac{r^n t^{n-1}e^{-rt}}{(n-1)!}.
+ h_n(t)=\frac{\lambda_n^n t^{n-1}e^{-\lambda_n t}}{(n-1)!}.
 \]
-Its Laplace transform is $(1+s/r)^{-n}$. Differentiating that transform at zero
-gives mean $n/r=\theta$ and variance $n/r^2=\theta^2/n$. Consequently, the
+Its Laplace transform is $(1+s/\lambda_n)^{-n}$. Differentiating that transform at zero
+gives mean $n/\lambda_n=\theta$ and variance $n/\lambda_n^2=\theta^2/n$. Consequently, the
 normalized complete thermal response has impulse-time mean $\tau+\theta$ and
 variance $\tau^2+\theta^2/n$. These are properties of the model kernel;
 they are not estimates of a measured residence-time distribution.
@@ -96,6 +96,21 @@ therefore does not by itself establish a continuum of exactly equivalent
 parameters. Nonregular local inference and structural nonuniqueness are separate
 questions. The exact matrix-exponential simulator avoids a partial-fraction
 formula that would divide by the pole separation.
+
+The exceptional point also changes the order of local objective curvature.
+Let $t_{\mathrm c}>0$ be the common pole time and perturb
+$\tau=t_{\mathrm c}+\delta$ and $\theta=nt_{\mathrm c}-\delta$, holding the
+total mean time fixed. For small $\delta$,
+\[
+ \log\frac{G_n(s;\delta)}{G_n(s;0)}
+ =\frac{n+1}{2n}\,\delta^2
+   \left(\frac{s}{1+t_{\mathrm c}s}\right)^2+O(\delta^3).
+\]
+The linear term cancels. The temperature difference is therefore second order
+in this direction and its squared prediction distance is fourth order, subject
+to a nonzero response coefficient for the chosen input. For $n=1$, exchanging
+$\delta$ and $-\delta$ exchanges pole labels exactly. For $n>1$, the repeated
+factor's multiplicity generally distinguishes those two perturbed models.
 
 \subsection{Moment coordinates}
 Define the total mean response time $m=\tau+\theta$ and the delay fraction

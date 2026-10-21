@@ -1,0 +1,104 @@
+\section{Calibration, initial-state and residual assumptions}
+\label{sec:nuisance-assumptions}
+
+\subsection{Heater calibration introduces another exact ambiguity}
+The conversion $c=\alpha P$ is fixed in the baseline study. If it is unknown,
+the transformation
+\[
+ (c,\Ua,\Cp)\longmapsto(\lambda c,\lambda\Ua,\lambda\Cp),
+ \qquad \lambda>0,
+\]
+preserves $K=c/\Ua$, $\tau=\Cp/\Ua$, and every reduced-model prediction under
+the same initial conditions. In the original model, scaling $c,\Ua,\Ub,\CpH$
+and $\CpS$ together has the same effect. Input design cannot identify this
+absolute thermal scale from temperature and percentage command alone.
+
+Let $C_{\mathrm{io}}$ be a covariance matrix for
+$(\log K,\log\tau,\log\theta)$ and suppose an independent heater calibration
+has log-variance $v_c$. With the transformation matrix $M$ defined in
+Appendix~\ref{sec:structural}, the corresponding physical log-covariance is
+\[
+ C_{\mathrm{phys}}=M C_{\mathrm{io}}M^\top+v_c\bm v\bm v^\top,
+ \qquad \bm v=(1,1,0)^\top.
+\]
+This covariance identity is exact in logarithmic coordinates under the stated
+independence assumption; Gaussianity is not needed for the covariance itself.
+It adds correlated uncertainty to conductance and capacity while leaving delay
+unchanged. A hypothetical lognormal calibration with coefficient of variation
+$r_c$ has $v_c=\log(1+r_c^2)$. Such a sensitivity calculation must be labelled
+as assumed calibration uncertainty: these data do not supply $r_c$.
+
+\subsection{Ambient and history are nuisance quantities}
+For either prescribed delay-state initialization, hold the observed initial
+sensor temperature $T_0$ fixed and vary ambient temperature. Linearity gives
+\[
+ \frac{\partial T(t)}{\partial\Tamb}=1-e^{-t/\tau}.
+\]
+An ambient error therefore persists rather than averaging away with additional
+samples in one record. Under constant input $u_0$ and equilibrated delay states,
+\[
+ T(t)=T_0 e^{-t/\tau}+(\Tamb+Ku_0)(1-e^{-t/\tau}).
+\]
+Only the combination $\Tamb+Ku_0$ is identified from this response if ambient
+is free, and delay is absent. Independent ambient information and a varying
+input address different ambiguities.
+
+Another restricted history family sets every chain state initially to
+$\gamma u_0$, where $0\leq\gamma\leq1$. For fixed parameters, its response is
+exactly $(1-\gamma)T_{\mathrm{cold}}+\gamma T_{\mathrm{equilibrated}}$.
+The same interpolation describes a constant pre-window input between zero and
+$u_0$ in the pure-delay model. This family does not represent every possible
+heater history. Its derivative with respect to $\gamma$ is the difference of
+the two endpoint trajectories. If these nuisance sensitivities resemble the
+delay sensitivity, fixing history can make delay appear more precise than a
+fit that allows history to vary.
+
+More generally, let $A=W^{1/2}J_p$ and $B=W^{1/2}J_a$ be the mean sensitivities
+for parameters of interest and nuisance parameters, respectively, under a fixed
+positive-definite observation weight $W$. Profiling unrestricted local nuisance
+directions leaves information $A^\top(I-BB^+)A$, where $B^+$ is the
+Moore--Penrose pseudoinverse. This projection cannot increase information.
+Bounds or independent nuisance measurements alter the problem and must be stated.
+
+\subsection{Serial dependence alone does not prove least-squares bias}
+For fixed input and known initial conditions, suppose observations have the
+correct mean $\bm m(\bm p_0)$ and additive error $\bm\epsilon$ with
+$E\bm\epsilon=0$ and covariance $\Sigma$. For any candidate parameter vector
+$\bm p$,
+\[
+ E\|\bm m(\bm p)-\bm m(\bm p_0)-\bm\epsilon\|^2
+ =\|\bm m(\bm p)-\bm m(\bm p_0)\|^2+\operatorname{tr}\Sigma.
+\]
+Correlated errors change sampling uncertainty and efficiency without moving the
+minimum of this expected output-error objective. This identity does not imply
+an unbiased finite-sample nonlinear estimator. It also does not apply unchanged
+when noisy observations enter regressors, the initial observation creates a
+nonzero conditional error mean, or the thermal mean is misspecified. The
+observed TC-Lab residual offsets and held-out errors require those possibilities
+to remain open.
+
+\section{Chain convergence at the causal onset}
+\label{sec:onset}
+For a cold constant step of magnitude $u_0$ and zero initial thermal deviation,
+let $D_n$ have an Erlang
+distribution with mean $\theta$ and variance $\theta^2/n$. The temperature
+rise relative to ambient is
+\[
+ y_n(t)=K u_0 E\!\left[
+  \left(1-e^{-(t-D_n)/\tau}\right)\mathbf 1_{\{D_n\leq t\}}\right].
+\]
+At $t=\theta$, the pure-delay response is zero while every finite chain has a
+positive response. The central limit theorem and a first-order expansion of
+the exponential give
+\[
+ \sqrt n\,y_n(\theta)\longrightarrow
+ \frac{K u_0\theta}{\tau\sqrt{2\pi}}.
+\]
+To justify the expectation limit, the standardized Erlang variables have unit
+second moments, so their positive parts are uniformly integrable. The
+exponential remainder is bounded by a constant times
+$E(\theta-D_n)^2/\tau^2=O(n^{-1})$.
+This is an onset error of order $n^{-1/2}$, even when smooth parts of the
+response converge faster. A small average trajectory error can therefore hide
+a larger difference near the delay's causal onset. The saved onset calculation
+checks the coefficient using an independently tested Erlang-CDF expression.

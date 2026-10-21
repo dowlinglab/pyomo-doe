@@ -23,8 +23,8 @@ scope, and `results/manifest.json` will identify manuscript results.
 - Notebook migration committed in `58b4fa5`: 13 deterministic Python exports,
   scientific-cell AST equality, and a successful migrated simulation run.
 - Exact LTI models committed in `451749f`; inference runner in `275fe0a`.
-  Forty-eight focused checks passed on October 21 before the full design-driver
-  checks were added. They cover independent integrator/analytic agreement,
+  Fifty-five focused checks passed on October 21 after the design-driver and
+  onset-limit checks were added. They cover independent integrator/analytic agreement,
   transformations, synthetic recovery, null directions, profile recovery,
   resampling, OU likelihoods, coverage accounting and input-design gradients.
 - First full sweep finished 95/99 cases; four uncertainty serialization failures
@@ -163,8 +163,11 @@ are not confidence intervals. Source/output receipts are committed in `9cb14b6`.
 All **48 OU likelihood calibrations finished without revisit flags**, from
 source `9cb14b6`, in `results/ou`; session 17895 has exited. Audit and summarize
 their noise lengths, bounds, likelihoods, mean predictions and conditional/full
-Hessians before citing them. The OU covariance is a working assumption and
-cannot repair mean-model bias. No push or completion email has been sent.
+Hessians before extending their interpretation. The independent saved-trajectory
+audit passed: maximum NLL difference 2.6e-12, selected converged minima verified,
+and physical transforms checked. Joint cold innovation lag-one correlations
+remain near -0.5, challenging the single-component OU covariance. All results
+and the audit are committed in `89c3e8c`. No push or completion email has been sent.
 
 The independent coverage production is **live**, execution session **19175**,
 from immutable source **23629a2**, output `results/coverage`. It has four workers;
@@ -191,6 +194,21 @@ noise/validation and structural summaries, result figures/tables, ambient and
 heater-calibration uncertainty derivations, and manuscript editing. Further
 long numerical phases wait for the current pool; brief single-thread unit
 checks may run. Remaining model-mismatch computations can follow coverage.
+
+The merged profile catalog and arithmetic audit cover **300/300** profiles,
+including the three documented retries. An analytic cross-check found that all
+nine redundant original-parameter profiles have coarse interpolated endpoints
+that exclude some exact equivalent family members. The sampled flat objectives
+are correct, but those endpoints must not be presented as confidence bounds.
+`profile_audit.json` records both arithmetic success and these interpretation
+failures. Refine crossings if numerical endpoint claims are needed. Results and
+catalog are committed in `183e6b7`.
+
+The small deterministic onset phase from `a0f01fe` is complete in
+`results/onset_limit`: 18 exact Erlang-CDF calculations, independently checked
+against quadrature and state propagation. The derived onset error is n^-1/2;
+its scaled value at n=65,536 is within 0.03% of the CLT coefficient. This is a
+cold constant-step result at fixed parameters, not a refitted trajectory error.
 
 Four public PDFs were acquired in `/private/tmp/tclab-literature`, registered as
 source `tclab-lti-study-20261021`. The local review plan is
@@ -249,6 +267,14 @@ from saved numerical outputs and replace status placeholders before delivery.
 The lab's DOI checker verified **4/4 cited entries as MATCH** against Crossref;
 `literature/doi_results.json` preserves the result. This checks reference identity,
 not whether a source supports a particular manuscript statement.
+Three added references were checked directly against publisher/source pages.
+The expanded checker command was rejected by automatic review before execution
+because its User-Agent would transmit the user's email to Crossref. No workaround
+or indirect retry was performed. `added_reference_identity_review.json` records
+the completed safer identity checks and their scope; do not claim a seven-entry
+Crossref run. The added Politis--Romano journal scan was OCR-read and all three
+method pages rendered and checked. Its Remark 2 describes the fixed circular
+relative; geometric stationary-bootstrap guarantees are not transferred to it.
 
 The initial 8-page manuscript was rendered and all eight pages inspected. A long
 source filename caused one overfull line, which was corrected with breakable
@@ -269,6 +295,19 @@ zero. Color and grayscale figures and their rendered manuscript pages 6-7 were
 inspected. `baseline_numeric_audit.json` and `baseline_visual_audit.json` retain
 the separate checks. The remaining full document and future figures need their
 own final audit; this is not human scientific review.
+
+The working manuscript is now **17 pages**, compiled without warnings. New
+generated tables cover calibration errors, parameters, coordinate metrics,
+conditional delay uncertainty and OU innovations. `audit_tables.py` checked
+150 printed cells using independent result paths, including independent physical
+fits and covariance-based moment conditioning. Pages 6, 9 and 10 were visually
+checked for tables; pages 14-16 for the added derivations. This is partial draft
+QA, not the final full-document review. The final PDF has not been named or sent.
+Added derivations cover heater-calibration scale ambiguity, ambient/history
+nuisance information, zero-mean colored-error least-squares interpretation,
+quartic behavior at coincident poles, and the onset convergence coefficient.
+The saved literature packet still has no exact draft/citation inventory; finish
+its synthesis/claim/grounding/export workflow before reporting it complete.
 
 Coverage reporting must retain method-specific undefined intervals and optimizer
 failures, unconditional coverage bounds for failures, binomial uncertainty,

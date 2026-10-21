@@ -5,6 +5,14 @@ the observed temperature closely while several parameter combinations produce
 the same response. Changing parameter coordinates can improve numerical scaling,
 but an invertible coordinate transformation preserves that ambiguity.
 
+Continuous-time identification also distinguishes the input-driven model from
+the residual process. The latter can include measurement error, unmeasured
+disturbances, and model inadequacy \citep{garnier-2008-direct}. A fitted residual
+covariance therefore does not by itself identify sensor noise or establish a
+physical disturbance mechanism. This distinction guides the uncertainty
+comparisons below: we vary working noise assumptions and examine the errors
+that remain on experiments excluded from calibration.
+
 Identifiability concerns the uniqueness of parameters given a model, an observed
 output, and an experiment. Practical estimability additionally depends on the
 record length, input, noise, and initial-state information. Profile likelihood
@@ -24,6 +32,15 @@ prediction-error information formula assumes that the true system belongs to
 the model set and that the predictor is differentiable. Those assumptions require
 separate scrutiny here because the TC-Lab residuals can contain serial structure
 and between-experiment discrepancies.
+
+Finite-horizon amplitude constraints introduce a further distinction between an
+information objective and its numerical solution. \citet{manchester-2010-input}
+formulates time-domain information design as a nonconvex input problem and
+develops a convex relaxation. We use bounded multistart nonlinear optimization
+with explicit command and temperature constraints. We have not implemented that
+relaxation, so its approximation guarantees do not apply to the designs reported
+here. Comparing local solutions across assumed models and residual covariances
+is part of assessing a proposed experiment.
 
 An $n$-stage chain is a family of distributed-delay models. The linear chain
 construction relates cascaded first-order stages to Erlang dwell times

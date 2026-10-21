@@ -1,9 +1,11 @@
 \section{Results}
-The baseline comparison completed all 99 cases. The profile phase completed
-297 of 300 jobs on its first pass. Three original-model conductance profiles
-exhausted their nuisance-optimization budgets; their failed status is retained
-pending a documented retry. None of the completed profiles found a minimum
-requiring a baseline refit under the recorded tolerance.
+The baseline comparison completed all 99 cases. The first profile pass completed
+297 of 300 jobs; a separate documented retry recovered the three failed
+original-model conductance profiles. Both passes are retained. None of the
+completed profiles found a minimum requiring a baseline refit under the recorded
+tolerance. The bootstrap completed all 96,000 planned refits, and the working
+OU likelihood comparison completed all 48 calibrations. Independent synthetic
+coverage and prospective-design results remain in progress.
 
 \subsection{Order and initialization}
 The startup assumption reverses the order ranking for the sine and joint
@@ -14,6 +16,11 @@ the pure-delay limit. The step experiment with equilibrated states gives the
 same error for every order, as expected from the delay's absence from its
 response. These comparisons concern calibration error under prescribed histories;
 they do not establish which history occurred before recording began.
+Table~\ref{tab:calibration-rmse} gives the numerical comparison, including the
+step calibration, where the cold two-stage model improves on the cold one-stage
+fit. Table~\ref{tab:joint-parameters} gives the joint cold parameters.
+\input{tables/calibration_rmse}
+\input{tables/joint_parameters}
 
 \begin{figure}[p]
  \centering
@@ -49,7 +56,54 @@ does not establish independent sensor noise or reliable uncertainty coverage.
  \label{fig:baseline-trajectories}
 \end{figure}
 
-The remaining results will be inserted after the profile retries, resampling,
-sensitivity analyses, validation diagnostics, and input-design calculations have
-been audited. The current figures use completed baseline outputs only.
+\subsection{Coordinate conditioning and physical ambiguity}
+The independently fitted physical and input--output formulations reach sums of
+squares that agree to numerical precision in the joint cold cases
+(Table~\ref{tab:coordinate-metrics}). Reexpressing the same sensitivity matrix
+changes its condition number. Moment coordinates do not improve this particular
+metric at these fitted points. These differences concern the coordinate metric;
+they do not distinguish observationally equivalent model explanations.
+\input{tables/coordinate_metrics}
+
+The original model has a stronger ambiguity. For each calibration, the saved
+structural calculation sampled 403 positive physical parameter combinations with
+the same transfer function. Their largest prediction difference was below
+$1.8\times10^{-12}\,{}^\circ\mathrm C$. Conductance $\Ua$ remained fixed while
+$\Ub$, $\CpH$ and $\CpS$ varied. Appendix~\ref{sec:structural} gives the
+analytic family and its positivity limits; sampled ranges are not confidence
+intervals.
+
+The analytic family also exposed an interpolation failure. All nine redundant
+physical-parameter profiles excluded some known equivalent family members from
+their interpolated 95\% grid sets. The sampled objective values along the flat
+region were correct; coarse interpolation across its rising edge produced the
+misleading endpoints. We therefore withhold those endpoints as physical
+confidence claims. The merged profile catalog records this finding separately
+from the successful likelihood arithmetic and nuisance-fit checks. A converged
+pointwise optimizer and a plotted crossing do not validate the whole profile set.
+
+\subsection{Conditional delay uncertainty}
+Table~\ref{tab:delay-uncertainty} compares delay uncertainty for representative
+joint cold formulations. Increasing the residual block length widens the
+percentile intervals relative to independent Gaussian simulation. The one-stage
+profile has two accepted pole-label modes; canonical bootstrap summaries refer
+to only the representative with $\tau\geq\theta$. A finite full-coordinate
+interval is withheld where the recorded experiment leaves delay unobservable.
+The table compares assumptions rather than estimating a single unconditional
+physical uncertainty.
+\input{tables/delay_uncertainty}
+
+\subsection{The working correlated-noise model remains inadequate}
+The independent innovations audit reproduced every saved OU likelihood within
+$2.6\times10^{-12}$. This validates likelihood arithmetic, not the residual
+model. Filtered innovations retain strong negative lag-one correlation
+(Table~\ref{tab:ou-diagnostics}). The fitted length therefore cannot be treated
+as a measured thermal disturbance time scale. Mean prediction errors on the
+held-out records also remain much larger than calibration errors. Allowing
+serial covariance changes conditional uncertainty without establishing that
+the thermal mean transfers between records.
+\input{tables/ou_diagnostics}
+
+The remaining empirical results will be inserted after the independent coverage,
+ambient/history sensitivity, validation and prospective-design audits finish.
 \FloatBarrier
