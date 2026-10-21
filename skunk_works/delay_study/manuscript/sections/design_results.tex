@@ -1,0 +1,104 @@
+\subsection{Local input design improves declared information criteria}
+All parameter-design cases completed after the shutdown-grid correction, and
+the independent audit passed the information matrices, eigenpairs, objective
+values, selected-start rule and resource constraints. Each selected local
+solution improves its own declared reference criterion. This comparison is
+conditional on the fitted model points, working covariance and initialization;
+it does not select a physically correct model.
+
+The ensemble designs show how the target changes the proposed experiment
+(Table~\ref{tab:parameter-design} and Fig.~\ref{fig:design-utilities}). The
+minimum criterion targets the least favorable relative scenario; the mean
+criterion targets average log improvement. Historical information changes both the objective
+and the reference: future-only ensembles use multisine because constant input
+leaves delay unobservable in equilibrated scenarios, whereas adding the two
+historical calibration records makes the constant-reference total information
+nonsingular. Differences between the two panels therefore cannot be read as
+absolute information loss from including historical data. The determinant,
+minimum-eigenvalue, delay and prediction criteria also have different scales.
+\input{tables/parameter_design}
+
+Figure~\ref{fig:design-commands} displays two selected ensemble determinant
+designs and their dense temperature checks. The upper temperature envelope
+ranges over the declared sixteen fitted mean models, without probabilities
+over models or parameter uncertainty. The selected inputs use the amplitude
+and slew limits and approach the imposed temperature constraint. The finite
+tail check includes the last command's ramp to zero. All selected designs pass
+the independent dense acceptance check, but this does not establish a
+continuous-time or hardware temperature bound.
+
+\begin{figure}[p]
+ \centering
+ \includegraphics[width=\linewidth]{design_commands_temperature.pdf}
+ \caption{Information design changes the command and its predicted thermal
+ envelope. Constant and multisine are common candidates; ensemble mean D and
+ min D are selected determinant designs using future information only. Commands
+ share the declared horizon, time-average dose, amplitude and slew constraints.
+ The lower panel is the pointwise maximum temperature among sixteen fitted
+ mean/startup combinations, not a confidence band or one physical trajectory.
+ The vertical line marks the end of the design horizon and start of shutdown;
+ the horizontal line is the assumed temperature acceptance limit. Calculations
+ use a $0.25$ s audit grid through the $300$ s tail.}
+ \label{fig:design-commands}
+\end{figure}
+
+\begin{figure}[p]
+ \centering
+ \includegraphics[width=\linewidth]{design_relative_utilities.pdf}
+ \caption{The design target and scenario aggregate change relative utility.
+ Points are the independently audited selected local objective values. Mean
+ and min aggregate scenario-relative log improvements over 48 fixed
+ model/startup/covariance scenarios. The first panel uses multisine as reference;
+ the second adds historical calibration information and uses constant input.
+ Criteria have different targets and scales, so ordinate heights across
+ criteria or reference changes do not rank absolute physical information.
+ Lines join categorical criteria as guides. No global optimality certificate
+ is implied.}
+ \label{fig:design-utilities}
+\end{figure}
+
+\subsection{Refitting competitors changes model discrimination}
+The separate fixed-mean discrimination designs compare all six pairs among
+the representative formulations (Table~\ref{tab:discrimination-design}). Their
+mean/min objectives concern log improvements relative to multisine for each
+pair. The smallest raw pair distance is a different summary and need not rank
+those objectives in the same order. These designs share the parameter-design
+resource assumptions but optimize mean separation rather than parameter
+information.
+\input{tables/discrimination_design}
+
+Allowing the competing formulation to change parameters reduces its distance
+from the fixed one-stage generating mean
+(Fig.~\ref{fig:discrimination-refits}). Under equilibrated constant input, the
+closest-found distance vanishes to numerical precision for every alternative
+and working covariance. The matched gain and time constant give an analytic
+zero-distance witness because the delay factor is absent. Positive separation
+at the original fitted alternative parameters had therefore overstated the
+information in that input about model order.
+
+The selected varying inputs retain larger closest-found distances than
+multisine in this bounded directional comparison, including after refitting.
+That result concerns a fixed one-stage generating mean against three
+alternatives, rather than every possible generating formulation or parameter
+point. Each smallest converged distance is an upper bound on the global closest
+alternative. The ideal equal-prior Gaussian error formula for two fixed means
+cannot be reused as a power calculation after fitting those alternatives or
+allowing the observed between-record discrepancy.
+
+\begin{figure}[p]
+ \centering
+ \includegraphics[width=\linewidth]{discrimination_refits.pdf}
+ \caption{Parameter refitting can remove apparent model-order separation.
+ The fixed one-stage generating mean is compared with the three indicated
+ alternative formulations under the first declared covariance, IID Gaussian
+ error with marginal standard deviation $0.25\,{}^\circ\mathrm C$. Rows use
+ cold and input-equilibrated delay states. Left panels retain each alternative's
+ original fitted parameters; right panels use its smallest converged
+ 24-start distance. Const. and Multi. are common candidates; Mean and Min are
+ the selected fixed-mean discrimination inputs. Symmetric-log axes are linear
+ below one, retaining vanishing distances without a positive plotting floor.
+ Lines join categorical waveforms. The complete saved comparison also includes
+ both correlated working covariances. Distances after refitting are upper
+ bounds on global minima, without a real-data testing-power interpretation.}
+ \label{fig:discrimination-refits}
+\end{figure}

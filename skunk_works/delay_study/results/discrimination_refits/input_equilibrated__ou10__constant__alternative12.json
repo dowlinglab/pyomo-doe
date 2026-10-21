@@ -1,0 +1,533 @@
+{
+  "identity": {
+    "sources": {
+      "models.py": "2f0a15e67498704a392c4b078a1e05626c69d50015dc41e99acf92b9e46d1458",
+      "data.py": "ac6b9a57de386352f5f7a8a678101d84dd90cfa3f0c04e936aa08c7e905c8e7a",
+      "inference.py": "74f0029b160b7ecb80ef361d544b0f21e5edea2fa071ec0ec1cca4458fea6aaf",
+      "noise.py": "7847d0210b58565a6c0b3ad345b3d294bcfcc85f9e21f620cc7838e9b5b27717",
+      "design.py": "0d798216666031c04344ed5679ff40f2b15b3d059a3a44700445777897721bdd",
+      "run_design.py": "ec5f042bc0264c35f18edf0843ea31f6bbeb6a073a7683c59789a7709b5e6b74",
+      "discrimination.py": "2943016e13f93b93ed234f404dbd88a4df140d53e205ce1e704aa83bac1783e2",
+      "run_discrimination.py": "d42cccb02be57e415719444658e6452013568c1864b94640b8af0e4142713a64",
+      "run_fits.py": "2451a77e22d73169abe37e313490989692580c39233b0779f8c41956b4511ef5"
+    },
+    "fit_sha256": {
+      "joint__chain_n1_io_cold_linear_exact.json": "c5809beb17f5e276ba514095bc1e3f6bb191dea121c33eaa9bb5d580b79891f2",
+      "joint__chain_n1_io_input_equilibrated_linear_exact.json": "7cd1befdbd45fe6f2abc704400e9d5c48e8a82ed23c1a43e1c005d4a425b968d",
+      "joint__chain_n2_io_cold_linear_exact.json": "6c1d39f2a9307f8f49ee57104c1aeb8ed7c0d5cac0dff1723f6de4ba25921837",
+      "joint__chain_n2_io_input_equilibrated_linear_exact.json": "ed62cde211f3536bdfd2bbc0e580ca79970f5860144aa7fd9929cb1d3c755602",
+      "joint__chain_n3_io_cold_linear_exact.json": "85743ac712de61427580693db5f41909f7b78b977c011f601d4c2b770126280f",
+      "joint__chain_n3_io_input_equilibrated_linear_exact.json": "10b5db0d573d45493fc82bb0ea35d26520ee71773bff47e1f44c5ad20d020e02",
+      "joint__chain_n4_io_cold_linear_exact.json": "660edc853322bbcfe775a02c21e6001a74fcd3b8073b82cd02c94c42fc17857d",
+      "joint__chain_n4_io_input_equilibrated_linear_exact.json": "5e81728d569caa09aba36f61070560bd052abc2568f2b71265a66b9f9ca1a47d",
+      "joint__chain_n6_io_cold_linear_exact.json": "732f23c8db2fd66546b3050692f071aa8d9c75dade46cda01bb4421aa95c1cac",
+      "joint__chain_n6_io_input_equilibrated_linear_exact.json": "c074a4e568f55d8a68959181ad52f86600244d58ee33bee8890b62b17dd01be6",
+      "joint__chain_n8_io_cold_linear_exact.json": "65e4bc7a5cbc7978b89cb5882f027f9f4123f8694c8a32cec041e4540be17acc",
+      "joint__chain_n8_io_input_equilibrated_linear_exact.json": "c6a7eedb7d58d1e4135e37f17b7f3b56997c950b4fa907e4af93d7683e928e21",
+      "joint__chain_n12_io_cold_linear_exact.json": "a2e74b76fce32ad36df9b90585a6192771116b448102c69b0069e4688eaf5915",
+      "joint__chain_n12_io_input_equilibrated_linear_exact.json": "6b3411b9d8013970e16199bfcfa5c775d559d7d28b7d9e527bf5d2e634825c0b",
+      "joint__pure_delay_n0_io_cold_linear_exact.json": "2219c9b210f5cc2b6dbacfe6624252c50e3c6bfe9ffc2d38cd756c12bac89086",
+      "joint__pure_delay_n0_io_input_equilibrated_linear_exact.json": "fe181494df8bdc57a2e918498d4a116a86a5c84c28a9b3ba281c0b3de92d7897"
+    },
+    "config_sha256": "d1b37b4830bf554514889500be16ce622c3707393127c44e982566ea01fbf883",
+    "design_config_sha256": "6c8337d9d0bf059faeb8d451b48937b2f9c17f3f8e49c5c7157abf76671b2c75",
+    "phase": "refits",
+    "source_design_manifest_sha256": "1b2f933cca8b6225bdbe666b6d86546f563e94cef431828065e96b28ee0b54c3",
+    "source_design_sha256": {
+      "cold__iid__mean.json": "9b168f19ee8a9670f981b016f33e08b9f7e25f0232b47655109fe2b8d8d0cebd",
+      "cold__iid__min.json": "d42d2ab30609669055620048ac2ff82ff6e96aa9f1a0ee72fb8421a1edbffbf0",
+      "cold__ou10__mean.json": "b344aebdafcd29597c40b290924e0ad50b5283c84e6e2358979428707ecb237b",
+      "cold__ou10__min.json": "c95191f8c5e2ed752a4d2ba8720c3314f6b1cffccd3604ec134f604e6adfc32d",
+      "cold__ou60__mean.json": "dd57dea6f53f446196431ec5d47c8270fb937d905c39989cea7799a47b085f83",
+      "cold__ou60__min.json": "d115ace4c0068d19473f301b079e9d27798af935ff3e32f7a2f0240c4f24e07c",
+      "input_equilibrated__iid__mean.json": "c74a59314823fab17fc343f4f868b077b3e703d53f0d500fbfc99f22d75550c9",
+      "input_equilibrated__iid__min.json": "3e6833b9f35c8e886699e9deb3dea8cab2810aaa7f75feea6c614f4fb18655ef",
+      "input_equilibrated__ou10__mean.json": "ad5d251001b58d7773fa1f5974eec9f0a8e96c163120e8cd6a33b2df8205ab05",
+      "input_equilibrated__ou10__min.json": "7812a26c28c861d6b13c11603c7f89c60a174fa3c2993d69b860ab983d91cf0e",
+      "input_equilibrated__ou60__mean.json": "bd8f8bea32087881958a28c966cf7de1935ce51fc4a53c1d233efb23e6f09475",
+      "input_equilibrated__ou60__min.json": "88e0109061d562c0e3c71f86f52f2692882700a61428351b6ab5092e70e15ad4"
+    }
+  },
+  "key": "input_equilibrated__ou10__constant__alternative12",
+  "phase": "refits",
+  "knots_s": [
+    0.0,
+    50.0,
+    100.0,
+    150.0,
+    200.0,
+    250.0,
+    300.0,
+    350.0,
+    400.0,
+    450.0,
+    500.0,
+    550.0,
+    600.0,
+    650.0,
+    700.0,
+    750.0,
+    800.0,
+    850.0,
+    900.0
+  ],
+  "requires_revisit": false,
+  "scope": "Twelve fixed-mean separation designs use all six pairs among n1,n2,n12,pure at two initializations and three common working covariances. Seventy-two directional alternative refits use n1 as the fixed generating mean against n2,n12,pure, for constant, multisine and both selected designs. This bounded refit diagnostic does not evaluate every possible generating model or parameter value.",
+  "generating_scenario": "n1__input_equilibrated__ou10",
+  "alternative": "n12__input_equilibrated__ou10",
+  "amplitudes_percent": [
+    50.0,
+    50.0,
+    50.0,
+    50.0,
+    50.0,
+    50.0,
+    50.0,
+    50.0,
+    50.0,
+    50.0,
+    50.0,
+    50.0,
+    50.0,
+    50.0,
+    50.0,
+    50.0,
+    50.0,
+    50.0,
+    50.0
+  ],
+  "refit": {
+    "best": {
+      "success": true,
+      "status": 1,
+      "nfev": 4,
+      "optimality": 7.79683187224225e-10,
+      "distance_squared": 4.395785369159325e-21,
+      "parameters": [
+        0.7786837877612828,
+        167.13437998999524,
+        14.947494396732388
+      ],
+      "active_bounds": [
+        false,
+        false,
+        false
+      ]
+    },
+    "attempts": [
+      {
+        "success": true,
+        "status": 1,
+        "nfev": 4,
+        "optimality": 7.79683187224225e-10,
+        "distance_squared": 4.395785369159325e-21,
+        "parameters": [
+          0.7786837877612828,
+          167.13437998999524,
+          14.947494396732388
+        ],
+        "active_bounds": [
+          false,
+          false,
+          false
+        ]
+      },
+      {
+        "success": true,
+        "status": 1,
+        "nfev": 1,
+        "optimality": 2.254704357761561e-08,
+        "distance_squared": 4.780178934765502e-21,
+        "parameters": [
+          0.7786837877612892,
+          167.13437998999464,
+          15.015395461952231
+        ],
+        "active_bounds": [
+          false,
+          false,
+          false
+        ]
+      },
+      {
+        "success": true,
+        "status": 1,
+        "nfev": 7,
+        "optimality": 2.2494491602580003e-08,
+        "distance_squared": 4.777168244259077e-21,
+        "parameters": [
+          0.7786837877613193,
+          167.13437999000132,
+          70.75821919194844
+        ],
+        "active_bounds": [
+          false,
+          false,
+          false
+        ]
+      },
+      {
+        "success": true,
+        "status": 1,
+        "nfev": 7,
+        "optimality": 2.133695078725358e-08,
+        "distance_squared": 5.739926537157262e-21,
+        "parameters": [
+          0.7786837877612451,
+          167.1343799899856,
+          1.0727313145222452
+        ],
+        "active_bounds": [
+          false,
+          false,
+          false
+        ]
+      },
+      {
+        "success": true,
+        "status": 1,
+        "nfev": 9,
+        "optimality": 1.9203734666025443e-08,
+        "distance_squared": 5.519076964528537e-21,
+        "parameters": [
+          0.7786837877613332,
+          167.134379990004,
+          0.9368903608087823
+        ],
+        "active_bounds": [
+          false,
+          false,
+          false
+        ]
+      },
+      {
+        "success": true,
+        "status": 1,
+        "nfev": 8,
+        "optimality": 1.8649320674978265e-08,
+        "distance_squared": 5.478738494630804e-21,
+        "parameters": [
+          0.7786837877612042,
+          167.13437998997432,
+          1.1294530466556956
+        ],
+        "active_bounds": [
+          false,
+          false,
+          false
+        ]
+      },
+      {
+        "success": true,
+        "status": 3,
+        "nfev": 22,
+        "optimality": 1.4850578635511988e-06,
+        "distance_squared": 1.5437968338950201e-18,
+        "parameters": [
+          0.7786837877620822,
+          167.13437999013212,
+          0.13986562452235218
+        ],
+        "active_bounds": [
+          false,
+          false,
+          false
+        ]
+      },
+      {
+        "success": true,
+        "status": 1,
+        "nfev": 7,
+        "optimality": 1.9210268323425357e-08,
+        "distance_squared": 5.5195937390104835e-21,
+        "parameters": [
+          0.778683787761305,
+          167.13437998999763,
+          0.788928781927349
+        ],
+        "active_bounds": [
+          false,
+          false,
+          false
+        ]
+      },
+      {
+        "success": true,
+        "status": 1,
+        "nfev": 8,
+        "optimality": 2.1636168682782423e-08,
+        "distance_squared": 5.1604094843941236e-21,
+        "parameters": [
+          0.7786837877612917,
+          167.13437999001098,
+          23.77059563996391
+        ],
+        "active_bounds": [
+          false,
+          false,
+          false
+        ]
+      },
+      {
+        "success": true,
+        "status": 3,
+        "nfev": 20,
+        "optimality": 1.5992344047387706e-07,
+        "distance_squared": 2.3008325745799722e-20,
+        "parameters": [
+          0.7786837877620282,
+          167.13437999015215,
+          0.010000088267892586
+        ],
+        "active_bounds": [
+          false,
+          false,
+          true
+        ]
+      },
+      {
+        "success": true,
+        "status": 1,
+        "nfev": 10,
+        "optimality": 2.675568412091359e-08,
+        "distance_squared": 4.877216316598384e-21,
+        "parameters": [
+          0.7786837877612947,
+          167.13437998999584,
+          37.303778370108645
+        ],
+        "active_bounds": [
+          false,
+          false,
+          false
+        ]
+      },
+      {
+        "success": true,
+        "status": 1,
+        "nfev": 7,
+        "optimality": 3.431154492549344e-08,
+        "distance_squared": 7.896698907158283e-21,
+        "parameters": [
+          0.7786837877613539,
+          167.13437999001084,
+          0.7762820087395343
+        ],
+        "active_bounds": [
+          false,
+          false,
+          false
+        ]
+      },
+      {
+        "success": true,
+        "status": 1,
+        "nfev": 6,
+        "optimality": 1.0333638597552039e-08,
+        "distance_squared": 4.8539647472703425e-21,
+        "parameters": [
+          0.7786837877612739,
+          167.13437998998367,
+          159.64274340537003
+        ],
+        "active_bounds": [
+          false,
+          false,
+          false
+        ]
+      },
+      {
+        "success": true,
+        "status": 1,
+        "nfev": 7,
+        "optimality": 2.1332397796860892e-08,
+        "distance_squared": 5.741764806709934e-21,
+        "parameters": [
+          0.7786837877612209,
+          167.13437998997995,
+          0.3736603289871742
+        ],
+        "active_bounds": [
+          false,
+          false,
+          false
+        ]
+      },
+      {
+        "success": true,
+        "status": 1,
+        "nfev": 7,
+        "optimality": 1.0962320305593304e-09,
+        "distance_squared": 4.4429358544300936e-21,
+        "parameters": [
+          0.7786837877612734,
+          167.13437998998856,
+          3.069967662432078
+        ],
+        "active_bounds": [
+          false,
+          false,
+          false
+        ]
+      },
+      {
+        "success": true,
+        "status": 1,
+        "nfev": 8,
+        "optimality": 3.542839500840517e-08,
+        "distance_squared": 6.419630019346075e-21,
+        "parameters": [
+          0.7786837877611371,
+          167.1343799899905,
+          0.01072870458826824
+        ],
+        "active_bounds": [
+          false,
+          false,
+          false
+        ]
+      },
+      {
+        "success": true,
+        "status": 1,
+        "nfev": 10,
+        "optimality": 8.542557406436989e-08,
+        "distance_squared": 2.632303516147091e-20,
+        "parameters": [
+          0.7786837877611438,
+          167.13437998996466,
+          16.436291573611577
+        ],
+        "active_bounds": [
+          false,
+          false,
+          false
+        ]
+      },
+      {
+        "success": true,
+        "status": 1,
+        "nfev": 10,
+        "optimality": 3.251641848588804e-08,
+        "distance_squared": 7.604251521418703e-21,
+        "parameters": [
+          0.7786837877612264,
+          167.13437998998367,
+          0.8467390759402659
+        ],
+        "active_bounds": [
+          false,
+          false,
+          false
+        ]
+      },
+      {
+        "success": true,
+        "status": 1,
+        "nfev": 8,
+        "optimality": 1.8697774417103197e-08,
+        "distance_squared": 5.483324096871894e-21,
+        "parameters": [
+          0.7786837877612693,
+          167.1343799899887,
+          1.0191937642761686
+        ],
+        "active_bounds": [
+          false,
+          false,
+          false
+        ]
+      },
+      {
+        "success": true,
+        "status": 3,
+        "nfev": 6,
+        "optimality": 2.773326331258861e-06,
+        "distance_squared": 1.9930469188775913e-16,
+        "parameters": [
+          0.778683787748231,
+          167.13437997475498,
+          74.5815668282035
+        ],
+        "active_bounds": [
+          false,
+          false,
+          false
+        ]
+      },
+      {
+        "success": true,
+        "status": 1,
+        "nfev": 7,
+        "optimality": 2.1500829385868814e-08,
+        "distance_squared": 5.752963676483516e-21,
+        "parameters": [
+          0.7786837877613929,
+          167.13437999001752,
+          0.5713273928148405
+        ],
+        "active_bounds": [
+          false,
+          false,
+          false
+        ]
+      },
+      {
+        "success": true,
+        "status": 1,
+        "nfev": 7,
+        "optimality": 3.2479154751996173e-08,
+        "distance_squared": 7.601182498233886e-21,
+        "parameters": [
+          0.7786837877611168,
+          167.1343799899599,
+          0.8176838390427817
+        ],
+        "active_bounds": [
+          false,
+          false,
+          false
+        ]
+      },
+      {
+        "success": true,
+        "status": 1,
+        "nfev": 6,
+        "optimality": 1.6478439616570798e-08,
+        "distance_squared": 5.2288651127339345e-21,
+        "parameters": [
+          0.7786837877612799,
+          167.1343799899945,
+          5.00534159101321
+        ],
+        "active_bounds": [
+          false,
+          false,
+          false
+        ]
+      },
+      {
+        "success": true,
+        "status": 3,
+        "nfev": 8,
+        "optimality": 1.2692688154616435e-06,
+        "distance_squared": 2.903766849564745e-18,
+        "parameters": [
+          0.7786837877584775,
+          167.13437999086898,
+          0.014150777687213734
+        ],
+        "active_bounds": [
+          false,
+          false,
+          false
+        ]
+      }
+    ],
+    "fixed_parameter_distance_squared": 4.385294065533598,
+    "requires_revisit": false,
+    "notice": "Noise-free alternative-parameter refit, directional and bounded. The smallest converged distance is an upper bound on the globally closest alternative mean; it can overstate discrimination if a lower minimum was missed. No chi-squared calibration or simple-hypothesis error probability is assigned to the refitted distance."
+  },
+  "source_design_sha256": {},
+  "assumptions": "Common known hypothetical covariance, baseline fitted mean parameters, finite horizon and the parameter-design amplitude/dose/slew/temperature assumptions. Gaussian fixed-mean error is an ideal simple-hypothesis calculation only; model discrepancy and nuisance fitting invalidate its use as real experimental power. No hardware run."
+}

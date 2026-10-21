@@ -1,0 +1,2261 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern,microtype,amsmath,amssymb,bm,booktabs,graphicx}
+\usepackage[round,authoryear]{natbib}
+\usepackage{xurl}
+\usepackage[colorlinks=true,allcolors=blue]{hyperref}
+\usepackage{caption,subcaption}
+\usepackage{float}
+\floatstyle{plaintop}
+\restylefloat{table}
+\usepackage{longtable}
+\usepackage{placeins}
+\usepackage{siunitx}
+\graphicspath{{figures/}}
+\newcommand{\Ua}{U_{\mathrm a}}
+\newcommand{\Ub}{U_{\mathrm b}}
+\newcommand{\Cp}{C_{\mathrm p}}
+\newcommand{\CpH}{C_{\mathrm{p,H}}}
+\newcommand{\CpS}{C_{\mathrm{p,S}}}
+\newcommand{\Tamb}{T_{\mathrm{amb}}}
+\newcommand{\draftstatus}{Draft 0 --- AI drafted; awaiting human scientific review}
+\title{Distributed-delay formulations of a thermal laboratory model:\\
+identifiability, uncertainty, and experiment design}
+\author{Research working draft}
+\date{October 21, 2026}
+\begin{document}
+\maketitle
+\begin{center}\small\textbf{\draftstatus}\end{center}
+\begin{abstract}
+
+% Expanded input: sections/abstract
+The Temperature Control Laboratory (TC-Lab) provides transient heater and sensor
+data for studying parameter estimation and experiment design. We compared
+$n$-stage input-delay models in conductance--capacity and gain--time-constant
+coordinates, separating formulation, initialization and numerical propagation.
+The original four-parameter thermal model has an exact one-dimensional physical
+parameter equivalence family under the modeled output and prescribed initial
+conditions. The cold one-stage formulation represents its transfer behavior
+with three parameters and a global pole-label ambiguity. Constant input with
+equilibrated delay states leaves delay unobservable. Coordinate changes alter
+conditioning without adding information. Cold joint calibration favors one
+stage, while initialization changes the order ranking and transfer errors on
+held-out records exceed calibration errors. Profiles, resampling and controlled
+coverage comparisons show strong sensitivity to serial-error assumptions;
+HAC intervals improve but do not restore nominal coverage in the longer
+correlation scenario. Ambient/history and command-hold sensitivity further
+limit the interpretation of narrow conditional intervals. Constrained local
+input designs improve their declared information and fixed-mean separation
+criteria. Refitting competitors removes equilibrated constant-input separation
+and qualifies fixed-mean discrimination claims. The results support
+identifiable transfer functions and explicit experimental assumptions as the
+basis for inference. This draft and all scientific choices await human review.
+
+% End expanded input
+
+\end{abstract}
+
+% Expanded input: sections/introduction
+\section{Introduction and theoretical grounding}
+Parameter estimation for the TC-Lab must distinguish uncertainty in a measured
+thermal response from ambiguity in its physical explanation. A model may predict
+the observed temperature closely while several parameter combinations produce
+the same response. Changing parameter coordinates can improve numerical scaling,
+but an invertible coordinate transformation preserves that ambiguity.
+
+Continuous-time identification also distinguishes the input-driven model from
+the residual process. The latter can include measurement error, unmeasured
+disturbances, and model inadequacy \citep{garnier-2008-direct}. A fitted residual
+covariance therefore does not by itself identify sensor noise or establish a
+physical disturbance mechanism. This distinction guides the uncertainty
+comparisons below: we vary working noise assumptions and examine the errors
+that remain on experiments excluded from calibration.
+
+Identifiability concerns the uniqueness of parameters given a model, an observed
+output, and an experiment. Practical estimability additionally depends on the
+record length, input, noise, and initial-state information. Profile likelihood
+examines a parameter while reoptimizing the remaining parameters and can reveal
+features missed by a local quadratic approximation
+\citep{raue-2009-structural}. We combine that approach with explicit transfer
+functions, sensitivity singular values, and resampling. The algebraic calculation
+is needed to distinguish an exact equivalence class from a numerically shallow
+objective or a finite exploration bound.
+
+Linear time-invariant system identification supplies a connection between input
+excitation, parameter information, and prediction accuracy. Application-oriented
+design can target informative parameter combinations rather than require equal
+precision in every physical parameter. \citet{hjalmarsson-2009-system} develops
+this distinction using parameter confidence regions and application loss. Its
+prediction-error information formula assumes that the true system belongs to
+the model set and that the predictor is differentiable. Those assumptions require
+separate scrutiny here because the TC-Lab residuals can contain serial structure
+and between-experiment discrepancies.
+
+Finite-horizon amplitude constraints introduce a further distinction between an
+information objective and its numerical solution. \citet{manchester-2010-input}
+formulates time-domain information design as a nonconvex input problem and
+develops a convex relaxation. We use bounded multistart nonlinear optimization
+with explicit command and temperature constraints. We have not implemented that
+relaxation, so its approximation guarantees do not apply to the designs reported
+here. Comparing local solutions across assumed models and residual covariances
+is part of assessing a proposed experiment.
+
+An $n$-stage chain is a family of distributed-delay models. The linear chain
+construction relates cascaded first-order stages to Erlang dwell times
+\citep{hurtado-2019-generalizations}. For a fixed mean delay, increasing the stage
+count narrows the delay distribution and approaches a pure delay. Fitting this
+family therefore tests a shape assumption as well as a numerical approximation.
+Its auxiliary stage count differs from its number of estimated parameters.
+
+This study asks how these distinctions affect the available TC-Lab data. We
+compare physical and input--output parameterizations, quantify conditional
+uncertainty, test sensitivity to initialization and data handling, and evaluate
+simulated inputs for future estimation and discrimination. The study is a
+reproducible draft for internal review; it does not establish a validated
+physical mechanism from temperature fit alone.
+
+Appendix~\ref{sec:frequency-information} derives the frequency sensitivities
+of the delayed models and an ideal periodic information matrix. It connects the
+low-frequency lag ambiguity and repeated-pole singularity to the information
+criteria used in the finite-horizon designs.
+
+% End expanded input
+
+
+% Expanded input: sections/models
+\section{Model formulations}
+\label{sec:models}
+
+\subsection{Thermal balance with a distributed input delay}
+The recorded input $u(t)$ is the heater command in percentage points, and the measured
+output $T(t)$ is the first temperature sensor in degrees Celsius. We fixed the
+heater conversion $c=\alpha P$ at $0.032\,\mathrm{W}$ per percentage point, using
+the inherited values $\alpha=0.00016$ and $P=200$. The ambient temperature
+$\Tamb$ was set to the first measured temperature in each experiment. This
+choice conditions the analysis on an uncertain ambient estimate.
+
+For a chain of $n$ delay states, the auxiliary variables $z_i(t)$ have the same
+units as $u(t)$. The physical parameters $\Ua>0$, $\Cp>0$, and $\theta>0$
+denote thermal conductance, effective heat capacity, and mean input-delay time,
+respectively. The model is
+\begin{align}
+ \dot z_1 &= \frac{n}{\theta}(u-z_1), &
+ \dot z_i &= \frac{n}{\theta}(z_{i-1}-z_i),\quad i=2,\ldots,n,\label{eq:chain}\\
+ \Cp\dot T &= -\Ua(T-\Tamb)+c z_n.\label{eq:physical}
+\end{align}
+The input--output (IO) coordinates $K=c/\Ua$ and $\tau=\Cp/\Ua$ are steady-state
+gain and thermal time constant. In these coordinates the temperature equation is
+\begin{equation}
+ \dot T=-\frac{T-\Tamb}{\tau}+\frac{K}{\tau}z_n.
+ \label{eq:io}
+\end{equation}
+Both parameterizations describe the same positive model family. Their inverse
+map is $\Ua=c/K$ and $\Cp=c\tau/K$. Distinct rectangular parameter bounds need
+not map onto each other; our numerical comparison records active bounds and
+compares common interior solutions.
+
+For zero initial deviations, the Laplace variable $s$ gives the transfer function
+\begin{equation}
+ G_n(s)=\frac{K}{(1+\tau s)(1+\theta s/n)^n}.
+ \label{eq:transfer}
+\end{equation}
+The delay chain has an Erlang impulse-response kernel with mean $\theta$ and
+variance $\theta^2/n$; Appendix~\ref{sec:structural} derives these quantities.
+The linear chain construction is consistent with the Erlang dwell-time
+representation studied by \citet{hurtado-2019-generalizations}. A finite chain
+responds before time $\theta$ and therefore represents a distributed lag. As
+$n$ increases at fixed $\theta$, the delay factor $(1+\theta s/n)^{-n}$ tends to
+$\exp(-\theta s)$. We also fitted the limiting pure-delay model,
+\begin{equation}
+ \tau\dot T(t)=-(T(t)-\Tamb)+K u(t-\theta).
+ \label{eq:puredelay}
+\end{equation}
+Increasing $n$ changes the transfer-function shape and adds dynamic states;
+it does not add estimated parameters to the three-parameter family.
+
+\subsection{Initial-state assumptions}
+We conditioned $T(0)$ on the first observation. The cold-start assumption set
+all $z_i(0)=0$, while the input-equilibrated assumption set all $z_i(0)=u(0)$.
+The pure-delay model used the corresponding zero or constant input prehistory.
+These assumptions encode different unobserved histories of heater operation.
+Neither was established by the recorded input before the first sample, because
+that history is absent from the supplied data.
+Input-equilibrated refers to delay memory. Under a constant command $u_0$,
+equilibrium of the entire model would additionally require
+$T(0)=\Tamb+Ku_0$. Here the thermal initial condition is fixed independently
+at the first reading. Determining the preceding thermal trajectory requires
+pre-window observations.
+
+\subsection{Original two-state thermal model}
+The inherited model describes heater temperature $T_{\mathrm H}$ and sensor
+temperature $T_{\mathrm S}$. Its conductances $\Ua,\Ub>0$ and heat capacities
+$\CpH,\CpS>0$ satisfy
+\begin{align}
+ \CpH\dot T_{\mathrm H}&=-\Ua(T_{\mathrm H}-\Tamb)
+                       -\Ub(T_{\mathrm H}-T_{\mathrm S})+cu,\\
+ \CpS\dot T_{\mathrm S}&=\Ub(T_{\mathrm H}-T_{\mathrm S}).
+ \label{eq:original}
+\end{align}
+Only $T_{\mathrm S}$ was used in this single-output comparison. Both initial
+temperatures were fixed at the first sensor reading. Under these conditions its
+transfer function depends on three combinations of four physical parameters:
+\begin{equation}
+ G_{\mathrm{orig}}(s)=\frac{K}{1+a s+b s^2},\qquad
+ K=\frac{c}{\Ua},\quad
+ a=\frac{\CpH}{\Ua}+\frac{\CpS}{\Ub}+\frac{\CpS}{\Ua},\quad
+ b=\frac{\CpH\CpS}{\Ua\Ub}.
+ \label{eq:original-transfer}
+\end{equation}
+Appendix~\ref{sec:structural} exhibits the resulting continuum of equivalent
+physical parameters. The one-stage cold-start model has $a=\tau+\theta$ and
+$b=\tau\theta$, so its zero-state transfer family coincides with this original
+model when the poles are distinct. The one-stage model also permits a repeated
+pole, which is a limiting case of the strictly positive original family:
+the original family has $a^2>4b$, whereas the repeated pole has $a^2=4b$.
+The pole labels $\tau$ and $\theta$ can be interchanged. We used the
+convention $\tau\geq\theta$ when the exchanged point remained within the
+specified parameter bounds and retained both modes in likelihood profiles.
+
+% End expanded input
+
+
+% Expanded input: sections/methods
+\section{Computational methods}
+\label{sec:methods}
+
+\subsection{Data and reproducibility}
+We preserved the supplied observations and first reproduced the unchanged
+inherited simulations twice. The resulting trajectories were byte-identical
+within each dataset. We then exported the teaching notebooks to Python scripts
+with cell markers and source hashes, checking equality of their scientific
+abstract syntax trees. The delay study uses separate Python modules for data,
+simulation, inference, and result generation.
+
+The data audit found 15 CSV files. Two validation files were numeric duplicates
+of the sine and step calibration files, respectively. We excluded both duplicates
+from validation, leaving 11 files. We fitted the sine experiment, the step
+experiment, and their combination separately. Each calibration experiment has
+901 temperature observations. The first observation conditions the initial
+temperature and is excluded from the fitted residual vector, leaving 900
+residuals per experiment. This treatment does not propagate uncertainty in the
+initial temperature or in the ambient temperature inferred from it.
+
+Long calculations run from immutable copies of committed source and raw data.
+The run manifests retain source, configuration and data hashes, package versions,
+random seeds, every optimizer attempt, and failures. A single manifest identifies
+each numerical phase. Result tables and figures are generated from saved outputs.
+
+\subsection{Simulation and fitting}
+We used exact state propagation of the linear time-invariant dynamics over each
+sampling interval, with linear interpolation of the recorded heater command.
+Separate checks compared left and right input holds and the inherited backward
+Euler discretization. The pure-delay simulator integrates across shifted input
+knots. These choices distinguish input reconstruction and numerical discretization
+from a change in model equations.
+
+The baseline comparison fitted seven orders, $n\in\{1,2,3,4,6,8,12\}$, two
+initial-state assumptions, and both parameter coordinates. Pure-delay fits used
+the same two initial-state assumptions and coordinates. The original model used
+its four physical parameters. These choices gave 99 calibration cases.
+We minimized unweighted temperature sum of squared errors (SSE) using bounded
+least squares in logarithmic parameters, with 24 starts per case and seed 532.
+The broad input--output bounds were $0.2\leq K\leq1.5$,
+$5\leq\tau\leq600\,\mathrm{s}$, and
+$0.01\leq\theta\leq200\,\mathrm{s}$. The physical-coordinate bounds were
+$0.032/1.5\leq\Ua\leq0.032/0.2\,\mathrm{W\,K^{-1}}$,
+$0.1\leq\Cp\leq100\,\mathrm{J\,K^{-1}}$, and the same delay bounds.
+The original model used $\Ua\in[0.005,0.3]$ and
+$\Ub\in[0.0001,1]$ in $\mathrm{W\,K^{-1}}$, with
+$\CpH\in[0.01,100]$ and $\CpS\in[0.001,20]$ in
+$\mathrm{J\,K^{-1}}$. The reduced physical rectangle is not the exact image
+of the IO rectangle. Same-point covariance and information comparisons separate
+coordinate effects from changes in the feasible parameter domain.
+We retained convergence status and active bounds rather than interpreting every
+optimizer return as a successful estimate.
+Root mean squared error (RMSE) uses the same retained residuals.
+
+\subsection{Ambient, history and input-reconstruction sensitivity}
+We prespecified 241 additional calibrations. For each of eight delayed models
+and three calibration datasets, four nuisance treatments give 96 fits:
+free ambient with cold history, free ambient with equilibrated history,
+free history with fixed ambient, and both free. Ambient offsets have bounds
+$[-2,2]\,{}^\circ\mathrm C$, separately for each record; history fractions $\gamma_j$
+have bounds $[0,1]$. These bounds describe assumed sensitivity ranges.
+They are not independently measured probability distributions. The three
+IO parameters are shared across records in a joint fit. We use logarithmic
+IO coordinates, additive ambient offsets and untransformed history fractions,
+with analytic mean derivatives, 24 starts, seed 532 and at most 1,200 function
+evaluations per start. Appendix~\ref{sec:nuisance-assumptions} derives exact
+ambiguities that can remain when these quantities are free.
+
+Another 96 joint fits hold ambient offsets at
+$-1,-0.5,-0.25,0.25,0.5,1\,{}^\circ\mathrm C$ for each delayed model and
+both prescribed histories. For these fixed perturbations, the same offset
+and history assumption are applied to each held-out record. Fitted
+record-specific nuisance quantities are not assigned automatically to an unseen
+record; those fits have no corresponding validation correction.
+
+The remaining 49 joint fits compare input reconstruction and discretization:
+32 exact left/right-hold fits across eight delayed models and two startups,
+14 right-hold backward-Euler fits across the seven finite chains and two
+startups, and three original-model variants (exact left hold, exact right hold,
+and right-hold backward Euler). They use the same 24-start budget of 1,200
+function evaluations. We retain active bounds, numerical ranks, all attempts
+and any failure to recover the nested fixed-assumption objective. Reduced
+calibration SSE after adding nuisance parameters supplies no independent
+validation evidence.
+
+\subsection{Local uncertainty and estimability}
+For residual vector $\bm e$ and log-parameter vector $\bm\eta$, the sensitivity
+matrix $J=\partial\bm e/\partial\bm\eta$ defines the conditional information
+matrix $F=J^\top J/\sigma^2$ under independent and identically distributed (IID)
+Gaussian errors of variance
+$\sigma^2$. We computed the singular value decomposition of $J$ directly and
+reported the eigenvalues and directions of $F$. Numerical rank uses a relative
+singular-value cutoff of $10^{-8}$. This threshold is a numerical convention;
+the explicit equivalence classes in Appendix~\ref{sec:structural} establish the
+structural conclusions independently.
+
+We reported local uncertainty under a fixed hypothetical sensor standard
+deviation of $0.25\,{}^\circ\mathrm C$ and under a common variance estimated
+from each calibration residual vector. The fixed value is a sensitivity scenario,
+not a calibration established by these experiments. Rank-deficient full parameter
+covariances are undefined. A diagnostic pseudoinverse is retained separately and
+is not used as a confidence interval for a null direction. We also computed
+heteroskedasticity and autocorrelation consistent (HAC) sandwich estimates at lag
+bandwidths of 10, 30, and 60 samples, together with residual autocorrelation
+functions (ACFs) and Ljung--Box statistics. The sandwich uses Bartlett lag weights
+\citep{newey-1987-simple}. Its asymptotic justification requires zero-mean score
+moments, bounded moments, and suitable decay of dependence. Fixed bandwidths
+in these finite records do not establish those assumptions or nominal coverage.
+These calculations assess sensitivity to
+serial dependence; they do not correct a biased mean model.
+
+\subsection{A working correlated-residual likelihood}
+We also fitted the 48 IO calibration cases with stationary Gaussian
+Ornstein--Uhlenbeck (OU) residual
+covariance $R_{ij}=\sigma^2\exp(-|t_i-t_j|/\ell)$ within each experiment,
+independently across experiments. Actual retained observation times are used.
+For residuals $e_i$, set $w_1=e_1$ and
+\[
+ \phi_i=e^{-(t_i-t_{i-1})/\ell},\qquad
+ w_i=\frac{e_i-\phi_i e_{i-1}}{\sqrt{1-\phi_i^2}}.
+\]
+With $q=\sum_j\|\bm w_j\|^2$ over records and $N$ retained observations,
+profiling the common variance gives $\hat\sigma^2=q/N$ and negative
+log-likelihood
+\[
+ \mathcal L=\frac12\left[
+ N\{\log(2\pi)+1+\log(q/N)\}
+ +\sum_j\sum_{i=2}^{N_j}\log(1-\phi_{ij}^2)\right].
+\]
+The determinant term is retained while optimizing the three log mean parameters
+and $\log\ell$, with $\ell\in[0.05,3000]$ s, 24 starts and the same seed.
+All solver attempts and boundary diagnostics are retained. We compare
+conditional mean information at fixed fitted noise with observed curvature
+that profiles variance and includes mean--length coupling. Two Hessian steps,
+$10^{-4}$ and $5\times10^{-5}$ in log coordinates, check numerical sensitivity.
+A fitted OU length or improved likelihood does not establish a residual
+mechanism; raw and filtered correlation diagnostics assess this working model.
+
+\subsection{Likelihood profiles and resampling}
+For each native parameter we fixed its value and reoptimized all nuisance
+parameters, following the profile construction of \citet{raue-2009-structural}.
+The exploration combined a global grid with local refinement, targeting 61 points
+and four nuisance starts at each point. The exact count after merging grids is
+recorded per profile. Additional points examined the exchanged
+pole mode of the one-stage cold-start model. We retained disconnected accepted
+components and endpoints at the exploration bounds. An endpoint at such a bound
+does not establish an unbounded mathematical interval.
+
+For $N$ residuals and sum of squared errors $S(\bm\eta)$, the likelihood-ratio
+statistics were $[S(\bm\eta)-S(\hat{\bm\eta})]/\sigma^2$ for fixed variance
+and $N\log[S(\bm\eta)/S(\hat{\bm\eta})]$ for a common profiled variance.
+The nominal 95\% reference threshold was the 0.95 quantile of a chi-squared
+distribution with one degree of freedom. These thresholds assume an appropriate
+independent Gaussian likelihood and regular identification; they are conditional
+diagnostics when those assumptions fail.
+
+After comparing first-pass sets with the exact physical equivalence family,
+we refined a declared selection of observed crossings in a separate phase.
+The selection covers the redundant original physical coordinates, cold
+one-stage delay profiles in both coordinates, and the representative joint
+cold higher-order delay profiles. Feasible exact-equivalence witnesses are
+included before crossing refinement. Bisection stops at a likelihood-ratio
+residual of $10^{-3}$ or a log-parameter bracket width of $10^{-7}$, with at
+most 26 steps and four nuisance starts per new point. The original grids are
+preserved. A separate audit checks forward objectives at new points and whole
+compatible-family inclusion inside the fitting box; it cannot establish the
+absence of other modes.
+
+The resampling design specified 400 refits for each of four circular residual
+block lengths (1, 10, 30, and 60 samples), plus 400 independent Gaussian
+simulations at the fixed $0.25\,{}^\circ\mathrm C$ standard deviation, for each
+input--output calibration case. Residuals were centered and resampled within
+each experiment; first temperatures, ambient estimates, and heater calibration
+were fixed. Each draw was transformed exactly into physical coordinates.
+Structural null directions were marked undefined rather than assigned an interval
+from arbitrary optimizer selections. These resampling distributions remain
+conditional on the mean model and on the assumed within-experiment stationarity.
+The fixed-length circular scheme retains equal marginal sampling weights at
+record edges. It differs from the geometric block lengths of the stationary
+bootstrap; \citet[physical PDF p.~3, Remark 2]{politis-1994-stationary} describes
+the fixed-length circular relative. Neither that finite-sample mean property nor
+the paper's stationary-bootstrap theory establishes coverage for our nonlinear
+fits with model discrepancy. We assess selected interval procedures separately
+using independent synthetic datasets.
+
+The independent coverage design prespecified 300 synthetic datasets for each
+of four joint cold generating models (one, two and twelve stages, plus pure
+delay) and three true error processes: IID Gaussian, stationary OU with 10 s
+length, and stationary OU with 60 s length. Every process has marginal standard
+deviation $0.25\,{}^\circ\mathrm C$. We used the recorded input and observation
+times, fixed the conditioned initial temperatures exactly, and refitted each
+synthetic dataset before constructing local and profile intervals. The
+comparison includes known-variance and estimated-variance IID log-Wald
+intervals, three HAC bandwidths, and both delay-profile variance conventions.
+Physical intervals use the exact parameter transformation.
+
+All 3,600 requested datasets remain in the coverage denominator. We report
+coverage among defined intervals, its Wilson binomial interval, and worst/best
+unconditional bounds that count failed or undefined outcomes as uncovered or
+covered, respectively. Failed worker chunks and missing result files are
+distinguished: a completed chunk with a missing file fails the integrity audit.
+Disconnected profile widths sum the accepted components; envelope widths also
+include excluded gaps. A secondary three-point quadratic interpolation checks
+whether finite-grid interpolation changes coverage classification at the known
+true delay. It does not replace nuisance reoptimization or certify endpoint
+accuracy. The study conditions on these generating points and does not estimate
+coverage under real between-record model discrepancy.
+Bootstrap intervals remain real-data sensitivity comparisons; their
+repeated-sampling coverage is unmeasured by this experiment.
+
+\subsection{Conditional prediction uncertainty}
+For target mean sensitivity $\bm j(t)$, local mean variance is
+$\bm j(t)C\bm j(t)^\top$. We use covariance on the identifiable quotient with
+residual degrees of freedom $N-\operatorname{rank}(J)$, checking that the target
+annihilates each structural null direction. Known global ambiguities require
+an additional check: an equilibrated constant-input calibration leaves delay
+free, so we withhold bands for a varying-input target even if its local delay
+derivative happens to vanish at the selected parameter. The original model's
+zero-state physical equivalence preserves predictions globally and permits
+finite prediction uncertainty on its quotient.
+The eleven rank-deficient baseline cases were the three original-model gauge
+cases and eight equilibrated constant-step cases. The synthetic repeated-pole
+example is excluded from this regular-quotient covariance interpretation.
+
+Local pointwise normal mean bands are compared with percentile mean bands from
+saved joint-fit bootstrap trajectories. An additional independent future error
+law is required for observation prediction bands. We add its plug-in marginal
+variance under IID or working OU assumptions; HAC supplies mean bands without
+inventing a future error distribution. For Gaussian parametric bootstrap draws,
+future-observation quantiles are computed from the declared equal-weight mixture
+of 400 Gaussian trajectory components. This is a numerical mixture calculation,
+with the inferential accuracy of the bootstrap still conditional and unproven.
+Circular-block draws supply mean bands only. The first observation is excluded
+from all bands because it conditions the state. Existing-record pointwise
+containment is descriptive, without a repeated-experiment or simultaneous
+coverage interpretation.
+
+\subsection{Prospective experiment design}
+The prespecified input-design horizon is 900 s with 1 s observations and 19
+command knots at 50 s intervals, joined linearly. Command amplitudes lie between
+0 and 100\%, their time average is 50\%, and the slew limit is one percentage
+point per second. Ambient and initial measured temperature are fixed at
+$25\,{}^\circ\mathrm C$. We constrain the predicted mean temperature below
+$85\,{}^\circ\mathrm C$ for all sixteen joint fitted mean/startup combinations,
+regardless of the model used for the utility. These are assumed simulation
+constraints, without a hardware safety certification or uncertainty margin.
+An independent 0.25 s forward simulation also checks a 300 s shutdown tail,
+ramping the last command to zero at the same slew limit.
+The first design trial met its 1 s constraints but exceeded the assumed limit
+slightly between observations in that denser check. We retained that trial
+and tightened the optimization bound by $0.01\,{}^\circ\mathrm C$ for both
+parameter and discrimination designs. This numerical guard leaves the reported
+acceptance limit at $85\,{}^\circ\mathrm C$; every selected design must still
+pass the independent dense shutdown-tail check. The guard itself supplies no
+continuous-time bound or hardware guarantee.
+
+For a future sensitivity matrix $J(u)$ and assumed covariance $R$, the local
+information is $F(u)=J(u)^\top R^{-1}J(u)$, optionally augmented by information
+from the two historical calibration experiments under the same model and
+covariance. This added information is not a Bayesian distribution over
+parameters. The four utilities are $\log\det F$, $\log\lambda_{\min}(F)$,
+$-\log[(F^{-1})_{\theta\theta}]$, and
+$-\log\operatorname{tr}(A F^{-1})$. Here $A$ is the scenario-specific average
+thermal-mean sensitivity outer product for a future constant 50\% reference.
+The variance target concerns mean prediction, without future measurement noise.
+The third utility targets log-delay variance.
+Null-space compatibility is checked before a target-specific pseudoinverse is
+used. Parameter metrics are natural logarithms of $(K,\tau,\theta)$.
+
+Nominal designs use cold one-stage, two-stage, twelve-stage and pure-delay
+fits with IID, OU10 s or OU60 s working correlations, each with marginal
+standard deviation $0.25\,{}^\circ\mathrm C$. Ensemble designs use all 48
+model/startup/covariance scenarios. We aggregate scenario-relative log utilities
+by their mean or minimum. Four utilities and two historical-information settings
+give 112 planned designs. Six common command starts include constant, sine,
+multisine, random binary and alternating knot patterns, each satisfying the
+amplitude, dose and slew rules. Constant input supplies the normalization
+reference where its utility is finite; otherwise we use the multisine.
+Multistart sequential least squares programming (SLSQP) uses
+analytic input gradients and retains convergence and constraint violations;
+its local solutions have no global-optimality certificate. Minimum aggregation
+is nonsmooth at scenario ties.
+
+The physical and IO log-coordinate information matrices are related by the
+congruence in Appendix~\ref{sec:structural}. Because $|\det M|=1$, the
+log-determinant utility is equal at corresponding points. Delay variance and
+properly transformed prediction loss are also invariant. The smallest
+eigenvalue depends on the chosen metric. Thus a coordinate change can alter
+an E-criterion without changing the underlying prediction experiment.
+
+We separate parameter precision from discrimination of stage count. For two
+fixed future means with the same assumed covariance, define
+\[
+ D_{ij}^2(u)=[\mu_i(u)-\mu_j(u)]^\top R^{-1}[\mu_i(u)-\mu_j(u)].
+\]
+The Gaussian log-likelihood ratio has mean $\pm D_{ij}^2/2$ and variance
+$D_{ij}^2$ under these two simple hypotheses. Equal-prior minimum classification
+error is therefore $\Phi(-D_{ij}/2)$. This ideal calculation assumes fixed known
+means and covariance; it is not a testing-power estimate after parameter
+estimation or under TC-Lab discrepancy.
+
+Twelve additional local designs aggregate relative log squared separation for
+all six pairs among one-stage, two-stage, twelve-stage and pure-delay means,
+at both startups and all three working covariances. The multisine supplies the
+normalizing reference. A bounded 72-case diagnostic then lets each alternative
+model refit its three parameters against a fixed one-stage generating mean,
+using 24 starts under the same future covariance. It compares constant,
+multisine, and both selected discrimination designs against two-stage,
+twelve-stage and pure-delay alternatives. This directional subset does not
+cover every generating model or parameter point. The one-stage order was chosen
+as a representative because it has the smallest cold joint calibration error;
+this choice does not establish it as the true system. A converged refit distance
+is an upper bound on the globally closest alternative mean; we assign it no
+simple-hypothesis error probability or chi-squared calibration.
+
+No proposed waveform has been applied to laboratory hardware.
+
+% End expanded input
+
+
+% Expanded input: sections/results
+\section{Results}
+The baseline comparison completed all 99 cases. The first profile pass completed
+297 of 300 jobs; a separate documented retry recovered the three failed
+original-model conductance profiles. Both passes are retained. None of the
+completed profiles found a minimum requiring a baseline refit under the recorded
+tolerance. The bootstrap completed all 96,000 planned refits, and the working
+OU likelihood comparison completed all 48 calibrations. Synthetic coverage, ambient/history and numerical sensitivity, and prediction uncertainty also completed their declared matrices and independent arithmetic audits. The parameter-design and model-discrimination matrices also completed their declared cases and independent audits.
+
+\subsection{Order and initialization}
+The startup assumption reverses the order ranking for the sine and joint
+calibrations (Fig.~\ref{fig:baseline-order}). For these two calibration sets,
+cold delay states give the lowest error at one stage among the compared
+formulations. Equilibrated states favor
+the pure-delay limit. The step experiment with equilibrated states gives the
+same error for every order, as expected from the delay's absence from its
+response. These comparisons concern calibration error under prescribed histories;
+they do not establish which history occurred before recording began.
+Table~\ref{tab:calibration-rmse} gives the numerical comparison, including the
+step calibration, where the cold two-stage model improves on the cold one-stage
+fit. Table~\ref{tab:joint-parameters} gives the joint cold parameters.
+
+% Expanded input: tables/calibration_rmse
+% Generated by render_tables.py; edit the producer, not this table.
+\begin{table}[tbp]
+\centering
+\small
+\begin{tabular}{lrrrr}
+\toprule
+Model & Sine, cold & Step, cold & Joint, cold & Joint, equilibrated \\
+\midrule
+$n=1$ & 0.2567 & 0.1573 & 0.4115 & 0.7936 \\
+$n=2$ & 0.3470 & 0.1529 & 0.4630 & 0.7585 \\
+$n=3$ & 0.3810 & 0.1573 & 0.4841 & 0.7486 \\
+$n=4$ & 0.3985 & 0.1610 & 0.4953 & 0.7441 \\
+$n=6$ & 0.4165 & 0.1659 & 0.5070 & 0.7398 \\
+$n=8$ & 0.4256 & 0.1689 & 0.5130 & 0.7378 \\
+$n=12$ & 0.4348 & 0.1724 & 0.5192 & 0.7359 \\
+Pure delay & 0.4541 & 0.1812 & 0.5323 & 0.7322 \\
+\bottomrule
+\end{tabular}
+\caption{Calibration RMSE in degrees Celsius, excluding the initial temperature. Each entry comes from its own fitted calibration/startup combination. Equilibrated means the prescribed delay states equal the initial command, with the sensor temperature fixed by the first observation.}
+\label{tab:calibration-rmse}
+\end{table}
+
+% End expanded input
+
+
+% Expanded input: tables/joint_parameters
+% Generated by render_tables.py; edit the producer, not this table.
+\begin{table}[tbp]
+\centering
+\small
+\begin{tabular}{lrrrrr}
+\toprule
+Model & $K$ & $\tau$ (s) & $\theta$ (s) & $\Ua$ (W/K) & $\Cp$ (J/K) \\
+\midrule
+$n=1$ & 0.7744 & 150.697 & 16.555 & 0.04132 & 6.227 \\
+$n=2$ & 0.7762 & 154.197 & 15.403 & 0.04123 & 6.357 \\
+$n=3$ & 0.7768 & 155.291 & 15.074 & 0.04119 & 6.397 \\
+$n=4$ & 0.7771 & 155.826 & 14.917 & 0.04118 & 6.417 \\
+$n=6$ & 0.7774 & 156.353 & 14.764 & 0.04116 & 6.436 \\
+$n=8$ & 0.7776 & 156.614 & 14.689 & 0.04115 & 6.445 \\
+$n=12$ & 0.7777 & 156.874 & 14.614 & 0.04115 & 6.455 \\
+Pure delay & 0.7780 & 157.391 & 14.466 & 0.04113 & 6.474 \\
+\bottomrule
+\end{tabular}
+\caption{Joint cold-start estimates. Gain units are degrees Celsius per percentage-point command. Physical columns transform the IO estimates using fixed $c=0.032$ W per percentage point; they are effective-model quantities. The one-stage row uses the representative $\tau\geq\theta$.}
+\label{tab:joint-parameters}
+\end{table}
+
+% End expanded input
+
+
+\begin{figure}[p]
+ \centering
+ \includegraphics[width=.5\linewidth]{baseline_order.pdf}
+ \caption{Initialization changes the fitted order ranking. Root mean squared
+ temperature error (RMSE) for sine, step, and joint calibration is plotted for
+ input--output parameter fits. Cold means $z_i(0)=0$; equilibrated means
+ $z_i(0)=u(0)$. The infinity label denotes the separately fitted pure-delay model,
+ with the corresponding input prehistory. Lines connect categorical orders as
+ guides. Every error excludes the first temperature used to initialize the
+ model. No uncertainty intervals are implied by the markers.}
+ \label{fig:baseline-order}
+\end{figure}
+
+\subsection{Temperature traces and residuals}
+The jointly calibrated cold models give closely spaced temperature predictions,
+while their residual traces show differences near startup and the sine peaks
+(Fig.~\ref{fig:baseline-trajectories}). Residual structure persists over many
+successive observations. A visual match on the full temperature scale therefore
+does not establish independent sensor noise or reliable uncertainty coverage.
+
+\begin{figure}[p]
+ \centering
+ \includegraphics[width=\linewidth]{baseline_trajectories.pdf}
+ \caption{The residual scale exposes differences hidden in the temperature
+ overlays. Columns show the sine and step experiments; rows show heater input
+ $u$, measured temperature $T$ with jointly fitted cold-start mean predictions,
+ and residuals defined as prediction minus observation. All recorded calibration
+ samples are plotted. The thermal initial condition and assumed ambient equal
+ the first observation, and the delay prehistory is zero. The four curves use
+ independent joint fits for their respective formulations. These are mean
+ predictions; uncertainty bands are not shown.}
+ \label{fig:baseline-trajectories}
+\end{figure}
+
+\subsection{Transfer to supplied validation files}
+The four representative joint cold formulations give similar errors on the
+eleven duplicate-excluded validation files (Fig.~\ref{fig:validation-errors}).
+Differences among files are much larger than differences among these stage
+counts. Most pooled squared error is accounted for algebraically by the
+per-file mean residuals (Table~\ref{tab:validation-summary}). These offsets
+are retrospective diagnostics, without an identified physical cause or a
+prospective correction. Ambient, command history, heater conversion, thermal
+coefficients and omitted dynamics remain possible explanations. The supplied
+file names alone do not distinguish them.
+
+% Expanded input: tables/validation_summary
+% Generated by plot_validation.py; see validation_figure_manifest.json.
+\begin{table}[tbp]
+\centering\small
+\begin{tabular}{lrrr}
+\toprule
+Model & Calibration RMSE & Held-out RMSE & File-mean share (\%) \\
+\midrule
+$n=1$ & 0.4115 & 3.3588 & 84.8 \\
+$n=2$ & 0.4630 & 3.3608 & 83.4 \\
+$n=12$ & 0.5192 & 3.3883 & 81.1 \\
+Pure delay & 0.5323 & 3.4065 & 80.1 \\
+\bottomrule
+\end{tabular}
+\caption{Joint cold baseline fits evaluated without refitting on eleven duplicate-excluded validation files. RMSE values are in degrees Celsius; the held-out value pools all retained observations rather than averaging file RMSEs. File-mean share is $100\sum_j N_j\bar e_j^2/\sum_j\sum_i e_{ij}^2$, the retrospective algebraic contribution of each file's mean residual to pooled held-out error. It is not a causal attribution or a prospective bias correction.}
+\label{tab:validation-summary}
+\end{table}
+
+% End expanded input
+
+
+% Expanded input: tables/validation_file_map
+% Generated by plot_validation.py; see validation_figure_manifest.json.
+\begin{table}[tbp]
+\centering\small
+\begin{tabular}{llrrr}
+\toprule
+Code & Supplied filename suffix & Duration (s) & $T_0$ (${}^\circ$C) & $N$ \\
+\midrule
+V01 & \path{env_2_sin_2_50_run_1.csv} & 900.0 & 20.91 & 899 \\
+V02 & \path{env_2_sin_2_50_run_2.csv} & 900.0 & 20.26 & 900 \\
+V03 & \path{env_2_sin_2_50_run_3.csv} & 900.0 & 20.26 & 900 \\
+V04 & \path{env_2_sin_50_50_run_1.csv} & 900.0 & 19.94 & 900 \\
+V05 & \path{env_2_sin_50_50_run_2.csv} & 900.0 & 20.58 & 898 \\
+V06 & \path{env_2_sin_50_50_run_3.csv} & 900.0 & 20.26 & 898 \\
+V07 & \path{env_2_sin_5_50_run_2.csv} & 900.0 & 23.48 & 900 \\
+V08 & \path{env_2_sin_5_50_run_3.csv} & 900.0 & 24.13 & 900 \\
+V09 & \path{env_2_step_50_run_2.csv} & 900.0 & 24.13 & 900 \\
+V10 & \path{env_2_step_50_run_3.csv} & 900.0 & 23.81 & 900 \\
+V11 & \path{sin_5_50.csv} & 1000.0 & 24.77 & 989 \\
+\bottomrule
+\end{tabular}
+\caption{Validation-file codes. Restore the common prefix \texttt{validation\_experiment\_} to each supplied filename. $N$ excludes the initial temperature, which also supplies the assumed ambient for that file; it is not an independent ambient measurement. File labels do not establish independent replication or a change in physical environment.}
+\label{tab:validation-files}
+\end{table}
+
+% End expanded input
+
+
+\begin{figure}[p]
+ \centering
+ \includegraphics[width=\linewidth]{validation_errors.pdf}
+ \caption{Transfer error varies more among supplied files than among the
+ representative cold delay formulations. Panels show RMSE and signed mean
+ residual, defined as prediction minus observation, excluding each initial
+ temperature. Parameters come from the two joint calibration records and
+ are not refitted on these files. Codes are defined in
+ Table~\ref{tab:validation-files}; lines join categorical file codes as guides.
+ Each prediction uses the file's first temperature as both its thermal initial
+ condition and assumed ambient. Markers do not imply independent replication,
+ and no uncertainty interval is shown.}
+ \label{fig:validation-errors}
+\end{figure}
+
+\subsection{Coordinate conditioning and physical ambiguity}
+The independently fitted physical and input--output formulations reach sums of
+squares that agree to numerical precision in the joint cold cases
+(Table~\ref{tab:coordinate-metrics}). Reexpressing the same sensitivity matrix
+changes its condition number. Moment coordinates do not improve this particular
+metric at these fitted points. These differences concern the coordinate metric;
+they do not distinguish observationally equivalent model explanations.
+
+% Expanded input: tables/coordinate_metrics
+% Generated by render_tables.py; edit the producer, not this table.
+\begin{table}[tbp]
+\centering
+\small
+\begin{tabular}{lrrrr}
+\toprule
+Model & IO logs & Physical logs & Moment & $|\Delta S|$ \\
+\midrule
+$n=1$ & 23.1 & 19.38 & 27.76 & $6.3\times10^{-12}$ \\
+$n=2$ & 21.04 & 17.56 & 24.82 & $1.5\times10^{-11}$ \\
+$n=3$ & 20.61 & 17.19 & 24.15 & $1.3\times10^{-12}$ \\
+$n=4$ & 20.44 & 17.04 & 23.86 & $4.3\times10^{-11}$ \\
+$n=6$ & 20.29 & 16.9 & 23.6 & $2.1\times10^{-11}$ \\
+$n=8$ & 20.23 & 16.84 & 23.48 & $3.2\times10^{-12}$ \\
+$n=12$ & 20.16 & 16.78 & 23.36 & $3.4\times10^{-13}$ \\
+Pure delay & 20 & 16.64 & 23.09 & $8.0\times10^{-11}$ \\
+\bottomrule
+\end{tabular}
+\caption{Coordinate metrics for joint cold fits. The first three columns are sensitivity condition numbers at the same IO model point, transforming the information matrix without refitting. Moment coordinates are $(\log K,\log m,\ell)$ with $m=\tau+\theta$ and $\ell=\log[\theta/\tau]$. The last column compares independently fitted IO and physical sums of squares, in squared degrees Celsius. Conditioning changes do not imply additional information.}
+\label{tab:coordinate-metrics}
+\end{table}
+
+% End expanded input
+
+Table~\ref{tab:coordinate-correlations} shows the corresponding local parameter
+correlations. Transforming the capacity combines gain and time-constant
+uncertainty, so the physical-coordinate correlations need not resemble the IO
+correlations even though the predicted thermal response is unchanged.
+
+% Expanded input: tables/coordinate_correlations
+% Generated by render_structural_tables.py; edit the producer, not this table.
+\begin{table}[tbp]
+\centering
+\small
+\begin{tabular}{lrrr}
+\toprule
+Model and log coordinates & $\rho_{12}$ & $\rho_{13}$ & $\rho_{23}$ \\
+\midrule
+$n=1$, IO & 0.682 & -0.366 & -0.696 \\
+$n=1$, Physical & -0.535 & 0.366 & -0.711 \\
+$n=2$, IO & 0.678 & -0.312 & -0.602 \\
+$n=2$, Physical & -0.511 & 0.312 & -0.616 \\
+$n=12$, IO & 0.676 & -0.269 & -0.523 \\
+$n=12$, Physical & -0.494 & 0.269 & -0.535 \\
+Pure delay, IO & 0.675 & -0.260 & -0.506 \\
+Pure delay, Physical & -0.491 & 0.260 & -0.518 \\
+\bottomrule
+\end{tabular}
+\caption{Local IID correlations at the same joint cold model point. IO coordinates are $(\log K,\log\tau,\log\theta)$; physical coordinates are $(\log\Ua,\log\Cp,\log\theta)$. The physical covariance is transformed without refitting. Correlation changes reflect the chosen quantities, not extra information. One-stage entries describe the local canonical pole mode, excluding its exchanged global label.}
+\label{tab:coordinate-correlations}
+\end{table}
+
+% End expanded input
+
+
+The positive information spectra are similar across the reduced cold models,
+while their native local dimensions differ from the original model and the
+equilibrated step case (Fig.~\ref{fig:information-spectra}). The weakest local
+direction is dominated by relative delay changes at these joint cold points,
+with smaller compensating time-constant changes. Its components change after
+reexpressing the same model in physical coordinates
+(Fig.~\ref{fig:weak-directions}). Neither local eigenanalysis detects the
+one-stage pole-label exchange by itself.
+
+\begin{figure}[p]
+ \centering
+ \includegraphics[width=.85\linewidth]{information_spectra.pdf}
+ \caption{Positive information eigenvalues and structural null directions must
+ be counted separately. Values above the relative sensitivity-rank cutoff are
+ normalized by each case's largest eigenvalue. Legend parentheses give local
+ identifiable rank divided by native parameter dimension. The four reduced
+ curves use joint cold fits in log input--output coordinates and overlap closely.
+ The original joint model uses four physical logs; the step comparison uses
+ two-stage equilibrated delay states. Their null eigenvalues are omitted rather
+ than assigned a plotting floor. These coordinate-dependent spectra are not an
+ invariant ranking of information magnitude between formulations. Lines join
+ ordered eigenvalues as guides.}
+ \label{fig:information-spectra}
+\end{figure}
+
+\begin{figure}[p]
+ \centering
+ \includegraphics[width=\linewidth]{weak_directions.pdf}
+ \caption{Weakest local information directions depend on the coordinate metric.
+ Columns give joint cold fits for the indicated stage count, with infinity
+ denoting pure delay. Entries are components of unit eigenvectors for the
+ smallest information eigenvalue. The largest absolute component is assigned
+ positive sign. Physical-coordinate directions are re-diagonalized after the
+ exact transformation at the same fitted point; they are not additional
+ observations. The displayed directions concern one local pole representative
+ and do not remove global parameter ambiguities.}
+ \label{fig:weak-directions}
+\end{figure}
+
+The original model has a stronger ambiguity. For each calibration, the saved
+structural calculation sampled 403 positive physical parameter combinations with
+the same transfer function. Their largest prediction difference was below
+$1.8\times10^{-12}\,{}^\circ\mathrm C$. Conductance $\Ua$ remained fixed while
+$\Ub$, $\CpH$ and $\CpS$ varied. Appendix~\ref{sec:structural} gives the
+analytic family and its positivity limits; sampled ranges are not confidence
+intervals.
+
+Figure~\ref{fig:physical-family} shows the joint family and the forward numerical
+agreement along it. A selected optimizer point is one compatible member.
+By contrast, the family's limiting capacities and maximum coupling are functions
+of identifiable transfer coefficients. Table~\ref{tab:family-limits} and
+Fig.~\ref{fig:family-boundaries} propagate saved one-stage bootstrap draws to
+these boundary functions. Larger residual blocks widen their conditional
+percentile intervals. This quantifies uncertainty in the family limits without
+assigning an arbitrary member the status of a physical estimate.
+
+% Expanded input: tables/family_limits
+% Generated by render_structural_tables.py; edit the producer, not this table.
+\begin{table}[tbp]
+\centering
+\small
+\begin{tabular}{lrrr}
+\toprule
+Boundary function & Fitted value & IID simulation & Circular block 60 \\
+\midrule
+$\inf\CpH$ (J/K) & 0.684 & $[0.6792,0.6896]$ & $[0.6448,0.7276]$ \\
+$\sup\CpH$ (J/K) & 6.227 & $[6.214,6.238]$ & $[6.144,6.315]$ \\
+$\sup\CpS$ (J/K) & 2.783 & $[2.765,2.799]$ & $[2.647,2.91]$ \\
+$\sup\Ub$ (W/K) & 0.07451 & $[0.07359,0.07528]$ & $[0.06801,0.08156]$ \\
+\bottomrule
+\end{tabular}
+\caption{Identifiable boundary functions for the full strictly positive original-model family, propagated from the joint cold one-stage transfer fit. Intervals are conditional 95 percent percentiles from 400 saved draws per method, before numerical physical-parameter boxes. The heater-capacity infimum and supremum are open family endpoints; the sensor-capacity and coupling maxima are attained. These are not marginal intervals for an arbitrary physical parameter.}
+\label{tab:family-limits}
+\end{table}
+
+% End expanded input
+
+
+\begin{figure}[p]
+ \centering
+ \includegraphics[width=\linewidth]{physical_family.pdf}
+ \caption{Different original physical parameters give the same measured
+ temperature response. The joint cold transfer function generates 403 positive
+ members parameterized by $r=\CpS/\Ub$. Panels (a)--(c) show the heater capacity,
+ sensor capacity and coupling conductance. Orange dots mark the member selected
+ by the original optimizer. Panel (d) shows maximum absolute prediction
+ differences over both calibration records, exposing floating-point agreement
+ rather than measurement precision. Of the displayed members, 401 fall inside
+ the original numerical fitting box. Strictly positive family endpoints are
+ approached but not attained; the curves are not confidence regions.}
+ \label{fig:physical-family}
+\end{figure}
+
+\begin{figure}[p]
+ \centering
+ \includegraphics[width=\linewidth]{family_boundary_intervals.pdf}
+ \caption{Uncertainty in identifiable physical-family boundaries can be
+ propagated without selecting a physical family member. Panels show the
+ heater-capacity infimum and supremum, sensor-capacity supremum and coupling
+ supremum. Each bar is a conditional 95\% percentile interval from 400 saved
+ joint cold one-stage bootstrap draws, expressed as percent change from its
+ fitted boundary value; dots mark medians. The strictly positive family
+ precedes rectangular numerical fit boxes. These are intervals for boundary
+ functions, excluding heater-calibration and model-discrepancy uncertainty;
+ they are not marginal intervals for $\CpH$, $\CpS$ or $\Ub$.}
+ \label{fig:family-boundaries}
+\end{figure}
+
+The analytic family also exposed an interpolation failure in the first-pass
+profiles. All nine redundant physical-parameter grid sets excluded some known
+equivalent members. Their sampled objectives were correct, but interpolation
+across the rising edges gave misleading endpoints. A separate refinement added
+verified equivalence witnesses and bisected the observed threshold crossings.
+The selected catalog now includes the complete analytically compatible intervals
+inside the numerical fitting box for all nine profiles. First-pass files remain
+available, and the revised numerical endpoints do not make the individual
+physical parameters identifiable. The same selected refinement treats the cold
+one-stage delay profiles in both coordinates and all three calibration sets,
+and the representative joint cold two-stage, twelve-stage and pure-delay
+profiles. Its arithmetic, newly evaluated forward objectives and family inclusion
+passed a separate audit. These checks do not certify unobserved modes or global
+nuisance minima.
+
+\subsection{Conditional delay uncertainty}
+Table~\ref{tab:delay-uncertainty} compares delay uncertainty for representative
+joint cold formulations. Increasing the residual block length widens the
+percentile intervals relative to independent Gaussian simulation. The one-stage
+profile has two accepted pole-label modes; canonical bootstrap summaries refer
+to only the representative with $\tau\geq\theta$. A finite full-coordinate
+interval is withheld where the recorded experiment leaves delay unobservable.
+The table compares assumptions rather than estimating a single unconditional
+physical uncertainty.
+
+% Expanded input: tables/delay_uncertainty
+% Generated by render_tables.py; edit the producer, not this table.
+\begin{table}[tbp]
+\centering
+\small
+\begin{tabular}{lcccc}
+\toprule
+Model & IID profile set & IID simulation & Circular block 60 & OU local SD \\
+\midrule
+$n=1$ & $[16.35,16.76]\cup[150.2,151.2]$ & $[16.44,16.69]$ & $[15.62,17.56]$ & 0.585 \\
+$n=2$ & $[15.2,15.6]$ & $[15.3,15.51]$ & $[14.31,16.44]$ & 0.606 \\
+$n=12$ & $[14.41,14.82]$ & $[14.52,14.72]$ & $[13.25,15.98]$ & 0.654 \\
+Pure delay & $[14.26,14.67]$ & $[14.38,14.56]$ & $[13.34,15.68]$ & 0.317 \\
+\bottomrule
+\end{tabular}
+\caption{Joint cold delay uncertainty in seconds. Profile sets use a profiled common IID variance and retain both one-stage pole modes. Percentile intervals use 400 Gaussian simulations at fixed $\sigma=0.25$ degrees Celsius or 400 circular residual-block refits, respectively. Bootstrap one-stage delays use the canonical pole representative. OU entries are local standard deviations with variance profiled and length included in the Hessian, not interval endpoints. These procedures make different assumptions and are not interchangeable coverage guarantees.}
+\label{tab:delay-uncertainty}
+\end{table}
+
+% End expanded input
+
+
+Figure~\ref{fig:profile-modes} displays the two one-stage profile modes on
+separate delay windows. Figure~\ref{fig:delay-intervals} compares the conditional
+intervals across residual block lengths. The apparent precision changes with
+the residual assumptions even when the fitted thermal trajectories remain close.
+
+\begin{figure}[p]
+ \centering
+ \includegraphics[width=\linewidth]{profile_modes.pdf}
+ \caption{The one-stage cold model has two distinct delay-label modes. Each
+ panel shows a separate declared window of the joint delay profile; the
+ intervening parameter range is omitted. The blue solid curve uses fixed
+ hypothetical sensor standard deviation $0.25\,{}^\circ\mathrm C$, and the
+ orange dashed curve profiles a common IID variance. Lines connect saved
+ nuisance-optimized grid values. The dotted line is the nominal 95\%
+ chi-squared threshold with one degree of freedom. Negative likelihood-ratio
+ roundoff is clamped to zero for display. Neither regular threshold assumptions
+ nor real-data coverage follow from the profile shape.}
+ \label{fig:profile-modes}
+\end{figure}
+
+\begin{figure}[p]
+ \centering
+ \includegraphics[width=\linewidth]{delay_intervals.pdf}
+ \caption{Residual assumptions change conditional delay intervals. All panels
+ use joint cold fits; the one-stage panel displays the canonical short-delay
+ representative. Bootstrap bars are percentile intervals from 400 saved draws
+ per method, with dots at medians. The profile bar uses the unknown-variance IID
+ accepted component containing the baseline estimate. OU bars exponentiate
+ local normal log-delay endpoints from the observed mean/length Hessian with
+ variance profiled. Their dots are fitted OU delays. Gray vertical lines mark
+ baseline least-squares delays. Residual blocks count retained samples. These
+ are nominal conditional intervals under different assumptions, not a common
+ unconditional physical uncertainty or simultaneous confidence statement.}
+ \label{fig:delay-intervals}
+\end{figure}
+
+
+% Expanded input: sections/coverage_results
+\subsection{Synthetic coverage exposes sensitivity to serial dependence}
+
+% Expanded input: tables/coverage_values
+% Direct fields formatted from the audited coverage summary.
+\newcommand{\CoverageReplicates}{300}
+\newcommand{\CoverageTotalDatasets}{3600}
+\newcommand{\CoverageTwoStageOUKnownGridChanges}{68}
+
+% End expanded input
+
+All \CoverageTotalDatasets{} prespecified synthetic datasets finished without
+failed draws. Each of the 84 delay-method comparisons returned an interval for
+every requested dataset, so its method-defined and unconditional coverage rates
+coincide. Table~\ref{tab:coverage-delay} gives exact counts for four procedures;
+Fig.~\ref{fig:coverage-delay} includes all seven and their Monte Carlo uncertainty.
+
+Under IID Gaussian generation, the IID local and profile procedures gave
+coverage near the nominal reference. Applying those same procedures under OU
+generation produced severe undercoverage, especially at the longer correlation
+length. Estimating a common variance did not compensate for ignoring serial
+covariance. HAC intervals improved coverage under correlated generation, with
+substantial bandwidth sensitivity. Even the largest tested bandwidth fell below
+the nominal reference in the OU60 comparisons. The synthetic thermal mean is
+correct by construction here; these failures do not require between-record
+mean discrepancy.
+
+% Expanded input: tables/coverage_rates
+% Generated by render_coverage_table.py; see coverage_table_manifest.json.
+\begin{table}[tbp]
+\centering\small
+\begin{tabular}{llrrrr}
+\toprule
+Model & Error law & IID known & IID fitted & HAC60 & Profile fitted \\
+\midrule
+$n=1$ & IID & 278/300 & 278/300 & 273/300 & 278/300 \\
+$n=1$ & OU10 & 105/300 & 103/300 & 263/300 & 102/300 \\
+$n=1$ & OU60 & 73/300 & 66/300 & 235/300 & 66/300 \\
+$n=2$ & IID & 281/300 & 280/300 & 272/300 & 280/300 \\
+$n=2$ & OU10 & 110/300 & 110/300 & 266/300 & 108/300 \\
+$n=2$ & OU60 & 61/300 & 56/300 & 249/300 & 55/300 \\
+$n=12$ & IID & 282/300 & 281/300 & 276/300 & 280/300 \\
+$n=12$ & OU10 & 106/300 & 104/300 & 262/300 & 104/300 \\
+$n=12$ & OU60 & 59/300 & 53/300 & 248/300 & 53/300 \\
+Pure delay & IID & 290/300 & 288/300 & 283/300 & 288/300 \\
+Pure delay & OU10 & 106/300 & 104/300 & 273/300 & 103/300 \\
+Pure delay & OU60 & 74/300 & 68/300 & 254/300 & 68/300 \\
+\bottomrule
+\end{tabular}
+\caption{Delay-interval coverage counts for four selected procedures. Each entry is covered/defined, from \CoverageReplicates{} requested datasets at that generating point and true covariance; -- would denote no defined interval. All intervals have nominal 95\% reference levels. IID known/fitted refer to Gaussian log-Wald intervals; HAC60 uses a Bartlett bandwidth of 60 retained samples; profile fitted uses a common profiled IID variance and retains disconnected components. OU10/OU60 are true correlation lengths in seconds, with fixed marginal standard deviation. Full method-specific failure bounds and grid diagnostics are retained in the coverage CSV; Wilson Monte Carlo intervals and all seven methods appear in Fig.~\ref{fig:coverage-delay}.}
+\label{tab:coverage-delay}
+\end{table}
+
+% End expanded input
+
+
+The profile comparison retains a numerical limitation. Three-point quadratic
+interpolation changed \CoverageTwoStageOUKnownGridChanges{} of
+\CoverageReplicates{} coverage classifications for the two-stage known-variance
+profile under OU60 generation. This is a sensitivity check on the saved grid,
+without new nuisance optimization or an endpoint-accuracy certificate. Both
+primary and secondary classifications remain conditional diagnostics of an IID
+likelihood applied to correlated errors. The full CSV retains this diagnostic
+for every profile case; interpreting the known-variance profile rates as exact
+continuous-profile coverage would overstate their numerical verification.
+
+Figure~\ref{fig:coverage-width} compares median interval widths. The one-stage
+profile width sums its two accepted pole-label components rather than measuring
+the gap between them. A wider accepted set can therefore concern a different
+global parameter representation from a local interval around one pole label.
+These simulations fix four generating points, the recorded inputs/times and the
+initial-temperature, ambient and heater-calibration assumptions. They do not
+measure coverage of the real-data block-bootstrap intervals or uncertainty from
+the observed between-record discrepancy.
+
+\begin{figure}[p]
+ \centering
+ \includegraphics[width=\linewidth]{coverage_delay_coverage.pdf}
+ \caption{Serial dependence reduces coverage of IID-based delay intervals in
+ controlled simulation. Each point is covered/defined over
+ \CoverageReplicates{} requested datasets for one model and true error process;
+ bars are pointwise 95\% Wilson intervals for Monte Carlo sampling uncertainty.
+ All displayed procedures returned intervals for every dataset. The dashed line
+ is nominal 0.95 coverage. Known/fitted denote fixed or profiled IID variance;
+ local IID intervals are Gaussian log-Wald intervals and profiles retain all
+ accepted components. HAC labels give Bartlett bandwidths in retained samples.
+ All true errors have the same marginal standard deviation; rows change their
+ correlation law. The thermal mean and startup are correctly specified in each
+ generating scenario. Profile sets retain the declared finite-grid limitation.
+ These are generating-point results, without a universal or real-discrepancy
+ coverage guarantee.}
+ \label{fig:coverage-delay}
+\end{figure}
+
+\begin{figure}[p]
+ \centering
+ \includegraphics[width=\linewidth]{coverage_delay_width.pdf}
+ \caption{Median delay-interval widths depend on the uncertainty procedure and
+ true serial dependence. Models, methods and simulation denominators match
+ Fig.~\ref{fig:coverage-delay}. All panels share the same width scale. Profile
+ widths sum accepted component lengths, excluding intervening gaps; the
+ one-stage profile includes both pole-label modes. These width summaries do
+ not establish nominal coverage. Exact counts, width distributions, exploration
+ flags and interpolation sensitivity remain in the saved coverage summary.}
+ \label{fig:coverage-width}
+\end{figure}
+
+% End expanded input
+
+
+\subsection{Nonregular curvature and the delay-chain limit}
+Two deterministic checks distinguish local singularity from exact physical
+ambiguity (Fig.~\ref{fig:nonregular-limits}). Near a repeated pole, the squared
+temperature distance grows quartically along the fixed-mean perturbation,
+consistent with the canceled first derivative in Appendix~\ref{sec:structural}.
+The rank-deficient quadratic approximation misses this higher-order distinction.
+Separately, the cold constant-step onset excludes a uniform $O(n^{-1})$
+approximation error bound. At $t=\theta$, the pure-delay response has not risen,
+whereas the finite-chain rise decays as $n^{-1/2}$ with the derived coefficient.
+These are fixed-parameter model implications, rather than comparisons of
+refitted TC-Lab errors.
+
+\begin{figure}[p]
+ \centering
+ \includegraphics[width=\linewidth]{nonregular_limits.pdf}
+ \caption{Two deterministic limits challenge routine local approximations.
+ (a) Squared prediction distance over the recorded sine command for
+ $K=0.78$, $\tau=10+\delta$ and $\theta=10n-\delta$, with cold states.
+ The dotted quartic guide is anchored at the smallest positive two-stage
+ perturbation. (b) Exact cold constant-step temperature rise at $t=\theta$
+ for $K=0.78$, $\tau=150$ s, $\theta=18$ s and $u=50$ percentage points.
+ The reference coefficient is $A=Ku\theta/(\tau\sqrt{2\pi})$; the pure-delay
+ rise is zero at that instant. The calculations use separate parameter and
+ input settings and do not constitute fitted order selection or uncertainty
+ coverage.}
+ \label{fig:nonregular-limits}
+\end{figure}
+
+\subsection{The working correlated-noise model remains inadequate}
+The independent innovations audit reproduced every saved OU likelihood within
+$2.6\times10^{-12}$. This validates likelihood arithmetic, not the residual
+model. Filtered innovations retain strong negative lag-one correlation
+(Table~\ref{tab:ou-diagnostics}). The fitted length therefore cannot be treated
+as a measured thermal disturbance time scale. Pooled held-out prediction error
+also remains much larger than calibration error. Allowing
+serial covariance changes conditional uncertainty without establishing that
+the thermal mean transfers between records.
+
+% Expanded input: tables/ou_diagnostics
+% Generated by render_tables.py; edit the producer, not this table.
+\begin{table}[tbp]
+\centering
+\small
+\begin{tabular}{lrrrr}
+\toprule
+Model & Length (s) & $\hat\sigma$ (${}^\circ$C) & ACF1, sine & ACF1, step \\
+\midrule
+$n=1$ & 17.46 & 0.4088 & -0.5333 & -0.492 \\
+$n=2$ & 22.14 & 0.459 & -0.5291 & -0.4935 \\
+$n=12$ & 27.91 & 0.5151 & -0.5253 & -0.4877 \\
+Pure delay & 29.33 & 0.5289 & -0.518 & -0.4811 \\
+\bottomrule
+\end{tabular}
+\caption{Working OU fits to the two joint cold records. The scale is the maximum-likelihood stationary residual standard deviation. ACF1 is the centered sample lag-one correlation of filtered innovations. Strong remaining negative correlation challenges this one-component residual covariance; a high fitted likelihood does not validate it.}
+\label{tab:ou-diagnostics}
+\end{table}
+
+% End expanded input
+
+Figure~\ref{fig:ou-correlations} compares raw residuals and filtered innovations
+within each OU fit. For reference, filtering an IID component at regular
+sampling gives interior lag-one correlation $-\phi/(1+\phi^2)$, approaching
+$-1/2$ for $\phi$ near one (Appendix~\ref{sec:nuisance-assumptions}). This
+provides one explanation to investigate, without identifying a unique error
+mechanism from the observed negative correlation.
+
+\begin{figure}[p]
+ \centering
+ \includegraphics[width=\linewidth]{ou_correlations.pdf}
+ \caption{A one-component OU covariance removes much low-frequency residual
+ correlation while leaving strongly negative first-lag innovations. Columns
+ show calibration records; rows show centered sample autocorrelations before
+ and after the stationary OU filter. Each curve uses its own jointly fitted
+ cold thermal mean and OU length in both rows, isolating the filter comparison
+ within that fit. Lag zero is omitted. These are empirical residual
+ diagnostics, without nominal whiteness-test bands or a unique physical
+ interpretation of the residual process.}
+ \label{fig:ou-correlations}
+\end{figure}
+
+
+% Expanded input: sections/followup_results
+\subsection{Ambient and history assumptions shift the fitted delay}
+Allowing record-specific ambient offsets reduces joint calibration error more
+than allowing only an initial history fraction in the representative models
+(Fig.~\ref{fig:nuisance-sensitivity}). The fitted delay also changes, although
+the cold one-stage formulation retains the lowest calibration error among these
+four representatives. With both nuisance terms free, every displayed step-record
+ambient offset reaches the imposed upper bound
+(Table~\ref{tab:nuisance-parameters}). The lower residual error therefore does
+not identify an independently measured ambient temperature. Extending that bound
+until the fit looks satisfactory would change the sensitivity question rather
+than resolve the missing measurement.
+
+% Expanded input: tables/nuisance_parameters
+% Generated by report_followups.py; scalar sources in followup_plot_data.json.
+\begin{table}[tbp]
+\centering\small
+\begin{tabular}{lrrrrrr}
+\toprule
+Model & \shortstack{$K$\\(${}^\circ$C/\%)} & $\theta$ (s) & \shortstack{$\Delta T_{a,\sin}$\\(${}^\circ$C)} & \shortstack{$\Delta T_{a,\rm step}$\\(${}^\circ$C)} & $\gamma_{\sin}$ & $\gamma_{\rm step}$ \\
+\midrule
+$n=1$ & 0.7390 & 17.159 & 1.339 & 2.000 & 0.000 & 0.004 \\
+$n=2$ & 0.7406 & 16.350 & 1.336 & 2.000 & 0.088 & 0.089 \\
+$n=12$ & 0.7421 & 15.932 & 1.321 & 2.000 & 0.195 & 0.173 \\
+Pure delay & 0.7424 & 15.867 & 1.318 & 2.000 & 0.218 & 0.192 \\
+\bottomrule
+\end{tabular}
+\caption{Joint fits with free ambient and history. Ambient offsets are in degrees Celsius; history fractions $\gamma$ multiply the initial command. Gain units are degrees Celsius per command percentage point. Every displayed step offset reaches the imposed $+2$ degree bound. These are sensitivity fits under declared bounds, not independently measured ambient temperatures or histories.}
+\label{tab:nuisance-parameters}
+\end{table}
+
+% End expanded input
+
+
+The nuisance fit retains the first sensor observation as its thermal initial
+condition while changing the assumed ambient and delay-state history. Its
+history fraction describes a declared state family; it does not reconstruct an
+unrecorded heater command. The separate constant-input derivation in
+Appendix~\ref{sec:nuisance-assumptions} explains why a fitted history or ambient
+can also introduce exact parameter ambiguity. A favorable joint residual score
+does not establish estimability in every experiment.
+
+\begin{figure}[p]
+ \centering
+ \includegraphics[width=\linewidth]{nuisance_sensitivity.pdf}
+ \caption{Ambient and initial-history assumptions change joint calibration
+ error and the selected delay. Cold, fixed is the original linear-hold fit;
+ History frees one delay-state history fraction per record with ambient fixed;
+ Ambient frees one ambient offset per record with cold delay states; Both frees
+ both. Offset bounds are $\pm2\,{}^\circ\mathrm C$ and history fractions lie in
+ $[0,1]$. The two thermal experiments share their model parameters. Lines join
+ categorical assumptions; markers are fitted representatives without confidence
+ intervals. The one-stage delay uses the selected short-delay pole label.}
+ \label{fig:nuisance-sensitivity}
+\end{figure}
+
+\subsection{Command reconstruction changes the inferred delay}
+Changing the command hold shifts the fitted delay while producing smaller
+changes in calibration RMSE (Fig.~\ref{fig:reconstruction-sensitivity}). A
+backward-Euler fit can even reduce the residual score relative to exact
+propagation. That does not make its discretization a more accurate description
+of the continuous thermal system: fitted parameters can absorb numerical and
+command-reconstruction differences. The recorded time/command pairs do not
+identify the command waveform between samples. Consequently, the narrowest
+conditional delay intervals should not be interpreted as resolving this
+unmeasured waveform choice. All compared holds use the same observations and
+the declared cold prehistory; pure delay has no backward-Euler counterpart in
+this study.
+
+\begin{figure}[p]
+ \centering
+ \includegraphics[width=\linewidth]{reconstruction_sensitivity.pdf}
+ \caption{Different command reconstructions and propagators change the
+ inferred delay at similar residual error. Each point is a separate joint cold
+ fit. Linear, left and right denote the assumed hold between recorded command
+ values. Exact uses the analytic LTI propagator for that hold; Right Euler uses
+ the inherited backward-Euler/right-end convention at the recorded observation
+ times. The pure-delay curve ends at the exact right-hold case. Lines join
+ categorical assumptions and imply neither a convergence path nor uncertainty
+ intervals.}
+ \label{fig:reconstruction-sensitivity}
+\end{figure}
+
+\subsection{Prediction precision remains conditional on the mean model}
+Prediction bands provide a coordinate-invariant target even when the original
+physical coordinates have an exact null direction. Its zero-state equivalence
+family preserves the measured thermal response, so prediction variance can be
+computed on the identifiable quotient without assigning finite uncertainty to
+each physical parameter. By contrast, constant-input calibration with
+equilibrated delay states leaves a globally free delay that affects a varying
+future input. Those target bands are withheld. The saved finite delay-exploration
+envelopes are sensitivity plots without a probability interpretation.
+
+For the jointly fitted cold representatives, mean-band widths depend strongly
+on the assumed covariance or residual resampling
+(Fig.~\ref{fig:prediction-mean-widths}). Fitted IID variance gives narrower mean
+bands than the displayed HAC, OU and block-residual alternatives. Wider bands
+under another working error law do not establish uncertainty from between-record
+mean discrepancy. Table~\ref{tab:prediction-widths} separates mean-band width
+from descriptive containment by observation bands on V01. Adding fitted future
+error variance does not resolve that record's transfer error. V01 is the first
+file in the existing sorted code map, with no selection by residual size; the
+complete saved summary retains every validation file, including those with
+better containment.
+
+% Expanded input: tables/prediction_widths
+% Generated by report_followups.py; scalar sources in followup_plot_data.json.
+\begin{table}[tbp]
+\centering\small
+\begin{tabular}{lrrr}
+\toprule
+Model, method & \shortstack{Sine width\\(${}^\circ$C)} & \shortstack{V01 width\\(${}^\circ$C)} & V01 obs. fraction \\
+\midrule
+$n=1$, IID fitted & 0.078 & 0.061 & 0.135 \\
+$n=1$, OU fitted & 0.439 & 0.347 & 0.139 \\
+$n=2$, IID fitted & 0.088 & 0.077 & 0.140 \\
+$n=2$, OU fitted & 0.544 & 0.479 & 0.154 \\
+$n=12$, IID fitted & 0.099 & 0.094 & 0.150 \\
+$n=12$, OU fitted & 0.662 & 0.629 & 0.166 \\
+Pure delay, IID fitted & 0.102 & 0.097 & 0.161 \\
+Pure delay, OU fitted & 0.560 & 0.512 & 0.171 \\
+\bottomrule
+\end{tabular}
+\caption{Median pointwise mean-band widths and descriptive V01 containment by nominal observation-prediction bands. The last column uses observation bands with an added fitted IID or OU marginal future-error variance; it is not containment by the narrower mean bands. V01 is defined in Table~\ref{tab:validation-files}. These fractions on one observed record are not repeated-experiment coverage estimates. HAC and block-residual methods supply no future-error law here and therefore no observation-band containment.}
+\label{tab:prediction-widths}
+\end{table}
+
+% End expanded input
+
+
+\begin{figure}[p]
+ \centering
+ \includegraphics[width=\linewidth]{prediction_mean_widths.pdf}
+ \caption{Conditional thermal-mean precision depends on the working error
+ model. Points give median pointwise nominal 95\% mean-band widths over the
+ sine calibration record and held-out V01, excluding their conditioned first
+ observations. IID fitted uses residual degrees of freedom on the identifiable
+ quotient; HAC60 uses Bartlett bandwidth 60; OU fitted uses the observed
+ mean/length Hessian with variance profiled; Block60 uses percentile predictions
+ from saved joint circular-block draws. The OU means are separately fitted;
+ other methods retain the baseline mean. Lines join methods as visual guides,
+ without a common unconditional confidence or repeated-experiment coverage
+ interpretation. These are mean bands, not future-observation bands.}
+ \label{fig:prediction-mean-widths}
+\end{figure}
+
+% End expanded input
+
+
+
+% Expanded input: sections/design_results
+\subsection{Local input design improves declared information criteria}
+All parameter-design cases completed after the shutdown-grid correction, and
+the independent audit passed the information matrices, eigenpairs, objective
+values, selected-start rule and resource constraints. Each selected local
+solution improves its own declared reference criterion. This comparison is
+conditional on the fitted model points, working covariance and initialization;
+it does not select a physically correct model.
+
+The ensemble designs show how the target changes the proposed experiment
+(Table~\ref{tab:parameter-design} and Fig.~\ref{fig:design-utilities}). The
+minimum criterion targets the least favorable relative scenario; the mean
+criterion targets average log improvement. Historical information changes both the objective
+and the reference: future-only ensembles use multisine because constant input
+leaves delay unobservable in equilibrated scenarios, whereas adding the two
+historical calibration records makes the constant-reference total information
+nonsingular. Differences between the two panels therefore cannot be read as
+absolute information loss from including historical data. The determinant,
+minimum-eigenvalue, delay and prediction criteria also have different scales.
+
+% Expanded input: tables/parameter_design
+% Generated by plot_design_results.py from separately audited phase summaries.
+\begin{table}[tbp]
+\centering\small
+\begin{tabular}{llrr}
+\toprule
+Ensemble, information & Criterion & $\Delta\log$ utility & Max. (${}^\circ$C) \\
+\midrule
+mean, future & D & 1.508 & 84.990 \\
+mean, history & D & 1.390 & 84.990 \\
+mean, future & E & 1.423 & 74.333 \\
+mean, history & E & 0.754 & 80.792 \\
+mean, future & Delay & 1.439 & 74.333 \\
+mean, history & Delay & 0.758 & 80.792 \\
+mean, future & Prediction & 0.861 & 84.990 \\
+mean, history & Prediction & 0.348 & 84.990 \\
+min, future & D & 1.294 & 84.990 \\
+min, history & D & 1.299 & 84.151 \\
+min, future & E & 0.560 & 84.990 \\
+min, history & E & 0.621 & 75.349 \\
+min, future & Delay & 0.620 & 73.829 \\
+min, history & Delay & 0.631 & 75.463 \\
+min, future & Prediction & 0.704 & 84.990 \\
+min, history & Prediction & 0.300 & 84.990 \\
+\bottomrule
+\end{tabular}
+\caption{Selected local ensemble designs over 48 model/startup/covariance scenarios. Utility is the mean or minimum scenario-relative log improvement. Future-only ensembles use multisine as reference; ensembles with historical information use constant input, whose total information is nonsingular after adding calibration information. Criterion scales differ. Temperature is the largest independently checked value across sixteen fitted mean models through the shutdown tail. These local results do not establish global optimality, probabilistic model robustness or hardware limits.}
+\label{tab:parameter-design}
+\end{table}
+
+% End expanded input
+
+
+Figure~\ref{fig:design-commands} displays two selected ensemble determinant
+designs and their dense temperature checks. The upper temperature envelope
+ranges over the declared sixteen fitted mean models, without probabilities
+over models or parameter uncertainty. The selected inputs use the amplitude
+and slew limits and approach the imposed temperature constraint. The finite
+tail check includes the last command's ramp to zero. All selected designs pass
+the independent dense acceptance check, but this does not establish a
+continuous-time or hardware temperature bound.
+
+\begin{figure}[p]
+ \centering
+ \includegraphics[width=\linewidth]{design_commands_temperature.pdf}
+ \caption{Information design changes the command and its predicted thermal
+ envelope. Constant and multisine are common candidates; ensemble mean D and
+ min D are selected determinant designs using future information only. Commands
+ share the declared horizon, time-average dose, amplitude and slew constraints.
+ The lower panel is the pointwise maximum temperature among sixteen fitted
+ mean/startup combinations, not a confidence band or one physical trajectory.
+ The vertical line marks the end of the design horizon and start of shutdown;
+ the horizontal line is the assumed temperature acceptance limit. Calculations
+ use a $0.25$ s audit grid through the $300$ s tail.}
+ \label{fig:design-commands}
+\end{figure}
+
+\begin{figure}[p]
+ \centering
+ \includegraphics[width=\linewidth]{design_relative_utilities.pdf}
+ \caption{The design target and scenario aggregate change relative utility.
+ Points are the independently audited selected local objective values. Mean
+ and min aggregate scenario-relative log improvements over 48 fixed
+ model/startup/covariance scenarios. The first panel uses multisine as reference;
+ the second adds historical calibration information and uses constant input.
+ Criteria have different targets and scales, so ordinate heights across
+ criteria or reference changes do not rank absolute physical information.
+ Lines join categorical criteria as guides. No global optimality certificate
+ is implied.}
+ \label{fig:design-utilities}
+\end{figure}
+
+\subsection{Refitting competitors changes model discrimination}
+The separate fixed-mean discrimination designs compare all six pairs among
+the representative formulations (Table~\ref{tab:discrimination-design}). Their
+mean/min objectives concern log improvements relative to multisine for each
+pair. The smallest raw pair distance is a different summary and need not rank
+those objectives in the same order. These designs share the parameter-design
+resource assumptions but optimize mean separation rather than parameter
+information.
+
+% Expanded input: tables/discrimination_design
+% Generated by plot_design_results.py from separately audited phase summaries.
+\begin{table}[tbp]
+\centering\small
+\begin{tabular}{llrr}
+\toprule
+Startup, covariance & Aggregate & $\Delta\log D^2$ & Smallest $D^2$ \\
+\midrule
+Cold, IID & mean & 0.852 & 52.329 \\
+Cold, IID & min & 0.798 & 52.329 \\
+Cold, OU10 & mean & 0.825 & 17.797 \\
+Cold, OU10 & min & 0.652 & 18.054 \\
+Cold, OU60 & mean & 0.949 & 59.994 \\
+Cold, OU60 & min & 0.628 & 58.797 \\
+Equilibrated, IID & mean & 1.184 & 18.955 \\
+Equilibrated, IID & min & 1.246 & 19.525 \\
+Equilibrated, OU10 & mean & 1.451 & 2.136 \\
+Equilibrated, OU10 & min & 1.324 & 1.564 \\
+Equilibrated, OU60 & mean & 2.596 & 6.202 \\
+Equilibrated, OU60 & min & 2.368 & 6.202 \\
+\bottomrule
+\end{tabular}
+\caption{Fixed-mean discrimination designs compare six pairs among the four representative formulations. The objective aggregates pairwise log improvements relative to multisine, whereas the last column is the smallest raw selected pair distance; these are different comparisons. Covariances are common known working laws with marginal standard deviation $0.25\,{}^\circ\mathrm C$. Alternative-parameter refitting is evaluated separately in Fig.~\ref{fig:discrimination-refits}.}
+\label{tab:discrimination-design}
+\end{table}
+
+% End expanded input
+
+
+Allowing the competing formulation to change parameters reduces its distance
+from the fixed one-stage generating mean
+(Fig.~\ref{fig:discrimination-refits}). Under equilibrated constant input, the
+closest-found distance vanishes to numerical precision for every alternative
+and working covariance. The matched gain and time constant give an analytic
+zero-distance witness because the delay factor is absent. Positive separation
+at the original fitted alternative parameters had therefore overstated the
+information in that input about model order.
+
+The selected varying inputs retain larger closest-found distances than
+multisine in this bounded directional comparison, including after refitting.
+That result concerns a fixed one-stage generating mean against three
+alternatives, rather than every possible generating formulation or parameter
+point. Each smallest converged distance is an upper bound on the global closest
+alternative. The ideal equal-prior Gaussian error formula for two fixed means
+cannot be reused as a power calculation after fitting those alternatives or
+allowing the observed between-record discrepancy.
+
+\begin{figure}[p]
+ \centering
+ \includegraphics[width=\linewidth]{discrimination_refits.pdf}
+ \caption{Parameter refitting can remove apparent model-order separation.
+ The fixed one-stage generating mean is compared with the three indicated
+ alternative formulations under the first declared covariance, IID Gaussian
+ error with marginal standard deviation $0.25\,{}^\circ\mathrm C$. Rows use
+ cold and input-equilibrated delay states. Left panels retain each alternative's
+ original fitted parameters; right panels use its smallest converged
+ 24-start distance. Const. and Multi. are common candidates; Mean and Min are
+ the selected fixed-mean discrimination inputs. Symmetric-log axes are linear
+ below one, retaining vanishing distances without a positive plotting floor.
+ Lines join categorical waveforms. The complete saved comparison also includes
+ both correlated working covariances. Distances after refitting are upper
+ bounds on global minima, without a real-data testing-power interpretation.}
+ \label{fig:discrimination-refits}
+\end{figure}
+
+% End expanded input
+
+\FloatBarrier
+
+% End expanded input
+
+
+% Expanded input: sections/discussion
+\section{Discussion}
+The transfer-function analysis places a limit on what a better input can achieve.
+Under the single measured output and fixed initial conditions, excitation cannot
+separate the original model's equivalent physical parameter combinations.
+Estimating the three transfer coefficients or measuring an additional independent
+quantity is a different scientific task from narrowing a four-parameter local
+covariance. The existing data include a second sensor, but its usefulness for
+breaking this equivalence requires a model that connects that sensor to the
+states; the second trace alone does not establish that connection.
+
+The reduced conductance--capacity parameters require an effective-model
+interpretation. The gain fixes $\Ua=c/K$ only conditional on the adopted heater
+conversion. The reduced heat capacity $\Cp=c\tau/K$ is tied to the selected
+thermal pole; it is not automatically the heater heat capacity $\CpH$ of the
+original model. The original model's equivalence class permits $\CpH$ to vary
+while both measured transfer coefficients and temperature predictions are fixed.
+
+Initialization is part of the model specification. A delay that appears estimable
+under cold delay states may become unobservable under equilibrated delay states
+and constant input. Future laboratory records should include the heater history
+before the fitting window and an independent ambient measurement. These records
+would reduce dependence on assumptions made at the first sample.
+
+The conditional delay and physical-family-boundary intervals vary with residual
+block length (Figs.~\ref{fig:delay-intervals} and~\ref{fig:family-boundaries}).
+The circular bootstrap resamples centered residuals within each calibration
+record and retains dependence within each block. The Gaussian comparator uses
+a fixed hypothetical noise scale, whereas the block methods use empirical
+centered residuals. Their contrast can therefore reflect both error scale and
+serial dependence. Centering also
+removes each calibration record's mean residual. This construction therefore
+does not estimate the between-record offsets seen in validation, even when its
+percentile intervals are wider than those from independent Gaussian simulation.
+Selecting the widest of these conditional intervals would not supply a
+probability model for the omitted discrepancy.
+
+Fitting an OU correlation length
+changes the weighting of thermal trajectories and their local uncertainty, but
+the remaining negative innovation correlation challenges that combined
+mean/covariance model. The fitted length cannot yet be interpreted as a measured
+physical disturbance time scale. Neither a Gaussian likelihood improvement nor
+a HAC variance calculation establishes that the observed error process satisfies
+the assumptions needed for confidence coverage.
+
+Transfer to the held-out files is a stronger concern than the small differences
+among the representative cold model orders. The pooled error and its file-mean
+decomposition (Table~\ref{tab:validation-summary}) show why narrower calibration
+intervals alone would be insufficient evidence for using a formulation on a new
+record. Subtracting each held-out mean error would use information unavailable
+before that record was observed. Independent ambient, command-history and
+heater-power measurements could help distinguish candidate explanations;
+the supplied filenames and temperature offsets do not identify one.
+
+The controlled coverage experiment isolates one consequence of a wrong error
+law: IID likelihood intervals can fail even when the thermal mean is exactly
+correct. HAC improves the comparison without reaching the nominal reference
+at the longer tested correlation length. The finite-grid profile diagnostic
+also prevents treating every interpolated threshold set as an exact numerical
+confidence set. Neither result supplies coverage for the real-data bootstrap,
+whose centering removes the between-record mean errors seen in validation.
+
+The ambient/history and command-hold studies change a different part of the
+inference. Ambient offsets lower calibration error but reach imposed bounds;
+command reconstruction shifts the selected delay with less visible change in
+RMSE. These sensitivities can exceed the apparent precision of a chosen
+conditional error model. Recording independent ambient and heater history would
+therefore answer a question that collecting more samples under the same
+unverified initialization cannot settle.
+
+The prediction calculation preserves the distinction between a redundant
+physical representation and an unresolved future response. Quotient prediction
+variance remains finite along the original physical equivalence family, whereas
+an unobserved delay from a constant-input calibration can change a later varying
+response. A pseudoinverse alone cannot decide which of those situations applies.
+The prospective calculations specify what a proposed experiment is meant to
+learn. Parameter-information and model-separation criteria choose different
+inputs; initialization and the working covariance remain part of each design.
+Refitting the alternatives removes constant-input separation in the equilibrated
+case, while the selected varying inputs retain separation in the bounded
+one-stage-generating comparison. None of those designs can remove the original
+physical equivalence family under the same modeled output.
+
+The next laboratory study should record an independent ambient trace, the
+pre-experiment command history and heater-power calibration, then test a
+selected varying input against held-out predictions declared beforehand. A
+second sensor could address the physical ambiguity only after its observation
+equation is specified and checked. Those measurements would test explanations
+for the transfer errors that the current conditional intervals and fixed-point
+input designs leave unresolved.
+
+% End expanded input
+
+
+% Expanded input: sections/provenance
+\section{Data, code, and research status}
+The repository source is \url{https://github.com/dowlinglab/pyomo-doe}.
+The study is under \path{skunk_works/delay_study} on branch
+\path{reformulation-exploration}. Phase manifests identify immutable source
+commits, data hashes, configuration, environment, seeds, and numerical outcomes.
+Release receipts identify the source revision, compiled report checksum, numerical phase manifests and artifact checks. The supplied raw data and inherited source were preserved.
+
+An OpenAI Codex agent performed the notebook exports, implemented the numerical
+analysis, ran the computations, searched and inspected literature, and drafted
+this document. This disclosure describes scientific and software work as well
+as writing assistance. The document has not received human scientific review.
+No laboratory hardware experiment was performed for this study, and no target
+journal or submission policy has been selected.
+
+% End expanded input
+
+\bibliographystyle{plainnat}
+\bibliography{bibliography}
+\appendix
+
+% Expanded input: sections/structural_derivations
+\section{Structural derivations}
+\label{sec:structural}
+
+\subsection{Delay-chain moments and pure-delay limit}
+Let $\lambda_n=n/\theta$ be the delay-state rate. The normalized chain kernel for
+$t\geq0$ is
+\[
+ h_n(t)=\frac{\lambda_n^n t^{n-1}e^{-\lambda_n t}}{(n-1)!}.
+\]
+Its Laplace transform is $(1+s/\lambda_n)^{-n}$. Differentiating that transform at zero
+gives mean $n/\lambda_n=\theta$ and variance $n/\lambda_n^2=\theta^2/n$. Consequently, the
+normalized complete thermal response has impulse-time mean $\tau+\theta$ and
+variance $\tau^2+\theta^2/n$. These are properties of the model kernel;
+they are not estimates of a measured residence-time distribution.
+For fixed $s$ in the domain of convergence,
+\[
+ \log(1+\theta s/n)^{-n}=-n\log(1+\theta s/n)\longrightarrow-\theta s.
+\]
+This calculation supplies the pure-delay limit of Eq.~\eqref{eq:transfer}.
+
+\subsection{An explicit physical-parameter equivalence class}
+Define the two positive pole time constants $t_{\mathrm f}<t_{\mathrm s}$ by
+$a=t_{\mathrm f}+t_{\mathrm s}$ and $b=t_{\mathrm f}t_{\mathrm s}$. For fixed
+positive transfer coefficients $(K,a,b)$, choose a family coordinate
+$r=\CpS/\Ub$ between these pole time constants. The physical parameters
+\begin{equation}
+ \Ua=\frac{c}{K},\qquad
+ \CpH=\frac{b\Ua}{r},\qquad
+ \CpS=\Ua\left(a-r-\frac{b}{r}\right),\qquad
+ \Ub=\frac{\CpS}{r}
+ \label{eq:equivalent}
+\end{equation}
+produce exactly the same transfer function for every
+$r\in(t_{\mathrm f},t_{\mathrm s})$. Positivity follows from
+$a-r-b/r=-(r-t_{\mathrm f})(r-t_{\mathrm s})/r>0$. Substitution into
+Eq.~\eqref{eq:original-transfer} recovers $K$, $a$, and $b$ exactly.
+The conductance $\Ua$ is identifiable through $K$; the other three parameters
+vary along this equivalence class. No input waveform can distinguish members
+of this class through this output under the stated initial conditions.
+
+Positivity constrains this continuum to finite ranges in some coordinates.
+For example, its heat capacities obey
+\[
+ \Ua t_{\mathrm f}<\CpH<\Ua t_{\mathrm s},\qquad
+ 0<\CpS\leq\Ua\left(a-2\sqrt b\right).
+\]
+The second upper bound occurs at $r=\sqrt b$.
+The coupling conductance satisfies
+\[
+ 0<\Ub\leq\Ua\left(\frac{a^2}{4b}-1\right),
+\]
+with its maximum at $r=2b/a$.
+Thus bounded physical ranges or bounded exploration grids do not establish
+structural identifiability. Structural uniqueness must be checked separately
+from the numerical width of a confidence set.
+
+The one-stage reduced model has $a=\tau+\theta$ and $b=\tau\theta$.
+For a fixed transfer function, its two pole labels therefore assign reduced
+capacities $\Cp=\Ua\tau$ equal to $\Ua t_{\mathrm f}$ and
+$\Ua t_{\mathrm s}$. These values are precisely the infimum and supremum of
+the original heater capacity, rather than interior members of its strictly
+positive family. A capacity obtained from either reduced pole label cannot
+be identified with a unique original $\CpH$. The boundary functions themselves
+are identifiable from $(K,a,b)$ and their sampling uncertainty can be propagated
+without selecting a family coordinate $r$.
+
+The strictly positive original parameters imply distinct poles. To see this,
+write $h=\CpH/\Ua$, $r=\CpS/\Ub$, and $q=\CpS/\Ua$. Then $a=h+r+q$
+and $b=hr$, giving $a>h+r\geq2\sqrt b$. Coincident poles are attained only
+as a limiting case outside this strictly positive four-parameter family.
+
+\subsection{Constant input with equilibrated delay states}
+If $u(t)=u_0$ and $z_i(0)=u_0$, every delay-state derivative in
+Eq.~\eqref{eq:chain} vanishes. The predicted temperature then depends on
+$K$ and $\tau$ alone, and its derivative with respect to $\theta$ is zero at
+every observation time. A constant prehistory gives the same conclusion for
+Eq.~\eqref{eq:puredelay}. This experiment cannot estimate the delay even when
+the thermal transient is well measured. Cold delay states under the same
+post-start input retain a transient that depends on $\theta$.
+
+\subsection{Coordinate changes and information}
+For positive parameters, write $\bm\eta=(\log K,\log\tau,\log\theta)^\top$
+and $\bm\xi=(\log\Ua,\log\Cp,\log\theta)^\top$. The Jacobian of the map
+from $\bm\eta$ to $\bm\xi$ is the constant matrix
+\[
+ M=\begin{pmatrix}-1&0&0\\-1&1&0\\0&0&1\end{pmatrix},\qquad M^{-1}=M.
+\]
+For a nonsingular covariance $C_{\eta}$, the transformed local covariance is
+$C_{\xi}=M C_{\eta}M^\top$. Sensitivity rank and prediction-space uncertainty
+are invariant under this invertible transformation. Numerical eigenvalues,
+eigenvectors, and condition numbers generally change with the coordinate metric.
+The matrix satisfies $|\det M|=1$, so log-coordinate information determinants
+at the same model point are equal in this particular transformation.
+This equality applies to future-input information and to any historical
+information transformed by the same congruence. It therefore preserves the
+D-design objective and its input gradient. The delay target is unchanged
+because the third coordinate is unchanged, and a prediction loss is preserved
+when its target matrix transforms with the sensitivities. The minimum
+information eigenvalue does not have this invariance.
+
+\subsection{Repeated poles and a singular local information matrix}
+At a repeated thermal and delay pole, $\tau=\theta/n$, the transfer function
+is $(1+\tau s)^{-(n+1)}K$. The derivatives in unscaled coordinates satisfy
+\[
+ \frac{\partial\log G_n(s)}{\partial\tau}
+ =-\frac{s}{1+\tau s},\qquad
+ \frac{\partial\log G_n(s)}{\partial\theta}
+ =-\frac{s}{1+\theta s/n}.
+\]
+These two derivatives coincide at the repeated pole. The corresponding
+log-coordinate sensitivity columns are proportional with ratio $n$, producing
+a singular local information matrix under zero-state excitation.
+For $n>1$, the rational transfer function still uniquely specifies the distinct
+single and repeated poles away from their coincidence; at coincidence there is
+one common pole value. Local derivative rank loss at this exceptional point
+therefore does not by itself establish a continuum of exactly equivalent
+parameters. Nonregular local inference and structural nonuniqueness are separate
+questions. The exact matrix-exponential simulator avoids a partial-fraction
+formula that would divide by the pole separation.
+
+The exceptional point also changes the order of local objective curvature.
+Let $t_{\mathrm c}>0$ be the common pole time and perturb
+$\tau=t_{\mathrm c}+\delta$ and $\theta=nt_{\mathrm c}-\delta$, holding the
+total mean time fixed. For small $\delta$,
+\[
+ \log\frac{G_n(s;\delta)}{G_n(s;0)}
+ =\frac{n+1}{2n}\,\delta^2
+   \left(\frac{s}{1+t_{\mathrm c}s}\right)^2+O(\delta^3).
+\]
+The linear term cancels. The temperature difference is therefore second order
+in this direction and its squared prediction distance is fourth order, subject
+to a nonzero response coefficient for the chosen input. For $n=1$, exchanging
+$\delta$ and $-\delta$ exchanges pole labels exactly. For $n>1$, the repeated
+factor's multiplicity generally distinguishes those two perturbed models.
+
+\subsection{Moment coordinates}
+Define the total mean response time $m=\tau+\theta$ and the delay fraction
+$f=\theta/m$. The inverse map is $\tau=m(1-f)$ and $\theta=mf$ with
+$m>0$ and $0<f<1$. If $\ell=\log[f/(1-f)]$, the Jacobian from
+$(\log m,\ell)$ to $(\log\tau,\log\theta)$ is
+\[
+ \begin{pmatrix}1&-f\\1&1-f\end{pmatrix}.
+\]
+This determinant-one map provides an alternative optimization metric without
+changing model predictions. Its rectangular bounds generally differ from the
+original rectangular bounds in $\tau$ and $\theta$.
+
+The impulse-time variance $v=\tau^2+\theta^2/n$ provides another summary of the
+transfer shape. Given $m$ and $v$, the possible delay values solve
+\[
+ \left(1+\frac1n\right)\theta^2-2m\theta+(m^2-v)=0.
+\]
+Two positive solutions can therefore share the first two moments. For $n=1$
+they exchange the two poles and give the same full transfer function. For
+$n>1$, higher moments can distinguish the branches. The minimum feasible
+variance, $v=m^2/(n+1)$, occurs at the repeated-pole condition above. These
+identities motivate comparing coordinate conditioning and response moments,
+while retaining the full dynamic model for estimation.
+
+\subsection{A measurement that could break the original equivalence}
+Suppose an additional sensor measured the model's heater state $T_{\mathrm H}$
+directly. Let $Y_{\mathrm H}(s)$ and $Y_{\mathrm S}(s)$ denote the Laplace
+transforms of the heater and sensor temperature deviations from ambient.
+For zero initial deviations, the second balance in Eq.~\eqref{eq:original} gives
+\[
+ \frac{Y_{\mathrm H}(s)}{Y_{\mathrm S}(s)}
+ =1+\frac{\CpS}{\Ub}s=1+rs,
+\]
+for nonzero transfer responses. Identifying this additional time constant $r$ would select one
+member of Eq.~\eqref{eq:equivalent} and hence recover all four physical
+parameters. The supplied
+second TC-Lab temperature trace has not been established as a direct
+measurement of this model's heater state.
+
+\subsection{Dependent-residual sandwich calculation}
+For a full-rank sensitivity matrix, let $B=(J^\top J)^{-1}$ and define the
+score contribution $\bm q_t=J_t^\top e_t$ at residual index $t$ within an
+experiment. With lag bandwidth $L$, the matrix used between the two factors
+of $B$ is
+\[
+ S=\sum_t\bm q_t\bm q_t^\top+
+ \sum_{j=1}^{L}\left(1-\frac{j}{L+1}\right)
+ \sum_{t=j+1}^{N}
+ \left(\bm q_t\bm q_{t-j}^\top+\bm q_{t-j}\bm q_t^\top\right).
+\]
+For joint calibration we formed each lagged sum within its experiment, then
+added the experiment contributions; no lag joined separate experiments. The
+reported covariance is $[N/(N-k)]BSB$, where $k$ is the parameter count and
+$N$ is the total conditional residual count. The scalar degrees-of-freedom
+adjustment is an implementation choice. Bartlett weighting follows the
+positive-semidefinite construction of \citet{newey-1987-simple}; it does not
+establish that the TC-Lab score process satisfies the paper's consistency
+assumptions. Lags here count retained observations rather than elapsed seconds.
+
+% End expanded input
+
+
+% Expanded input: sections/nuisance_assumptions
+\section{Calibration, initial-state and residual assumptions}
+\label{sec:nuisance-assumptions}
+
+\subsection{Heater calibration introduces another exact ambiguity}
+The conversion $c=\alpha P$ is fixed in the baseline study. If it is unknown,
+the transformation
+\[
+ (c,\Ua,\Cp)\longmapsto(\lambda c,\lambda\Ua,\lambda\Cp),
+ \qquad \lambda>0,
+\]
+preserves $K=c/\Ua$, $\tau=\Cp/\Ua$, and every reduced-model prediction under
+the same initial conditions. In the original model, scaling $c,\Ua,\Ub,\CpH$
+and $\CpS$ together has the same effect. Input design cannot identify this
+absolute thermal scale from temperature and percentage command alone.
+
+Let $C_{\mathrm{io}}$ be a covariance matrix for
+$(\log K,\log\tau,\log\theta)$ and suppose an independent heater calibration
+has log-variance $v_c$. With the transformation matrix $M$ defined in
+Appendix~\ref{sec:structural}, the corresponding physical log-covariance is
+\[
+ C_{\mathrm{phys}}=M C_{\mathrm{io}}M^\top+v_c\bm v\bm v^\top,
+ \qquad \bm v=(1,1,0)^\top.
+\]
+This covariance identity is exact in logarithmic coordinates under the stated
+independence assumption; Gaussianity is not needed for the covariance itself.
+It adds correlated uncertainty to conductance and capacity while leaving delay
+unchanged. A hypothetical lognormal calibration with coefficient of variation
+$r_c$ has $v_c=\log(1+r_c^2)$. Such a sensitivity calculation must be labelled
+as assumed calibration uncertainty: these data do not supply $r_c$.
+
+\subsection{Ambient and history are nuisance quantities}
+For either prescribed delay-state initialization, hold the observed initial
+sensor temperature $T_0$ fixed and vary ambient temperature. Linearity gives
+\[
+ \frac{\partial T(t)}{\partial\Tamb}=1-e^{-t/\tau}.
+\]
+An ambient error therefore persists rather than averaging away with additional
+samples in one record. Under constant input $u_0$ and equilibrated delay states,
+\[
+ T(t)=T_0 e^{-t/\tau}+(\Tamb+Ku_0)(1-e^{-t/\tau}).
+\]
+Only the combination $\Tamb+Ku_0$ is identified from this response if ambient
+is free, and delay is absent. Independent ambient information and a varying
+input address different ambiguities.
+
+Another restricted history family sets every chain state initially to
+$\gamma u_0$, where $0\leq\gamma\leq1$. For fixed parameters, its response is
+exactly $(1-\gamma)T_{\mathrm{cold}}+\gamma T_{\mathrm{equilibrated}}$.
+The same interpolation describes a constant pre-window input between zero and
+$u_0$ in the pure-delay model. This family does not represent every possible
+heater history. Its derivative with respect to $\gamma$ is the difference of
+the two endpoint trajectories. If these nuisance sensitivities resemble the
+delay sensitivity, fixing history can make delay appear more precise than a
+fit that allows history to vary.
+
+More generally, let $A=W^{1/2}J_p$ and $B=W^{1/2}J_a$ be the mean sensitivities
+for parameters of interest and nuisance parameters, respectively, under a fixed
+positive-definite observation weight $W$. Profiling unrestricted local nuisance
+directions leaves information $A^\top(I-BB^+)A$, where $B^+$ is the
+Moore--Penrose pseudoinverse. This projection cannot increase information.
+Bounds or independent nuisance measurements alter the problem and must be stated.
+
+\subsection{Free history can preserve the exchanged pole labels}
+For the one-stage model, write $y=T-\Tamb$, $A_0=T_0-\Tamb$, and
+$z(0)=\gamma u_0$, where $u_0=u(0)$. Taking the one-sided Laplace transform
+of the two state equations gives
+\[
+ (1+\tau s)(1+\theta s)Y(s)
+ =K U(s)+K\theta\gamma u_0+\tau A_0(1+\theta s).
+\]
+Exchange $\tau$ and $\theta$ while keeping $K$, ambient and the observed
+initial temperature fixed. The denominator and the coefficient of $s$ in the
+initial-state term stay the same. Equality of the remaining constant terms
+requires, for $u_0\ne0$,
+\begin{equation}
+ \gamma'=\frac{\theta\gamma+A_0(\tau-\theta)/(K u_0)}{\tau}.
+ \label{eq:history-pole-exchange}
+\end{equation}
+This transformation preserves the entire trajectory for any subsequent input.
+It is admissible only if $\gamma'\in[0,1]$ and both parameter vectors satisfy
+their fit bounds. For a joint fit, each record needs its own admissible
+transformed history fraction. When ambient has an offset, $A_0$ uses that
+record's actual fitted ambient.
+
+At $A_0=0$, equation~\eqref{eq:history-pole-exchange} reduces to
+$\gamma'=\gamma\theta/\tau$. A prescribed equilibrated history can separate
+pole labels that become indistinguishable when history is free. If $u_0=0$,
+history fractions have no effect in this restricted family; the exchange
+requires $A_0(\tau-\theta)=0$ instead. A local full-rank sensitivity matrix
+cannot exclude an admissible disconnected pole-label solution.
+
+\subsection{Constant input admits a gain--ambient--history continuum}
+For a constant command $u_0$, define the delay-state deficit
+\[
+d_n(t)=e^{-nt/\theta}\sum_{k=0}^{n-1}\frac{(nt/\theta)^k}{k!}
+\]
+for an $n$-stage chain, and $d_\infty(t)=\mathbf 1_{\{t<\theta\}}$
+for pure delay. With the uniform initial history fraction $\gamma$, the
+thermal forcing is $K u_0[1-(1-\gamma)d_n(t)]$. Thus
+\[
+ T(t)=T_0 e^{-t/\tau}+C(1-e^{-t/\tau})
+ -\frac{B u_0}{\tau}\int_0^t e^{-(t-v)/\tau}d_n(v)\,dv,
+ \qquad C=\Tamb+K u_0,\quad B=K(1-\gamma).
+\]
+The same expression applies to pure delay with $d_\infty$. Holding $\tau$,
+$\theta$, $B$ and $C$ fixed gives the exact family
+\begin{equation}
+ K'>0,\qquad
+ \gamma'=1-\frac{K(1-\gamma)}{K'},\qquad
+ \Tamb'=\Tamb+u_0(K-K').
+ \label{eq:constant-nuisance-gauge}
+\end{equation}
+Every admissible member predicts the same measured-temperature trajectory.
+The gain box, ambient-offset bounds and $0\leq\gamma'\leq1$ restrict the
+family. At an interior point they still permit a continuum. With
+$\gamma=1$, the delay is also absent from the response. Varying the input
+generally breaks equation~\eqref{eq:constant-nuisance-gauge}, since the
+time-varying gain forcing cannot be absorbed into a constant ambient offset.
+Independent state-propagation checks verify this family for one-, two- and
+twelve-stage chains and pure delay, and the pole exchange for a varying input.
+
+\subsection{Serial dependence alone does not prove least-squares bias}
+For fixed input and known initial conditions, suppose observations have the
+correct mean $\bm m(\bm p_0)$ and additive error $\bm\epsilon$ with
+$E\bm\epsilon=0$ and covariance $\Sigma$. For any candidate parameter vector
+$\bm p$,
+\[
+ E\|\bm m(\bm p)-\bm m(\bm p_0)-\bm\epsilon\|^2
+ =\|\bm m(\bm p)-\bm m(\bm p_0)\|^2+\operatorname{tr}\Sigma.
+\]
+Correlated errors change sampling uncertainty and efficiency without moving the
+minimum of this expected output-error objective. This identity does not imply
+an unbiased finite-sample nonlinear estimator. It also does not apply unchanged
+when noisy observations enter regressors, the initial observation creates a
+nonzero conditional error mean, or the thermal mean is misspecified. The
+observed TC-Lab residual offsets and held-out errors require those possibilities
+to remain open.
+
+\subsection{An OU filter can anticorrelate an IID component}
+Consider a fixed OU correlation factor $0<\phi<1$ at regular sampling and an
+IID component $v_i$ with variance $s_v^2$. Away from the first retained
+innovation, the unnormalized filtered component is $w_i=v_i-\phi v_{i-1}$.
+Independence gives
+\[
+ \operatorname{Var}(w_i)=(1+\phi^2)s_v^2,\qquad
+ \operatorname{Cov}(w_i,w_{i-1})=-\phi s_v^2,\qquad
+ \rho_w(1)=-\frac{\phi}{1+\phi^2}.
+\]
+Dividing by the constant OU innovation scale does not change this correlation.
+It approaches $-1/2$ as $\phi\to1$. Thus an IID component inside a residual
+process can produce negative filtered correlation even when slower components
+are present. This calculation concerns one component and a fixed regular-sample
+filter. It neither establishes that the TC-Lab has this decomposition nor
+assigns the observed correlations to sensor noise rather than mean error.
+
+\section{Chain convergence at the causal onset}
+\label{sec:onset}
+For a cold constant step of magnitude $u_0$ and zero initial thermal deviation,
+let $D_n$ have an Erlang
+distribution with mean $\theta$ and variance $\theta^2/n$. The temperature
+rise relative to ambient is
+\[
+ y_n(t)=K u_0 E\!\left[
+  \left(1-e^{-(t-D_n)/\tau}\right)\mathbf 1_{\{D_n\leq t\}}\right].
+\]
+At $t=\theta$, the pure-delay response is zero while every finite chain has a
+positive response. The central limit theorem and a first-order expansion of
+the exponential give
+\[
+ \sqrt n\,y_n(\theta)\longrightarrow
+ \frac{K u_0\theta}{\tau\sqrt{2\pi}}.
+\]
+To justify the expectation limit, the standardized Erlang variables have unit
+second moments, so their positive parts are uniformly integrable. The
+exponential remainder is bounded by a constant times
+$E(\theta-D_n)^2/\tau^2=O(n^{-1})$.
+This is an onset error of order $n^{-1/2}$, even when smooth parts of the
+response converge faster. A small average trajectory error can therefore hide
+a larger difference near the delay's causal onset. The saved onset calculation
+checks the coefficient using an independently tested Erlang-CDF expression.
+
+% End expanded input
+
+
+% Expanded input: sections/frequency_information
+\section{Frequency sensitivity and local excitation requirements}
+\label{sec:frequency-information}
+The following identities are derived for the transfer functions in this study.
+They explain an ideal periodic steady-state experiment. They do not replace
+the finite-horizon, initialized simulations or their working covariance models.
+For positive frequency $\omega$, let $G=G_n(i\omega)$ and define the complex
+log-transfer sensitivity vector $\bm h=G^{-1}\partial G/\partial\bm\eta$,
+where $\bm\eta=(\log K,\log\tau,\log\theta)$. Direct differentiation gives
+\begin{equation}
+ \bm h_n(\omega)=\left(
+ 1,\;\frac{-i\omega\tau}{1+i\omega\tau},\;
+ \frac{-i\omega\theta}{1+i\omega\theta/n}
+ \right)^\top.
+ \label{eq:frequency-sensitivities}
+\end{equation}
+For the pure-delay model, the third component is $-i\omega\theta$.
+At zero frequency, only the gain sensitivity remains. At low frequency,
+\[
+ \log G_n(i\omega)=\log K-i\omega(\tau+\theta)
+ -\tfrac12\omega^2(\tau^2+\theta^2/n)+O(\omega^3).
+\]
+Thus the leading phase change depends on the sum of the thermal and delay
+lags. Their separation depends on higher-order frequency behavior; a small
+low-frequency fit error can coexist with poor precision for each lag.
+The $\theta^2/n$ term is absent in the pure-delay expansion.
+
+To separate this local frequency geometry from startup information, consider
+a single periodic input $u(t)=u_0+A\cos\omega t$ after transients have decayed.
+Let $\bm d=\partial G(i\omega)/\partial\bm\eta$ and suppose the $N$ observed
+phases have zero sine/cosine sums, zero sine--cosine cross sum, and equal
+sine/cosine sums of squares $N/2$.
+With gain direction $\bm e_1=(1,0,0)^\top$ and independent errors of known
+variance $\sigma^2$, the exact phase-sum information is
+\begin{equation}
+ F=\frac{N}{\sigma^2}\left[
+ (u_0K)^2\bm e_1\bm e_1^\top+
+ \frac{A^2}{2}\operatorname{Re}(\bm d\bm d^{*})\right],
+ \label{eq:periodic-information}
+\end{equation}
+where $*$ denotes conjugate transpose. A single tone without its constant (DC) offset
+contributes a matrix of rank at most two for the three real parameters.
+With nonzero offset and amplitude, the DC term supplies a separate gain direction:
+its constant sensitivity is orthogonal to the oscillatory components over these
+phases. The determinant that tests independence of the lag
+components is
+\begin{equation}
+ \begin{vmatrix}
+ \operatorname{Re}h_\tau&\operatorname{Re}h_\theta\\
+ \operatorname{Im}h_\tau&\operatorname{Im}h_\theta
+ \end{vmatrix}
+ =\frac{\omega^3\tau\theta(\tau-\theta/n)}
+ {(1+\omega^2\tau^2)(1+\omega^2\theta^2/n^2)}.
+ \label{eq:frequency-lag-area}
+\end{equation}
+It is nonzero away from $\tau=\theta/n$. In this ideal experiment, a DC
+component and one nonzero tone therefore give local full rank at a regular
+parameter point. For pure delay the determinant is
+$\omega^3\tau^2\theta/(1+\omega^2\tau^2)>0$.
+At the finite-chain repeated pole, $h_\theta=nh_\tau$ at every frequency;
+adding frequencies cannot remove that first-order rank deficiency.
+These are local differential statements. They do not remove the cold one-stage
+global pole-label ambiguity, calibrate a confidence interval, or establish an
+optimal input under amplitude, sampling and temperature constraints.
+
+The factor $G$ in $\bm d=G\bm h$ also matters: information depends on output
+sensitivity, rather than phase sensitivity alone. The time-domain designs
+evaluate that output sensitivity with retained observations, startup assumptions
+and a specified covariance. Constant-command startup records can carry transient
+information that is deliberately absent from the periodic steady-state calculation.
+Analytic derivatives, the determinant and the phase-sum information were checked
+against parameter perturbations, numerical determinants and explicit real
+sensitivity matrices. These checks contain no additional TC-Lab fits.
+
+% End expanded input
+
+
+% Expanded input: sections/literature_comparison
+\section{Comparison of theoretical assumptions}
+\label{sec:literature-comparison}
+The review covers inspected passages from seven cited works. Two library
+carriers supply the profile paper and a continuous-time identification chapter;
+five further primary PDFs were inspected outside the ingested library. This
+counts works and carriers, without implying that every page was read. The
+source and search records retain exact queries, dates, versions, page locations
+and access gaps. Table~\ref{tab:literature-comparison} separates the inspected
+theory from its use in this study.
+
+\begingroup
+\small
+\begin{longtable}{>{\raggedright\arraybackslash}p{.17\linewidth}>{\raggedright\arraybackslash}p{.25\linewidth}>{\raggedright\arraybackslash}p{.25\linewidth}>{\raggedright\arraybackslash}p{.19\linewidth}}
+ \caption{Questions, source assumptions and the scope of transfer to TC-Lab.
+ Page numbers are physical PDF pages in the inspected source. The last column
+ gives this study's interpretation rather than a result established by the
+ cited work.}\label{tab:literature-comparison}\\
+ \toprule
+ Question and source & Inspected theory & Conditions or distinction & TC-Lab use and limit \\
+ \midrule
+ \endfirsthead
+ \toprule
+ Question and source & Inspected theory & Conditions or distinction & TC-Lab use and limit \\
+ \midrule
+ \endhead
+ \bottomrule
+ \endfoot
+ What produces a residual?\newline
+ \citet{garnier-2008-direct}, pp.~27--29
+ & The input-driven response and residual process are separate descriptions.
+ Residuals can combine measurement error, disturbances and model inadequacy.
+ & The chapter provides an identification framework, without selecting a
+ correct residual mechanism for these experiments.
+ & Treat covariance fits as working assumptions; examine transfer to other
+ records separately. \\[.6em]
+
+ Can parameters be separated?\newline
+ \citet{raue-2009-structural}, pp.~1--5
+ & Profile likelihood fixes a parameter and reoptimizes nuisance parameters;
+ its shape can differ from local quadratic curvature.
+ & A likelihood and a numerical exploration are required. A sampled crossing
+ alone cannot certify every nuisance minimum or mode.
+ & Combine profiles with exact transfer equivalence and sensitivity rank;
+ retain disconnected components. \\[.6em]
+
+ What should information target?\newline
+ \citet{hjalmarsson-2009-system}, pp.~8--9
+ & Application loss and confidence regions can concern useful parameter
+ combinations rather than uniform precision in every coordinate.
+ & The inspected prediction-error information formula assumes the true system
+ is in the model set and the predictor is differentiable.
+ & Target delay or thermal prediction while checking mean-model adequacy and
+ the chosen parameter metric. \\[.6em]
+
+ How is a bounded design optimized?\newline
+ \citet{manchester-2010-input}, pp.~1--5
+ & Finite-horizon amplitude-constrained information design is nonconvex; the
+ source develops a convex relaxation.
+ & The inspected source is the eight-page author preprint. Its relaxation
+ guarantees concern its own construction and assumptions.
+ & Our multistart nonlinear solutions have no inherited approximation or
+ global-optimality guarantee. \\[.6em]
+
+ What does a chain represent?\newline
+ \citet{hurtado-2019-generalizations}, pp.~11--12
+ & Erlang dwell times admit a first-order differential-equation chain, with
+ equivalence to an integral description.
+ & The source treats mean-field transitions. Our constant-rate input kernel
+ uses the corresponding Erlang construction.
+ & Derive kernel moments and limits; a fitted stage count alone does not
+ establish a thermal transport mechanism. \\[.6em]
+
+ How can serial dependence affect covariance?\newline
+ \citet{newey-1987-simple}, pp.~1--3
+ & Bartlett-weighted long-run covariance estimation is positive semidefinite;
+ consistency has explicit score, moment and dependence conditions.
+ & Asymptotic bandwidth conditions are distinct from choosing several fixed
+ bandwidths for a finite dataset.
+ & Compare HAC sensitivity without treating it as proof of coverage or a
+ correction for mean-model bias. \\[.6em]
+
+ What dependence does resampling retain?\newline
+ \citet{politis-1994-stationary}, pp.~1--3
+ & Periodic extension supports circular resampling. Remark~2 describes the
+ fixed-length relative of the geometric stationary-bootstrap scheme.
+ & The schemes differ. Equal marginal weights at record edges do not establish
+ nonlinear interval coverage with model discrepancy.
+ & Vary fixed block lengths and retain within-record centering; keep the
+ bootstrap uncertainty conditional. \\
+\end{longtable}
+\endgroup
+
+The sources address different parts of the same inference problem. A
+continuous-time response model defines the quantities that can be identified;
+an information objective then assigns precision to local directions or
+predictions. A profile explores beyond that local quadratic approximation.
+The original TC-Lab model's exact equivalent family remains indistinguishable
+under every input in the stated experiment, so selecting a larger determinant
+cannot resolve its physical ambiguity.
+
+Covariance estimation and resampling also answer different questions. HAC
+uses residual score products to estimate estimator variability; a circular
+bootstrap generates new records from resampled residual blocks. Both require
+assumptions about the errors around the fitted mean. A systematic error on a
+different experiment is evidence about mean transfer and experimental
+conditions, rather than evidence that either covariance procedure has measured
+that discrepancy.
+
+The next measurement questions follow from these limits. An independent
+heater-power calibration would address the absolute conductance--capacity
+scale. Ambient and command prehistory records would constrain startup nuisance
+assumptions. A measurement equation connecting the second sensor to a modeled
+state is needed before using it to select an original physical family member.
+The adaptive-design journal paper and the
+unavailable bootstrap source listed in the search record remain reading leads,
+without theorem claims assigned to unread versions.
+
+% End expanded input
+
+
+% Expanded input: sections/source_audit
+\section{Literature coverage and claim audit}
+The review used the configured lab literature skill and project-oriented searches
+of the local library, followed by primary-source web discovery. It is a focused
+review, without an exhaustive database search or a formal systematic-review
+protocol. Search passages that only list another work in their references were
+excluded as support for that work's claims.
+
+The source record \path{literature/source_review.json} retains paper identities,
+source events where available, physical-page locators, and claim limitations.
+The record \path{literature/acquired_sources.json} identifies downloaded PDFs
+by their hashes. Full paper text and PDFs remain outside this repository.
+
+For \citet{raue-2009-structural}, the library paper identifier is
+\texttt{6925c25f}\ldots\texttt{ae8160}; the inspected profile construction is
+on physical PDF page 4, printed page 1926, Eq.~(10). We checked that equation
+against the rendered page. The journal source by
+\citet{hjalmarsson-2009-system} was checked at physical pages 8--9, printed
+pages 282--283, for confidence
+regions, identifiable combinations, and the assumptions behind prediction-error
+information. Those two pages were also inspected as rendered images because
+the extraction engines disagree on equation symbols. The journal source by
+\citet{hurtado-2019-generalizations} was checked at physical pages 11--12,
+printed pages 1841--1842,
+for the chain equations and their integral-equation equivalence, with rendered
+page inspection of the mathematical passages.
+
+The journal PDF of \citet{newey-1987-simple} was an image-only scan. We read physical pages
+1--3, printed pages 703--705, with optical character recognition and checked
+the rendered pages. Equation (5) on physical page 2 gives the Bartlett weights;
+Theorem 2 on page 3 states assumptions for consistency. The scanned equation
+symbols were checked visually rather than copied from the recognition output.
+
+The chapter by \citet{garnier-2008-direct} was inspected at physical pages 27--29 of the
+stored book, printed pages 1--3. Its byline includes Peter C. Young in addition
+to the two book editors. The residual decomposition is on physical page 28,
+printed page 2. Chapter and editor roles are retained separately in the reference.
+Physical-to-printed page offsets were checked at each passage rather than
+extrapolated to the whole supplied PDF. Contextual chapter readings remain
+separate leads in the source record.
+
+The journal scan of \citet{politis-1994-stationary} was read with optical character recognition and
+all three cited pages were checked as rendered images. Physical pages 1--3 are
+printed pages 1303--1305. The circle convention is specified on physical page 1;
+the fixed-length relative is discussed in Remark 2 on physical page 3. The
+geometric-block stationarity and consistency results are not ascribed to our
+fixed-length nonlinear residual bootstrap.
+
+For \citet{manchester-2010-input}, we inspected the eight-page author preprint. We cite its
+identifier, \path{arXiv:1009.5614}, and retain the distinct six-page conference
+version as an unread publication record.
+Its input-information formulation and optimization assumptions were inspected
+in the body. The downloaded adaptive-input-design preprint changes title and
+author order relative to its published journal record. Access to the journal
+body remains unresolved, and it is not cited for a theorem. These version and
+access limitations remain in the source records.
+
+The exact expanded manuscript, citation inventory and claim assessments are
+bound in the private evidence packet. Scoped public receipts record the draft
+hash, inspected source identities, available fine-evidence bindings and explicit
+gaps for externally inspected PDFs that have no ingested carrier. Two cited
+works have ingested carriers; five primary PDFs were inspected externally.
+Source availability, quote fidelity, claim support and human scientific review
+remain separate statuses. Mechanical checks and agent assessments do not
+constitute human acceptance of the manuscript.
+
+% End expanded input
+
+\end{document}

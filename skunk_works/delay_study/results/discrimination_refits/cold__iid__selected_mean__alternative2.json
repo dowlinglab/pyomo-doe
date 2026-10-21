@@ -1,0 +1,535 @@
+{
+  "identity": {
+    "sources": {
+      "models.py": "2f0a15e67498704a392c4b078a1e05626c69d50015dc41e99acf92b9e46d1458",
+      "data.py": "ac6b9a57de386352f5f7a8a678101d84dd90cfa3f0c04e936aa08c7e905c8e7a",
+      "inference.py": "74f0029b160b7ecb80ef361d544b0f21e5edea2fa071ec0ec1cca4458fea6aaf",
+      "noise.py": "7847d0210b58565a6c0b3ad345b3d294bcfcc85f9e21f620cc7838e9b5b27717",
+      "design.py": "0d798216666031c04344ed5679ff40f2b15b3d059a3a44700445777897721bdd",
+      "run_design.py": "ec5f042bc0264c35f18edf0843ea31f6bbeb6a073a7683c59789a7709b5e6b74",
+      "discrimination.py": "2943016e13f93b93ed234f404dbd88a4df140d53e205ce1e704aa83bac1783e2",
+      "run_discrimination.py": "d42cccb02be57e415719444658e6452013568c1864b94640b8af0e4142713a64",
+      "run_fits.py": "2451a77e22d73169abe37e313490989692580c39233b0779f8c41956b4511ef5"
+    },
+    "fit_sha256": {
+      "joint__chain_n1_io_cold_linear_exact.json": "c5809beb17f5e276ba514095bc1e3f6bb191dea121c33eaa9bb5d580b79891f2",
+      "joint__chain_n1_io_input_equilibrated_linear_exact.json": "7cd1befdbd45fe6f2abc704400e9d5c48e8a82ed23c1a43e1c005d4a425b968d",
+      "joint__chain_n2_io_cold_linear_exact.json": "6c1d39f2a9307f8f49ee57104c1aeb8ed7c0d5cac0dff1723f6de4ba25921837",
+      "joint__chain_n2_io_input_equilibrated_linear_exact.json": "ed62cde211f3536bdfd2bbc0e580ca79970f5860144aa7fd9929cb1d3c755602",
+      "joint__chain_n3_io_cold_linear_exact.json": "85743ac712de61427580693db5f41909f7b78b977c011f601d4c2b770126280f",
+      "joint__chain_n3_io_input_equilibrated_linear_exact.json": "10b5db0d573d45493fc82bb0ea35d26520ee71773bff47e1f44c5ad20d020e02",
+      "joint__chain_n4_io_cold_linear_exact.json": "660edc853322bbcfe775a02c21e6001a74fcd3b8073b82cd02c94c42fc17857d",
+      "joint__chain_n4_io_input_equilibrated_linear_exact.json": "5e81728d569caa09aba36f61070560bd052abc2568f2b71265a66b9f9ca1a47d",
+      "joint__chain_n6_io_cold_linear_exact.json": "732f23c8db2fd66546b3050692f071aa8d9c75dade46cda01bb4421aa95c1cac",
+      "joint__chain_n6_io_input_equilibrated_linear_exact.json": "c074a4e568f55d8a68959181ad52f86600244d58ee33bee8890b62b17dd01be6",
+      "joint__chain_n8_io_cold_linear_exact.json": "65e4bc7a5cbc7978b89cb5882f027f9f4123f8694c8a32cec041e4540be17acc",
+      "joint__chain_n8_io_input_equilibrated_linear_exact.json": "c6a7eedb7d58d1e4135e37f17b7f3b56997c950b4fa907e4af93d7683e928e21",
+      "joint__chain_n12_io_cold_linear_exact.json": "a2e74b76fce32ad36df9b90585a6192771116b448102c69b0069e4688eaf5915",
+      "joint__chain_n12_io_input_equilibrated_linear_exact.json": "6b3411b9d8013970e16199bfcfa5c775d559d7d28b7d9e527bf5d2e634825c0b",
+      "joint__pure_delay_n0_io_cold_linear_exact.json": "2219c9b210f5cc2b6dbacfe6624252c50e3c6bfe9ffc2d38cd756c12bac89086",
+      "joint__pure_delay_n0_io_input_equilibrated_linear_exact.json": "fe181494df8bdc57a2e918498d4a116a86a5c84c28a9b3ba281c0b3de92d7897"
+    },
+    "config_sha256": "d1b37b4830bf554514889500be16ce622c3707393127c44e982566ea01fbf883",
+    "design_config_sha256": "6c8337d9d0bf059faeb8d451b48937b2f9c17f3f8e49c5c7157abf76671b2c75",
+    "phase": "refits",
+    "source_design_manifest_sha256": "1b2f933cca8b6225bdbe666b6d86546f563e94cef431828065e96b28ee0b54c3",
+    "source_design_sha256": {
+      "cold__iid__mean.json": "9b168f19ee8a9670f981b016f33e08b9f7e25f0232b47655109fe2b8d8d0cebd",
+      "cold__iid__min.json": "d42d2ab30609669055620048ac2ff82ff6e96aa9f1a0ee72fb8421a1edbffbf0",
+      "cold__ou10__mean.json": "b344aebdafcd29597c40b290924e0ad50b5283c84e6e2358979428707ecb237b",
+      "cold__ou10__min.json": "c95191f8c5e2ed752a4d2ba8720c3314f6b1cffccd3604ec134f604e6adfc32d",
+      "cold__ou60__mean.json": "dd57dea6f53f446196431ec5d47c8270fb937d905c39989cea7799a47b085f83",
+      "cold__ou60__min.json": "d115ace4c0068d19473f301b079e9d27798af935ff3e32f7a2f0240c4f24e07c",
+      "input_equilibrated__iid__mean.json": "c74a59314823fab17fc343f4f868b077b3e703d53f0d500fbfc99f22d75550c9",
+      "input_equilibrated__iid__min.json": "3e6833b9f35c8e886699e9deb3dea8cab2810aaa7f75feea6c614f4fb18655ef",
+      "input_equilibrated__ou10__mean.json": "ad5d251001b58d7773fa1f5974eec9f0a8e96c163120e8cd6a33b2df8205ab05",
+      "input_equilibrated__ou10__min.json": "7812a26c28c861d6b13c11603c7f89c60a174fa3c2993d69b860ab983d91cf0e",
+      "input_equilibrated__ou60__mean.json": "bd8f8bea32087881958a28c966cf7de1935ce51fc4a53c1d233efb23e6f09475",
+      "input_equilibrated__ou60__min.json": "88e0109061d562c0e3c71f86f52f2692882700a61428351b6ab5092e70e15ad4"
+    }
+  },
+  "key": "cold__iid__selected_mean__alternative2",
+  "phase": "refits",
+  "knots_s": [
+    0.0,
+    50.0,
+    100.0,
+    150.0,
+    200.0,
+    250.0,
+    300.0,
+    350.0,
+    400.0,
+    450.0,
+    500.0,
+    550.0,
+    600.0,
+    650.0,
+    700.0,
+    750.0,
+    800.0,
+    850.0,
+    900.0
+  ],
+  "requires_revisit": false,
+  "scope": "Twelve fixed-mean separation designs use all six pairs among n1,n2,n12,pure at two initializations and three common working covariances. Seventy-two directional alternative refits use n1 as the fixed generating mean against n2,n12,pure, for constant, multisine and both selected designs. This bounded refit diagnostic does not evaluate every possible generating model or parameter value.",
+  "generating_scenario": "n1__cold__iid",
+  "alternative": "n2__cold__iid",
+  "amplitudes_percent": [
+    100.0,
+    100.0,
+    50.0,
+    100.0,
+    100.0,
+    50.0,
+    100.0,
+    50.0,
+    100.0,
+    50.0,
+    7.872469350103844e-18,
+    50.0,
+    1.0468444863902393e-16,
+    1.2398900306193913e-16,
+    49.999999999999964,
+    0.0,
+    49.999999999999964,
+    7.48099499014998e-18,
+    0.0
+  ],
+  "refit": {
+    "best": {
+      "success": true,
+      "status": 2,
+      "nfev": 13,
+      "optimality": 0.002784920726869783,
+      "distance_squared": 554.3320769450572,
+      "parameters": [
+        0.7749344643918715,
+        152.46562998626106,
+        15.545780855802798
+      ],
+      "active_bounds": [
+        false,
+        false,
+        false
+      ]
+    },
+    "attempts": [
+      {
+        "success": true,
+        "status": 2,
+        "nfev": 6,
+        "optimality": 0.0032918000545921577,
+        "distance_squared": 554.3320769451097,
+        "parameters": [
+          0.774934465013556,
+          152.46563086643442,
+          15.545780163924249
+        ],
+        "active_bounds": [
+          false,
+          false,
+          false
+        ]
+      },
+      {
+        "success": true,
+        "status": 2,
+        "nfev": 7,
+        "optimality": 0.006676989617771683,
+        "distance_squared": 554.332076945115,
+        "parameters": [
+          0.7749344641944625,
+          152.46562970673423,
+          15.545781075535865
+        ],
+        "active_bounds": [
+          false,
+          false,
+          false
+        ]
+      },
+      {
+        "success": true,
+        "status": 2,
+        "nfev": 13,
+        "optimality": 0.01170817296594702,
+        "distance_squared": 554.3320769451507,
+        "parameters": [
+          0.7749344639392364,
+          152.46562934538576,
+          15.545781359583291
+        ],
+        "active_bounds": [
+          false,
+          false,
+          false
+        ]
+      },
+      {
+        "success": true,
+        "status": 2,
+        "nfev": 9,
+        "optimality": 0.009760495008439125,
+        "distance_squared": 554.3320769451263,
+        "parameters": [
+          0.7749344640380266,
+          152.46562948525957,
+          15.545781249628988
+        ],
+        "active_bounds": [
+          false,
+          false,
+          false
+        ]
+      },
+      {
+        "success": true,
+        "status": 2,
+        "nfev": 10,
+        "optimality": 0.005668781128638787,
+        "distance_squared": 554.3320769451155,
+        "parameters": [
+          0.7749344642456303,
+          152.46562977915127,
+          15.54578101861456
+        ],
+        "active_bounds": [
+          false,
+          false,
+          false
+        ]
+      },
+      {
+        "success": true,
+        "status": 2,
+        "nfev": 13,
+        "optimality": 0.002784920726869783,
+        "distance_squared": 554.3320769450572,
+        "parameters": [
+          0.7749344643918715,
+          152.46562998626106,
+          15.545780855802798
+        ],
+        "active_bounds": [
+          false,
+          false,
+          false
+        ]
+      },
+      {
+        "success": true,
+        "status": 2,
+        "nfev": 10,
+        "optimality": 0.006438109276652262,
+        "distance_squared": 554.3320769451209,
+        "parameters": [
+          0.7749344642065864,
+          152.46562972389205,
+          15.545781062049683
+        ],
+        "active_bounds": [
+          false,
+          false,
+          false
+        ]
+      },
+      {
+        "success": true,
+        "status": 2,
+        "nfev": 10,
+        "optimality": 0.0022985483073309216,
+        "distance_squared": 554.3320769451052,
+        "parameters": [
+          0.774934464868569,
+          152.46563066119418,
+          15.545780325252982
+        ],
+        "active_bounds": [
+          false,
+          false,
+          false
+        ]
+      },
+      {
+        "success": true,
+        "status": 2,
+        "nfev": 11,
+        "optimality": 3.8688331076912013,
+        "distance_squared": 99847.54943679231,
+        "parameters": [
+          0.7413269245303313,
+          5.000000000000001,
+          147.21424064725542
+        ],
+        "active_bounds": [
+          false,
+          true,
+          false
+        ]
+      },
+      {
+        "success": true,
+        "status": 2,
+        "nfev": 10,
+        "optimality": 0.003257124638663638,
+        "distance_squared": 554.3320769451011,
+        "parameters": [
+          0.7749344643679419,
+          152.46562995235098,
+          15.545780882462068
+        ],
+        "active_bounds": [
+          false,
+          false,
+          false
+        ]
+      },
+      {
+        "success": true,
+        "status": 2,
+        "nfev": 9,
+        "optimality": 0.0019020586260970222,
+        "distance_squared": 554.3320769450714,
+        "parameters": [
+          0.7749344648107138,
+          152.465630579272,
+          15.545780389651476
+        ],
+        "active_bounds": [
+          false,
+          false,
+          false
+        ]
+      },
+      {
+        "success": true,
+        "status": 2,
+        "nfev": 12,
+        "optimality": 0.025147404195761506,
+        "distance_squared": 554.332076945369,
+        "parameters": [
+          0.7749344632575131,
+          152.46562838017536,
+          15.545782118317254
+        ],
+        "active_bounds": [
+          false,
+          false,
+          false
+        ]
+      },
+      {
+        "success": true,
+        "status": 2,
+        "nfev": 12,
+        "optimality": 0.017145006068173624,
+        "distance_squared": 554.3320769452233,
+        "parameters": [
+          0.774934463663476,
+          152.46562895491854,
+          15.545781666525729
+        ],
+        "active_bounds": [
+          false,
+          false,
+          false
+        ]
+      },
+      {
+        "success": true,
+        "status": 2,
+        "nfev": 10,
+        "optimality": 0.007066217484422087,
+        "distance_squared": 554.3320769452779,
+        "parameters": [
+          0.7749344655643635,
+          152.46563164630183,
+          15.545779550891393
+        ],
+        "active_bounds": [
+          false,
+          false,
+          false
+        ]
+      },
+      {
+        "success": true,
+        "status": 2,
+        "nfev": 12,
+        "optimality": 0.0073896548124141904,
+        "distance_squared": 554.332076945115,
+        "parameters": [
+          0.7749344641582894,
+          152.4656296555421,
+          15.545781115774389
+        ],
+        "active_bounds": [
+          false,
+          false,
+          false
+        ]
+      },
+      {
+        "success": true,
+        "status": 2,
+        "nfev": 11,
+        "optimality": 0.01085324964669276,
+        "distance_squared": 554.3320769451329,
+        "parameters": [
+          0.77493446398262,
+          152.46562940678965,
+          15.545781311317135
+        ],
+        "active_bounds": [
+          false,
+          false,
+          false
+        ]
+      },
+      {
+        "success": true,
+        "status": 2,
+        "nfev": 12,
+        "optimality": 0.0030820103847184507,
+        "distance_squared": 554.3320769450809,
+        "parameters": [
+          0.7749344643768135,
+          152.46562996492617,
+          15.545780872575902
+        ],
+        "active_bounds": [
+          false,
+          false,
+          false
+        ]
+      },
+      {
+        "success": true,
+        "status": 2,
+        "nfev": 13,
+        "optimality": 0.005823466702087181,
+        "distance_squared": 554.3320769451177,
+        "parameters": [
+          0.7749344642377588,
+          152.46562976803452,
+          15.545781027348959
+        ],
+        "active_bounds": [
+          false,
+          false,
+          false
+        ]
+      },
+      {
+        "success": true,
+        "status": 2,
+        "nfev": 8,
+        "optimality": 0.004679832845038158,
+        "distance_squared": 554.332076945147,
+        "parameters": [
+          0.7749344652160722,
+          152.46563115321365,
+          15.545779938488963
+        ],
+        "active_bounds": [
+          false,
+          false,
+          false
+        ]
+      },
+      {
+        "success": true,
+        "status": 2,
+        "nfev": 11,
+        "optimality": 0.004878794911517566,
+        "distance_squared": 554.3320769450885,
+        "parameters": [
+          0.774934464285645,
+          152.46562983586986,
+          15.545780974019968
+        ],
+        "active_bounds": [
+          false,
+          false,
+          false
+        ]
+      },
+      {
+        "success": true,
+        "status": 2,
+        "nfev": 11,
+        "optimality": 0.0010018218912292525,
+        "distance_squared": 554.3320769450947,
+        "parameters": [
+          0.7749344646793624,
+          152.46563039327987,
+          15.545780535857613
+        ],
+        "active_bounds": [
+          false,
+          false,
+          false
+        ]
+      },
+      {
+        "success": true,
+        "status": 2,
+        "nfev": 10,
+        "optimality": 0.013162888000201062,
+        "distance_squared": 554.3320769451614,
+        "parameters": [
+          0.7749344638654349,
+          152.46562924090478,
+          15.545781441712382
+        ],
+        "active_bounds": [
+          false,
+          false,
+          false
+        ]
+      },
+      {
+        "success": true,
+        "status": 2,
+        "nfev": 14,
+        "optimality": 0.007604571845227701,
+        "distance_squared": 554.3320769450825,
+        "parameters": [
+          0.7749344641474335,
+          152.46562964012261,
+          15.545781127901506
+        ],
+        "active_bounds": [
+          false,
+          false,
+          false
+        ]
+      },
+      {
+        "success": true,
+        "status": 2,
+        "nfev": 10,
+        "optimality": 0.013288983372202811,
+        "distance_squared": 554.3320769451481,
+        "parameters": [
+          0.7749344638590391,
+          152.4656292318462,
+          15.545781448833122
+        ],
+        "active_bounds": [
+          false,
+          false,
+          false
+        ]
+      }
+    ],
+    "fixed_parameter_distance_squared": 791.4242021760904,
+    "requires_revisit": false,
+    "notice": "Noise-free alternative-parameter refit, directional and bounded. The smallest converged distance is an upper bound on the globally closest alternative mean; it can overstate discrimination if a lower minimum was missed. No chi-squared calibration or simple-hypothesis error probability is assigned to the refitted distance."
+  },
+  "source_design_sha256": {
+    "cold__iid__mean.json": "9b168f19ee8a9670f981b016f33e08b9f7e25f0232b47655109fe2b8d8d0cebd"
+  },
+  "assumptions": "Common known hypothetical covariance, baseline fitted mean parameters, finite horizon and the parameter-design amplitude/dose/slew/temperature assumptions. Gaussian fixed-mean error is an ideal simple-hypothesis calculation only; model discrepancy and nuisance fitting invalidate its use as real experimental power. No hardware run."
+}

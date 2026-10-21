@@ -158,3 +158,31 @@ externally staged. Their available text and missing fine-grounding bindings must
 remain distinct. Keep copyrighted raw packet exports in ignored `_private/` and
 publish only scoped receipts and checked reference metadata. Reproduction of the
 analysis does not send email or publish changes to the shared literature library.
+
+## Final report producers
+
+The corrected full parameter-design collection is `results/design_final`;
+`results/design` preserves the initial 96 completed cases and sixteen
+near-coincident shutdown-grid exceptions. The numerical repair rounds the dense
+report/audit grid to the simulator's existing one-nanosecond interval resolution
+before deduplication. The independent acceptance limit remains 85 C.
+
+`report_followups.py` consumes the audited sensitivity and prediction records;
+`audit_followup_report.py` checks its scalar references and generated tables.
+`render_coverage_table.py` and `audit_coverage_table.py` format and verify exact
+coverage counts separately from the coverage-figure producer.
+
+After the 112 parameter designs, twelve discrimination designs and 72
+alternative refits have passed their own full audits,
+`summarize_design_report.py` prepares saved scalar summaries and deterministic
+sixteen-model temperature envelopes. Pass an absolute `--results` path and a
+fresh `--output` directory. `plot_design_results.py --summary ABSOLUTE_PATH
+--output FIGURE_DIRECTORY --tables TABLE_DIRECTORY` only formats those outputs.
+`audit_design_report.py` checks source scalars, table cells and envelope peak
+receipts; its scope excludes an independent all-time integrator and global
+optimization. Design temperatures remain model-scenario calculations.
+
+The final exact-draft evidence receipt records citation inspection and remaining
+carrier/fine-grounding gaps separately from DOI identity checks and human
+scientific review. Report reproduction does not publish source PDFs or email
+the report.

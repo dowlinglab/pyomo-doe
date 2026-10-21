@@ -1,0 +1,1457 @@
+{
+  "identity": {
+    "sources": {
+      "models.py": "2f0a15e67498704a392c4b078a1e05626c69d50015dc41e99acf92b9e46d1458",
+      "data.py": "ac6b9a57de386352f5f7a8a678101d84dd90cfa3f0c04e936aa08c7e905c8e7a",
+      "inference.py": "74f0029b160b7ecb80ef361d544b0f21e5edea2fa071ec0ec1cca4458fea6aaf",
+      "noise.py": "7847d0210b58565a6c0b3ad345b3d294bcfcc85f9e21f620cc7838e9b5b27717",
+      "design.py": "0d798216666031c04344ed5679ff40f2b15b3d059a3a44700445777897721bdd",
+      "run_design.py": "ec5f042bc0264c35f18edf0843ea31f6bbeb6a073a7683c59789a7709b5e6b74",
+      "discrimination.py": "2943016e13f93b93ed234f404dbd88a4df140d53e205ce1e704aa83bac1783e2",
+      "run_discrimination.py": "d42cccb02be57e415719444658e6452013568c1864b94640b8af0e4142713a64",
+      "run_fits.py": "2451a77e22d73169abe37e313490989692580c39233b0779f8c41956b4511ef5"
+    },
+    "fit_sha256": {
+      "joint__chain_n1_io_cold_linear_exact.json": "c5809beb17f5e276ba514095bc1e3f6bb191dea121c33eaa9bb5d580b79891f2",
+      "joint__chain_n1_io_input_equilibrated_linear_exact.json": "7cd1befdbd45fe6f2abc704400e9d5c48e8a82ed23c1a43e1c005d4a425b968d",
+      "joint__chain_n2_io_cold_linear_exact.json": "6c1d39f2a9307f8f49ee57104c1aeb8ed7c0d5cac0dff1723f6de4ba25921837",
+      "joint__chain_n2_io_input_equilibrated_linear_exact.json": "ed62cde211f3536bdfd2bbc0e580ca79970f5860144aa7fd9929cb1d3c755602",
+      "joint__chain_n3_io_cold_linear_exact.json": "85743ac712de61427580693db5f41909f7b78b977c011f601d4c2b770126280f",
+      "joint__chain_n3_io_input_equilibrated_linear_exact.json": "10b5db0d573d45493fc82bb0ea35d26520ee71773bff47e1f44c5ad20d020e02",
+      "joint__chain_n4_io_cold_linear_exact.json": "660edc853322bbcfe775a02c21e6001a74fcd3b8073b82cd02c94c42fc17857d",
+      "joint__chain_n4_io_input_equilibrated_linear_exact.json": "5e81728d569caa09aba36f61070560bd052abc2568f2b71265a66b9f9ca1a47d",
+      "joint__chain_n6_io_cold_linear_exact.json": "732f23c8db2fd66546b3050692f071aa8d9c75dade46cda01bb4421aa95c1cac",
+      "joint__chain_n6_io_input_equilibrated_linear_exact.json": "c074a4e568f55d8a68959181ad52f86600244d58ee33bee8890b62b17dd01be6",
+      "joint__chain_n8_io_cold_linear_exact.json": "65e4bc7a5cbc7978b89cb5882f027f9f4123f8694c8a32cec041e4540be17acc",
+      "joint__chain_n8_io_input_equilibrated_linear_exact.json": "c6a7eedb7d58d1e4135e37f17b7f3b56997c950b4fa907e4af93d7683e928e21",
+      "joint__chain_n12_io_cold_linear_exact.json": "a2e74b76fce32ad36df9b90585a6192771116b448102c69b0069e4688eaf5915",
+      "joint__chain_n12_io_input_equilibrated_linear_exact.json": "6b3411b9d8013970e16199bfcfa5c775d559d7d28b7d9e527bf5d2e634825c0b",
+      "joint__pure_delay_n0_io_cold_linear_exact.json": "2219c9b210f5cc2b6dbacfe6624252c50e3c6bfe9ffc2d38cd756c12bac89086",
+      "joint__pure_delay_n0_io_input_equilibrated_linear_exact.json": "fe181494df8bdc57a2e918498d4a116a86a5c84c28a9b3ba281c0b3de92d7897"
+    },
+    "config_sha256": "d1b37b4830bf554514889500be16ce622c3707393127c44e982566ea01fbf883",
+    "design_config_sha256": "6c8337d9d0bf059faeb8d451b48937b2f9c17f3f8e49c5c7157abf76671b2c75",
+    "phase": "designs"
+  },
+  "key": "input_equilibrated__iid__mean",
+  "phase": "designs",
+  "knots_s": [
+    0.0,
+    50.0,
+    100.0,
+    150.0,
+    200.0,
+    250.0,
+    300.0,
+    350.0,
+    400.0,
+    450.0,
+    500.0,
+    550.0,
+    600.0,
+    650.0,
+    700.0,
+    750.0,
+    800.0,
+    850.0,
+    900.0
+  ],
+  "requires_revisit": false,
+  "scope": "Twelve fixed-mean separation designs use all six pairs among n1,n2,n12,pure at two initializations and three common working covariances. Seventy-two directional alternative refits use n1 as the fixed generating mean against n2,n12,pure, for constant, multisine and both selected designs. This bounded refit diagnostic does not evaluate every possible generating model or parameter value.",
+  "optimization": {
+    "best": {
+      "start": "random_binary_knots",
+      "success": true,
+      "status": 0,
+      "message": "Optimization terminated successfully",
+      "iterations": 101,
+      "objective": -1.1844897037528581,
+      "maximum_constraint_violation": 7.105427357601002e-15,
+      "amplitudes_percent": [
+        100.0,
+        50.0,
+        100.0,
+        50.0,
+        0.0,
+        50.0,
+        100.0,
+        99.99999999999997,
+        49.999999999999964,
+        99.99999999999997,
+        49.999999999999964,
+        0.0,
+        50.0,
+        0.0,
+        50.0,
+        5.6897343755695925e-15,
+        1.1424171538154136e-18,
+        50.0,
+        100.0
+      ]
+    },
+    "attempts": [
+      {
+        "start": "constant",
+        "success": true,
+        "status": 0,
+        "message": "Optimization terminated successfully",
+        "iterations": 146,
+        "objective": -1.138892940411312,
+        "maximum_constraint_violation": 7.105427357601002e-15,
+        "amplitudes_percent": [
+          100.0,
+          50.0,
+          100.0,
+          100.0,
+          100.0,
+          100.0,
+          50.0,
+          2.6945134491696e-15,
+          50.0,
+          100.0,
+          50.0,
+          0.0,
+          8.33333333333334,
+          58.333333333333336,
+          8.333333333333334,
+          5.81604161803851e-15,
+          50.0,
+          0.0,
+          50.0
+        ]
+      },
+      {
+        "start": "sine_300s",
+        "success": true,
+        "status": 0,
+        "message": "Optimization terminated successfully",
+        "iterations": 10,
+        "objective": -0.9929163364483761,
+        "maximum_constraint_violation": 7.105427357601002e-15,
+        "amplitudes_percent": [
+          1.1368683772161603e-13,
+          50.000000000000114,
+          100.0,
+          50.0,
+          1.1702619049710814e-16,
+          8.599880450475572e-16,
+          50.0,
+          100.0,
+          100.0,
+          50.0,
+          0.0,
+          0.0,
+          50.0,
+          100.0,
+          100.0,
+          50.0,
+          0.0,
+          50.0,
+          100.0
+        ]
+      },
+      {
+        "start": "sine_150s",
+        "success": true,
+        "status": 0,
+        "message": "Optimization terminated successfully",
+        "iterations": 98,
+        "objective": -1.148393911584196,
+        "maximum_constraint_violation": 7.105427357601002e-15,
+        "amplitudes_percent": [
+          35.714285714285694,
+          85.7142857142857,
+          35.714285714285694,
+          85.7142857142857,
+          100.0,
+          50.0,
+          100.0,
+          100.0,
+          50.0,
+          100.0,
+          50.0,
+          1.2764825193641199e-18,
+          1.2765883984825267e-18,
+          50.0,
+          3.011470693136944e-18,
+          1.2188751286843684e-18,
+          50.0,
+          0.0,
+          50.0
+        ]
+      },
+      {
+        "start": "multisine",
+        "success": true,
+        "status": 0,
+        "message": "Optimization terminated successfully",
+        "iterations": 86,
+        "objective": -1.1646144193202403,
+        "maximum_constraint_violation": 2.952305067083216e-11,
+        "amplitudes_percent": [
+          14.285714285670029,
+          64.28571428568978,
+          14.285714285689535,
+          64.28571428569573,
+          100.0,
+          49.99999999999907,
+          100.0,
+          100.0,
+          49.99999999999391,
+          0.0,
+          50.00000000002952,
+          100.0,
+          50.0000000000242,
+          0.0,
+          49.99999999999608,
+          0.0,
+          0.0,
+          50.00000000001525,
+          100.0
+        ]
+      },
+      {
+        "start": "random_binary_knots",
+        "success": true,
+        "status": 0,
+        "message": "Optimization terminated successfully",
+        "iterations": 101,
+        "objective": -1.1844897037528581,
+        "maximum_constraint_violation": 7.105427357601002e-15,
+        "amplitudes_percent": [
+          100.0,
+          50.0,
+          100.0,
+          50.0,
+          0.0,
+          50.0,
+          100.0,
+          99.99999999999997,
+          49.999999999999964,
+          99.99999999999997,
+          49.999999999999964,
+          0.0,
+          50.0,
+          0.0,
+          50.0,
+          5.6897343755695925e-15,
+          1.1424171538154136e-18,
+          50.0,
+          100.0
+        ]
+      },
+      {
+        "start": "alternating_knots",
+        "success": true,
+        "status": 0,
+        "message": "Optimization terminated successfully",
+        "iterations": 1,
+        "objective": -1.161812103001637,
+        "maximum_constraint_violation": 7.105427357601002e-15,
+        "amplitudes_percent": [
+          75.0,
+          25.0,
+          75.0,
+          25.0,
+          75.0,
+          25.0,
+          75.0,
+          25.0,
+          75.0,
+          25.0,
+          75.0,
+          25.0,
+          75.0,
+          25.0,
+          75.0,
+          25.0,
+          75.0,
+          25.0,
+          75.0
+        ]
+      }
+    ],
+    "aggregation": "mean",
+    "reference_distance_squared": [
+      121.77031409878404,
+      463.82330148822507,
+      564.6093017874177,
+      112.70657268210061,
+      165.96683287569726,
+      5.2505106111807684
+    ],
+    "notice": "Local multistart optimization of scenario-relative log fixed-mean squared separation. Min aggregation is nonsmooth at pair ties. No global certificate, nuisance robustness or real-data testing-power guarantee."
+  },
+  "evaluations": {
+    "constant": {
+      "amplitudes_percent": [
+        50.0,
+        50.0,
+        50.0,
+        50.0,
+        50.0,
+        50.0,
+        50.0,
+        50.0,
+        50.0,
+        50.0,
+        50.0,
+        50.0,
+        50.0,
+        50.0,
+        50.0,
+        50.0,
+        50.0,
+        50.0,
+        50.0
+      ],
+      "pairs": [
+        {
+          "first": "n1__input_equilibrated__iid",
+          "second": "n2__input_equilibrated__iid",
+          "distance_squared": 21.188133874195053,
+          "ideal_fixed_gaussian_equal_prior_error": 0.010680887982434415
+        },
+        {
+          "first": "n1__input_equilibrated__iid",
+          "second": "n12__input_equilibrated__iid",
+          "distance_squared": 87.04146125839978,
+          "ideal_fixed_gaussian_equal_prior_error": 1.5445816776959883e-06
+        },
+        {
+          "first": "n1__input_equilibrated__iid",
+          "second": "pure__input_equilibrated__iid",
+          "distance_squared": 107.28128122070584,
+          "ideal_fixed_gaussian_equal_prior_error": 1.1163859209826777e-07
+        },
+        {
+          "first": "n2__input_equilibrated__iid",
+          "second": "n12__input_equilibrated__iid",
+          "distance_squared": 22.405370262166635,
+          "ideal_fixed_gaussian_equal_prior_error": 0.008973359764455515
+        },
+        {
+          "first": "n2__input_equilibrated__iid",
+          "second": "pure__input_equilibrated__iid",
+          "distance_squared": 33.21614836351881,
+          "ideal_fixed_gaussian_equal_prior_error": 0.001977852467588687
+        },
+        {
+          "first": "n12__input_equilibrated__iid",
+          "second": "pure__input_equilibrated__iid",
+          "distance_squared": 1.0616403222777988,
+          "ideal_fixed_gaussian_equal_prior_error": 0.30321374103938104
+        }
+      ],
+      "mean_input_percent": 50.0,
+      "maximum_slew_percent_per_s": 0.0,
+      "dense_audit": {
+        "interval_s": 0.25,
+        "tail_s": 300,
+        "shutdown_command": "After the design horizon, ramp the last command to zero at the assumed maximum slew, then hold zero.",
+        "notice": "Independent dense simulation at the selected model points, not a continuous-time bound, uncertainty guarantee or certified hardware limit.",
+        "scenarios": [
+          {
+            "scenario": "n1__cold__iid",
+            "maximum_C": 63.611846741729025,
+            "time_of_maximum_s": 902.25,
+            "exceeds_assumed_limit": false
+          },
+          {
+            "scenario": "n1__input_equilibrated__iid",
+            "maximum_C": 63.75755211600673,
+            "time_of_maximum_s": 902.75,
+            "exceeds_assumed_limit": false
+          },
+          {
+            "scenario": "n2__cold__iid",
+            "maximum_C": 63.68808406901951,
+            "time_of_maximum_s": 904.25,
+            "exceeds_assumed_limit": false
+          },
+          {
+            "scenario": "n2__input_equilibrated__iid",
+            "maximum_C": 63.77877046084289,
+            "time_of_maximum_s": 904.75,
+            "exceeds_assumed_limit": false
+          },
+          {
+            "scenario": "n3__cold__iid",
+            "maximum_C": 63.71418019469935,
+            "time_of_maximum_s": 905.5,
+            "exceeds_assumed_limit": false
+          },
+          {
+            "scenario": "n3__input_equilibrated__iid",
+            "maximum_C": 63.789147830462504,
+            "time_of_maximum_s": 906.25,
+            "exceeds_assumed_limit": false
+          },
+          {
+            "scenario": "n4__cold__iid",
+            "maximum_C": 63.72748605237575,
+            "time_of_maximum_s": 906.5,
+            "exceeds_assumed_limit": false
+          },
+          {
+            "scenario": "n4__input_equilibrated__iid",
+            "maximum_C": 63.79516141438834,
+            "time_of_maximum_s": 907.25,
+            "exceeds_assumed_limit": false
+          },
+          {
+            "scenario": "n6__cold__iid",
+            "maximum_C": 63.74112576920049,
+            "time_of_maximum_s": 907.75,
+            "exceeds_assumed_limit": false
+          },
+          {
+            "scenario": "n6__input_equilibrated__iid",
+            "maximum_C": 63.80191719914299,
+            "time_of_maximum_s": 908.5,
+            "exceeds_assumed_limit": false
+          },
+          {
+            "scenario": "n8__cold__iid",
+            "maximum_C": 63.74816493787733,
+            "time_of_maximum_s": 908.75,
+            "exceeds_assumed_limit": false
+          },
+          {
+            "scenario": "n8__input_equilibrated__iid",
+            "maximum_C": 63.80567512220904,
+            "time_of_maximum_s": 909.5,
+            "exceeds_assumed_limit": false
+          },
+          {
+            "scenario": "n12__cold__iid",
+            "maximum_C": 63.755455132964585,
+            "time_of_maximum_s": 909.75,
+            "exceeds_assumed_limit": false
+          },
+          {
+            "scenario": "n12__input_equilibrated__iid",
+            "maximum_C": 63.809817712680356,
+            "time_of_maximum_s": 910.5,
+            "exceeds_assumed_limit": false
+          },
+          {
+            "scenario": "pure__cold__iid",
+            "maximum_C": 63.77294656401975,
+            "time_of_maximum_s": 914.75,
+            "exceeds_assumed_limit": false
+          },
+          {
+            "scenario": "pure__input_equilibrated__iid",
+            "maximum_C": 63.8218993816713,
+            "time_of_maximum_s": 915.25,
+            "exceeds_assumed_limit": false
+          }
+        ]
+      }
+    },
+    "sine_300s": {
+      "amplitudes_percent": [
+        50.00000000000001,
+        99.99999999999991,
+        99.99999999999991,
+        50.000000000000014,
+        9.237055564881302e-14,
+        7.815970093361102e-14,
+        49.99999999999999,
+        99.9999999999999,
+        99.99999999999989,
+        50.00000000000003,
+        1.4921397450962104e-13,
+        1.2789769243681803e-13,
+        49.99999999999998,
+        99.99999999999986,
+        99.99999999999994,
+        50.00000000000004,
+        4.973799150320701e-14,
+        1.4210854715202004e-14,
+        49.999999999999964
+      ],
+      "pairs": [
+        {
+          "first": "n1__input_equilibrated__iid",
+          "second": "n2__input_equilibrated__iid",
+          "distance_squared": 335.6528735448084,
+          "ideal_fixed_gaussian_equal_prior_error": 2.5848856208160658e-20
+        },
+        {
+          "first": "n1__input_equilibrated__iid",
+          "second": "n12__input_equilibrated__iid",
+          "distance_squared": 1128.0861951384454,
+          "ideal_fixed_gaussian_equal_prior_error": 1.3615738313672924e-63
+        },
+        {
+          "first": "n1__input_equilibrated__iid",
+          "second": "pure__input_equilibrated__iid",
+          "distance_squared": 1341.5778703149128,
+          "ideal_fixed_gaussian_equal_prior_error": 3.212650557469384e-75
+        },
+        {
+          "first": "n2__input_equilibrated__iid",
+          "second": "n12__input_equilibrated__iid",
+          "distance_squared": 239.78687862198,
+          "ideal_fixed_gaussian_equal_prior_error": 4.873015008507547e-15
+        },
+        {
+          "first": "n2__input_equilibrated__iid",
+          "second": "pure__input_equilibrated__iid",
+          "distance_squared": 346.40513315690725,
+          "ideal_fixed_gaussian_equal_prior_error": 6.638048762239185e-21
+        },
+        {
+          "first": "n12__input_equilibrated__iid",
+          "second": "pure__input_equilibrated__iid",
+          "distance_squared": 10.145557869892198,
+          "ideal_fixed_gaussian_equal_prior_error": 0.05562445851895832
+        }
+      ],
+      "mean_input_percent": 49.999999999999986,
+      "maximum_slew_percent_per_s": 0.9999999999999999,
+      "dense_audit": {
+        "interval_s": 0.25,
+        "tail_s": 300,
+        "shutdown_command": "After the design horizon, ramp the last command to zero at the assumed maximum slew, then hold zero.",
+        "notice": "Independent dense simulation at the selected model points, not a continuous-time bound, uncertainty guarantee or certified hardware limit.",
+        "scenarios": [
+          {
+            "scenario": "n1__cold__iid",
+            "maximum_C": 75.12294538019133,
+            "time_of_maximum_s": 751.0,
+            "exceeds_assumed_limit": false
+          },
+          {
+            "scenario": "n1__input_equilibrated__iid",
+            "maximum_C": 74.34736963233297,
+            "time_of_maximum_s": 751.25,
+            "exceeds_assumed_limit": false
+          },
+          {
+            "scenario": "n2__cold__iid",
+            "maximum_C": 75.3396666898849,
+            "time_of_maximum_s": 750.5,
+            "exceeds_assumed_limit": false
+          },
+          {
+            "scenario": "n2__input_equilibrated__iid",
+            "maximum_C": 74.5593786023046,
+            "time_of_maximum_s": 751.25,
+            "exceeds_assumed_limit": false
+          },
+          {
+            "scenario": "n3__cold__iid",
+            "maximum_C": 75.40349685903581,
+            "time_of_maximum_s": 750.25,
+            "exceeds_assumed_limit": false
+          },
+          {
+            "scenario": "n3__input_equilibrated__iid",
+            "maximum_C": 74.63410464694202,
+            "time_of_maximum_s": 751.25,
+            "exceeds_assumed_limit": false
+          },
+          {
+            "scenario": "n4__cold__iid",
+            "maximum_C": 75.43309481515453,
+            "time_of_maximum_s": 750.0,
+            "exceeds_assumed_limit": false
+          },
+          {
+            "scenario": "n4__input_equilibrated__iid",
+            "maximum_C": 74.67144396990263,
+            "time_of_maximum_s": 751.25,
+            "exceeds_assumed_limit": false
+          },
+          {
+            "scenario": "n6__cold__iid",
+            "maximum_C": 75.46076142249584,
+            "time_of_maximum_s": 749.75,
+            "exceeds_assumed_limit": false
+          },
+          {
+            "scenario": "n6__input_equilibrated__iid",
+            "maximum_C": 74.70841236393117,
+            "time_of_maximum_s": 751.25,
+            "exceeds_assumed_limit": false
+          },
+          {
+            "scenario": "n8__cold__iid",
+            "maximum_C": 75.47387532147762,
+            "time_of_maximum_s": 749.75,
+            "exceeds_assumed_limit": false
+          },
+          {
+            "scenario": "n8__input_equilibrated__iid",
+            "maximum_C": 74.72669427981305,
+            "time_of_maximum_s": 751.25,
+            "exceeds_assumed_limit": false
+          },
+          {
+            "scenario": "n12__cold__iid",
+            "maximum_C": 75.48644730245684,
+            "time_of_maximum_s": 749.75,
+            "exceeds_assumed_limit": false
+          },
+          {
+            "scenario": "n12__input_equilibrated__iid",
+            "maximum_C": 74.74482869239151,
+            "time_of_maximum_s": 751.25,
+            "exceeds_assumed_limit": false
+          },
+          {
+            "scenario": "pure__cold__iid",
+            "maximum_C": 75.51009788830537,
+            "time_of_maximum_s": 749.5,
+            "exceeds_assumed_limit": false
+          },
+          {
+            "scenario": "pure__input_equilibrated__iid",
+            "maximum_C": 74.78066288222195,
+            "time_of_maximum_s": 751.25,
+            "exceeds_assumed_limit": false
+          }
+        ]
+      }
+    },
+    "sine_150s": {
+      "amplitudes_percent": [
+        50.0,
+        74.99999999999997,
+        25.00000000000003,
+        49.99999999999999,
+        74.99999999999996,
+        25.00000000000006,
+        49.999999999999986,
+        74.99999999999999,
+        25.00000000000001,
+        49.99999999999998,
+        75.00000000000001,
+        25.000000000000014,
+        49.99999999999997,
+        75.00000000000001,
+        25.000000000000068,
+        49.999999999999964,
+        74.99999999999991,
+        25.000000000000124,
+        49.99999999999996
+      ],
+      "pairs": [
+        {
+          "first": "n1__input_equilibrated__iid",
+          "second": "n2__input_equilibrated__iid",
+          "distance_squared": 210.99299036437324,
+          "ideal_fixed_gaussian_equal_prior_error": 1.8958074652951948e-13
+        },
+        {
+          "first": "n1__input_equilibrated__iid",
+          "second": "n12__input_equilibrated__iid",
+          "distance_squared": 839.9632645824648,
+          "ideal_fixed_gaussian_equal_prior_error": 6.899847100314704e-48
+        },
+        {
+          "first": "n1__input_equilibrated__iid",
+          "second": "pure__input_equilibrated__iid",
+          "distance_squared": 1029.8239797289489,
+          "ideal_fixed_gaussian_equal_prior_error": 3.076300820278264e-58
+        },
+        {
+          "first": "n2__input_equilibrated__iid",
+          "second": "n12__input_equilibrated__iid",
+          "distance_squared": 221.62136236541284,
+          "ideal_fixed_gaussian_equal_prior_error": 4.903482268742891e-14
+        },
+        {
+          "first": "n2__input_equilibrated__iid",
+          "second": "pure__input_equilibrated__iid",
+          "distance_squared": 330.12208867806885,
+          "ideal_fixed_gaussian_equal_prior_error": 5.202546562519168e-20
+        },
+        {
+          "first": "n12__input_equilibrated__iid",
+          "second": "pure__input_equilibrated__iid",
+          "distance_squared": 11.544509882254381,
+          "ideal_fixed_gaussian_equal_prior_error": 0.044672722434015516
+        }
+      ],
+      "mean_input_percent": 50.0,
+      "maximum_slew_percent_per_s": 1.0,
+      "dense_audit": {
+        "interval_s": 0.25,
+        "tail_s": 300,
+        "shutdown_command": "After the design horizon, ramp the last command to zero at the assumed maximum slew, then hold zero.",
+        "notice": "Independent dense simulation at the selected model points, not a continuous-time bound, uncertainty guarantee or certified hardware limit.",
+        "scenarios": [
+          {
+            "scenario": "n1__cold__iid",
+            "maximum_C": 65.69005689122656,
+            "time_of_maximum_s": 836.25,
+            "exceeds_assumed_limit": false
+          },
+          {
+            "scenario": "n1__input_equilibrated__iid",
+            "maximum_C": 65.68192247577176,
+            "time_of_maximum_s": 835.75,
+            "exceeds_assumed_limit": false
+          },
+          {
+            "scenario": "n2__cold__iid",
+            "maximum_C": 65.94560231956068,
+            "time_of_maximum_s": 837.0,
+            "exceeds_assumed_limit": false
+          },
+          {
+            "scenario": "n2__input_equilibrated__iid",
+            "maximum_C": 65.8497368000709,
+            "time_of_maximum_s": 837.0,
+            "exceeds_assumed_limit": false
+          },
+          {
+            "scenario": "n3__cold__iid",
+            "maximum_C": 66.0454952927839,
+            "time_of_maximum_s": 837.0,
+            "exceeds_assumed_limit": false
+          },
+          {
+            "scenario": "n3__input_equilibrated__iid",
+            "maximum_C": 65.92773587629638,
+            "time_of_maximum_s": 837.25,
+            "exceeds_assumed_limit": false
+          },
+          {
+            "scenario": "n4__cold__iid",
+            "maximum_C": 66.0971803633519,
+            "time_of_maximum_s": 837.0,
+            "exceeds_assumed_limit": false
+          },
+          {
+            "scenario": "n4__input_equilibrated__iid",
+            "maximum_C": 65.97078698253247,
+            "time_of_maximum_s": 837.5,
+            "exceeds_assumed_limit": false
+          },
+          {
+            "scenario": "n6__cold__iid",
+            "maximum_C": 66.149049840792,
+            "time_of_maximum_s": 836.75,
+            "exceeds_assumed_limit": false
+          },
+          {
+            "scenario": "n6__input_equilibrated__iid",
+            "maximum_C": 66.01592155336006,
+            "time_of_maximum_s": 837.5,
+            "exceeds_assumed_limit": false
+          },
+          {
+            "scenario": "n8__cold__iid",
+            "maximum_C": 66.17467916863927,
+            "time_of_maximum_s": 836.75,
+            "exceeds_assumed_limit": false
+          },
+          {
+            "scenario": "n8__input_equilibrated__iid",
+            "maximum_C": 66.03893612207597,
+            "time_of_maximum_s": 837.5,
+            "exceeds_assumed_limit": false
+          },
+          {
+            "scenario": "n12__cold__iid",
+            "maximum_C": 66.199817238213,
+            "time_of_maximum_s": 836.75,
+            "exceeds_assumed_limit": false
+          },
+          {
+            "scenario": "n12__input_equilibrated__iid",
+            "maximum_C": 66.06202716730719,
+            "time_of_maximum_s": 837.5,
+            "exceeds_assumed_limit": false
+          },
+          {
+            "scenario": "pure__cold__iid",
+            "maximum_C": 66.2484686681123,
+            "time_of_maximum_s": 836.5,
+            "exceeds_assumed_limit": false
+          },
+          {
+            "scenario": "pure__input_equilibrated__iid",
+            "maximum_C": 66.10808298889972,
+            "time_of_maximum_s": 837.25,
+            "exceeds_assumed_limit": false
+          }
+        ]
+      }
+    },
+    "multisine": {
+      "amplitudes_percent": [
+        75.22991084379322,
+        82.26539760464597,
+        64.54583958750308,
+        65.53899896143861,
+        69.90035341489259,
+        65.69071094441337,
+        81.11905776912218,
+        100.0,
+        72.6999458951869,
+        24.770089156206808,
+        17.734602395354024,
+        35.45416041249693,
+        34.46100103856138,
+        30.099646585107436,
+        34.309289055586646,
+        18.88094223087789,
+        1.4210854715202004e-14,
+        27.300054104813,
+        75.22991084379318
+      ],
+      "pairs": [
+        {
+          "first": "n1__input_equilibrated__iid",
+          "second": "n2__input_equilibrated__iid",
+          "distance_squared": 121.77031409878404,
+          "ideal_fixed_gaussian_equal_prior_error": 1.7194822609675948e-08
+        },
+        {
+          "first": "n1__input_equilibrated__iid",
+          "second": "n12__input_equilibrated__iid",
+          "distance_squared": 463.82330148822507,
+          "ideal_fixed_gaussian_equal_prior_error": 2.430011866892831e-27
+        },
+        {
+          "first": "n1__input_equilibrated__iid",
+          "second": "pure__input_equilibrated__iid",
+          "distance_squared": 564.6093017874177,
+          "ideal_fixed_gaussian_equal_prior_error": 7.45081746099498e-33
+        },
+        {
+          "first": "n2__input_equilibrated__iid",
+          "second": "n12__input_equilibrated__iid",
+          "distance_squared": 112.70657268210061,
+          "ideal_fixed_gaussian_equal_prior_error": 5.536640297389566e-08
+        },
+        {
+          "first": "n2__input_equilibrated__iid",
+          "second": "pure__input_equilibrated__iid",
+          "distance_squared": 165.96683287569726,
+          "ideal_fixed_gaussian_equal_prior_error": 5.918596844306095e-11
+        },
+        {
+          "first": "n12__input_equilibrated__iid",
+          "second": "pure__input_equilibrated__iid",
+          "distance_squared": 5.2505106111807684,
+          "ideal_fixed_gaussian_equal_prior_error": 0.12595972754487172
+        }
+      ],
+      "mean_input_percent": 50.00000000000001,
+      "maximum_slew_percent_per_s": 0.9585971347796035,
+      "dense_audit": {
+        "interval_s": 0.25,
+        "tail_s": 300,
+        "shutdown_command": "After the design horizon, ramp the last command to zero at the assumed maximum slew, then hold zero.",
+        "notice": "Independent dense simulation at the selected model points, not a continuous-time bound, uncertainty guarantee or certified hardware limit.",
+        "scenarios": [
+          {
+            "scenario": "n1__cold__iid",
+            "maximum_C": 81.89048586186414,
+            "time_of_maximum_s": 412.0,
+            "exceeds_assumed_limit": false
+          },
+          {
+            "scenario": "n1__input_equilibrated__iid",
+            "maximum_C": 81.16247249108292,
+            "time_of_maximum_s": 412.5,
+            "exceeds_assumed_limit": false
+          },
+          {
+            "scenario": "n2__cold__iid",
+            "maximum_C": 81.91252532310938,
+            "time_of_maximum_s": 412.25,
+            "exceeds_assumed_limit": false
+          },
+          {
+            "scenario": "n2__input_equilibrated__iid",
+            "maximum_C": 81.25377032019777,
+            "time_of_maximum_s": 413.5,
+            "exceeds_assumed_limit": false
+          },
+          {
+            "scenario": "n3__cold__iid",
+            "maximum_C": 81.91816262976799,
+            "time_of_maximum_s": 412.5,
+            "exceeds_assumed_limit": false
+          },
+          {
+            "scenario": "n3__input_equilibrated__iid",
+            "maximum_C": 81.28595030105197,
+            "time_of_maximum_s": 413.75,
+            "exceeds_assumed_limit": false
+          },
+          {
+            "scenario": "n4__cold__iid",
+            "maximum_C": 81.92005246513578,
+            "time_of_maximum_s": 412.5,
+            "exceeds_assumed_limit": false
+          },
+          {
+            "scenario": "n4__input_equilibrated__iid",
+            "maximum_C": 81.30208254289761,
+            "time_of_maximum_s": 414.0,
+            "exceeds_assumed_limit": false
+          },
+          {
+            "scenario": "n6__cold__iid",
+            "maximum_C": 81.92133298167002,
+            "time_of_maximum_s": 412.75,
+            "exceeds_assumed_limit": false
+          },
+          {
+            "scenario": "n6__input_equilibrated__iid",
+            "maximum_C": 81.31826288610735,
+            "time_of_maximum_s": 414.25,
+            "exceeds_assumed_limit": false
+          },
+          {
+            "scenario": "n8__cold__iid",
+            "maximum_C": 81.92171448938399,
+            "time_of_maximum_s": 412.75,
+            "exceeds_assumed_limit": false
+          },
+          {
+            "scenario": "n8__input_equilibrated__iid",
+            "maximum_C": 81.32646086936865,
+            "time_of_maximum_s": 414.5,
+            "exceeds_assumed_limit": false
+          },
+          {
+            "scenario": "n12__cold__iid",
+            "maximum_C": 81.9219993125793,
+            "time_of_maximum_s": 413.0,
+            "exceeds_assumed_limit": false
+          },
+          {
+            "scenario": "n12__input_equilibrated__iid",
+            "maximum_C": 81.33477188655127,
+            "time_of_maximum_s": 414.75,
+            "exceeds_assumed_limit": false
+          },
+          {
+            "scenario": "pure__cold__iid",
+            "maximum_C": 81.92164253643786,
+            "time_of_maximum_s": 413.5,
+            "exceeds_assumed_limit": false
+          },
+          {
+            "scenario": "pure__input_equilibrated__iid",
+            "maximum_C": 81.35285990244563,
+            "time_of_maximum_s": 415.5,
+            "exceeds_assumed_limit": false
+          }
+        ]
+      }
+    },
+    "random_binary_knots": {
+      "amplitudes_percent": [
+        80.55555555555556,
+        30.555555555555554,
+        80.55555555555556,
+        30.555555555555554,
+        30.555555555555554,
+        30.555555555555554,
+        80.55555555555556,
+        80.55555555555556,
+        80.55555555555556,
+        80.55555555555556,
+        30.555555555555554,
+        30.555555555555554,
+        30.555555555555554,
+        30.555555555555554,
+        30.555555555555554,
+        30.555555555555554,
+        30.555555555555554,
+        80.55555555555556,
+        80.55555555555556
+      ],
+      "pairs": [
+        {
+          "first": "n1__input_equilibrated__iid",
+          "second": "n2__input_equilibrated__iid",
+          "distance_squared": 149.50676778406896,
+          "ideal_fixed_gaussian_equal_prior_error": 4.868948520651769e-10
+        },
+        {
+          "first": "n1__input_equilibrated__iid",
+          "second": "n12__input_equilibrated__iid",
+          "distance_squared": 581.6435108332776,
+          "ideal_fixed_gaussian_equal_prior_error": 8.731799107562527e-34
+        },
+        {
+          "first": "n1__input_equilibrated__iid",
+          "second": "pure__input_equilibrated__iid",
+          "distance_squared": 711.0204829350187,
+          "ideal_fixed_gaussian_equal_prior_error": 7.491265689305125e-41
+        },
+        {
+          "first": "n2__input_equilibrated__iid",
+          "second": "n12__input_equilibrated__iid",
+          "distance_squared": 149.34725077754678,
+          "ideal_fixed_gaussian_equal_prior_error": 4.969533796538602e-10
+        },
+        {
+          "first": "n2__input_equilibrated__iid",
+          "second": "pure__input_equilibrated__iid",
+          "distance_squared": 221.97031146060792,
+          "ideal_fixed_gaussian_equal_prior_error": 4.690627860384871e-14
+        },
+        {
+          "first": "n12__input_equilibrated__iid",
+          "second": "pure__input_equilibrated__iid",
+          "distance_squared": 7.633739149768035,
+          "ideal_fixed_gaussian_equal_prior_error": 0.08356861434519836
+        }
+      ],
+      "mean_input_percent": 50.0,
+      "maximum_slew_percent_per_s": 1.0,
+      "dense_audit": {
+        "interval_s": 0.25,
+        "tail_s": 300,
+        "shutdown_command": "After the design horizon, ramp the last command to zero at the assumed maximum slew, then hold zero.",
+        "notice": "Independent dense simulation at the selected model points, not a continuous-time bound, uncertainty guarantee or certified hardware limit.",
+        "scenarios": [
+          {
+            "scenario": "n1__cold__iid",
+            "maximum_C": 75.69044463567886,
+            "time_of_maximum_s": 478.75,
+            "exceeds_assumed_limit": false
+          },
+          {
+            "scenario": "n1__input_equilibrated__iid",
+            "maximum_C": 74.87047963541673,
+            "time_of_maximum_s": 479.5,
+            "exceeds_assumed_limit": false
+          },
+          {
+            "scenario": "n2__cold__iid",
+            "maximum_C": 75.71852275847866,
+            "time_of_maximum_s": 479.75,
+            "exceeds_assumed_limit": false
+          },
+          {
+            "scenario": "n2__input_equilibrated__iid",
+            "maximum_C": 74.97530192651715,
+            "time_of_maximum_s": 480.75,
+            "exceeds_assumed_limit": false
+          },
+          {
+            "scenario": "n3__cold__iid",
+            "maximum_C": 75.73950961458664,
+            "time_of_maximum_s": 480.0,
+            "exceeds_assumed_limit": false
+          },
+          {
+            "scenario": "n3__input_equilibrated__iid",
+            "maximum_C": 75.0221150941905,
+            "time_of_maximum_s": 481.0,
+            "exceeds_assumed_limit": false
+          },
+          {
+            "scenario": "n4__cold__iid",
+            "maximum_C": 75.7528365298333,
+            "time_of_maximum_s": 480.0,
+            "exceeds_assumed_limit": false
+          },
+          {
+            "scenario": "n4__input_equilibrated__iid",
+            "maximum_C": 75.04861860715273,
+            "time_of_maximum_s": 481.25,
+            "exceeds_assumed_limit": false
+          },
+          {
+            "scenario": "n6__cold__iid",
+            "maximum_C": 75.76788812005205,
+            "time_of_maximum_s": 480.0,
+            "exceeds_assumed_limit": false
+          },
+          {
+            "scenario": "n6__input_equilibrated__iid",
+            "maximum_C": 75.07725500305314,
+            "time_of_maximum_s": 481.25,
+            "exceeds_assumed_limit": false
+          },
+          {
+            "scenario": "n8__cold__iid",
+            "maximum_C": 75.77586358548987,
+            "time_of_maximum_s": 480.0,
+            "exceeds_assumed_limit": false
+          },
+          {
+            "scenario": "n8__input_equilibrated__iid",
+            "maximum_C": 75.09225196621942,
+            "time_of_maximum_s": 481.25,
+            "exceeds_assumed_limit": false
+          },
+          {
+            "scenario": "n12__cold__iid",
+            "maximum_C": 75.78388460186731,
+            "time_of_maximum_s": 479.75,
+            "exceeds_assumed_limit": false
+          },
+          {
+            "scenario": "n12__input_equilibrated__iid",
+            "maximum_C": 75.10752172895319,
+            "time_of_maximum_s": 481.25,
+            "exceeds_assumed_limit": false
+          },
+          {
+            "scenario": "pure__cold__iid",
+            "maximum_C": 75.79902137915843,
+            "time_of_maximum_s": 479.75,
+            "exceeds_assumed_limit": false
+          },
+          {
+            "scenario": "pure__input_equilibrated__iid",
+            "maximum_C": 75.13797271703427,
+            "time_of_maximum_s": 481.25,
+            "exceeds_assumed_limit": false
+          }
+        ]
+      }
+    },
+    "alternating_knots": {
+      "amplitudes_percent": [
+        75.0,
+        25.0,
+        75.0,
+        25.0,
+        75.0,
+        25.0,
+        75.0,
+        25.0,
+        75.0,
+        25.0,
+        75.0,
+        25.0,
+        75.0,
+        25.0,
+        75.0,
+        25.0,
+        75.0,
+        25.0,
+        75.0
+      ],
+      "pairs": [
+        {
+          "first": "n1__input_equilibrated__iid",
+          "second": "n2__input_equilibrated__iid",
+          "distance_squared": 296.43109230618626,
+          "ideal_fixed_gaussian_equal_prior_error": 3.6983251072456446e-18
+        },
+        {
+          "first": "n1__input_equilibrated__iid",
+          "second": "n12__input_equilibrated__iid",
+          "distance_squared": 1318.3065012088655,
+          "ideal_fixed_gaussian_equal_prior_error": 5.9424989379567765e-74
+        },
+        {
+          "first": "n1__input_equilibrated__iid",
+          "second": "pure__input_equilibrated__iid",
+          "distance_squared": 1647.0902049896936,
+          "ideal_fixed_gaussian_equal_prior_error": 7.538060159580386e-92
+        },
+        {
+          "first": "n2__input_equilibrated__iid",
+          "second": "n12__input_equilibrated__iid",
+          "distance_squared": 389.2470127628782,
+          "ideal_fixed_gaussian_equal_prior_error": 2.961385968138269e-23
+        },
+        {
+          "first": "n2__input_equilibrated__iid",
+          "second": "pure__input_equilibrated__iid",
+          "distance_squared": 589.6357690808286,
+          "ideal_fixed_gaussian_equal_prior_error": 3.193781696033637e-34
+        },
+        {
+          "first": "n12__input_equilibrated__iid",
+          "second": "pure__input_equilibrated__iid",
+          "distance_squared": 22.58182191704437,
+          "ideal_fixed_gaussian_equal_prior_error": 0.008750334762952974
+        }
+      ],
+      "mean_input_percent": 49.99999999999999,
+      "maximum_slew_percent_per_s": 1.0,
+      "dense_audit": {
+        "interval_s": 0.25,
+        "tail_s": 300,
+        "shutdown_command": "After the design horizon, ramp the last command to zero at the assumed maximum slew, then hold zero.",
+        "notice": "Independent dense simulation at the selected model points, not a continuous-time bound, uncertainty guarantee or certified hardware limit.",
+        "scenarios": [
+          {
+            "scenario": "n1__cold__iid",
+            "maximum_C": 64.76439697067923,
+            "time_of_maximum_s": 936.75,
+            "exceeds_assumed_limit": false
+          },
+          {
+            "scenario": "n1__input_equilibrated__iid",
+            "maximum_C": 64.87180682679318,
+            "time_of_maximum_s": 936.25,
+            "exceeds_assumed_limit": false
+          },
+          {
+            "scenario": "n2__cold__iid",
+            "maximum_C": 65.00442140007719,
+            "time_of_maximum_s": 938.0,
+            "exceeds_assumed_limit": false
+          },
+          {
+            "scenario": "n2__input_equilibrated__iid",
+            "maximum_C": 65.0192574583911,
+            "time_of_maximum_s": 938.0,
+            "exceeds_assumed_limit": false
+          },
+          {
+            "scenario": "n3__cold__iid",
+            "maximum_C": 65.1090329636011,
+            "time_of_maximum_s": 938.25,
+            "exceeds_assumed_limit": false
+          },
+          {
+            "scenario": "n3__input_equilibrated__iid",
+            "maximum_C": 65.09700635210466,
+            "time_of_maximum_s": 938.25,
+            "exceeds_assumed_limit": false
+          },
+          {
+            "scenario": "n4__cold__iid",
+            "maximum_C": 65.16442249538709,
+            "time_of_maximum_s": 938.25,
+            "exceeds_assumed_limit": false
+          },
+          {
+            "scenario": "n4__input_equilibrated__iid",
+            "maximum_C": 65.14120652848106,
+            "time_of_maximum_s": 938.5,
+            "exceeds_assumed_limit": false
+          },
+          {
+            "scenario": "n6__cold__iid",
+            "maximum_C": 65.22046480692413,
+            "time_of_maximum_s": 938.0,
+            "exceeds_assumed_limit": false
+          },
+          {
+            "scenario": "n6__input_equilibrated__iid",
+            "maximum_C": 65.18796032691496,
+            "time_of_maximum_s": 938.5,
+            "exceeds_assumed_limit": false
+          },
+          {
+            "scenario": "n8__cold__iid",
+            "maximum_C": 65.24817358972933,
+            "time_of_maximum_s": 938.0,
+            "exceeds_assumed_limit": false
+          },
+          {
+            "scenario": "n8__input_equilibrated__iid",
+            "maximum_C": 65.2118783419881,
+            "time_of_maximum_s": 938.5,
+            "exceeds_assumed_limit": false
+          },
+          {
+            "scenario": "n12__cold__iid",
+            "maximum_C": 65.27542734265371,
+            "time_of_maximum_s": 937.75,
+            "exceeds_assumed_limit": false
+          },
+          {
+            "scenario": "n12__input_equilibrated__iid",
+            "maximum_C": 65.2358908715718,
+            "time_of_maximum_s": 938.5,
+            "exceeds_assumed_limit": false
+          },
+          {
+            "scenario": "pure__cold__iid",
+            "maximum_C": 65.32816286301474,
+            "time_of_maximum_s": 937.75,
+            "exceeds_assumed_limit": false
+          },
+          {
+            "scenario": "pure__input_equilibrated__iid",
+            "maximum_C": 65.28377703874189,
+            "time_of_maximum_s": 938.5,
+            "exceeds_assumed_limit": false
+          }
+        ]
+      }
+    },
+    "selected_local_design": {
+      "amplitudes_percent": [
+        100.0,
+        50.0,
+        100.0,
+        50.0,
+        0.0,
+        50.0,
+        100.0,
+        99.99999999999997,
+        49.999999999999964,
+        99.99999999999997,
+        49.999999999999964,
+        0.0,
+        50.0,
+        0.0,
+        50.0,
+        5.6897343755695925e-15,
+        1.1424171538154136e-18,
+        50.0,
+        100.0
+      ],
+      "pairs": [
+        {
+          "first": "n1__input_equilibrated__iid",
+          "second": "n2__input_equilibrated__iid",
+          "distance_squared": 376.1195247460972,
+          "ideal_fixed_gaussian_equal_prior_error": 1.553981958585252e-22
+        },
+        {
+          "first": "n1__input_equilibrated__iid",
+          "second": "n12__input_equilibrated__iid",
+          "distance_squared": 1458.05586583581,
+          "ideal_fixed_gaussian_equal_prior_error": 1.4644262426922252e-81
+        },
+        {
+          "first": "n1__input_equilibrated__iid",
+          "second": "pure__input_equilibrated__iid",
+          "distance_squared": 1780.2130289325576,
+          "ideal_fixed_gaussian_equal_prior_error": 4.301766022911391e-99
+        },
+        {
+          "first": "n2__input_equilibrated__iid",
+          "second": "n12__input_equilibrated__iid",
+          "distance_squared": 373.0387001854323,
+          "ideal_fixed_gaussian_equal_prior_error": 2.293210129032448e-22
+        },
+        {
+          "first": "n2__input_equilibrated__iid",
+          "second": "pure__input_equilibrated__iid",
+          "distance_squared": 553.6823155500393,
+          "ideal_fixed_gaussian_equal_prior_error": 2.948357782459188e-32
+        },
+        {
+          "first": "n12__input_equilibrated__iid",
+          "second": "pure__input_equilibrated__iid",
+          "distance_squared": 18.955340998779437,
+          "ideal_fixed_gaussian_equal_prior_error": 0.014744514902362296
+        }
+      ],
+      "mean_input_percent": 49.99999999999999,
+      "maximum_slew_percent_per_s": 1.0000000000000002,
+      "dense_audit": {
+        "interval_s": 0.25,
+        "tail_s": 300,
+        "shutdown_command": "After the design horizon, ramp the last command to zero at the assumed maximum slew, then hold zero.",
+        "notice": "Independent dense simulation at the selected model points, not a continuous-time bound, uncertainty guarantee or certified hardware limit.",
+        "scenarios": [
+          {
+            "scenario": "n1__cold__iid",
+            "maximum_C": 79.83317383701706,
+            "time_of_maximum_s": 493.5,
+            "exceeds_assumed_limit": false
+          },
+          {
+            "scenario": "n1__input_equilibrated__iid",
+            "maximum_C": 79.28240388592124,
+            "time_of_maximum_s": 493.75,
+            "exceeds_assumed_limit": false
+          },
+          {
+            "scenario": "n2__cold__iid",
+            "maximum_C": 79.93776728929174,
+            "time_of_maximum_s": 494.25,
+            "exceeds_assumed_limit": false
+          },
+          {
+            "scenario": "n2__input_equilibrated__iid",
+            "maximum_C": 79.41664434295043,
+            "time_of_maximum_s": 495.0,
+            "exceeds_assumed_limit": false
+          },
+          {
+            "scenario": "n3__cold__iid",
+            "maximum_C": 79.9902918406505,
+            "time_of_maximum_s": 494.25,
+            "exceeds_assumed_limit": false
+          },
+          {
+            "scenario": "n3__input_equilibrated__iid",
+            "maximum_C": 79.47949380124346,
+            "time_of_maximum_s": 495.0,
+            "exceeds_assumed_limit": false
+          },
+          {
+            "scenario": "n4__cold__iid",
+            "maximum_C": 80.01752745407995,
+            "time_of_maximum_s": 494.0,
+            "exceeds_assumed_limit": false
+          },
+          {
+            "scenario": "n4__input_equilibrated__iid",
+            "maximum_C": 79.51324743858282,
+            "time_of_maximum_s": 495.0,
+            "exceeds_assumed_limit": false
+          },
+          {
+            "scenario": "n6__cold__iid",
+            "maximum_C": 80.04406568743465,
+            "time_of_maximum_s": 494.0,
+            "exceeds_assumed_limit": false
+          },
+          {
+            "scenario": "n6__input_equilibrated__iid",
+            "maximum_C": 79.54760391827661,
+            "time_of_maximum_s": 495.0,
+            "exceeds_assumed_limit": false
+          },
+          {
+            "scenario": "n8__cold__iid",
+            "maximum_C": 80.0566908977611,
+            "time_of_maximum_s": 494.0,
+            "exceeds_assumed_limit": false
+          },
+          {
+            "scenario": "n8__input_equilibrated__iid",
+            "maximum_C": 79.56473963795992,
+            "time_of_maximum_s": 495.0,
+            "exceeds_assumed_limit": false
+          },
+          {
+            "scenario": "n12__cold__iid",
+            "maximum_C": 80.06885812426589,
+            "time_of_maximum_s": 493.75,
+            "exceeds_assumed_limit": false
+          },
+          {
+            "scenario": "n12__input_equilibrated__iid",
+            "maximum_C": 79.58174665640652,
+            "time_of_maximum_s": 495.0,
+            "exceeds_assumed_limit": false
+          },
+          {
+            "scenario": "pure__cold__iid",
+            "maximum_C": 80.09152633473789,
+            "time_of_maximum_s": 493.75,
+            "exceeds_assumed_limit": false
+          },
+          {
+            "scenario": "pure__input_equilibrated__iid",
+            "maximum_C": 79.61530595196493,
+            "time_of_maximum_s": 495.0,
+            "exceeds_assumed_limit": false
+          }
+        ]
+      }
+    }
+  },
+  "assumptions": "Common known hypothetical covariance, baseline fitted mean parameters, finite horizon and the parameter-design amplitude/dose/slew/temperature assumptions. Gaussian fixed-mean error is an ideal simple-hypothesis calculation only; model discrepancy and nuisance fitting invalidate its use as real experimental power. No hardware run."
+}

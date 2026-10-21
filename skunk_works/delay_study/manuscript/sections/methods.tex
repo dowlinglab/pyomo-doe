@@ -57,7 +57,7 @@ We prespecified 241 additional calibrations. For each of eight delayed models
 and three calibration datasets, four nuisance treatments give 96 fits:
 free ambient with cold history, free ambient with equilibrated history,
 free history with fixed ambient, and both free. Ambient offsets have bounds
-$[-2,2]\,{}^\circ\mathrm C$, separately for each record; history fractions
+$[-2,2]\,{}^\circ\mathrm C$, separately for each record; history fractions $\gamma_j$
 have bounds $[0,1]$. These bounds describe assumed sensitivity ranges.
 They are not independently measured probability distributions. The three
 IO parameters are shared across records in a joint fit. We use logarithmic
@@ -154,6 +154,18 @@ distribution with one degree of freedom. These thresholds assume an appropriate
 independent Gaussian likelihood and regular identification; they are conditional
 diagnostics when those assumptions fail.
 
+After comparing first-pass sets with the exact physical equivalence family,
+we refined a declared selection of observed crossings in a separate phase.
+The selection covers the redundant original physical coordinates, cold
+one-stage delay profiles in both coordinates, and the representative joint
+cold higher-order delay profiles. Feasible exact-equivalence witnesses are
+included before crossing refinement. Bisection stops at a likelihood-ratio
+residual of $10^{-3}$ or a log-parameter bracket width of $10^{-7}$, with at
+most 26 steps and four nuisance starts per new point. The original grids are
+preserved. A separate audit checks forward objectives at new points and whole
+compatible-family inclusion inside the fitting box; it cannot establish the
+absence of other modes.
+
 The resampling design specified 400 refits for each of four circular residual
 block lengths (1, 10, 30, and 60 samples), plus 400 independent Gaussian
 simulations at the fixed $0.25\,{}^\circ\mathrm C$ standard deviation, for each
@@ -195,18 +207,6 @@ accuracy. The study conditions on these generating points and does not estimate
 coverage under real between-record model discrepancy.
 Bootstrap intervals remain real-data sensitivity comparisons; their
 repeated-sampling coverage is unmeasured by this experiment.
-
-After comparing first-pass sets with the exact physical equivalence family,
-we refined a declared selection of observed crossings in a separate phase.
-The selection covers the redundant original physical coordinates, cold
-one-stage delay profiles in both coordinates, and the representative joint
-cold higher-order delay profiles. Feasible exact-equivalence witnesses are
-included before crossing refinement. Bisection stops at a likelihood-ratio
-residual of $10^{-3}$ or a log-parameter bracket width of $10^{-7}$, with at
-most 26 steps and four nuisance starts per new point. The original grids are
-preserved. A separate audit checks forward objectives at new points and whole
-compatible-family inclusion inside the fitting box; it cannot establish the
-absence of other modes.
 
 \subsection{Conditional prediction uncertainty}
 For target mean sensitivity $\bm j(t)$, local mean variance is
