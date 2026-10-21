@@ -89,7 +89,7 @@ Keep failed attempts and failed chunks in subsequent summaries.
 | Structural calculations | Fitted transfer functions and fixed synthetic limits | `run_structural.py`, `run_onset_limit.py`; analytic equivalents, state/quad checks and source receipts |
 | Family-function uncertainty | Saved cold n1 bootstrap draws; no new fits | `run_family_uncertainty.py`; identifiable transfer functions and family-boundary functions |
 | OU likelihood | 48 IO fits and retained observation times | `run_ou.py`, `summarize_ou.py`; saved-trajectory likelihood and covariance audit |
-| Synthetic coverage | Four cold generators, three true noise processes, 300 draws each | `run_coverage.py`, `summarize_coverage.py`; complete terminal accounting before summarizing 3,600 draws |
+| Synthetic coverage | Four cold generators, three true noise processes, 300 draws each | `run_coverage.py`, `summarize_coverage.py`; complete terminal accounting before summarizing 3,600 draws; `plot_coverage.py` and `audit_coverage_figures.py` select/check all 84 IO delay rows |
 | Assumption sensitivity | 241 tasks in `sensitivity_config.json` and baseline fits | `run_sensitivity.py`, `audit_sensitivity.py`; independent chain initial-state propagation, finite-difference information/rank, all-start/SSE and held-out checks |
 | Prediction uncertainty | Baseline/OU fits and completed bootstrap arrays | `run_prediction_uncertainty.py`, `audit_prediction_uncertainty.py`; 131 jobs, global estimability checks, separate mean/observation bands and all-point audits |
 | Parameter design | Joint fits and `design_config.json` | `run_design.py`, `audit_design.py`; 112 jobs, direct information/resource/selection audits and all-model dense tail simulation |

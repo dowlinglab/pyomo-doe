@@ -240,6 +240,7 @@ def main():
     args.output.mkdir(parents=True, exist_ok=True)
     pd.DataFrame(rows).to_csv(args.output/"coverage_summary.csv", index=False)
     save_json(args.output/"audit.json", {"status": "passed", "requested_draws": manifest["expected_draws"],
+                                        "summary_sha256": sha(args.output/"coverage_summary.csv"),
                                         "failed_or_missing_draws": len(failures), "failures": failures,
                                         "summary_rows": len(rows), "maximum_arithmetic_errors": maxima,
                                         "optimizer_attempts_on_completed_draws": attempts,

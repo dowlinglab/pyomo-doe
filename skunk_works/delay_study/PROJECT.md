@@ -29,7 +29,7 @@ scope, and `results/manifest.json` will identify manuscript results.
 - Notebook migration committed in `58b4fa5`: 13 deterministic Python exports,
   scientific-cell AST equality, and a successful migrated simulation run.
 - Exact LTI models committed in `451749f`; inference runner in `275fe0a`.
-  One hundred and thirty-one focused checks pass after adding exact-draft expansion,
+  One hundred and thirty-eight focused checks pass after adding exact-draft expansion,
   citation-offset, independent nuisance/prediction/design/discrimination audits, and explicit
   profile-catalog selection checks. They cover independent integrator/analytic agreement,
   transformations, synthetic recovery, null directions, profile recovery,
@@ -363,6 +363,25 @@ pass. A separate design check verifies that log D, delay-target and transformed
 prediction utilities and gradients agree in IO and physical metrics, while E
 changes with the metric. The methods section now records the complete planned
 coverage, parameter-design and discrimination matrices.
+
+The prepared `plot_coverage.py` refuses active, partial or unbound summaries.
+After terminal summarization, it will show all 84 IO delay rows (four model
+points, three true covariances and seven interval methods), with conditional
+Wilson bars and a separate median-width view. Hollow symbols mark incomplete
+method denominators; NA remains undefined. Companion JSON/CSV retain exact
+counts, unconditional failure bounds, component-sum versus envelope widths,
+exploration flags and interpolation sensitivity. The summary now binds its CSV
+hash in its audit. `audit_coverage_figures.py` independently recomputes these
+quantities from saved interval endpoints, solves Wilson score roots and a local
+quadratic interpolation system, and checks both exported data formats. Seven new
+checks include a full all-worker-failed artifact fixture and altered undefined
+values; the full suite passed 138/138 in 8.17 s. Synthetic-only color/grayscale
+layout inspection corrected overlapping width labels. Shared width limits use
+all panels' data, with a regression check against clipping later noise rows.
+Its scoped receipt is
+`baseline/coverage_artifact_preflight.json`; it is not production outcome or
+final figure validation. No production coverage outcomes have been summarized
+or inspected while that run remains active.
 
 The small deterministic onset phase from `a0f01fe` is complete in
 `results/onset_limit`: 18 exact Erlang-CDF calculations, independently checked
