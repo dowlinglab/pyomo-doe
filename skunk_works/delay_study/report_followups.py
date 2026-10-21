@@ -141,8 +141,8 @@ def main():
     fig.legend(*axes[0].get_legend_handles_labels(), loc="upper center", ncol=4, bbox_to_anchor=(.5, 1.015))
     fig.tight_layout(rect=(0, 0, 1, .93), h_pad=1.5)
     save(fig, "nuisance_sensitivity", "Joint fits; independently fitted ambient offsets within +/-2 C and history fractions within [0,1]. All four selected joint ambient/history fits reach the step ambient upper bound. No measured ambient/history or physical probability is inferred. Lines join categorical assumptions.")
-    table("nuisance_parameters", ["Model", r"\shortstack{$K$\\(${}^\circ$C/\%)}", r"$\theta$ (s)", r"\shortstack{$\Delta T_{a,\sin}$\\(${}^\circ$C)}", r"\shortstack{$\Delta T_{a,\rm step}$\\(${}^\circ$C)}", r"$\rho_{\sin}$", r"$\rho_{\rm step}$"], nuisance_rows,
-          r"Joint fits with free ambient and history. Ambient offsets are in degrees Celsius; history fractions $\rho$ multiply the initial command. Gain units are degrees Celsius per command percentage point. Every displayed step offset reaches the imposed $+2$ degree bound. These are sensitivity fits under declared bounds, not independently measured ambient temperatures or histories.", "tab:nuisance-parameters")
+    table("nuisance_parameters", ["Model", r"\shortstack{$K$\\(${}^\circ$C/\%)}", r"$\theta$ (s)", r"\shortstack{$\Delta T_{a,\sin}$\\(${}^\circ$C)}", r"\shortstack{$\Delta T_{a,\rm step}$\\(${}^\circ$C)}", r"$\gamma_{\sin}$", r"$\gamma_{\rm step}$"], nuisance_rows,
+          r"Joint fits with free ambient and history. Ambient offsets are in degrees Celsius; history fractions $\gamma$ multiply the initial command. Gain units are degrees Celsius per command percentage point. Every displayed step offset reaches the imposed $+2$ degree bound. These are sensitivity fits under declared bounds, not independently measured ambient temperatures or histories.", "tab:nuisance-parameters")
 
     fig, axes = fs.figure(fs.MULTI_PANEL, nrows=2, sharex=True)
     for order, title, color, marker in MODELS:
