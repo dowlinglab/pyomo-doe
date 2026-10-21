@@ -221,11 +221,26 @@ from saved numerical outputs and replace status placeholders before delivery.
 
 ## Prepared next numerical phases
 
-All **33 focused checks passed** on the current code: exact models, inference,
+All **38 focused checks passed** across the current modules: exact models, inference,
 profiles and their recovery path, bootstrap resampling, and design maps/gradients
-and resource constraints. The new design utilities are in `design.py`; a full
+and resource constraints, plus five irregular-time residual-likelihood checks.
+The new design utilities are in `design.py`; a full
 resumable design driver still needs to be written. The measured bootstrap source
 is unaffected because its run uses the earlier immutable snapshot.
+
+The new `noise.py` evaluates a stationary Gaussian Ornstein-Uhlenbeck (OU)
+residual likelihood at actual observation times, resetting across experiments
+and profiling a shared variance. Its determinant term is retained. Analytic
+gradients agree with independent finite differences; whitening and likelihood
+agree with a dense covariance calculation. A resumable multistart OU calibration
+driver still needs to be written and run. This is a working noise assumption,
+not established physics of TC-Lab discrepancy. Add comparison to IID fits,
+bound diagnostics, and uncertainty conditional on or profiling the noise scale.
+Do not infer that fitting correlated residuals repairs a biased thermal mean.
+
+The lab's DOI checker verified **4/4 cited entries as MATCH** against Crossref;
+`literature/doi_results.json` preserves the result. This checks reference identity,
+not whether a source supports a particular manuscript statement.
 
 After the bootstrap pool stops, run the three failed original Ua profiles into a
 separate output folder, retaining the first pass. The retry is explicit:
