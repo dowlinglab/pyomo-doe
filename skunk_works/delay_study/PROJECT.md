@@ -32,8 +32,13 @@ scope, and `results/manifest.json` will identify manuscript results.
   outputs remain locally in ignored `_runs/initial_sweep_undefined_covariance/`.
   The correction uses SVD of the sensitivity matrix directly and reports undefined
   full covariance and null standard deviations along nonestimable directions.
-  Fitting itself is unchanged. Next: rerun all 99 cases, account for fit deltas,
-  then profiles, bootstrap, initialization/noise sensitivity and input design.
+  Fitting itself is unchanged. The corrected sweep completed **99/99** cases.
+  `results/comparison_receipt.json` verifies 95 prior objectives agree within
+  1.14e-13. `results/fit_summary.csv` and `coordinate_comparison.csv` are generated
+  by `summarize_fits.py`, not manually maintained tables.
+  Next: full likelihood profiles, block/bootstrap uncertainty, model mismatch
+  and initialization/noise sensitivity, input design, literature grounding, and
+  the manuscript. The overnight goal remains active; do not mark it complete early.
 - Literature packet: `6f11d88ebd8741c892fea8fffc243d7d`. Initial revision:
   `d88745b5615020ca2f74fa981cd87f94d867723803a0f0efb5a668e0a09f2262`.
   Current observed revision after two searches:
@@ -102,3 +107,20 @@ The runner caps workers at four, uses a nonblocking lock, checks measured source
 against HEAD, and refuses reuse across source/configuration changes. Prediction
 CSVs are gzip-compressed with a fixed timestamp; all attempt/convergence records
 and conditional noise assumptions remain in the case JSONs.
+
+For long later phases, use `frozen_run.py`: it copies committed Python sources,
+configuration and raw data into a temporary snapshot with read-only source files,
+checks the pinned runtime, and records hashes and a reproduction command at the
+output. This makes the measured source independent of subsequent edits in this
+checkout. Never change the snapshot or the committed fit inputs during a job.
+Run at most four numerical workers total, including across different phases.
+
+```
+OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 python skunk_works/delay_study/frozen_run.py run_profiles.py --fits skunk_works/delay_study/results/fits --output skunk_works/delay_study/results/profiles
+```
+
+There are 300 profile jobs (three parameters per delayed model, four per original
+physical model). Grids include global exploration and local refinement; the
+one-stage cold model additionally includes the exchanged pole-label mode.
+Intervals preserve disconnected components. IID Gaussian likelihood thresholds
+are conditional diagnostics, not coverage guarantees for autocorrelated residuals.
