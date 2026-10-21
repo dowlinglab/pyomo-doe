@@ -163,7 +163,8 @@ def main():
                                         [[r"$\log K$", r"$\log\tau$", r"$\log\theta$"],
                                          [r"$\log U_a$", r"$\log C_p$", r"$\log\theta$"]]):
         array = np.array(vectors_data[key]).T
-        shown = ax.imshow(array, vmin=-1, vmax=1, cmap=fs.DIVERGING, aspect="auto")
+        shown = ax.imshow(array, vmin=-1, vmax=1, cmap=fs.DIVERGING, aspect="auto",
+                          interpolation="nearest", resample=False)
         for (i, j), value in np.ndenumerate(array):
             ax.text(j, i, f"{value:.2f}", ha="center", va="center", color="white" if abs(value) > .6 else "black")
         ax.set_yticks([0, 1, 2])
