@@ -1,4 +1,14 @@
-# Current n=1 residual teaching study
+# Completed Tiers 0-2; researcher review checkpoint
+
+The nine-page [report](report/output/pdf/TC_Lab_n1_residual_teaching_Tiers0-2.pdf)
+was emailed through Gmail to adowling@nd.edu exactly once on October 24, 2026.
+The Sent message and attachment metadata were verified; see
+[delivery receipt](delivery_receipt.json). All numerical and source checks passed.
+The shared mean/error description still has unresolved input-related residuals
+and transfer errors. Await Alex's review before Tier 3; do not enumerate more
+pairs or send this report again. No numerical jobs remain live.
+
+# Work record
 
 Goal active from 2026-10-24 16:39:24 UTC. Agreed scope: `../review/approach.md`.
 Implementation: `execution_plan.md`; records/pairs: `config.json`.
@@ -10,7 +20,7 @@ This phase leaves the completed October 21 study and deliveries unchanged.
 | Tier 0 mean/error exploration | Calculations complete; adequacy unresolved | Working structure frozen with explicit limitations |
 | Tier 1 P1 uncertainty/evaluation | All calculations and numerical audits complete | Final source and delivery checks |
 | Tier 2 P2-P6 | All five restricted analyses and evaluations complete | Satisfied; Tier 3 awaits researcher review |
-| Report/Gmail/push | Report and sources verified; delivery next | Push, one verified email, final receipt |
+| Report/Gmail/push | Verified report pushed and emailed once | Final receipt committed; stop for review |
 
 No TC-Lab numerical process was live at startup reconciliation. Read the current
 manifest before launching work. Reuse the old hourly heartbeat for this goal.
