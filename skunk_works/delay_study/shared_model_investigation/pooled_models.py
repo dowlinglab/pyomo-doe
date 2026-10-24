@@ -80,7 +80,7 @@ class PooledModel:
         hi = [1.5]+[2.]*(self.ninput-1)+[2.]*len(self.records)
         return np.array(lo),np.array(hi)
 
-    def projected(self, point, kernel='ou_nugget'):
+    def projected(self, point, kernel='ou_nugget', fixed_gain=None):
         from covariance import Whitening
         nt = 2 if self.kind=='chain' else self.m
         X = self.design(tuple(point[:nt]))
@@ -88,13 +88,20 @@ class PooledModel:
                       [np.exp(point[nt]),point[nt+1]] if kernel!='iid' else [])
         joint = W(np.column_stack((X,self.y)))
         Xw,yw = joint[:,:-1],joint[:,-1]
-        solve = lsq_linear(Xw,yw,bounds=self.coefficient_bounds(),tol=1e-11,lsmr_tol=1e-12)
+        lower,upper=self.coefficient_bounds()
+        if fixed_gain is None:
+            solve = lsq_linear(Xw,yw,bounds=(lower,upper),tol=1e-11,lsmr_tol=1e-12)
+            coefficients=solve.x
+        else:
+            if not lower[0]<=fixed_gain<=upper[0]:raise ValueError('Fixed gain outside declared bounds')
+            solve=lsq_linear(Xw[:,1:],yw-Xw[:,0]*fixed_gain,bounds=(lower[1:],upper[1:]),tol=1e-11,lsmr_tol=1e-12)
+            coefficients=np.r_[fixed_gain,solve.x]
         if not solve.success:
             raise RuntimeError('Bounded coefficient projection failed')
-        r = Xw@solve.x-yw
+        r = Xw@coefficients-yw
         scale = np.sqrt(r@r/self.count)
         nll = .5*(self.count*(np.log(2*np.pi)+1+2*np.log(scale))+W.logdet)
-        return float(nll),solve.x,float(scale),W
+        return float(nll),coefficients,float(scale),W
 
     def trajectories(self, point, coefficients):
         nt = 2 if self.kind=='chain' else self.m
