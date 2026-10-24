@@ -22,16 +22,19 @@ def main():
     parser=argparse.ArgumentParser()
     parser.add_argument('--output',type=Path,required=True)
     parser.add_argument('--starts',type=int,default=8)
+    parser.add_argument('--audit-inputs',type=Path,nargs='+')
     args=parser.parse_args()
     source=json.loads((args.output/'source_snapshot.json').read_text())
     tasks=[]
-    for policy in ('fixed_ou','iid'):
+    for policy in (() if args.audit_inputs else ('fixed_ou','iid')):
         for order in (1,2,3):
             tasks.append({'id':'chain'+str(order)+'_'+policy,'driver':'run_pooled.py',
                           'args':['--kind','chain','--order',str(order),'--starts',str(args.starts),'--objective',policy]})
     for task in list(tasks):
         tasks.append({'id':task['id']+'_audit','driver':'audit_pooled.py',
                       'args':['--input',str(args.output/task['id'])]})
+    if args.audit_inputs:
+        tasks=[{'id':p.name+'_audit','driver':'audit_pooled.py','args':['--input',str(p)]} for p in args.audit_inputs]
     state={'status':'running','tasks':[],'max_child_numerical_processes':1}
     write(args.output/'matrix_manifest.json',state)
     for task in tasks:
