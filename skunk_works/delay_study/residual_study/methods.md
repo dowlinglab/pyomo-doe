@@ -69,3 +69,20 @@ private state `state-0.5.9-maintenance-2026-10-22` under Application Support.
 The literature-synthesis workflow is available; native passage/packet audit for
 the new report is still pending. No shared library or client configuration was
 changed by this inspection.
+
+The author-hosted Hartikainen/Särkkä PDF was retained at
+`/private/tmp/tclab_gp_kalman_source.pdf`, SHA-256
+bba85ed12fee67d1dfc581ba67669906efa98070caaf1a9ac1f26aef04f3bdfd.
+Rendered physical pages 3 and 5 were inspected: p=1 companion-state equations,
+stationary initialization and nonuniform sampling agree with the implementation
+derivation. No source PDF is redistributed in this repository.
+
+## Numerical refinement prompted by the first pilot
+
+`results/covariance_pilot_constant_ou_nugget` preserves the first four-start pilot
+from 576da82, including a projected-gradient warning (0.334). Central difference
+steps from 2e-5 to 2e-7 confirmed a nonzero derivative despite the optimizer's
+function-decrease stopping status. Subsequent fits supply central derivatives
+(step 2e-6) and retain any SLSQP refinement after an unsuccessful or nonstationary
+L-BFGS-B result. This changes numerical optimization, not the likelihood, data,
+bounds or adequacy criteria. Retain the pilot rather than replacing its record.

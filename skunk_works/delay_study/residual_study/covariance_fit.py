@@ -84,6 +84,7 @@ def joint_fit(records, config, mode, hold, kernel, baseline, callback=None, alte
     best = None
     begun = time.monotonic()
     objective = lambda x: projected_state(records, config, mode, hold, kernel, x)[0]
+    derivative = lambda x: numerical_gradient(objective, x, bounds, step=2e-6)
     for index, thermal in enumerate(pole_seeds):
         noise = noise_seeds[index % len(noise_seeds)]
         coords = [] if kernel == "iid" else [np.log(noise[0])]+([noise[1]] if kernel.endswith("_nugget") else [])
@@ -93,11 +94,26 @@ def joint_fit(records, config, mode, hold, kernel, baseline, callback=None, alte
             point = np.r_[np.log([last["tau"], last["theta"]]),
                           covariance_coordinates(kernel, last["noise_parameters"])]
         try:
-            fit = minimize(objective, point, method="L-BFGS-B", bounds=bounds,
+            fit = minimize(objective, point, jac=derivative, method="L-BFGS-B", bounds=bounds,
                            options={"maxiter": 600, "maxfun": 5000, "ftol": 1e-12,
-                                    "gtol": 1e-5, "maxls": 35, "eps": 2e-6})
+                                    "gtol": 1e-5, "maxls": 35})
+            def attempt(f, solver):
+                gradient = derivative(f.x)
+                return {"solver": solver, "coordinates": f.x.tolist(), "success": bool(f.success),
+                        "message": str(f.message), "negative_log_likelihood": float(f.fun),
+                        "nfev": int(f.nfev), "nit": int(f.nit),
+                        "projected_gradient_max_abs": float(np.max(np.abs(projected_gradient(f.x, gradient, bounds))))}
+            attempts = [attempt(fit, "L-BFGS-B")]
+            selected_solver = "L-BFGS-B"
+            if not fit.success or attempts[0]["projected_gradient_max_abs"] > .05:
+                recovery = minimize(objective, fit.x, jac=derivative, method="SLSQP", bounds=bounds,
+                                    options={"maxiter": 600, "ftol": 1e-10})
+                attempts.append(attempt(recovery, "SLSQP refinement"))
+                if recovery.success and (not fit.success or recovery.fun <= fit.fun+1e-8):
+                    fit = recovery
+                    selected_solver = "SLSQP refinement"
             nll, coefficients, sigma, _ = projected_state(records, config, mode, hold, kernel, fit.x)
-            gradient = numerical_gradient(objective, fit.x, bounds)
+            gradient = derivative(fit.x)
             pg = float(np.max(np.abs(projected_gradient(fit.x, gradient, bounds))))
             row = {"start": index, "initial_coordinates": point.tolist(), "coordinates": fit.x.tolist(),
                    "success": bool(fit.success), "message": str(fit.message), "nfev": int(fit.nfev),
@@ -105,6 +121,7 @@ def joint_fit(records, config, mode, hold, kernel, baseline, callback=None, alte
                    "tau": float(np.exp(fit.x[0])), "theta": float(np.exp(fit.x[1])),
                    "noise_parameters": covariance_parameters(kernel, fit.x[2:]),
                    "sigma_total_ML_C": sigma, "coefficients": coefficients.tolist(),
+                   "solver": selected_solver, "solver_attempts": attempts,
                    "projected_gradient_max_abs": pg,
                    "active_bounds": [(-1 if x <= b[0]+1e-6 else (1 if x >= b[1]-1e-6 else 0)) for x, b in zip(fit.x, bounds)]}
             if row["success"] and (best is None or nll < best["negative_log_likelihood"]):
@@ -143,7 +160,8 @@ def alternating_fit(records, config, mode, hold, kernel, baseline, noise_start):
             W = Whitening([d.time[1:] for d in records], kernel, covariance_parameters(kernel, x))
             return profiled_likelihood(raw, W)[0]
         if kernel != "iid":
-            nf = minimize(noise_objective, noise, method="L-BFGS-B", bounds=noise_bounds,
+            noise_derivative = lambda x: numerical_gradient(noise_objective, x, noise_bounds, step=2e-6)
+            nf = minimize(noise_objective, noise, jac=noise_derivative, method="L-BFGS-B", bounds=noise_bounds,
                           options={"ftol": 1e-12, "gtol": 1e-5, "maxiter": 400, "maxls": 35, "eps": 2e-6})
             noise = nf.x
             noise_success = bool(nf.success)
