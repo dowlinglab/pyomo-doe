@@ -192,3 +192,42 @@ points and bound truncation. This cutoff is a nominal likelihood-support aid;
 active bounds and model/error misspecification prevent automatic confidence
 coverage claims. Any lower minimum must be reconciled with the reference fit,
 not hidden by shifting the profile.
+
+Wide profiles can drive the measurement variance fraction close to zero. Central
+finite-difference steps are capped at 2e-6 and reduced to 1e-4 times distance to
+the fraction boundary (floor 1e-10) for that coordinate. This improves numerical
+accuracy without changing the objective, bounds or convergence tolerances.
+`audit_noise_gradient.py` compares the derivative with the exact dense Gaussian
+covariance derivative, including eta=0.0001. Profiling at each saved thermal MLE
+also receives a separate constraint/likelihood check before the full scans.
+
+## Evaluation prediction quantities
+
+Drive each frozen pair model with the ten other records' commands and first
+temperatures. Set the primary future ambient correction to zero. Thermal mean
+ranges come from refitted parameter draws. Future-observation ranges also include
+noise/variance uncertainty. For Gaussian working errors, compute pointwise
+Gaussian-mixture quantiles deterministically; time correlation affects fitting,
+parameter uncertainty and joint exceedance patterns, while a stationary process's
+marginal variance enters each time's observation distribution.
+
+For innovation-block sensitivity, use eight correlated future paths per parameter
+draw. Step evaluation uses centered step-calibration innovations, and every sine
+evaluation uses the sine-calibration innovations. This is a stated transport
+assumption. It neither uses evaluation temperatures to learn the error model nor
+removes deterministic protocol bias. Check parameter Monte Carlo stability with
+half/full draws at nine declared times.
+
+The +/-2 C ambient bands are envelopes over bounded disturbances, not a prior
+distribution or unconditional 95% probability. Because the thermal ambient
+channel has a nonnegative impulse response, constant endpoint extremes also
+bound the declared within-band linear ambient trajectories pointwise. Keep
+thermal mean ranges separate from future-observation ranges; the unobserved
+true mean cannot be coverage-tested by counting noisy measured temperatures.
+
+After primary prediction, a separate scalar GLS ambient-channel fit may use the
+complete evaluation response to diagnose level mismatch. Label its offset and
+RMSE as a retrospective conditional reconstruction, never prospective forecast
+accuracy or independent room-temperature measurement. Empirical prediction
+fractions and consecutive misses are descriptive under serial dependence and
+overlapping evaluation sets; report no independent-binomial coverage inference.

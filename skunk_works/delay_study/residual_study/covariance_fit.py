@@ -43,8 +43,11 @@ def numerical_gradient(function, point, bounds, step=2e-5):
     gradient = []
     for j in range(len(point)):
         lo, hi = bounds[j]
-        hplus = min(step, hi-point[j])
-        hminus = min(step, point[j]-lo)
+        local_step = step
+        if lo == 0. and hi == 1.:
+            local_step = min(step, max(1e-10, 1e-4*max(min(point[j], 1-point[j]), 1e-6)))
+        hplus = min(local_step, hi-point[j])
+        hminus = min(local_step, point[j]-lo)
         if hplus > 0 and hminus > 0:
             p, m = point.copy(), point.copy()
             p[j] += min(hplus, hminus)
