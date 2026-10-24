@@ -102,8 +102,9 @@ def main():
     axes[1].set_xlim(0, .3)
     for ax in axes:
         ax.grid(axis="x", alpha=.2)
-    axes[1].legend(loc="lower right")
-    fig.tight_layout()
+    handles, run_labels = axes[1].get_legend_handles_labels()
+    fig.legend(handles, run_labels, loc="upper center", bbox_to_anchor=(.7, 1.), ncol=3, frameon=False)
+    fig.tight_layout(rect=(0, 0, 1, .92))
     image_path = args.output/"fast_sine_sensitivity.png"
     fig.savefig(image_path, dpi=180)
     plt.close(fig)
