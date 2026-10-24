@@ -7,9 +7,9 @@ from scipy.optimize import least_squares, lsq_linear
 
 
 @njit(cache=True)
-def _unit_response(time, command, tau, theta, right_hold):
+def _unit_response(time, command, tau, theta, right_hold, preload_seconds):
     output = np.zeros(len(time))
-    lag = 0.0
+    lag = command[0]*(-np.expm1(-preload_seconds/theta))
     for k in range(len(time)-1):
         h = time[k+1]-time[k]
         a = h*(1.0/tau-1.0/theta)
@@ -26,10 +26,10 @@ def _unit_response(time, command, tau, theta, right_hold):
     return output
 
 
-def unit_response(data, tau, theta, hold="left"):
-    if hold not in {"left", "right"} or min(tau, theta) <= 0:
+def unit_response(data, tau, theta, hold="left", preload_seconds=0.):
+    if hold not in {"left", "right"} or min(tau, theta) <= 0 or preload_seconds < 0:
         raise ValueError("Positive time scales and a constant hold required")
-    return _unit_response(data.time, data.input, tau, theta, hold == "right")
+    return _unit_response(data.time, data.input, tau, theta, hold == "right", preload_seconds)
 
 
 def ambient_basis(time, tau, mode):
@@ -44,7 +44,7 @@ def ambient_basis(time, tau, mode):
     return np.column_stack((a-b, b))
 
 
-def design(records, tau, theta, mode, hold):
+def design(records, tau, theta, mode, hold, initial_delta=0., preload_seconds=0.):
     nuisance = 1 if mode == "constant" else 2
     nobs = sum(len(d.time)-1 for d in records)
     X = np.zeros((nobs, 1+nuisance*len(records)))
@@ -53,15 +53,17 @@ def design(records, tau, theta, mode, hold):
     for j, data in enumerate(records):
         count = len(data.time)-1
         section = slice(offset, offset+count)
-        X[section, 0] = unit_response(data, tau, theta, hold)[1:]
+        X[section, 0] = unit_response(data, tau, theta, hold, preload_seconds)[1:]
         X[section, 1+j*nuisance:1+(j+1)*nuisance] = ambient_basis(data.time, tau, mode)[1:]
-        y[section] = data.temperature[1:]-data.temperature[0]
+        transient = initial_delta*np.exp(-(data.time[1:]-data.time[0])/tau)
+        y[section] = data.temperature[1:]-data.temperature[0]-transient
         offset += count
     return X, y
 
 
 def project(records, tau, theta, mode, hold, config, whitening=None):
-    X, y = design(records, tau, theta, mode, hold)
+    X, y = design(records, tau, theta, mode, hold,
+                  config.get("initial_temperature_offset_C", 0.), config.get("preload_seconds", 0.))
     if whitening is not None:
         X, y = whitening(X), whitening(y)
     lo, hi = config["ambient_offset_bounds_C"]
@@ -101,7 +103,7 @@ def fit_mean(records, config, mode="constant", hold="left", callback=None):
                    "tau": float(tau), "theta": float(theta),
                    "coefficients": coefficients.tolist(), "optimality": float(fit.optimality),
                    "time_bound_mask": fit.active_mask.tolist()}
-            if best is None or row["SSE"] < best["SSE"]:
+            if fit.success and (best is None or row["SSE"] < best["SSE"]):
                 best = row
         except Exception as exc:
             row = {"start": index, "seed_tau_theta": seed, "success": False,
@@ -112,6 +114,8 @@ def fit_mean(records, config, mode="constant", hold="left", callback=None):
     if best is None:
         raise RuntimeError("Every mean-fit start failed")
     return {"mode": mode, "hold": hold, "nobs": sum(len(d.time)-1 for d in records),
+            "initial_temperature_offset_C": config.get("initial_temperature_offset_C", 0.),
+            "preload_seconds": config.get("preload_seconds", 0.),
             "record_names": [d.name for d in records], "best": best, "starts": starts,
             "all_starts_successful": all(s["success"] for s in starts)}
 
@@ -122,7 +126,8 @@ def fitted_records(records, result):
     width = 1 if result["mode"] == "constant" else 2
     fitted = []
     for j, data in enumerate(records):
-        pred = data.temperature[0]+c[0]*unit_response(data, best["tau"], best["theta"], result["hold"])
+        pred = data.temperature[0]+c[0]*unit_response(data, best["tau"], best["theta"], result["hold"], result.get("preload_seconds", 0.))
+        pred += result.get("initial_temperature_offset_C", 0.)*np.exp(-(data.time-data.time[0])/best["tau"])
         pred += ambient_basis(data.time, best["tau"], result["mode"])@c[1+j*width:1+(j+1)*width]
         fitted.append(pred)
     return fitted

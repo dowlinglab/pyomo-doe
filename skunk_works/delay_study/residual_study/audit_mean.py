@@ -6,11 +6,13 @@ from scipy.linalg import expm
 from mean import ambient_basis, unit_response
 
 
-def reference(data, K, tau, theta, endpoints, hold, integration=False):
+def reference(data, K, tau, theta, endpoints, hold, integration=False, initial_delta=0., preload_seconds=0.):
     time = data.time-data.time[0]
     duration = time[-1]
     slope = (endpoints[1]-endpoints[0])/duration
-    state = np.array([0., data.temperature[0], data.temperature[0]+endpoints[0], 1.])
+    state = np.array([data.input[0]*(-np.expm1(-preload_seconds/theta)),
+                      data.temperature[0]+initial_delta,
+                      data.temperature[0]+endpoints[0], 1.])
     result = [state[1]]
     A = np.array([[-1/theta, 0, 0, 0], [K/tau, -1/tau, 1/tau, 0],
                   [0, 0, 0, slope], [0, 0, 0, 0.]])
@@ -59,6 +61,18 @@ def audit():
                                               ambient_basis(d.time, 16, "constant"))))
     if cold_error > 1e-9 or ambient_difference < .1:
         raise AssertionError("Pole/ambient test failed")
+    for initial_delta, preload in [(-.165, 0.), (.165, 0.), (0., 1.)]:
+        p = d.temperature[0]+.83*unit_response(d, 150, 16, "left", preload)
+        p += initial_delta*np.exp(-(d.time-d.time[0])/150)
+        p += ambient_basis(d.time, 150, "constant")[:, 0]*(-1.2)
+        matrix = reference(d, .83, 150, 16, [-1.2, -1.2], "left", initial_delta=initial_delta, preload_seconds=preload)
+        integration = reference(d, .83, 150, 16, [-1.2, -1.2], "left", True, initial_delta, preload)
+        error = float(np.max(np.abs(p-matrix)))
+        numerical = float(np.max(np.abs(p-integration)))
+        if error > 2e-8 or numerical > 2e-7:
+            raise AssertionError("Startup-sensitivity propagation disagreement")
+        cases.append({"initial_delta_C": initial_delta, "preload_seconds": preload,
+                      "matrix_error_C": error, "integration_error_C": numerical})
     return {"status": "passed", "cases": cases, "cold_unit_response_swap_max_C": cold_error,
             "same_offset_pole_swap_response_difference_per_C": ambient_difference,
             "scope": "Forward propagation only; ambient difference at fixed offsets does not prove identifiability after nuisance refitting"}

@@ -86,3 +86,39 @@ function-decrease stopping status. Subsequent fits supply central derivatives
 (step 2e-6) and retain any SLSQP refinement after an unsuccessful or nonstationary
 L-BFGS-B result. This changes numerical optimization, not the likelihood, data,
 bounds or adequacy criteria. Retain the pilot rather than replacing its record.
+
+## Declared Tier 0 assumption checks
+
+Before outcome inspection, `run_sensitivity.py` defines nine diagnostic cases:
+right-held commands; fixed initial-temperature shifts of -0.165 and +0.165 C;
+one second of constant-command prehistory in the input lag; ambient-offset
+bounds widened to +/-4 C; and separate three-run fits for each of the 30-second,
+two-minute, five-minute and step protocols. Each case repeats 24-start OLS,
+alternating GLS and 24-start joint fitting with constant ambient and OU plus
+measurement noise. Primary +/-2 C, left-held fits are preserved unchanged.
+The optional startup terms default to zero, preserving prior predictions and
+likelihood. Thirty-nine forward checks include the new startup scenarios.
+
+The initial-temperature scenarios set true thermal T(0)=recorded T1(0)+dinit,
+while retaining the recorded first reading as the ambient reference. Their mean
+contribution is dinit*exp(-t/tau); the first residual remains excluded. The 0.165 C
+magnitude is half the larger observed 0.33 C level spacing. It is a bounded
+diagnostic choice, not a measured error distribution. The same-sign shifts in
+all runs are not a worst-case envelope over independent run errors. Input
+prehistory sets z(0)=u(0)*(1-exp(-1/theta)) while conditioning on the recorded
+thermal initial state. Neither startup quantity becomes a new fitted parameter.
+
+Agent hypotheses: a timing explanation should change the residual harmonic and
+command association when the hold changes; active ambient bounds should matter
+if widening them reduces the discrepancy; a shared-mean limitation may become
+clearer in protocol-specific fits. A better-fitting endpoint convention alone
+does not overturn the acquisition-code evidence. Do not use a covariance kernel
+to disguise deterministic input dependence. Protocol fits diagnose Tier 0 and
+do not add one-sine/one-step pairs to the six-pair Tier 1/2 budget.
+
+`fit_diagnostics.py` reconstructs selected means with an independent augmented
+matrix exponential and computes likelihoods/innovations with dense Cholesky.
+It also reports descriptive residual harmonics after t=300 s, fitting a
+constant, linear and quadratic trend plus the known sine/cosine. The five-minute
+window contains only two cycles; no IID uncertainty claim accompanies these
+harmonic coefficients.

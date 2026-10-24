@@ -135,6 +135,8 @@ def joint_fit(records, config, mode, hold, kernel, baseline, callback=None, alte
     if best is None:
         raise RuntimeError("No converged joint-likelihood start")
     return {"mode": mode, "hold": hold, "kernel": kernel, "best": best,
+            "initial_temperature_offset_C": config.get("initial_temperature_offset_C", 0.),
+            "preload_seconds": config.get("preload_seconds", 0.),
             "starts": rows, "elapsed_s": time.monotonic()-begun,
             "record_names": [d.name for d in records],
             "nobs": sum(len(d.time)-1 for d in records),
@@ -154,7 +156,8 @@ def alternating_fit(records, config, mode, hold, kernel, baseline, noise_start):
     stable = 0
     previous = None
     for iteration in range(50):
-        X, y = design(records, *np.exp(times), mode, hold)
+        X, y = design(records, *np.exp(times), mode, hold,
+                      config.get("initial_temperature_offset_C", 0.), config.get("preload_seconds", 0.))
         raw = X@coefficients-y
         def noise_objective(x):
             W = Whitening([d.time[1:] for d in records], kernel, covariance_parameters(kernel, x))
@@ -173,7 +176,8 @@ def alternating_fit(records, config, mode, hold, kernel, baseline, noise_start):
                            ftol=1e-11, xtol=1e-11, gtol=1e-8, diff_step=2e-6)
         times = mf.x
         coefficients, _ = project(records, *np.exp(times), mode, hold, config, W)
-        X, y = design(records, *np.exp(times), mode, hold)
+        X, y = design(records, *np.exp(times), mode, hold,
+                      config.get("initial_temperature_offset_C", 0.), config.get("preload_seconds", 0.))
         nll, sigma, _ = profiled_likelihood(X@coefficients-y, W)
         scaled = np.r_[times, noise, coefficients/np.r_[1., np.full(len(coefficients)-1, 2.)], np.log(sigma)]
         delta = None if previous is None else float(np.max(np.abs(scaled-previous["scaled"])))
