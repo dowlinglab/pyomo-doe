@@ -88,12 +88,13 @@ def main():
     first = U["pairs"]["P1"]
     rows = []
     range_rows = []
+    symbols = {"K": "K", "tau": r"\tau", "theta": r"\theta"}
     for k, name in enumerate(("K", "tau", "theta")):
-        rows.append(["$"+name+"$", format(I["P1"]["IID_OLS_thermal"]["thermal_std_native"][k], ".4g"),
+        rows.append(["$"+symbols[name]+"$", format(I["P1"]["IID_OLS_thermal"]["thermal_std_native"][k], ".4g"),
                      format(I["P1"]["OLS_HAC_Bartlett_by_sample_bandwidth"]["30"]["thermal_std_native"][k], ".4g"),
                      format(I["P1"]["conditional_GLS_thermal"]["thermal_std_native"][k], ".4g"),
                      format(I["P1"]["observed_curvature"]["thermal_std_native_diagnostic"][k], ".4g")])
-        range_rows.append(["$"+name+"$",
+        range_rows.append(["$"+symbols[name]+"$",
                      interval(first["gaussian"]["distributions"][name]["quantiles_025_50_975"], 3),
                      interval(first["blocks60"]["distributions"][name]["quantiles_025_50_975"], 3)])
     tier1 = table(["Parameter", "IID SD", "HAC(30) SD", "GLS SD", "Full-curvature SD"], rows)
@@ -107,10 +108,10 @@ def main():
     parts = []
     for name in ("K", "tau", "theta"):
         row = next(r for r in profile_p1 if r["parameter"] == name)
-        parts.append("$"+name+"$: "+" or ".join("["+format(a, ".4g")+", "+format(b, ".4g")+"]" for a,b in row["included_grid_components"]))
+        parts.append("$"+symbols[name]+"$: "+" or ".join("["+format(a, ".4g")+", "+format(b, ".4g")+"]" for a,b in row["included_grid_components"]))
     tier1 += "Nominal profile support is "+"; ".join(parts)+". Finite grid and crossing brackets are retained in the numerical archive.\n"
     tier1 += "\\begin{figure}[htbp]\\centering\\includegraphics[width=\\linewidth]{generated/figures/P1_predictions.pdf}\\caption{P1 predictions for three evaluation records. Blue bands are pointwise Gaussian working observation ranges at zero future ambient correction; gray envelopes also allow ambient offsets in $\\pm2\\C$. Ambient envelopes have no assigned probability. Black points are recorded temperatures.}\\end{figure}\n"
-    (args.output/"tier1.tex").write_text(tier1)
+    (args.output/"tier1.tex").write_text(tier1.replace("generated/figures/", args.output.name+"/figures/"))
     rows, pole_rows, eigen_rows, fit_rows, band_rows, length_rows = [], [], [], [], [], []
     for pair, info in I.items():
         u = U["pairs"][pair]
@@ -144,7 +145,7 @@ def main():
     tier2 += table(["Pair", "Gaussian inside, \\%", "Block inside, \\%", "Gaussian + ambient, \\%"], band_rows)
     tier2 += "Fractions count measured temperatures inside pointwise future-observation ranges, pooled by sample count. Ambient envelopes are scenarios. Overlapping evaluation records and serial dependence prevent independent-binomial coverage claims.\n"
     tier2 += "\\begin{figure}[htbp]\\centering\\includegraphics[width=\\linewidth]{generated/figures/prediction_RMSE.pdf}\\caption{Zero-ambient prediction RMSE in degrees Celsius. White cells are the two calibration records for that pair. Records are labeled by sine period or step (S), then run number.}\\end{figure}\n"
-    (args.output/"tier2.tex").write_text(tier2)
+    (args.output/"tier2.tex").write_text(tier2.replace("generated/figures/", args.output.name+"/figures/"))
     plt.rcParams.update({"font.size":8,"axes.spines.top":False,"axes.spines.right":False,"pdf.fonttype":42})
     examples = ["sin_50_50_run_1", "sin_5_50_run_2", "step_50_run_3"]
     numeric = np.load(args.predictions/"P1"/"predictions.npz")
