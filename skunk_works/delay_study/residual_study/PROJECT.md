@@ -199,3 +199,11 @@ corrected to overlay coordinates and visually checked. This is an unfinished
 report scaffold, not a deliverable. Native literature intake published the
 reviewed Hartikainen/Sarkka author manuscript with local byte readback; final
 claim/page grounding and new report packet export remain pending.
+
+All 18 profiles are terminal. The independent audit from a991414 reconstructs
+minima and crossing likelihoods and reconciles all five remote flagged points
+using saved stationary attempts within 1e-8 NLL. Exact dense covariance gradients
+and independent mean derivatives pass the unchanged stationarity criterion. No
+lower reference minimum was found. Original flags and solver records remain.
+The fourth numerical slot now runs the prediction supervisor; it waits for each
+pair's terminal Gaussian and L60 block cells, then evaluates its ten other records.
