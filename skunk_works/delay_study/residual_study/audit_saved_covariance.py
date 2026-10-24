@@ -13,6 +13,7 @@ from scipy.linalg import cholesky, solve_triangular
 from audit_mean import reference
 from data import load
 from run_mean import write_json
+from simulation import audit as audit_generation
 
 
 def main():
@@ -21,6 +22,7 @@ def main():
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
     args.output.mkdir(parents=True, exist_ok=True)
+    write_json(args.output/"generation_audit.json", audit_generation())
     receipts = []
     summary = []
     for fit_path in sorted(args.input.glob("*/fit.json")):
