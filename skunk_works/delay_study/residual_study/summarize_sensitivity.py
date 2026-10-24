@@ -15,7 +15,7 @@ import numpy as np
 from data import Experiment
 from fit_diagnostics import harmonic_residual
 from run_mean import write_json
-from run_sensitivity import CASES
+from study_cases import CASES
 
 
 def main():

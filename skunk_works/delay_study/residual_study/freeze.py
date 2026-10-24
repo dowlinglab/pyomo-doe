@@ -26,7 +26,7 @@ def main():
     tracked = subprocess.check_output(["git", "ls-tree", "-r", "--name-only", revision,
                                        "--", str(parent), "data"], cwd=ROOT, text=True).splitlines()
     selected = [p for p in tracked if
-                (Path(p).parent == prefix and (p.endswith(".py") or Path(p).name == "config.json")) or
+                (Path(p).parent == prefix and (p.endswith(".py") or Path(p).name in {"config.json", "structure_selection.json"})) or
                 (Path(p).parent == parent and (p.endswith(".py") or Path(p).name == "environment.json")) or
                 (Path(p).parent == Path("data") and p.endswith(".csv"))]
     if str(prefix/driver) not in selected:
@@ -55,6 +55,8 @@ def main():
     for name in ["OPENBLAS_NUM_THREADS", "OMP_NUM_THREADS", "MKL_NUM_THREADS", "VECLIB_MAXIMUM_THREADS", "NUMEXPR_NUM_THREADS"]:
         env[name] = "1"
     env["MPLBACKEND"] = "Agg"
+    env["MPLCONFIGDIR"] = str(snapshot/"runtime_cache"/"matplotlib")
+    env["XDG_CACHE_HOME"] = str(snapshot/"runtime_cache")
     print("Frozen commit "+revision+"; output "+str(output), flush=True)
     child = subprocess.Popen(receipt["command"], cwd=snapshot, env=env)
     (output/"process.json").write_text(json.dumps({"pid": child.pid, "parent_pid": os.getpid(), "command": receipt["command"]}, indent=2)+"\n")
