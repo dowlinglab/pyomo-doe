@@ -9,7 +9,7 @@ HERE=Path(__file__).resolve().parent
 sys.path.insert(0,str(HERE.parent/'residual_study'))
 import numpy as np
 import pandas as pd
-from frequency import held_fundamental
+from frequency import held_harmonics
 from run_frequency import period_of
 from run_mean import write_json
 
@@ -48,12 +48,33 @@ def audit_forecast():
             'scope':'Forecasting uses observations through origin only; independent Gaussian conditional check'}
 
 
+def audit_harmonics():
+    from scipy.integrate import quad
+    rng=np.random.RandomState(44)
+    t=np.r_[0.,np.cumsum(rng.uniform(.5,1.5,130))]
+    u=rng.uniform(0,100,len(t));w=2*np.pi/30;start,end=13.2,119.7
+    fs=[lambda s:1.]
+    for k in (1,2,3):
+        fs.extend([lambda s,k=k:np.sin(k*w*s),lambda s,k=k:np.cos(k*w*s)])
+    G=np.array([[quad(lambda s:f(s)*g(s),start,end,epsabs=1e-10)[0] for g in fs] for f in fs])
+    rhs=np.zeros(7)
+    for j in range(len(t)-1):
+        a,b=max(start,t[j]),min(end,t[j+1])
+        if b>a:
+            for i,f in enumerate(fs):rhs[i]+=u[j]*quad(f,a,b,epsabs=1e-11)[0]
+    error=float(np.max(abs(held_harmonics(t,u,w,start,end)-np.linalg.solve(G,rhs))))
+    if error>1e-9:raise AssertionError(error)
+    return {'status':'passed','joint_harmonic_quadrature_max_abs':error,
+            'scope':'Joint1/2/3continuous input projection on noninteger window vs independent quadrature'}
+
+
 def main():
     parser=argparse.ArgumentParser()
     parser.add_argument('--input',type=Path,required=True)
     parser.add_argument('--output',type=Path,required=True)
     args=parser.parse_args()
     write_json(args.output/'forecast_audit.json',audit_forecast())
+    write_json(args.output/'harmonic_audit.json',audit_harmonics())
     fit=json.loads((args.input/'fit.json').read_text());best=fit['best']
     arrays=np.load(args.input/'trajectories.npz')
     if 'noise_parameters' in best:
@@ -89,15 +110,14 @@ def main():
                 rounded=np.round(19.93908288+.322299839*np.rint((pred-19.93908288)/.322299839),2)
                 rounded_coeff=np.linalg.lstsq(X,rounded[keep],rcond=None)[0]
                 amplitude=lambda b:[float(np.hypot(*b[2*k:2*k+2])) for k in (1,2,3)]
-                input_amp=[]
-                for k in (1,2,3):
-                    b=held_fundamental(t,u,k*w,cutoff,t[-1]);input_amp.append(float(np.hypot(*b[1:])))
+                input_coeff=held_harmonics(t,u,w,cutoff,t[-1])
+                input_amp=[float(np.hypot(*input_coeff[2*k-1:2*k+1])) for k in (1,2,3)]
                 harmonics.append({'name':name,'period_s':period,'cutoff_s':cutoff,
                                   'cycles':float((t[-1]-cutoff)/period),'design_condition':float(np.linalg.cond(X)),
                                   'measured_temperature_amplitudes_C':amplitude(measured),
                                   'model_temperature_amplitudes_C':amplitude(model),
                                   'rounded_model_temperature_amplitudes_C':amplitude(rounded_coeff),
-                                  'input_projected_amplitudes_percent':input_amp})
+                                  'input_joint_harmonic_amplitudes_percent':input_amp})
         Xtrend=np.column_stack((np.ones(len(tr)),(tr-tr.mean())/(tr[-1]-tr[0])))
         trend=Xtrend@np.linalg.lstsq(Xtrend,e,rcond=None)[0]
         series.append({'name':name,'time':t,'observed':y,'predicted':pred,'residual':e,'innovation':z,'trend':trend})

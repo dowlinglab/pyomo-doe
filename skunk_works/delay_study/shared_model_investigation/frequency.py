@@ -24,6 +24,22 @@ def held_fundamental(time, command, omega, start, end):
     return np.linalg.solve(gram, moments)
 
 
+def held_harmonics(time,command,omega,start,end,order=3):
+    """Joint continuous-time projection; avoid cross-harmonic window leakage."""
+    basis=[{0:1.}]
+    for k in range(1,order+1):
+        basis += [{k:-.5j,-k:.5j},{k:.5,-k:.5}]
+    def integral(k,a,b):
+        return b-a if k==0 else (np.exp(1j*k*omega*b)-np.exp(1j*k*omega*a))/(1j*k*omega)
+    G=np.array([[sum(c*d*integral(k+l,start,end) for k,c in f.items() for l,d in g.items()).real
+                 for g in basis] for f in basis])
+    left=np.maximum(time[:-1],start);right=np.minimum(time[1:],end);keep=right>left
+    left,right,u=left[keep],right[keep],command[:-1][keep]
+    if abs(np.sum(right-left)-(end-start))>1e-7:raise ValueError('Uncovered window')
+    rhs=np.array([np.sum(u*sum(c*integral(k,left,right) for k,c in f.items())).real for f in basis])
+    return np.linalg.solve(G,rhs)
+
+
 def regression(time, values, period, nuisance='trend', tau=None, theta=None, lags=(30, 60, 120)):
     t = np.asarray(time)
     w = 2*np.pi/period
