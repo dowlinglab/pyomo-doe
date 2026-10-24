@@ -1,0 +1,111 @@
+{
+  "schema_version": 1,
+  "model_order": 1,
+  "target": "T1",
+  "input": "Q1",
+  "primary_hold": "right",
+  "hold_status": "left hold supported by historical acquisition b114b13f command-before-p.update ordering; not a per-file timing log",
+  "initial_state": {
+    "temperature": "first T1 conditioned on",
+    "input_lag": 0.0,
+    "omit_first_residual": true
+  },
+  "ambient_reference": "first T1, not independently measured ambient",
+  "ambient_offset_bounds_C": [
+    -2.0,
+    2.0
+  ],
+  "linear_ambient_policy": "agent choice: both endpoint offsets inside [-2,2] C",
+  "thermal_bounds": {
+    "K": [
+      0.2,
+      1.5
+    ],
+    "tau": [
+      5.0,
+      600.0
+    ],
+    "theta": [
+      0.01,
+      200.0
+    ]
+  },
+  "multistarts": 24,
+  "seed": 20261024,
+  "records": [
+    "validation_experiment_env_2_sin_50_50_run_1.csv",
+    "validation_experiment_env_2_sin_50_50_run_2.csv",
+    "validation_experiment_env_2_sin_50_50_run_3.csv",
+    "validation_experiment_env_2_sin_2_50_run_1.csv",
+    "validation_experiment_env_2_sin_2_50_run_2.csv",
+    "validation_experiment_env_2_sin_2_50_run_3.csv",
+    "validation_experiment_env_2_sin_5_50_run_1.csv",
+    "validation_experiment_env_2_sin_5_50_run_2.csv",
+    "validation_experiment_env_2_sin_5_50_run_3.csv",
+    "validation_experiment_env_2_step_50_run_1.csv",
+    "validation_experiment_env_2_step_50_run_2.csv",
+    "validation_experiment_env_2_step_50_run_3.csv"
+  ],
+  "pairs": [
+    {
+      "id": "P1",
+      "tier": 1,
+      "sine_period_s": 300,
+      "sine_run": 1,
+      "step_run": 1
+    },
+    {
+      "id": "P2",
+      "tier": 2,
+      "sine_period_s": 30,
+      "sine_run": 2,
+      "step_run": 1
+    },
+    {
+      "id": "P3",
+      "tier": 2,
+      "sine_period_s": 120,
+      "sine_run": 1,
+      "step_run": 2
+    },
+    {
+      "id": "P4",
+      "tier": 2,
+      "sine_period_s": 300,
+      "sine_run": 3,
+      "step_run": 2
+    },
+    {
+      "id": "P5",
+      "tier": 2,
+      "sine_period_s": 30,
+      "sine_run": 3,
+      "step_run": 3
+    },
+    {
+      "id": "P6",
+      "tier": 2,
+      "sine_period_s": 120,
+      "sine_run": 2,
+      "step_run": 3
+    }
+  ],
+  "covariance_candidates": [
+    "iid",
+    "ou",
+    "ou_nugget",
+    "matern32_nugget"
+  ],
+  "bootstrap_draws_per_pair": 400,
+  "max_numerical_processes": 4,
+  "threads_per_process": 1,
+  "report": {
+    "paper": "letter",
+    "left_margin_in": 0.25,
+    "right_margin_in": 3.25,
+    "top_bottom_margin_in": 0.6,
+    "rule_spacing_in": 0.28125,
+    "recipient": "adowling@nd.edu"
+  },
+  "sensitivity_notice": "Agent-declared diagnostic only; primary n1 left-held +/-2C model unchanged. Startup shifts are fixed scenarios, not a probability law or independent per-run worst-case envelope. Protocol fits are exploratory, not additional calibration pairs."
+}

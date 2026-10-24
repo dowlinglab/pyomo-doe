@@ -7,7 +7,7 @@ This phase leaves the completed October 21 study and deliveries unchanged.
 | Phase | State | Next gate |
 |---|---|---|
 | Data/input and exact mean audit | Passed in frozen source | Preserve conditional startup/alignment assumptions |
-| Tier 0 mean/error exploration | Eight cells complete and independently audited | Timing/startup/bound sensitivities and refit-calibrated adequacy diagnostics |
+| Tier 0 mean/error exploration | Eight cells and nine sensitivities audited; diagnostic simulations running | Complete two 200-refit comparisons, then freeze working structure with limitations |
 | Tier 1 P1 uncertainty/evaluation | Pending | Full restricted refits and checks |
 | Tier 2 P2-P6 | Pending | Five further pairs; no full enumeration |
 | Report/Gmail/push | Pending | Checked ruled-margin PDF; one verified email |
@@ -22,8 +22,9 @@ probability distribution. Technical defaults are identified in the plan.
 Hourly continuation is active on `tc-lab-overnight-research` and targets this
 thread. The OLS baseline and independent audit are terminal with exit code zero.
 The covariance comparison, independent audit and diagnostic plotting are terminal
-with exit code zero. No numerical worker remains live. Reconcile receipts in
-`run_manifest.json` before launching the next phase.
+with exit code zero. All nine assumption-sensitivity cases are also terminal.
+Two diagnostic simulation jobs each have two numerical workers live; reconcile
+`run_manifest.json` before launching another worker. This uses the four-worker cap.
 
 The acquisition notebook at b114b13f updates lab.Q1 immediately before
 p.update(t), supporting left-held inputs. This is supporting source code, not
@@ -91,7 +92,7 @@ measurement scale is close to the 0.092-0.095 C SD of hypothetical uniform
 rounding errors on a 0.32-0.33 C grid. That is an interpretation to investigate;
 the observed discretization does not establish independent uniform noise.
 
-## Next gates before structure selection
+## Assumption checks and diagnostic calibration
 
 The thirty-second sine runs retain an approximately thirty-second innovation
 cycle and maximum absolute command/innovation correlations 0.457-0.481 over the
@@ -99,20 +100,62 @@ declared +/-30 sample-lag search. Linear ambient drift barely changes this.
 The reference Ljung-Box p-values are descriptive, not simulation-calibrated.
 Do not treat eleven small p-values as eleven independent calibrated tests.
 
-1. Compare left/right command alignment under the same n=1 model, starting with
-   the mean and the OU-plus-measurement working kernel. This is a declared
-   sensitivity, not authorization to replace the documented acquisition order
-   merely because another convention fits better.
-2. Examine input-related discrepancies, startup/first-reading and active ambient
-   bounds. If useful, protocol-specific fits may diagnose the shared-mean
-   assumption; they are exploratory Tier 0 checks, not extra calibration pairs.
-   Do not absorb deterministic input-related bias into a new random kernel just
-   to force whiteness.
-3. Run refit-calibrated simulation diagnostics for the leading working error
-   description, retaining the max-lag search and per-protocol statistics. Check
-   whether remaining covariance/mean inadequacy warrants a bounded comparison
-   or must remain unresolved in the report.
-4. Verify a selected variable-projection result against direct parameter fitting.
-   Then document the Tier 0 structure decision and limitations before Tier 1/2.
-   No adequate kernel or ambient structure has yet been selected. Subsequent
-   uncertainty must retain any unresolved model/input-dependence qualifications.
+All nine declared checks from 38d1cc3 are complete with independent forward and
+dense-likelihood reconstruction in each fit. All 216 OLS starts and 216 joint
+start-level solutions converged. `results/tier0_sensitivity_summary_final` owns
+the numerical comparison and checked figure. Preserve the earlier summary import
+failure and legend-overlap receipt; neither required rerunning a fit.
+
+| Same-record sensitivity | K, C/percent | NLL change from primary | Fast-sine max input correlation |
+|---|---:|---:|---:|
+| Right hold | 0.71057 | +256.30 | 0.519 to 0.540 |
+| Initial T -0.165 C | 0.70967 | +0.07 | 0.457 to 0.481 |
+| Initial T +0.165 C | 0.70999 | +1.38 | 0.456 to 0.481 |
+| One second input prehistory | 0.71145 | +5.92 | 0.457 to 0.479 |
+| Ambient bounds +/-4 C | 0.69250 | -23.42 | 0.456 to 0.480 |
+
+The checks support retaining left hold and cold startup as the primary choices;
+they do not resolve the fast-sine cycle. Widening the ambient band changes K by
+about -2.47%, removes active ambient bounds, and leaves the cycle. Retain the
+agreed +/-2 C primary bound and report that assumption sensitivity explicitly.
+Protocol-specific fits give K values 0.655, 0.689, 0.724 and 0.753 for 30 s,
+120 s, 300 s and step data respectively. Their likelihoods use different
+observations and must not be compared directly. The 30-second fit chooses the
+other pole labeling and still has input correlations 0.321-0.341. These are
+exploratory point comparisons, not significance tests of thermal heterogeneity.
+
+`results/tier0_direct_fit_check/audit.json` compares the leading pooled solution
+to two direct 17-coordinate fits (ambient/gain not variable-projected). Both
+converge; best NLL agreement is 2.1e-11. There is no new global certificate.
+
+Two 12-draw diagnostic pilots generated Gaussian measurement errors or replaced
+that component with grid rounding, refitting all thermal/ambient/noise terms.
+All draws completed without stationarity flags. Four selected draws (0 and 11 per
+mechanism) reproduce their saved statistics, pass independent dense-likelihood checks and
+match 24-start refits within 1.4e-11 NLL. The three-start refit budget is supported
+by this scoped check, not proved globally optimal for every future replicate.
+`results/diagnostic_pilot_*_audit` owns those receipts.
+
+The inferred grid spacing is 0.32229984 C; all 158 distinct pooled temperatures
+are reproduced after two-decimal rounding of that grid. This supports a rounding
+sensitivity, not an independent hardware calibration. Rounding raises pilot ACF
+statistics but does not reproduce the observed strong command association. The
+pilots are too small for the requested final diagnostic calibration.
+
+## Remaining Tier 0 gates
+
+The 200-draw Gaussian and rounded-measurement diagnostic comparisons run from
+d0ce06f, with all nuisance/noise terms re-estimated per replicate and checkpoints
+saved after each completed draw. Read `generation.json`, `checkpoint.json` and
+`summary.json` in their output directories. Do not restart while their parent
+and worker processes are live. Failures or stationarity flags stay in denominators.
+
+After both finish, inspect global/per-run calibrated statistics and selected
+replicate audits, then freeze the working n=1 structure and its limitations in
+`structure_selection.json`. There may be no adequate candidate under the fixed
+n=1 mean family. Carry that result into conditional uncertainty rather than
+forcing whiteness or adding model orders. `run_pair.py` is committed but refuses
+to run until that structure decision exists; it loads only each pair's two
+training records. Tier 1/2 fits and uncertainty have not started. Subsequent
+intervals and predictions must preserve retrospective selection and any unresolved
+input dependence, ambient-bound and startup qualifications.
