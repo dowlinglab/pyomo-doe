@@ -70,10 +70,19 @@ def project(records, tau, theta, mode, hold, config, whitening=None):
     lower = np.full(X.shape[1], lo)
     upper = np.full(X.shape[1], hi)
     lower[0], upper[0] = config["thermal_bounds"]["K"]
-    fit = lsq_linear(X, y, bounds=(lower, upper), tol=1e-11, lsmr_tol=1e-12)
+    fixed = config.get("fixed_K")
+    if fixed is not None:
+        if not lower[0] <= fixed <= upper[0]:
+            raise ValueError("Fixed gain lies outside declared thermal bounds")
+        fit = lsq_linear(X[:, 1:], y-X[:, 0]*fixed, bounds=(lower[1:], upper[1:]),
+                         tol=1e-11, lsmr_tol=1e-12)
+        coefficients = np.r_[fixed, fit.x]
+    else:
+        fit = lsq_linear(X, y, bounds=(lower, upper), tol=1e-11, lsmr_tol=1e-12)
+        coefficients = fit.x
     if not fit.success:
         raise RuntimeError("Bounded linear projection failed: "+fit.message)
-    return fit.x, X@fit.x-y
+    return coefficients, X@coefficients-y
 
 
 def starting_points(config):
