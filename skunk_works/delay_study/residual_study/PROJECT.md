@@ -10,7 +10,7 @@ This phase leaves the completed October 21 study and deliveries unchanged.
 | Tier 0 mean/error exploration | Calculations complete; adequacy unresolved | Working structure frozen with explicit limitations |
 | Tier 1 P1 uncertainty/evaluation | All calculations and numerical audits complete | Final source and delivery checks |
 | Tier 2 P2-P6 | All five restricted analyses and evaluations complete | Satisfied; Tier 3 awaits researcher review |
-| Report/Gmail/push | Pending | Checked ruled-margin PDF; one verified email |
+| Report/Gmail/push | Report and sources verified; delivery next | Push, one verified email, final receipt |
 
 No TC-Lab numerical process was live at startup reconciliation. Read the current
 manifest before launching work. Reuse the old hourly heartbeat for this goal.
@@ -224,3 +224,11 @@ has been rendered and visually checked, including exact margins and 35 ruled
 lines per page. Final native passage grounding/export is owned by the current
 execution, followed by commit/push and one Gmail delivery. Do not send or mark
 the goal complete until the remaining source/delivery gates pass.
+
+The final nine-page report is `report/output/pdf/TC_Lab_n1_residual_teaching_Tiers0-2.pdf`.
+Native citation validation passed: three current citations, six fine passages,
+zero current source issues. Exact source/export receipts are in
+`literature_checkpoint.json` and `literature_receipts/`. The one stale plan is
+never-executed preliminary history, not a current claim. Numerical, layout and
+source gates are satisfied. Delivery intent is prepared but not sent; reconcile
+`delivery_intent.json` before any send. Stop before Tier 3 after delivery.

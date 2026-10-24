@@ -231,3 +231,15 @@ RMSE as a retrospective conditional reconstruction, never prospective forecast
 accuracy or independent room-temperature measurement. Empirical prediction
 fractions and consecutive misses are descriptive under serial dependence and
 overlapping evaluation sets; report no independent-binomial coverage inference.
+
+## Final method-source verification
+
+The initial acquisition gaps above were resolved through native managed intake.
+Hartikainen/Sarkka and Newey/West were published with local readback. The exact
+final flattened report has three citations, all linked to six inspected fine
+passages; native expectation validation and artifact checksum readback passed.
+`literature_checkpoint.json` identifies the exact packet/revision/export. One
+changing-library partial write was reconciled with supported recovery, preserving
+the first passage rather than republishing it. One never-executed preliminary
+plan remains historical and stale; no current claim is stale. Human scientific
+acceptance and TC-Lab error-model adequacy are not established by these checks.
