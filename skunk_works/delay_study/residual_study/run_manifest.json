@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "goal_started_utc": "2026-10-24T16:39:24Z",
-  "status": "tier0_covariance_running",
+  "status": "tier0_covariance_audited_adequacy_unresolved",
   "branch": "reformulation-exploration",
   "heartbeat_id": "tc-lab-overnight-research",
   "heartbeat_status": "ACTIVE, hourly, confirmed by app update",
@@ -30,24 +30,30 @@
       "scope": "Independent matrix-exponential reconstruction, objective/raw-data/bound checks and residual diagnostics"
     }
   ],
-  "last_reconciliation_utc": "2026-10-24T16:53:12Z",
-  "live_jobs": [
-    {"id": "linear_ou", "tool_session_id": 58437, "process_receipt": "results/tier0_covariance/linear_ou/process.json"},
-    {"id": "linear_ou_nugget", "tool_session_id": 62925, "process_receipt": "results/tier0_covariance/linear_ou_nugget/process.json"},
-    {"id": "linear_matern32_nugget", "tool_session_id": 14173, "process_receipt": "results/tier0_covariance/linear_matern32_nugget/process.json"}
-  ],
+  "last_reconciliation_utc": "2026-10-24T20:20:49Z",
+  "live_jobs": [],
   "covariance_matrix": {
     "source_commit": "b84306ebf67a167c4787b3d796113aed8e5bc668",
     "modes": ["constant", "linear"],
     "kernels": ["iid", "ou", "ou_nugget", "matern32_nugget"],
     "starts_per_cell": 24,
     "output": "results/tier0_covariance",
-    "next_batch": "All eight cells launched; reconcile each terminal receipt. Constant cells and linear IID are complete.",
+    "status": "complete, all eight exit codes zero",
+    "start_level_solutions": 192,
+    "failed_start_level_solutions": 0,
+    "solver_attempts": 208,
+    "unsuccessful_solver_attempts_retained": 4,
+    "audit": "results/tier0_covariance_audit/audit.json",
+    "audit_source_commit": "c3f96af228e9404408cc672c7ec2f30bd37c1a54",
+    "diagnostics": "results/tier0_diagnostics/diagnostics.json",
+    "figures": "results/tier0_diagnostics/figure_receipt.json",
+    "generation_audit": "results/tier0_covariance_audit/generation_audit.json",
+    "next_batch": "Alignment/startup/bound sensitivities and refit-calibrated diagnostics before a structure decision",
     "pilot": "results/covariance_pilot_constant_ou_nugget",
     "refined_pilot": "results/covariance_refined_pilot_constant_ou_nugget",
     "pilot_refinement_reason": "Forward-difference solver stopped with projected gradient 0.334; central derivative refinement reduces it to about 1e-4, preserving model/bounds/tolerances"
   },
-  "next_phase": "Reconcile remaining linear-ambient covariance jobs; run audit_saved_covariance.py and diagnostics.py from committed sources, then calibrate diagnostics/sensitivities before freezing Tier0 structure",
+  "next_phase": "Prioritize left/right command-alignment sensitivity for n1 mean and OU+nugget fits, investigate the 30s input-related innovation cycle, perform startup/bound and direct-fit checks and refit-calibrated diagnostics; document remaining inadequacy before selecting structure and starting Tier1",
   "structure_selection": null,
   "delivery_receipt": null
 }

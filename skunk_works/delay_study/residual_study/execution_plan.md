@@ -85,6 +85,15 @@ or infer physical assignment merely from a labeling convention.
    do not force whiteness or silently expand the thermal model. Optimization
    failure alone does not disprove a shared model.
 
+The first eight-cell comparison left a repeatable 30-second innovation cycle
+and command association in the fast-sine records. Before freezing the working
+structure, prioritize the declared command-alignment sensitivity, startup and
+ambient-bound checks, refit-calibrated diagnostics, and a direct-parameter
+optimization check. Protocol-specific mean fits can diagnose the sharing
+assumption within Tier 0 without adding calibration pairs. These are responses
+to observed residual patterns; no new thermal order or extra pair enumeration
+is authorized by this diagnostic refinement.
+
 ## Restricted fits, uncertainty and predictions
 
 `config.json` fixes these agent-selected balanced assignments within Alex's
