@@ -1,208 +1,291 @@
-# Tier 0 follow-up investigation
+# Investigating the shared TC-Lab model
 
-Status: proposal recorded from Alex's review discussion. This note authorizes
-no new calculations; the completed Tier 0–2 study remains at its researcher
-review checkpoint. See [current study state](../residual_study/PROJECT.md) and
-the [agreed approach](approach.md).
+Status: execution plan requested by Alex during review of the completed Tier 0–2
+study. Commit this plan before starting the new goal. This file owns the new
+scientific scope; the completed study and its delivered report remain unchanged.
 
-Alex's latest priority is to get to the bottom of the model discrepancies and
-understand the system. Teaching remains a later use of the findings; it should
-not constrain this diagnostic investigation. The original teaching objective
-and completed study remain recorded in the linked approach and project files.
+## Objective
 
-## Why return to Tier 0
+Determine why one shared model leaves reproducible, input-related errors across
+the twelve ENV2 experiments, and identify the simplest supported explanation.
+Alex's immediate priority is understanding the system. Teaching material and
+restricted-data calibration can follow once the discrepancies are understood.
+There is no prescribed duration. Advance through the scientific decisions below;
+report unresolved questions when these records cannot distinguish explanations.
 
-Alex's concern is that substantial out-of-sample errors are less surprising if
-the shared model already misses systematic behavior when fitted to all twelve
-ENV2 records. Before expanding the calibration-pair study, investigate whether
-one shared mean and disturbance description can explain these records.
+## Starting evidence
 
-The current n = 1 fit follows the pooled temperature trajectories with about
-0.483°C RMSE, using shared K, τ and θ, left zero-order-held inputs, bounded
-per-run ambient offsets, and an OU disturbance plus independent measurement
-noise. The fastest sine tests retain an input-related residual cycle. Under
-the working covariance comparison, linear ambient drift received less support
-than the initial unweighted fit suggested. Timing, startup, rounding and ambient
-bound checks did not eliminate the cycle.
+The completed n = 1 fit uses shared positive K, τ and θ, left-zero-order-held
+heater commands, per-run constant ambient offsets bounded by ±2°C, and an OU
+process plus independent measurement noise. Its pooled temperature RMSE is about
+0.483°C. The fastest sine tests retain a roughly 30-second, input-related
+innovation cycle. Linear ambient drift received less support after accounting
+for correlated errors. Timing, startup, rounding and ambient-bound sensitivities
+did not eliminate that cycle.
 
-These findings leave the shared model's adequacy unresolved. Ambient conditions
-also affect predictions in a new run, so the pooled residual cycle should not
-be assigned responsibility for every Tier 1–2 prediction discrepancy.
+These results establish a useful shared trajectory fit, while leaving the joint
+mean/error description inadequate. Ambient conditions also affect new-run
+predictions; the repeating residual cannot explain every Tier 1–2 discrepancy.
 
-## Proposed investigations
+Use the completed [project](../residual_study/PROJECT.md),
+[run manifest](../residual_study/run_manifest.json),
+[execution plan](../residual_study/execution_plan.md), and
+[agreed approach](approach.md) for implementation details and previous results.
+Their old launch instructions describe completed work. Preserve that work and
+reconcile terminal records before launching anything new.
 
-### 1. Separate offsets from oscillating mismatch
+## Data and comparison rules
 
-For each run, plot the measured and fitted temperatures, raw residuals, and
-whitened innovations. Summarize average residual, slow trend, and oscillating
-component alongside the fitted ambient offset and any active bound. Account
-for startup when interpreting ambient effects; an ambient change need not
-produce a constant temperature shift throughout the transient.
+- Use the twelve distinct same-device ENV2 records: three repeats each of
+  30-second, 120-second and 300-second sines, and three 50% step tests. Calibration
+  aliases are duplicate records. Q2 is zero in these records. Retain Alex's
+  accepted same-device provenance assumption.
+- Keep the primary left-hold timing, first-reading ambient reference, ±2°C
+  constant ambient offsets and declared initial-state conventions. Any departure
+  is an explicit sensitivity, with its rationale and effect recorded.
+- A shared constant alpha is absorbed into K. Fit no extra alpha multiplier;
+  external calibration is needed only for absolute physical interpretation.
+- Use the same observations and comparable ambient, startup and stochastic
+  treatments when comparing structures. Re-estimate their numerical nuisance
+  and covariance parameters; do not silently fix them to the old best fit.
+- Separate raw temperature residuals from whitened innovations. Keep trajectory
+  fit, predictive performance and innovation adequacy as distinct assessments.
+- These records have all informed model selection. Any later held-run assessment
+  is retrospective; no untouched validation set is created by relabeling them.
 
-Compare prospective predictions under declared ambient scenarios with the
-existing retrospective ambient reconstructions. Keep those two quantities
-separate: estimating an offset from the full evaluation temperature record
-uses information unavailable before the experiment. The ±2°C bounds specify
-an envelope, without specifying a probability distribution.
+## Investigation sequence
 
-Deliverable: a per-run error table and plots showing how much discrepancy is
-consistent with ambient uncertainty and how much remains tied to the input.
+| Phase | Scientific question | Required output | Decision |
+|---|---|---|---|
+| 0. Reconcile and reproduce | Are the inputs, saved fits and numerical tools consistent? | New execution manifest and independently reconstructed reference | Resolve discrepancies before interpreting new fits |
+| 1. Locate the discrepancy | Is it offset, slow drift, reproducible cycling, or a mixture? | Per-run error decomposition and phase-aligned repeat plots | Identify response features that a candidate must explain |
+| 2. Measure frequency response | Does the shared model miss amplitude, phase, or both? | Measured gain/phase with uncertainty at three frequencies | Assess which dynamic restrictions merit testing |
+| 3. Establish a linear benchmark | Can a more flexible shared LTI model explain those features? | Low-order state-space comparison and prediction/simulation diagnostics | Distinguish evidence against the delay-chain restriction from broader ambiguity |
+| 4. Compare delay stages | Do n = 1, 2 and 3 reproduce the measured response and residuals? | Matched pooled fits and estimability/uncertainty comparison | Retain supported orders and document indistinguishable ones |
+| 5. Test remaining explanations | Do response shape or operating conditions explain what remains? | Evidence-guided FIR, nonlinear or disturbance checks | Identify a supported revision or a limitation of these data |
+| 6. Synthesize | What explains the discrepancies, and what remains unresolved? | Investigation report, figures and reproducible comparison table | Researcher review before another calibration-pair study |
 
-### 2. Check whether the residual cycle repeats
+Phases 0–4 and synthesis form the main comparison. Preliminary nonlinear and
+harmonic diagnostics belong in Phases 1–2; they can change the later priority.
+Phase 5 follows specific evidence rather than an exhaustive search over models.
+A failed or unidentified benchmark is an informative result, not a reason to
+force a preferred explanation. No phase has a wall-clock deadline.
 
-For each sine period (30, 120 and 300 seconds), align the three recorded repeats
-by actual input phase. Show individual repeat residuals and their phase average,
-with startup treated separately. Apply the same check to innovations so that
-raw mean mismatch and effects of whitening remain visible.
+## Phase 0: reconcile and reproduce
 
-Compare the shared phase pattern with variation among repeats. Serial samples
-within one cycle do not supply independent replications; any uncertainty
-calculation must respect within-run dependence and the small number of runs.
+Inspect running processes and saved manifests before starting new work. Create a
+separate investigation directory and manifest linked to this plan. Record source
+commit, environment, raw-file hashes, run labels, input timestamps and numerical
+assumptions. Reuse existing audited routines where they apply.
 
-Deliverable: phase-resolved plots that distinguish a reproducible response
-error from variation among repeated experiments.
+Independently reconstruct the saved pooled n = 1 trajectory and likelihood.
+Reproduce the reported residual cycle and per-run statistics before adding
+models. Verify synthetic amplitude/phase recovery and the higher-order forward
+solver before interpreting experimental estimates. Keep new outputs separate
+from completed Tier 0–2 results.
 
-### 3. Measure amplitude and phase mismatch
+## Phase 1: separate ambient effects and reproducible response errors
 
-Use classical frequency-response estimation at the known drive frequency
-ω = 2π/P for P = 30, 120 and 300 seconds. On a settled portion of each
-temperature run, fit
+For each run, show measured/fitted temperatures, raw residuals and innovations.
+Summarize mean residual, slow variation, oscillating component, fitted ambient
+offset and active bounds. Include startup explicitly: an ambient offset affects
+a transient through the dynamics and need not create a constant output shift.
+State the decomposition method so its components are reproducible.
+
+For each sine period, align the three repeats by actual input phase. Show each
+repeat and the phase average, treating startup separately. Compare the shared
+cycle with variation across repeats. Apply the same analysis to residuals and
+innovations so whitening does not hide the original temperature discrepancy.
+
+Use the previous prospective ambient scenarios and retrospective ambient
+reconstructions to explain their different information requirements. A correction
+estimated from the complete evaluation response is retrospective. The ±2°C
+bound describes an envelope and supplies no probability distribution.
+
+Deliver a per-run table and repeat plots. Identify whether the error persists
+at the same input phase and which protocols contribute most. Serial samples
+within a cycle are not independent experimental repetitions.
+
+## Phase 2: estimate amplitude and phase from the records
+
+At each known drive frequency ω = 2π/P, fit the temperature fundamental using
 
 \[
 T(t)=c+a_T\sin(\omega t)+b_T\cos(\omega t)+r(t).
 \]
 
-For this sine convention, amplitude is A_T = √(a_T² + b_T²) and phase is
-φ_T = atan2(b_T, a_T). Estimate the heater-input fundamental with the same time
-origin and analysis window. Use the continuous left-zero-order-held command,
-or explicitly correct a sampled-input estimate for that hold; do not substitute
-an ideal sine for the recorded commands. Then estimate gain A_T/A_u and relative
-phase φ_T − φ_u. A temperature lag has negative relative phase under this
-convention.
+For this convention, amplitude is A_T = √(a_T²+b_T²) and phase is
+φ_T = atan2(b_T,a_T). Estimate the input fundamental against the same time
+origin and compatible analysis window. Use the recorded continuous left-held
+commands, or derive and verify the corresponding hold correction for sampled
+input coefficients. Do not replace the recorded input with an ideal sine.
+Estimate gain A_T/A_u and relative phase φ_T−φ_u; lag has negative relative phase.
 
-Document how startup is excluded and check sensitivity to the selected window,
-or explicitly model the transient. Count the settled cycles available,
-especially for the 300-second records; assess whether those records support
-useful estimates. Account for correlated residuals and the three-repeat
-structure in uncertainty estimates. Samples within a run are not independent
-experimental repetitions.
+Declare a transient treatment before choosing the final estimates. Compare
+reasonable settling windows, count available settled cycles, and inspect whether
+the 300-second records support useful precision. Where startup cannot be
+excluded reliably, compare an explicitly modeled transient and describe the
+additional assumptions. Fit with offsets or justified slow nuisance terms;
+check that these do not absorb the oscillation of interest.
 
-A five-second lag at a 30-second period corresponds to a 60-degree phase lag.
-That phase could include thermal time constants as well as transport delay.
-Show the phase convention and wrapping explicitly; three measured frequencies
-cannot uniquely distinguish pure delay from different lag orders.
+Account for serial dependence, repeat-to-repeat variability and small output
+amplitudes when estimating uncertainty. Preserve the three repeats separately.
+Report when phase or gain is weakly determined. Document wrapping and phase
+reference rather than selecting branches to agree with a candidate model.
 
-Inspect harmonics and dependence on operating temperature where the records
-support them. Use the resulting frequency pattern to investigate whether gain,
-timing, delay representation, or additional dynamics could explain the residual.
-Preserve the existing caution about exchanging the two pole labels.
+A five-second lag at a 30-second period is a 60-degree phase lag. Thermal time
+constants also produce phase lag, so this does not identify five seconds of
+pure transport delay. Three frequencies cannot uniquely establish a delay
+mechanism or model order.
 
-Deliverable: per-repeat measured gain and phase with uncertainty at all three
-periods, compared with n = 1, n = 2 and n = 3 model predictions under the same
-input convention. Include a short list of mechanisms supported or weakened by
-the observations.
+Plot measured gain and phase with uncertainty at 30, 120 and 300 seconds. Overlay
+candidate predictions using the same input/sampling convention. Inspect harmonics
+relative to those in the actual held command and the temperature quantization.
+Record which discrepancies indicate amplitude, timing or operating-condition
+mismatch; do not assign a unique mechanism from these plots alone.
 
-### 4. Compare a few targeted extensions
+## Phase 3: benchmark shared linear dynamics
 
-Choose a small set of candidate changes after the first three checks. Possible
-changes include another dynamic state, a different delay representation, or
-operating-temperature dependence if the diagnostics support it. Keep the n = 1
-model as the reference. These are candidate extensions for discussion.
+Fit a small, declared set of stable causal linear state-space models, with
+subspace initialization where supported and prediction-error refinement. Start
+with two to four dynamic states as a proposed computational choice, expanding
+only if excitation and diagnostics justify it. State count differs from delay
+stage count. Use available Python tools or a verified implementation; a named
+MATLAB method is a methodological reference, not a software requirement.
 
-Compare candidates on the same records with the same ambient assumptions,
-startup conventions and error treatment wherever feasible. Report changes in
-per-run fit, input-related residual structure, uncertainty and estimability,
-alongside model complexity. More flexible covariance alone does not establish
-that a systematic input-response error has been explained.
+Preserve run boundaries, initialization and ambient forcing consistently across
+records. For a black-box model, specify exactly how an ambient offset enters;
+an arbitrary output intercept is not automatically equivalent to the thermal
+ambient transient. If equivalence cannot be imposed, label that comparison as
+conditional on a different nuisance treatment and run a matched sensitivity.
 
-Deliverable: a compact comparison identifying which changes reduce the
-reproducible discrepancy and which leave it unresolved.
+Compare free-run response, amplitude/phase and residual input association with
+the n = 1 reference. Report complexity, numerical stability and weakly estimated
+modes. A flexible LTI model that removes the repeatable discrepancy supports
+revising the chain restriction. Failure also permits weak excitation, estimation
+problems or disturbance confounding; it does not establish nonlinearity.
 
-## Additional system-identification checks
+Compare one-step/short-horizon predictions using available temperature history
+with free-run simulations driven by commands and initial conditions. Declare
+forecast origins and information sets. Exclude future temperatures. Match
+initialization and distinguish measurement conditioning from changes in physics.
+A noise predictor can compensate for a wrong mean response; a prediction versus
+simulation gap is evidence to investigate, not a unique diagnosis.
 
-### Flexible linear state-space benchmark
+## Phase 4: revisit n = 1, 2 and 3 delay stages
 
-Fit a small set of low-order linear state-space models, using subspace
-estimation for initialization and prediction-error refinement. Seek stable,
-causal dynamics shared across runs, with run-specific initial conditions and
-nuisance terms handled consistently with the baseline. State count is separate
-from the delay-chain order n.
+For each order, fit one shared model to the same twelve records. Use θ as total mean
+chain delay, so each identical stage has time constant θ/n. The command-to-
+temperature transfer function for the reference structure is
 
-Use the same records, ambient assumptions and held inputs, and compare model
-complexity and innovations. If a flexible linear model repeatedly removes the
-input-related pattern, investigate which restrictions of the delay-chain model
-prevent that behavior. If it also fails, check excitation, identifiability,
-disturbance confounding and estimation before assigning the failure to
-nonlinearity.
+\[
+G_n(s)=\frac{K}{(1+\tau s)(1+\theta s/n)^n}.
+\]
 
-### Regularized impulse-response estimate
+Its continuous-time fundamental phase for positive K is
+−atan(ωτ)−n atan(ωθ/n), before accounting for the input/sampling reference.
+Verify the implementation against independent propagation and synthetic cases.
+Each fixed n retains three shared thermal parameters; increasing state dimension
+does not by itself add freely fitted thermal parameters. Count actual nuisance,
+noise and any additional free parameters when discussing complexity.
 
-Estimate an impulse response or finite impulse response (FIR) model to inspect
-the response's onset and shape without imposing the delay-chain form. Account
-for finite records, sparse excitation and ill-conditioning. Report the effect
-of regularization on the estimate and its uncertainty. Avoid differentiating
-the noisy step response directly or interpreting an apparent onset as a
-uniquely identified physical delay.
+Use comparable multistart coverage, report optimizer failures and check possible
+alternative basins. Preserve the n = 1 pole-exchange caveat: input-response
+symmetry alone does not assign physical pole labels, while ambient forcing can
+alter that symmetry. Check the corresponding ambiguities for each higher order.
 
-### Operating-condition and nonlinear diagnostics
+Compare per-run fit, frequency response, input-related innovations, covariance
+behavior and parameter/response estimability. Use local sensitivity singular
+values or information eigendecompositions with declared scaling; use profiles
+where curvature or bounds make local ranges unreliable. Begin resampling with
+an audited pilot if needed, and expand only to resolve an identified inferential
+question. Avoid repeating the previous large uncertainty matrix by default.
 
-Examine residuals and estimated frequency responses against temperature,
-heater level, and heating versus cooling. Compare output harmonics with the
-actual held input and the recorded temperature quantization before attributing
-them to nonlinear thermal behavior. Use the repeats to check whether the
-associations persist. This small dataset can confound operating condition,
-input protocol and disturbances; an association alone does not identify a
-mechanism.
+Improvement must reproduce across repeats and reduce the diagnosed discrepancy,
+rather than merely lower the pooled objective. Use nominal likelihood criteria
+with their working-model qualifications. A better-fitting n is not proof of the
+physical number of delay stages; report orders the data cannot distinguish.
 
-### Prediction horizon versus free-run simulation
+## Phase 5: follow the evidence
 
-Compare one-step and short-horizon predictions conditioned on measured
-temperature history with free-run simulations using commands and declared
-initial conditions. Match initialization and information available at each
-forecast origin; exclude future temperature responses from predictor inputs.
-A noise predictor can compensate for deterministic mean-model mismatch, so
-report both tasks. A gap between their errors is useful evidence but does not
-uniquely diagnose its cause.
+Select follow-ups from the preceding results and record why each was needed.
 
-Deliverable: a short benchmark matrix and diagnostic plots showing which
-response features each method explains, where uncertainty remains large, and
-which findings reproduce across runs.
+- **Regularized impulse response:** estimate a causal FIR/impulse-response
+  benchmark for onset and shape. Assess excitation and conditioning before
+  interpreting it. Show sensitivity to regularization and response horizon;
+  regularization adds assumptions and trades variance for bias. Avoid directly
+  differentiating noisy step records or calling an apparent onset a unique delay.
+- **Operating conditions and nonlinearity:** examine residual/frequency-response
+  dependence on temperature, heater level and heating versus cooling. Compare
+  output harmonics with the actual held input and quantization effects. Seek
+  repetition across runs. Protocol, operating condition and disturbance can be
+  confounded in these data; report associations accordingly. Fit a small physical
+  extension only when these diagnostics motivate a specific term.
+- **Disturbances and ambient treatment:** revisit linear ambient drift or a
+  parsimonious disturbance representation when remaining errors are slow or
+  repeat-variable. Use the existing constant-offset fit as reference. Any drift
+  limits are declared technical choices, not previously measured bounds. Assess
+  mean/error confounding. A flexible covariance alone cannot establish that an
+  input-linked response error has been explained.
 
-## Next sequence: diagnostics, linear benchmark and delay-order comparison
+If a full two-temperature physical model or a substantially wider model search
+appears necessary, document that scope extension for review. It is not an
+unbounded continuation of the reduced-model comparison.
 
-Begin with amplitude and phase estimation, supported by the offset and
-repeatability checks, then use the flexible linear state-space benchmark to
-test how much the constrained dynamics explain. Let those findings guide the
-remaining diagnostic methods and targeted extensions.
+## Evidence, reproducibility and stopping decisions
 
-Revisit n = 1, n = 2 and n = 3 delay-stage models as part of that comparison.
-Here n is the number of stages in the delay chain. The later question of
-fitting with one sine record and one step record concerns calibration data
-quantity and is a separate study.
+Use Python source files and reproducible entry points. Freeze source and raw
+inputs for long jobs; save seeds, configurations, solver termination, failed
+attempts and recoveries. Reconcile running jobs at each continuation. Commit
+coherent source/results changes without overwriting the completed study.
+Independently verify selected propagation, likelihood and diagnostic arithmetic.
+Inspect plots before interpreting or reporting them.
 
-Compare all three delay orders on the same twelve ENV2 records with matched
-ambient, startup, zero-order-hold and error treatments. Define θ consistently
-as the total mean delay across the chain; for n identical first-order stages,
-each stage then has time constant θ/n. Preserve this convention when setting
-bounds, generating initial guesses and reporting fitted delays.
+Define diagnostic statistics and window/lag sensitivities before selecting
+winning models. Existing input-correlation searches and phase diagnostics can
+supply descriptive checks. If resampling calibrates new statistics, repeat the
+actual fitting/selection steps it is intended to calibrate and state the assumed
+noise law. Preserve model-inadequacy and data-reuse qualifications. No nominal
+95% interval or residual test guarantees coverage under a wrong mean model.
 
-Use comparable multistart coverage and optimization effort, documenting any
-remaining convergence differences. Compare amplitude and phase mismatch,
-input-related innovations, per-run fit, model complexity, estimability and
-conditional uncertainty. More stages need not improve the explanation, and a
-better fit would not establish the device's physical delay order.
+Stop a candidate calculation when its assumptions fail, its response is not
+identified by these inputs, or an independent numerical check fails. Diagnose
+and record the failure before spending more computation. Complete the goal when
+the comparisons and audits are reported, including unresolved alternatives and
+data limitations; identifying a uniquely correct model is not required.
 
-This sequence is a discussion proposal. Numerical work remains pending the
-next agreed analysis scope.
+## Report and researcher checkpoint
 
-## Decision before another calibration-pair study
+Produce one concise Markdown investigation report linked to reproducible figures
+and tables. Start with question, evidence and status for each phase. Explain:
 
-Review whether the proposed mean and disturbance descriptions explain the
-shared trajectories and the reproducible residual patterns. Specify remaining
-limitations before returning to the question of what one sine test plus one
-step test can identify. Any subsequent use of these records remains
-retrospective after pooled model exploration.
+1. Which part of the discrepancy is ambient-related versus input-related.
+2. Whether amplitude/phase and residual patterns reproduce across runs.
+3. What flexible linear models and n = 1/2/3 comparisons establish.
+4. Whether nonlinear or disturbance explanations receive additional support.
+5. Which uncertainty statements survive the diagnostics and which remain
+   conditional on an inadequate model.
+6. What these findings imply for the previous two-record calibration results,
+   and what evidence would distinguish the remaining explanations.
 
-Agree on the candidate changes and diagnostic criteria before launching work.
-The remaining 21 calibration pairs, Pyomo.DoE, new hardware experiments, and
-another report email remain outside this proposal.
+Report prediction and simulation separately. Keep any retrospective response-
+conditioned reconstruction separate from prospective prediction. End with a
+specific recommendation and open questions for Alex's review before another
+calibration-pair study.
+
+The remaining 21 pairings, Pyomo.DoE and new hardware experiments remain deferred.
+Do not resend the completed Tier 0–2 email. This investigation plan requests no
+new email delivery or recurring report sends.
+
+## Method references
+
+These references support methods, not claims that any candidate fits ENV2.
+Sources consulted October 24, 2026. Ground any new manuscript claims in the
+user-authorized Lab Literature workflow when preparing publication material.
+
+- [Residual analysis and input dependence](https://www.mathworks.com/help/ident/ug/what-is-residual-analysis.html).
+- [Sinusoidal amplitude/phase estimation](https://www.mathworks.com/help/slcontrol/ug/frequencyresponseestimator.html).
+- [Settling and frequency-response estimation](https://www.mathworks.com/help/slcontrol/ug/frequency-response-estimation-using-simulation-based-techniques.html).
+- [Subspace and prediction-error state-space estimation](https://www.mathworks.com/help/ident/ug/state-space-model-estimation-algorithms.html).
+- [Regularized impulse-response estimation](https://www.mathworks.com/help/ident/ref/impulseest.html).
+- [Linear identification in a nonlinear setting](https://arxiv.org/abs/1804.09587).
