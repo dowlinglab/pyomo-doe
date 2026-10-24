@@ -147,6 +147,21 @@ def main():
     tier2 += "\\begin{figure}[htbp]\\centering\\includegraphics[width=\\linewidth]{generated/figures/prediction_RMSE.pdf}\\caption{Zero-ambient prediction RMSE in degrees Celsius. White cells are the two calibration records for that pair. Records are labeled by sine period or step (S), then run number.}\\end{figure}\n"
     (args.output/"tier2.tex").write_text(tier2.replace("generated/figures/", args.output.name+"/figures/"))
     plt.rcParams.update({"font.size":8,"axes.spines.top":False,"axes.spines.right":False,"pdf.fonttype":42})
+    fig,axes=plt.subplots(2,1,figsize=(5,3.3),sharex=True)
+    acf_bindings={}
+    for label,cell in [("Raw OLS residuals","constant_iid"),("OU + measurement innovations","constant_ou_nugget")]:
+        path=args.results/"tier0_covariance"/cell/"trajectories.npz"
+        archive=np.load(path)
+        ax=axes[0 if cell=="constant_iid" else 1]
+        for index,name,color in [(0,"30 s sine","#7e3f8f"),(3,"120 s sine","#a65b08"),(6,"300 s sine","#175a8e"),(9,"Step","#2f7b51")]:
+            values=archive["standardized_innovation_"+str(index)]
+            centered=values-values.mean()
+            acf=[float(centered[k:]@centered[:-k]/(centered@centered)) for k in range(1,31)]
+            ax.plot(range(1,31),acf,label=name,color=color,lw=1)
+        ax.axhline(0,color=".6",lw=.6);ax.set_ylabel("ACF");ax.set_title(label,loc="left",fontsize=8)
+        acf_bindings[cell]=digest(path)
+    axes[0].legend(ncol=4,fontsize=6,loc="lower left",frameon=False)
+    axes[-1].set_xlabel("Sample lag (approximately s)");fig.tight_layout();fig.savefig(figures/"residual_ACF.pdf");plt.close(fig)
     examples = ["sin_50_50_run_1", "sin_5_50_run_2", "step_50_run_3"]
     numeric = np.load(args.predictions/"P1"/"predictions.npz")
     fig, axes = plt.subplots(3,1,figsize=(5,5.4))
@@ -170,7 +185,7 @@ def main():
         for j in range(12):
             if np.isfinite(matrix[i,j]):ax.text(j,i,format(matrix[i,j],".1f"),ha="center",va="center",fontsize=6,color="black" if matrix[i,j]<np.nanmax(matrix)*.55 else "white")
     ax.set_xticks(range(12));ax.set_xticklabels(labels,rotation=45,ha="right");ax.set_yticks(range(6));ax.set_yticklabels(list(P));fig.colorbar(im,ax=ax,label="RMSE, C",fraction=.04,pad=.025);fig.tight_layout();fig.savefig(figures/"prediction_RMSE.pdf");plt.close(fig)
-    output={"prediction_metrics":metrics,"common_evaluation_records":sorted(common_names),"binding":bindings,"uncertainty_summary_sha256":digest(args.uncertainty_summary/"uncertainty.json"),
+    output={"prediction_metrics":metrics,"common_evaluation_records":sorted(common_names),"binding":bindings,"ACF_trajectory_sha256":acf_bindings,"uncertainty_summary_sha256":digest(args.uncertainty_summary/"uncertainty.json"),
             "profile_audit_sha256":digest(args.profile_audit/"audit.json"),"figures":{p.name:digest(p) for p in figures.glob("*.pdf")},
             "notice":"Generated tables and descriptive figures; final prose interpretation and all-page rendered layout review remain required."}
     (args.output/"report_numbers.json").write_text(json.dumps(output,indent=2,allow_nan=False)+"\n")

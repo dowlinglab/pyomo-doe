@@ -4,7 +4,7 @@
 \usepackage{lmodern,amsmath,amssymb,booktabs,tabularx,longtable,graphicx,enumitem}
 \usepackage[round,authoryear]{natbib}
 \usepackage[colorlinks=true,urlcolor=blue,citecolor=blue,linkcolor=blue]{hyperref}
-\usepackage{eso-pic,tikz,microtype}
+\usepackage{eso-pic,tikz,microtype,placeins}
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{5pt}
 \setlist{nosep,leftmargin=*}
@@ -92,6 +92,12 @@ This working choice is agent-selected for the requested six-pair analysis and aw
 
 With the same covariance family, linear drift lowers negative log likelihood by 6.05 while adding twelve parameters; nominal AICc is 12.00 higher than for constant offsets. This is a conditional comparison under an imperfect error model.
 
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\linewidth]{generated_release/figures/residual_ACF.pdf}
+\caption{Residual correlation before and after the covariance-aware fit, using run 1 of each protocol. Whitening reduces the long persistence but leaves oscillation in the thirty-second sine and negative short-lag association in other records. These are descriptive ACFs; no IID significance bands are implied.}
+\end{figure}
+
 \subsection*{What remains in the residuals}
 The thirty-second sine runs have maximum absolute innovation/command correlations of 0.457--0.481 over the declared $\pm30$-sample lag search. Widening ambient offsets to $\pm4\C$, changing startup by $\pm0.165\C$, adding one second of input prehistory, or using linear ambient drift leaves this cycle. Right-held commands worsen negative log likelihood by 256.30 and increase that association.
 
@@ -99,12 +105,14 @@ The temperatures lie on an inferred $0.32229984\C$ grid after two-decimal report
 
 Ambient assumptions also affect interpretation. Widening offsets to $\pm4\C$ removes active ambient bounds and lowers $K$ by 2.47\%, while the fast-sine discrepancy persists. Protocol-specific exploratory fits give $K=0.655,0.689,0.724,0.753$ for 30-second, 120-second, 300-second and step records. Those fits use different observations, so their likelihoods are not directly comparable and the point differences are not a formal heterogeneity test.
 
+\FloatBarrier
 \section{Tier 1: one sine and one step}
 \textbf{Goal.} Freeze the working structure, refit all numerical thermal, ambient and noise parameters using only five-minute sine run 1 and step run 1, then predict the other ten records.
 
 The P1 point estimates are $K=0.74063\C/\%$, $\tau=147.60$ s and $\theta=16.59$ s. Its two ambient corrections are $1.261\C$ and $1.947\C$. No pooled noise estimate is fixed in this restricted fit.
 
-\IfFileExists{generated/tier1.tex}{\input{generated/tier1.tex}}{\pending{profiles, bootstrap and evaluation}}
+\input{generated_release/tier1.tex}
+\FloatBarrier
 \section{Tier 2: five further pairs}
 \textbf{Goal.} Assess how much the result depends on the chosen sine and step. Six pairs in total use each step twice and each sine period twice.
 
@@ -122,7 +130,8 @@ P6 & 120 s / 2 & 3 & 0.69734 & 130.62 & 18.87\\
 \end{tabular}
 
 All six point fits pass the declared stationarity checks and independent trajectory/likelihood reconstruction. Their parameter spread can reflect record variation, nuisance-bound effects and model inadequacy as well as statistical uncertainty.
-\IfFileExists{generated/tier2.tex}{\input{generated/tier2.tex}}{\pending{uncertainty and evaluation comparison}}
+\input{generated_release/tier2.tex}
+\FloatBarrier
 
 \section{How uncertainty is calculated}
 For $e_j=y_j-m_j$, the working covariance is
