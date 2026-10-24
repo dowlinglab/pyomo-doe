@@ -34,7 +34,7 @@ Tier & Goal & Status and result\\
 \bottomrule
 \end{tabularx}
 
-\textbf{Current interpretation.} The correlated-error fit removes much of the serial dependence, but the thirty-second sine records retain a command-related cycle. The analysis therefore uses an explicit working error model. Its uncertainty ranges describe that model and its resampling sensitivities; they do not establish that a universal physical model explains these experiments.
+\textbf{Current interpretation.} P1 gives narrow thermal parameter ranges but transfers poorly to the other ten records. Its zero-ambient predictions have pooled RMSE $2.22\C$, and 19.0\% of recorded temperatures fall inside the nominal 95\% Gaussian observation ranges. Allowing the $\pm2\C$ ambient envelope raises that fraction to 58.5\%. The pooled residual analysis also retains a command-related cycle in the thirty-second sine records. These findings limit the proposed universal mean/error description. The uncertainty calculations remain conditional on that working description and its resampling sensitivities.
 
 \section{Model, records and teaching sequence}
 We accept the same-device ENV2 provenance as the study assumption. There are nine sine records (three runs each at 30, 120 and 300 seconds) and three step records. Calibration aliases with duplicate data are excluded.
@@ -46,6 +46,8 @@ For experiment $j$, the measured command $u_j$ is held constant from its recorde
 T_{\mathrm{amb},j} &= T_{1,j}(0)+\delta_j,\qquad -2\C\leq\delta_j\leq2\C.
 \end{align}
 The positive $K,\tau,\theta$ are shared across calibration records. The initial conditions are $z_j(0)=0$ and $T_j(0)=T_{1,j}(0)$; the first temperature is conditioned on and its residual omitted. Initial temperature is a reference, not an independent ambient measurement. The drift comparison replaces the constant correction by a linear function with both endpoints inside the same band. Endpoint bounds are an implementation choice.
+
+The input-lag state is one stage of the delay chain; it produces a first-order lag rather than an exact dead time. Numerical fit bounds are $K\in[0.2,1.5]\C/\%$, $\tau\in[5,600]$ s and $\theta\in[0.01,200]$ s. These are declared computational choices, not measured physical limits. A finite-box profile alone cannot prove global identifiability.
 
 With a fixed command-to-power conversion $c$, a lumped physical interpretation is $K=\alpha c/(UA)$ and $\tau=C_p/(UA)$. An unknown shared constant $\alpha$ is absorbed into fitted $K$. Estimating $\alpha$ separately adds no temperature-fit flexibility when $K$ is free. Independent calibration is needed to recover absolute $UA$ or $C_p$; it is not needed to fit $K$.
 
@@ -85,6 +87,8 @@ Mat\'ern-$3/2$ + measurement noise & 0.47981 & $-0.186$ to 0.241\\
 \end{tabularx}
 
 The working choice is constant offsets and OU plus measurement noise. Its pooled estimates are $K=0.71001\C/\%$, $\tau=137.48$ s, $\theta=18.37$ s and correlation length $\ell=213.87$ s. The total marginal residual SD is $0.47877\C$, split into $0.47012\C$ slow variation and $0.09062\C$ independent measurement variation. Correlated likelihood emphasizes a different part of the residual spectrum than OLS, so a larger raw RMSE can accompany a better likelihood.
+
+This working choice is agent-selected for the requested six-pair analysis and awaits Alex's scientific review. OU alone leaves strongly negative lag-one innovations; adding measurement variance reduces that effect. The remaining cycle still needs a mean-model explanation or a better disturbance model.
 
 With the same covariance family, linear drift lowers negative log likelihood by 6.05 while adding twelve parameters; nominal AICc is 12.00 higher than for constant offsets. This is a conditional comparison under an imperfect error model.
 
@@ -132,6 +136,8 @@ Here $\eta$ is a variance fraction. A stationary innovations filter provides $W_
 +\sum_j\log|R_j|\right].
 \]
 The determinant is required when estimating covariance parameters. State-space representations of half-integer Mat\'ern kernels support exact temporal covariance computations with stationary initialization and irregular sampling \citep{hartikainen-2010-kalman}. They provide a computation method, not evidence that a chosen kernel describes these experiments.
+
+The declared covariance search uses $\ell\in[0.05,3000]$ s and $\eta\in[0,1]$. Processes reset independently between experiments. Alternating GLS updates covariance from the current residuals, refits the transformed mean, and repeats; joint likelihood then checks the stabilized solution.
 
 Local information uses log $K,\tau,\theta$, removes ambient directions and reports eigenvalues/eigenvectors. We compare IID OLS, fixed-covariance GLS, Bartlett HAC sensitivities at 10/30/60 sample lags, and the observed likelihood curvature including noise estimation. HAC covariance addresses serial dependence under its assumptions \citep{newey-1987-simple}. It cannot repair an incorrect mean. We withhold a regular Gaussian covariance when the observed curvature is indefinite; active bounds remain a qualification even when a matrix is positive.
 

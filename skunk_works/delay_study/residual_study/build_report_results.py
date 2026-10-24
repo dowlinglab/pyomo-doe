@@ -81,13 +81,19 @@ def main():
     metrics = {pair: prediction_metrics(s) for pair, s in P.items()}
     first = U["pairs"]["P1"]
     rows = []
+    range_rows = []
     for k, name in enumerate(("K", "tau", "theta")):
         rows.append(["$"+name+"$", format(I["P1"]["IID_OLS_thermal"]["thermal_std_native"][k], ".4g"),
+                     format(I["P1"]["OLS_HAC_Bartlett_by_sample_bandwidth"]["30"]["thermal_std_native"][k], ".4g"),
                      format(I["P1"]["conditional_GLS_thermal"]["thermal_std_native"][k], ".4g"),
+                     format(I["P1"]["observed_curvature"]["thermal_std_native_diagnostic"][k], ".4g")])
+        range_rows.append(["$"+name+"$",
                      interval(first["gaussian"]["distributions"][name]["quantiles_025_50_975"], 3),
                      interval(first["blocks60"]["distributions"][name]["quantiles_025_50_975"], 3)])
-    tier1 = table(["Parameter", "IID SD", "GLS SD", "Gaussian 95\\% range", "Block 95\\% range"], rows)
-    tier1 += ("SD units are $\\C/\\%$ for $K$ and seconds for the time constants. IID and GLS use their own fitted means; their comparison includes the change in fitting criterion. GLS holds the covariance fixed. Bootstrap refits include noise and ambient estimation.\n")
+    tier1 = table(["Parameter", "IID SD", "HAC(30) SD", "GLS SD", "Full-curvature SD"], rows)
+    tier1 += ("SD units are $\\C/\\%$ for $K$ and seconds for the time constants. HAC changes the estimated OLS covariance while retaining its mean fit. IID and GLS use their own fitted means; their comparison includes the change in fitting criterion. GLS holds the covariance fixed. Full curvature includes noise estimation but remains a local, single-basin diagnostic.\n")
+    tier1 += table(["Parameter", "Gaussian 95\\% range", "Block 95\\% range"], range_rows)
+    tier1 += "Bootstrap refits include noise and ambient estimation, boundaries and pole alternatives. Percentile ranges summarize the working refit distributions; coverage has not been established.\n"
     mode = first["gaussian"]["pole_label_modes"]["tau_lt_theta"]["count"]
     blocks_mode = first["blocks60"]["pole_label_modes"]["tau_lt_theta"]["count"]
     tier1 += ("The opposite pole labeling occurs in "+str(mode)+"/400 Gaussian and "+str(blocks_mode)+"/400 block refits. A central interval can miss that secondary basin. The step ambient bound is active in "+str(first["gaussian"]["bound_hit_counts_among_usable"]["ambient_2_C"])+"/400 Gaussian refits.\n")
@@ -99,7 +105,7 @@ def main():
     tier1 += "Nominal profile support is "+"; ".join(parts)+". Finite grid and crossing brackets are retained in the numerical archive.\n"
     tier1 += "\\begin{figure}[htbp]\\centering\\includegraphics[width=\\linewidth]{generated/figures/P1_predictions.pdf}\\caption{P1 predictions for three evaluation records. Blue bands are pointwise Gaussian working observation ranges at zero future ambient correction; gray envelopes also allow ambient offsets in $\\pm2\\C$. Ambient envelopes have no assigned probability. Black points are recorded temperatures.}\\end{figure}\n"
     (args.output/"tier1.tex").write_text(tier1)
-    rows, pole_rows, eigen_rows, fit_rows, band_rows = [], [], [], [], []
+    rows, pole_rows, eigen_rows, fit_rows, band_rows, length_rows = [], [], [], [], [], []
     for pair, info in I.items():
         u = U["pairs"][pair]
         rows.append([pair, interval(u["gaussian"]["distributions"]["K"]["quantiles_025_50_975"], 3),
@@ -107,6 +113,8 @@ def main():
                      str(u["gaussian"]["pole_label_modes"]["tau_lt_theta"]["count"])+"/"+str(u["blocks60"]["pole_label_modes"]["tau_lt_theta"]["count"])])
         pole_rows.append([pair, interval(u["gaussian"]["distributions"]["slow_pole_s"]["quantiles_025_50_975"], 1),
                           interval(u["gaussian"]["distributions"]["fast_pole_s"]["quantiles_025_50_975"], 1)])
+        length_rows.append([pair]+[format(u[method]["distributions"]["K"]["quantiles_025_50_975"][2]-u[method]["distributions"]["K"]["quantiles_025_50_975"][0], ".4f")
+                                    for method in ("blocks30", "blocks60", "blocks120")])
         spectral = info["conditional_GLS_thermal"]
         vector = np.asarray(spectral["eigenvectors_columns"])[:, 0]
         if vector[np.argmax(np.abs(vector))] < 0: vector = -vector
@@ -120,6 +128,8 @@ def main():
     tier2 += "G/B counts use 400 draws per method. They are bootstrap selection frequencies under the working mechanism, not posterior probabilities of a physical pole assignment.\n"
     tier2 += table(["Pair", "Unlabeled slow pole, s", "Unlabeled fast pole, s"], pole_rows)
     tier2 += "These are Gaussian percentile ranges. Unlabeled poles avoid combining two swapped parameter basins in a single interval for a physical time constant.\n"
+    tier2 += table(["Pair", "$K$ width: 30-s blocks", "60-s blocks", "120-s blocks"], length_rows)
+    tier2 += "Widths are in $\\C/\\%$. Blocks count samples, approximately seconds. The 30/120-s sensitivities use 100 draws each; their 2.5\\% tails involve only two or three order statistics. The 400-draw primary methods have about ten draws per tail. Rare pole switches can move endpoints; the archive retains order-statistic Monte Carlo ranges and half-batch discrepancies.\n"
     tier2 += table(["Pair", "Smallest information eigenvalue", "Condition", "Weak log direction"], eigen_rows)
     tier2 += "Directions use $(\\log K,\\log\\tau,\\log\\theta)$ after eliminating ambient columns; eigenvector signs are arbitrary. These are local fixed-covariance diagnostics and ignore box geometry and separated modes.\n"
     tier2 += table(["Pair", "OLS prediction RMSE", "GLS prediction RMSE", "Ambient reconstruction"], fit_rows)

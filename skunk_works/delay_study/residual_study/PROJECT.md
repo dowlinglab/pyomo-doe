@@ -207,3 +207,12 @@ and independent mean derivatives pass the unchanged stationarity criterion. No
 lower reference minimum was found. Original flags and solver records remain.
 The fourth numerical slot now runs the prediction supervisor; it waits for each
 pair's terminal Gaussian and L60 block cells, then evaluates its ten other records.
+
+Full 400-draw P1 predictions are terminal and pass independent propagation/CDF
+checks. Across ten evaluation records, zero-ambient RMSE is 2.21935 C, compared
+with 2.17516 C for OLS; Gaussian observation-range inclusion is 19.02%, rising
+to 58.51% with the bounded ambient envelope. Fitting an ambient correction to
+the complete evaluation response lowers RMSE to 0.92980 C but is retrospective
+reconstruction. These are descriptive fractions under reused records/serial
+dependence, not independent-binomial coverage tests. The report now leads with
+poor transfer despite narrow conditional parameter ranges.
