@@ -91,4 +91,15 @@ def audit():
                 d=Experiment('synthetic',t,np.full(len(t),22.),u,22.)
                 if np.max(abs(a-unit_response(d,tau,theta)))>2e-9:raise AssertionError('Zero delay mismatch')
             rows.append({'tau':tau,'theta':theta,'delay_s':delay,'independent_max_abs':error})
+    from scipy.integrate import solve_ivp
+    model=TransportModel([Experiment('synthetic',t,np.full(len(t),22.),u,22.)])
+    model.ambient_mode='linear';model.ambient_width=2
+    point=np.r_[np.log([137.,18.]),2.35,np.log(200.),.04]
+    predicted=model.trajectories(point,np.array([.71,-1.3,1.7]))[0]
+    slope=3/(t[-1]-t[0])
+    sol=solve_ivp(lambda s,x:(-1.3+slope*(s-t[0])-x)/137.,(t[0],t[-1]),[0.],t_eval=t,rtol=2e-11,atol=1e-12)
+    expected=22+.71*independent_reference(t,u,137.,18.,2.35)+sol.y[0]
+    error=float(np.max(abs(predicted-expected)))
+    if error>2e-8:raise AssertionError(('Transport linear ambient',error))
+    rows.append({'ambient_mode':'linear','independent_max_abs':error})
     return {'status':'passed','cases':rows,'scope':'Exact delayed left-hold events vs independent merged-grid matrix exponential; zero delay legacy, repeated poles, cold prehistory'}

@@ -189,4 +189,18 @@ def audit():
             legacy=22+.71*unit_response(records[0],137,18)-1.3*(-np.expm1(-t/137))
             if np.max(np.abs(legacy-pred))>2e-9: raise AssertionError('Legacy mismatch')
         rows.append({'kind':kind,'order':order,'ODE_max_abs_C':error})
+    # Linear endpoint basis is independently checked as an ambient-only ODE,
+    # rather than comparing two copies of the closed-form basis.
+    for tau in (5.,137.,600.):
+        model=make_model(records,'chain',1,ambient_mode='linear')
+        point=np.r_[np.log([tau,18.]),np.log(200.),.04]
+        c=np.array([.71,-1.3,1.7])
+        prediction=model.trajectories(point,c)[0]
+        slope=3./(t[-1]-t[0])
+        solution=solve_ivp(lambda s,x:(-1.3+slope*(s-t[0])-x)/tau,
+                           (t[0],t[-1]),[0.],t_eval=t,rtol=2e-11,atol=1e-12,method='DOP853')
+        expected=22+.71*unit_response(records[0],tau,18.)+solution.y[0]
+        error=float(np.max(abs(prediction-expected)))
+        if error>2e-8:raise AssertionError(('Linear ambient',tau,error))
+        rows.append({'kind':'chain','order':1,'ambient_mode':'linear','tau':tau,'ODE_max_abs_C':error})
     return {'status':'passed','cases':rows,'scope':'Exact irregular intervals, physical ambient forcing, free numerator and orders1/2/3; independent physical-state ODE'}
