@@ -40,6 +40,8 @@ class PooledModel:
         self.ninput = 1 if kind == 'chain' else order
         self.nt = 2 if kind == 'chain' else self.m
         self.numerator_bound = 2.
+        self.ambient_mode='constant'
+        self.ambient_width=1
         self.y = np.concatenate([d.temperature[1:]-d.temperature[0] for d in records])
         self.design = lru_cache(maxsize=8)(self._design)
 
@@ -60,7 +62,7 @@ class PooledModel:
         plans = np.array([expm(augmented*h)[:m] for h in self.intervals])
         transitions = np.ascontiguousarray(plans[:,:,:m])
         forcing = np.ascontiguousarray(plans[:,:,m])
-        X = np.zeros((self.count,self.ninput+len(self.records)))
+        X = np.zeros((self.count,self.ninput+self.ambient_width*len(self.records)))
         cursor = 0
         for j,d in enumerate(self.records):
             h = propagate(d.input,self.indices[j],transitions,forcing)[1:]
@@ -68,7 +70,12 @@ class PooledModel:
             X[section,0] = h[:,-1]
             if self.kind == 'flexible_real':
                 X[section,1:self.ninput] = h[:,:-1]-h[:,[-1]]
-            X[section,self.ninput+j] = -np.expm1(-(d.time[1:]-d.time[0])/times[0])
+            elapsed=d.time[1:]-d.time[0]
+            a=-np.expm1(-elapsed/times[0])
+            if self.ambient_width==1:X[section,self.ninput+j]=a
+            else:
+                b=(elapsed-times[0]*a)/(d.time[-1]-d.time[0])
+                X[section,self.ninput+2*j:self.ninput+2*j+2]=np.column_stack((a-b,b))
             cursor += count
         return X
 
@@ -78,8 +85,8 @@ class PooledModel:
         return times+[(np.log(.05),np.log(3000.)),(0.,1.)]
 
     def coefficient_bounds(self):
-        lo = [.2]+[-self.numerator_bound]*(self.ninput-1)+[-2.]*len(self.records)
-        hi = [1.5]+[self.numerator_bound]*(self.ninput-1)+[2.]*len(self.records)
+        lo = [.2]+[-self.numerator_bound]*(self.ninput-1)+[-2.]*(self.ambient_width*len(self.records))
+        hi = [1.5]+[self.numerator_bound]*(self.ninput-1)+[2.]*(self.ambient_width*len(self.records))
         return np.array(lo),np.array(hi)
 
     def projected(self, point, kernel='ou_nugget', fixed_gain=None):
@@ -130,7 +137,7 @@ class PooledModel:
         return result
 
 
-def make_model(records,kind,order,numerator_bound=2.):
+def make_model(records,kind,order,numerator_bound=2.,ambient_mode='constant'):
     if kind=='transport':
         from transport import TransportModel
         if order!=1:raise ValueError('Transport extension applies to the n=1 baseline')
@@ -138,6 +145,8 @@ def make_model(records,kind,order,numerator_bound=2.):
     else:model=PooledModel(records,kind,order)
     if numerator_bound<=0:raise ValueError('Positive numerator bound required')
     model.numerator_bound=float(numerator_bound)
+    if ambient_mode not in ('constant','linear'):raise ValueError(ambient_mode)
+    model.ambient_mode=ambient_mode;model.ambient_width=1 if ambient_mode=='constant' else 2
     return model
 
 

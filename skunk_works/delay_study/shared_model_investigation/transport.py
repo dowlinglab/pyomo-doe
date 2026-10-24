@@ -56,11 +56,15 @@ class TransportModel(PooledModel):
     def _design(self,coordinates):
         tau,theta=np.exp(coordinates[:2]);delay=coordinates[2]
         if delay<0:raise ValueError('Nonnegative delay required')
-        X=np.zeros((self.count,1+len(self.records)));cursor=0
+        X=np.zeros((self.count,1+self.ambient_width*len(self.records)));cursor=0
         for j,d in enumerate(self.records):
             count=len(d.time)-1;section=slice(cursor,cursor+count)
             X[section,0]=delayed_unit(d.time,d.input,tau,theta,delay)[1:]
-            X[section,1+j]=-np.expm1(-(d.time[1:]-d.time[0])/tau)
+            elapsed=d.time[1:]-d.time[0];a=-np.expm1(-elapsed/tau)
+            if self.ambient_width==1:X[section,1+j]=a
+            else:
+                b=(elapsed-tau*a)/(d.time[-1]-d.time[0])
+                X[section,1+2*j:1+2*j+2]=np.column_stack((a-b,b))
             cursor+=count
         return X
 

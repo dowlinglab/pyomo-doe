@@ -12,7 +12,7 @@ import numpy as np
 import pandas as pd
 from scipy.linalg import expm
 from data import load
-from pooled_models import PooledModel
+from pooled_models import make_model
 from run_mean import write_json
 
 
@@ -39,9 +39,9 @@ def main():
     time=np.linspace(0,120,481)
     for folder in args.inputs:
         fit=json.loads((folder/'fit.json').read_text());best=fit['best']
-        model=PooledModel([load(n) for n in fit['record_names']],fit['kind'],fit['order'])
+        model=make_model([load(n) for n in fit['record_names']],fit['kind'],fit['order'],fit.get('numerator_bound',2.),fit.get('ambient_mode','constant'))
         x=np.array(best['point']);c=np.array(best['coefficients']);times=np.array(fit['time_constants_s'])
-        physical=np.r_[np.zeros(model.m-1),c[0]] if fit['kind']=='chain' else np.r_[c[1:model.m],c[0]-sum(c[1:model.m])]
+        physical=np.r_[np.zeros(model.m-1),c[0]] if fit['kind'] in ('chain','transport') else np.r_[c[1:model.m],c[0]-sum(c[1:model.m])]
         polynomial=np.poly1d([0.])
         for j,coefficient in enumerate(physical):
             term=np.poly1d([coefficient])
@@ -50,12 +50,13 @@ def main():
         coefficients=np.trim_zeros(polynomial.c,'f')
         zeros=np.roots(coefficients) if len(coefficients)>1 else np.array([])
         A,B=physical_system(times,physical)
-        impulse=np.array([(expm(A*t)@B)[-1] for t in time])
+        delay=x[2] if fit['kind']=='transport' else 0.
+        impulse=np.array([(expm(A*(t-delay))@B)[-1] if t>=delay else 0. for t in time])
         H=np.array([model.frequency_response(x,c,w) for w in omega])
-        state_frequency=np.array([np.linalg.solve(1j*w*np.eye(model.m)-A,B)[-1] for w in omega])
+        state_frequency=np.array([np.exp(-1j*w*delay)*np.linalg.solve(1j*w*np.eye(model.m)-A,B)[-1] for w in omega])
         denominator=np.poly1d([1.])
         for value in times:denominator*=np.poly1d([value,1.])
-        polynomial_frequency=np.polyval(polynomial,1j*omega)/np.polyval(denominator,1j*omega)
+        polynomial_frequency=np.exp(-1j*omega*delay)*np.polyval(polynomial,1j*omega)/np.polyval(denominator,1j*omega)
         frequency_error=float(max(np.max(abs(H-state_frequency)),np.max(abs(H-polynomial_frequency))))
         dc_error=float(abs(np.linalg.solve(-A,B)[-1]-c[0]))
         if frequency_error>1e-8 or dc_error>1e-9:raise AssertionError((folder.name,frequency_error,dc_error))
@@ -70,6 +71,7 @@ def main():
                          'empirical_minus_model_phase_deg':differences,'empirical_model_gain_ratios':ratios,
                          'notice':'Measured windowed response versus continuous candidate; primary matched-window n1 sensitivity is saved separately. Settling/window errors remain.'})
         row={'id':folder.name,'kind':fit['kind'],'order':fit['order'],'K':c[0],'time_constants_s':times.tolist(),
+             'additional_delay_s':delay,'ambient_mode':fit.get('ambient_mode','constant'),
              'nll':best['nll'],'RMSE_C':fit['RMSE_C'],'nominal_AICc':fit['nominal_AICc'],
              'parameter_count':fit['parameter_count'],'sigma_C':best['sigma_C'],'ell_s':float(np.exp(x[-2])),
              'eta':x[-1],'successful_starts':sum(r['success'] for r in fit['starts']),

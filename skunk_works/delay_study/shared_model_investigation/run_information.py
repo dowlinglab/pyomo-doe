@@ -12,7 +12,7 @@ import numpy as np
 from scipy.special import expit,logit
 from data import load
 from covariance import Whitening
-from pooled_models import PooledModel
+from pooled_models import make_model
 from run_mean import write_json
 
 
@@ -35,9 +35,9 @@ def main():
     for folder in args.inputs:
         fit=json.loads((folder/'fit.json').read_text());best=fit['best']
         records=[load(n) for n in fit['record_names']]
-        model=PooledModel(records,fit['kind'],fit['order'])
+        model=make_model(records,fit['kind'],fit['order'],fit.get('numerator_bound',2.),fit.get('ambient_mode','constant'))
         x=np.array(best['point']);c=np.array(best['coefficients']);sigma=best['sigma_C']
-        nt=2 if fit['kind']=='chain' else model.m
+        nt=model.nt
         kernel=fit.get('kernel','ou_nugget')
         W=Whitening([d.time[1:] for d in records],kernel,[np.exp(x[-2]),x[-1]] if kernel!='iid' else [])
         X=model.design(tuple(x[:nt]));J=[]
@@ -49,7 +49,8 @@ def main():
         B=W(X[:,model.ninput:])/sigma
         J=J-B@np.linalg.lstsq(B,J,rcond=None)[0]
         U,s,Vh=np.linalg.svd(J,full_matrices=False)
-        names=(['log_tau','log_theta'] if fit['kind']=='chain' else ['log_tau']+['log_lag'+str(k) for k in range(1,model.m)])
+        names=(['log_tau','log_theta','additional_delay_seconds'] if fit['kind']=='transport' else
+               (['log_tau','log_theta'] if fit['kind']=='chain' else ['log_tau']+['log_lag'+str(k) for k in range(1,model.m)]))
         names+=['log_K']+['numerator_coefficient'+str(k)+'_scaled_by_K' for k in range(1,model.ninput)]
         info=J.T@J
         eigen=np.linalg.eigvalsh(info)

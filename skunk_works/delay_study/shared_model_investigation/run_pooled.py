@@ -51,6 +51,7 @@ def main():
     parser.add_argument('--objective',choices=['joint_ou','fixed_ou','iid'],default='joint_ou')
     parser.add_argument('--numerator-bound',type=float,default=2.)
     parser.add_argument('--warm-start',type=Path)
+    parser.add_argument('--ambient',choices=['constant','linear'],default='constant')
     args=parser.parse_args()
     write_json(args.output/'forward_audit.json',audit())
     if args.kind=='transport':
@@ -58,7 +59,7 @@ def main():
         write_json(args.output/'transport_audit.json',audit_transport())
     config=json.loads((HERE.parent/'residual_study'/'config.json').read_text())
     records=[load(n) for n in config['records']]
-    model=make_model(records,args.kind,args.order,args.numerator_bound)
+    model=make_model(records,args.kind,args.order,args.numerator_bound,args.ambient)
     nt=model.nt
     bounds=model.bounds() if args.objective=='joint_ou' else model.bounds()[:nt]
     kernel='iid' if args.objective=='iid' else 'ou_nugget'
@@ -122,6 +123,8 @@ def main():
     result={'kind':args.kind,'order':args.order,'state_count':model.m,'record_names':[d.name for d in records],
             'objective_policy':args.objective,'kernel':kernel,
             'input_coefficient_count':model.ninput,'numerator_bound':args.numerator_bound,
+            'ambient_mode':args.ambient,'ambient_width':model.ambient_width,
+            'ambient_linear_convention':'Both endpoint offsets within±2C relative to first T1; explicit technical sensitivity, not measured slope bounds' if args.ambient=='linear' else None,
             'warm_start_fit_sha256':hashlib.sha256(args.warm_start.read_bytes()).hexdigest() if args.warm_start else None,
             'additional_transport_delay_s':float(point[2]) if args.kind=='transport' else None,
             'best':best,'starts':starts,'nobs':model.count,'parameter_count':pcount,

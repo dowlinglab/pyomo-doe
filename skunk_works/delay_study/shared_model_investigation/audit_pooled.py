@@ -16,7 +16,8 @@ from run_mean import write_json
 
 def physical_reference(t,u,times,physical,ambient):
     m=len(times)
-    A=np.zeros((m+2,m+2))
+    endpoints=np.repeat(float(ambient),2) if np.ndim(ambient)==0 else np.asarray(ambient)
+    A=np.zeros((m+3,m+3))
     for j in range(m-1):
         A[j,j]=-1/times[j+1]
         A[j,j-1 if j else m]=1/times[j+1]
@@ -24,8 +25,9 @@ def physical_reference(t,u,times,physical,ambient):
     A[m-1,m]=physical[0]/times[0]
     A[m-1,m+1]=1/times[0]
     A[m-1,:m-1]=physical[1:]/times[0]
+    A[m+1,m+2]=(endpoints[1]-endpoints[0])/(t[-1]-t[0])
     # Last two components are held command and ambient, not physical states.
-    state=np.zeros(m+2);state[m+1]=ambient
+    state=np.zeros(m+3);state[m+1]=endpoints[0];state[m+2]=1.
     result=[0.];cache={}
     for k,h in enumerate(np.diff(t)):
         if float(h) not in cache:cache[float(h)]=expm(A*h)
@@ -48,6 +50,7 @@ def main():
     nt=len(x)-2
     physical=np.r_[np.zeros(m-1),c[0]] if fit['kind'] in ('chain','transport') else np.r_[c[1:m],c[0]-sum(c[1:m])]
     ninput=fit.get('input_coefficient_count',1 if fit['kind']=='chain' else m)
+    width=fit.get('ambient_width',1)
     ell,eta=np.exp(x[nt]),x[nt+1]
     quadratic=0.;logdet=0.;n=0;rows=[]
     for j,name in enumerate(fit['record_names']):
@@ -57,8 +60,14 @@ def main():
         if fit['kind']=='transport':
             from transport import independent_reference
             predicted=d.temperature[0]+c[0]*independent_reference(d.time,d.input,*times,x[2])
-            predicted+=c[ninput+j]*(-np.expm1(-(d.time-d.time[0])/times[0]))
-        else:predicted=d.temperature[0]+physical_reference(d.time,d.input,times,physical,c[ninput+j])
+            elapsed=d.time-d.time[0];a=-np.expm1(-elapsed/times[0])
+            ambient=c[ninput+j] if width==1 else c[ninput+2*j:ninput+2*j+2]
+            if width==1:predicted+=ambient*a
+            else:
+                b=(elapsed-times[0]*a)/(d.time[-1]-d.time[0]);predicted+=ambient[0]*(a-b)+ambient[1]*b
+        else:
+            ambient=c[ninput+j] if width==1 else c[ninput+2*j:ninput+2*j+2]
+            predicted=d.temperature[0]+physical_reference(d.time,d.input,times,physical,ambient)
         error=float(np.max(np.abs(predicted-arrays['predicted_'+str(j)])))
         residual=d.temperature[1:]-predicted[1:]
         t=d.time[1:]
