@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "status": "active_phase0_preparation",
+  "status": "active_phases1_2_preparation",
   "plan_commit": "b4f7ef7",
   "branch": "reformulation-exploration",
   "heartbeat_id": "tc-lab-overnight-research",
@@ -14,10 +14,19 @@
       "status": "failed",
       "exit_code": 1,
       "reason": "Numerical checks reached final receipt stage; optional embedded ps call was sandbox-denied before receipt write. Remove process inspection from numerical driver; controller uses approved ps. Original source snapshot, forward audit and exit retained."
+    },
+    {
+      "id": "baseline_v2",
+      "source_commit": "fd7b60e",
+      "output": "results/baseline_v2",
+      "status": "complete",
+      "exit_code": 0,
+      "pooled_RMSE_C": 0.48320369190250795,
+      "nll_abs_error": 4.3655745685100555e-11
     }
   ],
   "live_jobs": [],
-  "next_phase": "Commit and run independent baseline/forward preflight, then error decomposition and measured frequency response",
+  "next_phase": "Commit and run source-bound error decomposition, phase folds and frequency window/HAC sensitivities",
   "delivery": "No new email requested; completed residual_study delivery remains unchanged",
   "startup_reconciliation": "Approved controller ps inspection: no live residual_study/shared_model_investigation numerical Python jobs after baseline failure."
 }
