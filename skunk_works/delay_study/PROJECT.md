@@ -7,6 +7,44 @@ This file owns current execution state. Git preserves superseded states.
 
 ## Current state
 
+- The October 24 discussion's agreed working approach is `review/approach.md`.
+  It combines constant command holds, shared gain/time parameters and per-run
+  constant ambient offsets bounded by ±2°C; a later ambient-drift comparison
+  will use linear trends. Alpha is absorbed into the freely fitted gain and
+  will not be added as an extra fitting parameter. Its uncertainty matters for
+  optional physical-parameter interpretation. The next goal will focus on n=1,
+  residual covariance modeling/iterative refitting and uncertainty. The newly
+  agreed Tier 0 first pools all twelve distinct ENV2 runs to explore consistency
+  of a shared model. Tier 1 retains the selected structure, re-estimates its
+  thermal/ambient/error parameters and uncertainty using only the original
+  sine/step pair, and evaluates predictions on the other ten runs. After
+  exploration, that comparison must be described as retrospective if their data
+  informed model selection.
+  Tier 2 initially adds five pairs: six total including Tier 1, each step run
+  used twice and sine records spread across periods/repetitions. Deliver those
+  results for Alex's feedback before any expansion to all 27 pairs. The remaining
+  21 pairs are outside the initial execution scope. Deferred Tier 3 is completion
+  or repetition of the full enumeration after that feedback.
+  At Tier 2 completion, deliver a checked PDF through Gmail to adowling@nd.edu,
+  with 0.25-inch left and 3.25-inch right margins and college-ruled lines in the
+  right margin for tablet annotation. This is a newly authorized future report
+  delivery, distinct from the completed October 21 emails.
+  Keep that report concise: open with a tier-goal/status/result table, then use
+  Tier 0, Tier 1 and Tier 2 result sections and explicit open questions for Alex.
+  Duplicate aliases are not independent runs. Pyomo.DoE and new hardware
+  experiments are explicitly outside this next goal. The remaining tiers and
+  open choices are in the working approach. Alex requested launch on October 24;
+  the new goal is active. `residual_study/PROJECT.md` and its run manifest own
+  execution state; `residual_study/execution_plan.md` owns technical choices.
+- October 24 reviewer comments are transcribed in `review/comments.md`; the
+  discussion brief is `review/analysis.md`. It distinguishes the established
+  two-state/four-parameter SISO ambiguity from a new, conditional generic
+  identifiability derivation for the symmetric four-state/two-output model.
+  `review/four_state_scope_check.json` checks that derivation at one synthetic
+  point. No four-state data fit or revised error-model fit has been performed.
+  `review/data_provenance.json` records the newly inspected Git/acquisition-code
+  evidence. The released report is unchanged; the subsequent discussion is in
+  `review/approach.md` and the new phase's execution plan.
 - The user requested an updated report and a new self-email after the teaching
   follow-up. The current source adds Appendix G, generated tables and the four
   native Pyomo.DoE experiment plots. The updated deliverable is
