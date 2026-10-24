@@ -1,12 +1,38 @@
 {
   "schema_version": 1,
   "goal_started_utc": "2026-10-24T16:39:24Z",
-  "status": "startup",
+  "status": "tier0_mean_audited_covariance_next",
   "branch": "reformulation-exploration",
   "heartbeat_id": "tc-lab-overnight-research",
+  "heartbeat_status": "ACTIVE, hourly, confirmed by app update",
   "startup_reconciliation": "No matching TC-Lab numerical process live; ps inspected before launch",
-  "jobs": [],
-  "next_phase": "audit data and exact n1 mean, then source-bound pooled OLS constant/linear ambient pilot",
+  "jobs": [
+    {
+      "id": "tier0_mean",
+      "status": "complete",
+      "source_commit": "2cb60ff2df37c895d37fd70f8d0c083090c0cc94",
+      "pid": 78650,
+      "output": "results/tier0_mean",
+      "terminal": "results/tier0_mean/exit.json",
+      "exit_code": 0,
+      "starts": 48,
+      "failed_starts": 0,
+      "scope": "Twelve-record pooled OLS, constant/linear ambient; not covariance-adjusted"
+    },
+    {
+      "id": "tier0_mean_audit",
+      "status": "complete",
+      "source_commit": "d4d2ec28b7a3363ce2e95b2a6c85337f4fc90fe0",
+      "output": "results/tier0_mean_audit",
+      "terminal": "results/tier0_mean_audit/exit.json",
+      "exit_code": 0,
+      "receipt": "results/tier0_mean_audit/audit.json",
+      "scope": "Independent matrix-exponential reconstruction, objective/raw-data/bound checks and residual diagnostics"
+    }
+  ],
+  "last_reconciliation_utc": "2026-10-24T16:53:12Z",
+  "live_jobs": [],
+  "next_phase": "Implement/audit IID, OU, OU+nugget and Matern32+nugget likelihoods; pooled ambient/covariance iteration and innovation diagnostics before freezing Tier0 structure",
   "structure_selection": null,
   "delivery_receipt": null
 }

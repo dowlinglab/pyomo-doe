@@ -70,8 +70,9 @@ This file owns current execution state. Git preserves superseded states.
   update message. `teaching_followup/delivery_receipt.json` owns this delivery.
   The user's report-update request is complete; do not resend the update.
 - Branch: `reformulation-exploration`; fetched `origin/main` merged in `02ab3d9`.
-- Research began **2026-10-21 01:39:03 UTC**. The requested twelve-hour minimum
-  elapsed at **13:39:03 UTC**. Completion still requires every delivery gate.
+- The original research began **2026-10-21 01:39:03 UTC**; its twelve-hour minimum
+  and delivery gates are complete. The new October 24 goal uses the separate
+  `residual_study` plan and manifest, without an inherited minimum-duration gate.
 - Goal and recovery-heartbeat lifecycle are managed in the app. The heartbeat
   is `tc-lab-overnight-research`; do not create a duplicate goal or automation.
 - **Every declared numerical comparison is terminal and independently audited.**
