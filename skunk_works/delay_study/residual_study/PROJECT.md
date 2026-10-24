@@ -7,7 +7,7 @@ This phase leaves the completed October 21 study and deliveries unchanged.
 | Phase | State | Next gate |
 |---|---|---|
 | Data/input and exact mean audit | Passed in frozen source | Preserve conditional startup/alignment assumptions |
-| Tier 0 mean/error exploration | Pooled OLS baselines audited | Fit temporal covariance; assess adequacy before selecting structure |
+| Tier 0 mean/error exploration | Eight covariance cells running after audited OLS | Independently reconstruct full likelihoods; diagnose innovations |
 | Tier 1 P1 uncertainty/evaluation | Pending | Full restricted refits and checks |
 | Tier 2 P2-P6 | Pending | Five further pairs; no full enumeration |
 | Report/Gmail/push | Pending | Checked ruled-margin PDF; one verified email |
@@ -20,8 +20,9 @@ Evaluation is retrospective after Tier 0. Ambient bounds are scenarios, not a
 probability distribution. Technical defaults are identified in the plan.
 
 Hourly continuation is active on `tc-lab-overnight-research` and targets this
-thread. The current jobs are terminal with exit code zero; no numerical worker
-is left running. `run_manifest.json` owns their source/terminal bindings.
+thread. The OLS baseline and independent audit are terminal with exit code zero.
+The covariance comparison is in progress; reconcile its live sessions and output
+receipts in `run_manifest.json` before launching new workers.
 
 The acquisition notebook at b114b13f updates lab.Q1 immediately before
 p.update(t), supporting left-held inputs. This is supporting source code, not
@@ -49,7 +50,16 @@ Linear drift lowers pooled SSE by 11.95%, with a 6.17% RMSE reduction. Several
 nuisance bounds are active and residuals remain strongly correlated. These are
 unweighted exploratory fits; no covariance-aware uncertainty or adequate noise
 model is claimed. Do not select linear drift solely from this training decrease.
-The next phase is the declared covariance/iterative-GLS comparison, starting with
-noise-kernel likelihood and dense-covariance verification, followed by per-run
-innovation diagnostics. Do not start restricted-pair fits until the Tier 0
-structure decision is documented, including unresolved limitations.
+The covariance/iterative-GLS comparison uses the four declared kernels under both
+ambient treatments, with 24 joint starts per cell and one alternating-GLS history.
+`audit_covariance.py` passed sixteen synthetic dense-Cholesky comparisons,
+including stationary initialization, irregular sampling and boundary limits.
+The first source-bound four-start pilot retained a stationarity warning;
+`methods.md` explains the central-derivative refinement and preserved records.
+The refined pilot gives projected gradient about 1e-4, with GLS/joint likelihood
+agreement within 4e-7. All full cells run from b84306e. Preliminary innovation
+diagnostics still show protocol-dependent correlation; no adequate kernel or
+ambient structure has been selected. Independent saved-likelihood audits,
+per-run plots, calibrated diagnostics and assumption sensitivities remain next.
+Do not start restricted-pair fits until the Tier 0 structure decision is
+documented, including unresolved limitations.
