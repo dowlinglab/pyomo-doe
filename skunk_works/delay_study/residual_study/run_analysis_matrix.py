@@ -24,14 +24,17 @@ def save(path, value):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--phase", choices=["bootstrap", "profiles"], required=True)
+    parser.add_argument("--phase", choices=["bootstrap", "profiles", "predictions"], required=True)
     parser.add_argument("--references", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--workers", type=int, default=1)
     parser.add_argument("--only", default="")
+    parser.add_argument("--uncertainty", type=Path)
     args = parser.parse_args()
     if not 1 <= args.workers <= 4 or not args.references.is_absolute() or not args.output.is_absolute():
         raise ValueError("Absolute paths and one to four numerical workers required")
+    if args.phase == "predictions" and (args.uncertainty is None or not args.uncertainty.is_absolute()):
+        raise ValueError("Predictions need an absolute uncertainty matrix path")
     parent_receipt = args.output/"source_snapshot.json"
     source = json.loads(parent_receipt.read_text())
     config = json.loads((HERE/"config.json").read_text())
@@ -54,13 +57,23 @@ def main():
                            "--measurement", mechanism, "--block-length", str(block)]
                 tasks.append({"id": identity, "pair": pair["id"], "command": command,
                               "expected_draws": draws, "reference_fit_sha256": hashlib.sha256(fit_path.read_bytes()).hexdigest()})
-        else:
+        elif args.phase == "profiles":
             for parameter in ("K", "tau", "theta"):
                 identity = pair["id"]+"_"+parameter
                 command = [sys.executable, str(HERE/"run_pair_inference.py"), "--reference", str(reference),
                            "--parameter", parameter, "--output", str(args.output/identity)]
                 tasks.append({"id": identity, "pair": pair["id"], "command": command,
                               "reference_fit_sha256": hashlib.sha256(fit_path.read_bytes()).hexdigest()})
+        else:
+            identity = pair["id"]
+            gaussian = args.uncertainty/(identity+"_gaussian")
+            blocks = args.uncertainty/(identity+"_blocks60")
+            command = [sys.executable, str(HERE/"run_predictions.py"), "--reference", str(reference),
+                       "--gaussian", str(gaussian), "--blocks", str(blocks), "--minimum-draws", "360",
+                       "--output", str(args.output/identity)]
+            tasks.append({"id": identity, "pair": identity, "command": command,
+                          "reference_fit_sha256": hashlib.sha256(fit_path.read_bytes()).hexdigest(),
+                          "ready_cells": [identity+"_gaussian", identity+"_blocks60"]})
     if args.only:
         selected = set(args.only.split(","))
         if not selected.issubset({t["id"] for t in tasks}):
@@ -82,12 +95,27 @@ def main():
             raise ValueError("Invalid numerical worker limit")
         manifest["maximum_numerical_workers"] = limit
         while pending and len(running) < limit:
-            task = pending.pop(0)
+            task = pending[0]
+            if args.phase == "predictions":
+                dependency = json.loads((args.uncertainty/"manifest.json").read_text())
+                states = [dependency["jobs"][name]["status"] for name in task["ready_cells"]]
+                if any(state == "failed" for state in states):
+                    manifest["jobs"][task["id"]].update(status="failed_dependency", dependency_states=states)
+                    pending.pop(0)
+                    save(args.output/"manifest.json", manifest)
+                    continue
+                if any(state not in {"complete", "requires_revisit"} for state in states):
+                    break
+                task["checkpoint_sha256"] = {name: hashlib.sha256((args.uncertainty/name/"checkpoint.json").read_bytes()).hexdigest()
+                                                for name in task["ready_cells"]}
+            pending.pop(0)
             folder = args.output/task["id"]
             folder.mkdir(exist_ok=False)
             receipt = copy.deepcopy(source)
             receipt.update(command=task["command"], parent_matrix_receipt_sha256=hashlib.sha256(parent_receipt.read_bytes()).hexdigest(),
                            reference_fit_sha256=task["reference_fit_sha256"], source_policy="Read-only committed source shared with the source-bound matrix supervisor; no mutable checkout imports")
+            if args.phase == "predictions":
+                receipt["checkpoint_sha256"] = task["checkpoint_sha256"]
             save(folder/"source_snapshot.json", receipt)
             log = (folder/"worker.log").open("w")
             child = subprocess.Popen(task["command"], cwd=HERE.parents[2], stdout=log, stderr=subprocess.STDOUT)
@@ -108,15 +136,19 @@ def main():
                     summary = json.loads((folder/"summary.json").read_text())
                     if summary["failed"] or summary["requires_revisit"]:
                         state = "requires_revisit"
-                else:
+                elif args.phase == "profiles":
                     profile = json.loads((folder/"profile.json").read_text())
                     if profile["numerical_status"] != "complete":
+                        state = "requires_revisit"
+                else:
+                    audit = json.loads((folder/"audit.json").read_text())
+                    if audit["status"] != "passed for declared numerical checks":
                         state = "requires_revisit"
             manifest["jobs"][identity].update(status=state, exit_code=code, ended_unix=time.time())
             del running[identity]
             save(args.output/"manifest.json", manifest)
             print(identity, state, flush=True)
-        if running:
+        if running or pending:
             time.sleep(.25)
     issues = sum(t["status"] != "complete" for t in manifest["jobs"].values())
     manifest.update(status="complete" if not issues else "complete_with_issues", issue_cells=issues, ended_unix=time.time())
