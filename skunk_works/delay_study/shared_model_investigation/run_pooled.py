@@ -1,5 +1,6 @@
 """Multistart pooled OU-plus-measurement fits with bounded nuisance projection."""
 import argparse
+import hashlib
 import json
 from pathlib import Path
 import sys
@@ -14,12 +15,18 @@ from data import load
 from covariance_fit import numerical_gradient,projected_gradient
 from diagnostics import input_correlation
 from run_mean import write_json
-from pooled_models import PooledModel,audit
+from pooled_models import make_model,audit
 
 
 def seeds(model,count):
     rng=np.random.RandomState(20261025+model.order)
-    nt=2 if model.kind=='chain' else model.m
+    nt=model.nt
+    if model.kind=='transport':
+        initial=[[137.48,18.37,2.5],[137.48,18.37,0.],[150.,12.,5.],[18.37,137.48,2.5],[130.,30.,8.],[200.,5.,12.]]
+        while len(initial)<count:
+            initial.append([np.exp(rng.uniform(*model.bounds()[0])),np.exp(rng.uniform(*model.bounds()[1])),rng.uniform(0,15)])
+        noise=[[213.87,.0358],[50.,.1],[300.,.02],[30.,.3]]
+        return [np.r_[np.log(t[:2]),t[2],np.log(noise[j%4][0]),noise[j%4][1]] for j,t in enumerate(initial[:count])]
     if model.kind=='chain':
         initial=[[137.48,18.37],[18.37,137.48],[150.,12.],[130.,30.],[50.,70.],[200.,5.]]
     else:
@@ -37,17 +44,22 @@ def seeds(model,count):
 def main():
     parser=argparse.ArgumentParser()
     parser.add_argument('--output',type=Path,required=True)
-    parser.add_argument('--kind',choices=['chain','flexible_real'],required=True)
+    parser.add_argument('--kind',choices=['chain','flexible_real','transport'],required=True)
     parser.add_argument('--order',type=int,required=True)
     parser.add_argument('--starts',type=int,default=24)
     parser.add_argument('--maxiter',type=int,default=600)
     parser.add_argument('--objective',choices=['joint_ou','fixed_ou','iid'],default='joint_ou')
+    parser.add_argument('--numerator-bound',type=float,default=2.)
+    parser.add_argument('--warm-start',type=Path)
     args=parser.parse_args()
     write_json(args.output/'forward_audit.json',audit())
+    if args.kind=='transport':
+        from transport import audit as audit_transport
+        write_json(args.output/'transport_audit.json',audit_transport())
     config=json.loads((HERE.parent/'residual_study'/'config.json').read_text())
     records=[load(n) for n in config['records']]
-    model=PooledModel(records,args.kind,args.order)
-    nt=2 if args.kind=='chain' else model.m
+    model=make_model(records,args.kind,args.order,args.numerator_bound)
+    nt=model.nt
     bounds=model.bounds() if args.objective=='joint_ou' else model.bounds()[:nt]
     kernel='iid' if args.objective=='iid' else 'ou_nugget'
     # Fixed-reference covariance is an explicit sensitivity using the previous
@@ -57,7 +69,12 @@ def main():
     objective=lambda x:model.projected(decode(x),kernel=kernel)[0]
     derivative=lambda x:numerical_gradient(objective,x,bounds,step=2e-6)
     starts=[]; best=None; begun=time.monotonic()
-    for j,seed in enumerate(seeds(model,args.starts)):
+    initial=seeds(model,args.starts)
+    if args.warm_start:
+        warm=json.loads(args.warm_start.read_text())['best']['point']
+        if len(warm)!=len(model.bounds()):raise ValueError('Warm point has different dimensions')
+        initial[0]=np.asarray(warm)
+    for j,seed in enumerate(initial):
         if args.objective!='joint_ou':seed=seed[:nt]
         write_json(args.output/'progress.json',{'current_start':j,'completed_starts':len(starts),'elapsed_s':time.monotonic()-begun})
         try:
@@ -100,10 +117,13 @@ def main():
                         'max_abs_input_innovation_correlation_lags30':max(values) if values else None})
         arrays.update({'time_'+str(j):d.time,'input_'+str(j):d.input,'observed_'+str(j):d.temperature,
                        'predicted_'+str(j):p,'standardized_innovation_'+str(j):z})
-    nt=2 if args.kind=='chain' else model.m
+    nt=model.nt
     pcount=nt+len(c)+1+(2 if args.objective=='joint_ou' else 0)
     result={'kind':args.kind,'order':args.order,'state_count':model.m,'record_names':[d.name for d in records],
             'objective_policy':args.objective,'kernel':kernel,
+            'input_coefficient_count':model.ninput,'numerator_bound':args.numerator_bound,
+            'warm_start_fit_sha256':hashlib.sha256(args.warm_start.read_bytes()).hexdigest() if args.warm_start else None,
+            'additional_transport_delay_s':float(point[2]) if args.kind=='transport' else None,
             'best':best,'starts':starts,'nobs':model.count,'parameter_count':pcount,
             'nominal_AICc':2*nll+2*pcount+2*pcount*(pcount+1)/(model.count-pcount-1),
             'RMSE_C':float(np.sqrt(np.mean(residual**2))),'per_run':metrics,'bounds':bounds,

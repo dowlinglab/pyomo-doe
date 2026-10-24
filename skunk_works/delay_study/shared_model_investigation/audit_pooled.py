@@ -45,16 +45,20 @@ def main():
     arrays=np.load(args.input/'trajectories.npz')
     best=fit['best'];c=np.array(best['coefficients']);x=np.array(best['point'])
     times=np.array(fit['time_constants_s']);m=len(times)
-    nt=2 if fit['kind']=='chain' else m
-    physical=np.r_[np.zeros(m-1),c[0]] if fit['kind']=='chain' else np.r_[c[1:m],c[0]-sum(c[1:m])]
-    ninput=1 if fit['kind']=='chain' else m
+    nt=len(x)-2
+    physical=np.r_[np.zeros(m-1),c[0]] if fit['kind'] in ('chain','transport') else np.r_[c[1:m],c[0]-sum(c[1:m])]
+    ninput=fit.get('input_coefficient_count',1 if fit['kind']=='chain' else m)
     ell,eta=np.exp(x[nt]),x[nt+1]
     quadratic=0.;logdet=0.;n=0;rows=[]
     for j,name in enumerate(fit['record_names']):
         d=load(name)
         raw=HERE.parents[2]/d.source
         if hashlib.sha256(raw.read_bytes()).hexdigest()!=source['sha256'][d.source]:raise AssertionError('Raw binding')
-        predicted=d.temperature[0]+physical_reference(d.time,d.input,times,physical,c[ninput+j])
+        if fit['kind']=='transport':
+            from transport import independent_reference
+            predicted=d.temperature[0]+c[0]*independent_reference(d.time,d.input,*times,x[2])
+            predicted+=c[ninput+j]*(-np.expm1(-(d.time-d.time[0])/times[0]))
+        else:predicted=d.temperature[0]+physical_reference(d.time,d.input,times,physical,c[ninput+j])
         error=float(np.max(np.abs(predicted-arrays['predicted_'+str(j)])))
         residual=d.temperature[1:]-predicted[1:]
         t=d.time[1:]

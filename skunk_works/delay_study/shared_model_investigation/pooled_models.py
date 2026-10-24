@@ -38,6 +38,8 @@ class PooledModel:
         self.count = sum(len(d.time)-1 for d in records)
         self.m = order+1 if kind == 'chain' else order
         self.ninput = 1 if kind == 'chain' else order
+        self.nt = 2 if kind == 'chain' else self.m
+        self.numerator_bound = 2.
         self.y = np.concatenate([d.temperature[1:]-d.temperature[0] for d in records])
         self.design = lru_cache(maxsize=8)(self._design)
 
@@ -76,13 +78,13 @@ class PooledModel:
         return times+[(np.log(.05),np.log(3000.)),(0.,1.)]
 
     def coefficient_bounds(self):
-        lo = [.2]+[-2.]*(self.ninput-1)+[-2.]*len(self.records)
-        hi = [1.5]+[2.]*(self.ninput-1)+[2.]*len(self.records)
+        lo = [.2]+[-self.numerator_bound]*(self.ninput-1)+[-2.]*len(self.records)
+        hi = [1.5]+[self.numerator_bound]*(self.ninput-1)+[2.]*len(self.records)
         return np.array(lo),np.array(hi)
 
     def projected(self, point, kernel='ou_nugget', fixed_gain=None):
         from covariance import Whitening
-        nt = 2 if self.kind=='chain' else self.m
+        nt = self.nt
         X = self.design(tuple(point[:nt]))
         W = Whitening([d.time[1:] for d in self.records],kernel,
                       [np.exp(point[nt]),point[nt+1]] if kernel!='iid' else [])
@@ -104,7 +106,7 @@ class PooledModel:
         return float(nll),coefficients,float(scale),W
 
     def trajectories(self, point, coefficients):
-        nt = 2 if self.kind=='chain' else self.m
+        nt = self.nt
         X = self.design(tuple(point[:nt]))
         rise = X@coefficients
         predictions = []; cursor=0
@@ -115,7 +117,7 @@ class PooledModel:
         return predictions
 
     def frequency_response(self, point, coefficients, omega):
-        nt=2 if self.kind=='chain' else self.m
+        nt=self.nt
         times=self.time_constants(point[:nt])
         h=1/(1+1j*omega*times[0])
         if self.kind=='chain':
@@ -126,6 +128,17 @@ class PooledModel:
             h=h/(1+1j*omega*times[k])
             result+=physical[k]*h
         return result
+
+
+def make_model(records,kind,order,numerator_bound=2.):
+    if kind=='transport':
+        from transport import TransportModel
+        if order!=1:raise ValueError('Transport extension applies to the n=1 baseline')
+        model=TransportModel(records)
+    else:model=PooledModel(records,kind,order)
+    if numerator_bound<=0:raise ValueError('Positive numerator bound required')
+    model.numerator_bound=float(numerator_bound)
+    return model
 
 
 def audit():
