@@ -4,7 +4,6 @@ import hashlib
 import json
 from pathlib import Path
 import platform
-import subprocess
 import sys
 
 HERE = Path(__file__).resolve().parent
@@ -71,15 +70,12 @@ def main():
     nll = .5*(nobs*(np.log(2*np.pi)+1+np.log(quadratic/nobs))+logdet)
     if abs(nll-best['negative_log_likelihood']) > 2e-5:
         raise AssertionError('Independent likelihood differs')
-    process_text = subprocess.check_output(['ps', '-ax', '-o', 'pid,etime,command'], text=True)
-    relevant = [line for line in process_text.splitlines() if 'python' in line.lower() and
-                ('residual_study' in line or 'shared_model_investigation' in line)]
     result = {'status': 'passed', 'baseline_bindings': {p.name: hashlib.sha256(p.read_bytes()).hexdigest() for p in paths},
               'baseline_producer_commit': binding['commit'], 'python': platform.python_version(),
               'nobs': nobs, 'negative_log_likelihood': nll,
               'nll_abs_error': abs(nll-best['negative_log_likelihood']),
               'pooled_RMSE_C': float(np.sqrt(sum((r['n']-1)*r['RMSE_C']**2 for r in rows)/nobs)),
-              'per_run': rows, 'relevant_processes_at_audit': relevant,
+              'per_run': rows,
               'interpretation': 'Independent numerical reproduction; not a model adequacy certificate'}
     write_json(args.output/'audit.json', result)
     print(json.dumps({k: result[k] for k in ('status', 'nobs', 'pooled_RMSE_C', 'nll_abs_error')}), flush=True)

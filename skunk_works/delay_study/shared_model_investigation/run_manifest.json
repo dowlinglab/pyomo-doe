@@ -6,8 +6,18 @@
   "heartbeat_id": "tc-lab-overnight-research",
   "heartbeat_status": "ACTIVE, updated and read back",
   "duration_constraint": null,
-  "jobs": [],
+  "jobs": [
+    {
+      "id": "baseline",
+      "source_commit": "8a5d8d4",
+      "output": "results/baseline",
+      "status": "failed",
+      "exit_code": 1,
+      "reason": "Numerical checks reached final receipt stage; optional embedded ps call was sandbox-denied before receipt write. Remove process inspection from numerical driver; controller uses approved ps. Original source snapshot, forward audit and exit retained."
+    }
+  ],
   "live_jobs": [],
   "next_phase": "Commit and run independent baseline/forward preflight, then error decomposition and measured frequency response",
-  "delivery": "No new email requested; completed residual_study delivery remains unchanged"
+  "delivery": "No new email requested; completed residual_study delivery remains unchanged",
+  "startup_reconciliation": "Approved controller ps inspection: no live residual_study/shared_model_investigation numerical Python jobs after baseline failure."
 }

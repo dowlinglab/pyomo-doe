@@ -55,10 +55,13 @@ def main():
     env['MPLBACKEND'] = 'Agg'
     env['MPLCONFIGDIR'] = str(snapshot/'runtime_cache'/'matplotlib')
     env['XDG_CACHE_HOME'] = str(snapshot/'runtime_cache')
-    child = subprocess.Popen(command, cwd=snapshot, env=env)
-    (output/'process.json').write_text(json.dumps({'pid': child.pid, 'parent_pid': os.getpid(), 'command': command}, indent=2)+'\n')
-    code = child.wait()
+    with (output/'run.log').open('w') as log:
+        child = subprocess.Popen(command, cwd=snapshot, env=env, stdout=log, stderr=subprocess.STDOUT)
+        (output/'process.json').write_text(json.dumps({'pid': child.pid, 'parent_pid': os.getpid(), 'command': command}, indent=2)+'\n')
+        code = child.wait()
     (output/'exit.json').write_text(json.dumps({'exit_code': code})+'\n')
+    print(json.dumps({'output': str(output), 'exit_code': code}), flush=True)
+    print((output/'run.log').read_text()[-5000:], flush=True)
     return code
 
 
