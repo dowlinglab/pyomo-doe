@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "status": "active_phases1_2_initial_results",
+  "status": "active_pooled_comparison",
   "plan_commit": "b4f7ef7",
   "branch": "reformulation-exploration",
   "heartbeat_id": "tc-lab-overnight-research",
@@ -49,10 +49,101 @@
       "status": "complete",
       "exit_code": 0,
       "visual_review": "Reviewed phase windows and repeat folds; frequency phases unwrapped independently by increasing frequency; raw principal phases retained"
+    },
+    {
+      "id": "pilot_chain2",
+      "output": "results/pilot_chain2",
+      "source_commit": "cf0ddb0bccf2087f35b4c11ce52b90a326ffd02f",
+      "pid": 18448,
+      "command": [
+        "/Users/adowling/opt/anaconda3/bin/python",
+        "/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-shared-cf0ddb0b-jy69ux7s/skunk_works/delay_study/shared_model_investigation/run_pooled.py",
+        "--output",
+        "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/shared_model_investigation/results/pilot_chain2",
+        "--kind",
+        "chain",
+        "--order",
+        "2",
+        "--starts",
+        "1",
+        "--maxiter",
+        "400"
+      ],
+      "status": "complete",
+      "exit_code": 0
+    },
+    {
+      "id": "pilot_chain2_audit",
+      "output": "results/pilot_chain2_audit",
+      "source_commit": "60988368165f1f42080778c80caad1e05f96abcf",
+      "pid": 19240,
+      "command": [
+        "/Users/adowling/opt/anaconda3/bin/python",
+        "/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-shared-60988368-tkyeckqj/skunk_works/delay_study/shared_model_investigation/audit_pooled.py",
+        "--output",
+        "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/shared_model_investigation/results/pilot_chain2_audit",
+        "--input",
+        "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/shared_model_investigation/results/pilot_chain2"
+      ],
+      "status": "complete",
+      "exit_code": 0
+    },
+    {
+      "id": "pilot_flexible3",
+      "output": "results/pilot_flexible3",
+      "source_commit": "60988368165f1f42080778c80caad1e05f96abcf",
+      "pid": 19539,
+      "command": [
+        "/Users/adowling/opt/anaconda3/bin/python",
+        "/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-shared-60988368-hk7zk56m/skunk_works/delay_study/shared_model_investigation/run_pooled.py",
+        "--output",
+        "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/shared_model_investigation/results/pilot_flexible3",
+        "--kind",
+        "flexible_real",
+        "--order",
+        "3",
+        "--starts",
+        "1",
+        "--maxiter",
+        "400"
+      ],
+      "status": "complete",
+      "exit_code": 0
+    },
+    {
+      "id": "chain1",
+      "output": "results/chain1",
+      "source_commit": null,
+      "pid": null,
+      "command": null,
+      "status": "running",
+      "exit_code": null
+    },
+    {
+      "id": "chain2",
+      "output": "results/chain2",
+      "source_commit": null,
+      "pid": null,
+      "command": null,
+      "status": "running",
+      "exit_code": null
+    },
+    {
+      "id": "chain3",
+      "output": "results/chain3",
+      "source_commit": null,
+      "pid": null,
+      "command": null,
+      "status": "running",
+      "exit_code": null
     }
   ],
-  "live_jobs": [],
-  "next_phase": "Finish Phase1 per-run trajectory/error plots and review slow/oscillatory decomposition; Phase2 estimates/audit complete but inspect harmonics and uncertainty limitations; then implement flexible shared LTI benchmark with matched nuisance handling, and pooled n1/2/3 fits. Do not rerun completed bootstrap matrix.",
+  "live_jobs": [
+    "chain1",
+    "chain2",
+    "chain3"
+  ],
+  "next_phase": "Reconcile four pooled jobs; pilot_flexible3 needs independent audit, then flexible2/3/4 multistarts within4process cap. Chain1/2/3 full24start fits running. Finish per-run/harmonic/prediction diagnostics, audit selected fits, then information/profiles and synthesis.",
   "delivery": "No new email requested; completed residual_study delivery remains unchanged",
   "startup_reconciliation": "Approved controller ps inspection: no live residual_study/shared_model_investigation numerical Python jobs after baseline failure.",
   "material_finding": "Fast30s sine has28.3–32.3degrees additional circular phase lag vs matched n1, across3repeats/3startup windows/2nuisance choices;120s differences about−1.8to+0.95deg;300s about−0.02to+2.04deg with only1–2settled cycles. Interpretation provisional until flexible benchmark and delay-order comparison."
