@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "goal_started_utc": "2026-10-24T16:39:24Z",
-  "status": "tier0_sensitivities_audited_diagnostic_calibration_running",
+  "status": "six_pair_fits_complete_uncertainty_preflights_passed",
   "branch": "reformulation-exploration",
   "heartbeat_id": "tc-lab-overnight-research",
   "heartbeat_status": "ACTIVE, hourly, confirmed by app update",
@@ -30,25 +30,48 @@
       "scope": "Independent matrix-exponential reconstruction, objective/raw-data/bound checks and residual diagnostics"
     }
   ],
-  "last_reconciliation_utc": "2026-10-24T20:53:20Z",
-  "live_jobs": [
-    {"id": "tier0_diagnostic_gaussian", "tool_session_id": 74830, "workers": 2, "process_receipt": "results/tier0_diagnostic_gaussian/process.json", "checkpoint": "results/tier0_diagnostic_gaussian/checkpoint.json"},
-    {"id": "tier0_diagnostic_rounded", "tool_session_id": 51332, "workers": 2, "process_receipt": "results/tier0_diagnostic_rounded/process.json", "checkpoint": "results/tier0_diagnostic_rounded/checkpoint.json"}
-  ],
+  "last_reconciliation_utc": "2026-10-24T21:44:42.857055+00:00",
+  "live_jobs": [],
   "sensitivity_matrix": {
     "source_commit": "38d1cc3",
     "output": "results/tier0_sensitivity",
-    "cases": ["right_hold", "initial_minus", "initial_plus", "ambient_four_degrees", "preload_one_second", "protocol_30s", "protocol_120s", "protocol_300s", "protocol_step"],
+    "cases": [
+      "right_hold",
+      "initial_minus",
+      "initial_plus",
+      "ambient_four_degrees",
+      "preload_one_second",
+      "protocol_30s",
+      "protocol_120s",
+      "protocol_300s",
+      "protocol_step"
+    ],
     "status": "all nine complete, selected fits independently reconstructed in each output",
-    "completed": ["right_hold", "initial_minus", "initial_plus", "ambient_four_degrees", "preload_one_second", "protocol_30s", "protocol_120s", "protocol_300s", "protocol_step"],
+    "completed": [
+      "right_hold",
+      "initial_minus",
+      "initial_plus",
+      "ambient_four_degrees",
+      "preload_one_second",
+      "protocol_30s",
+      "protocol_120s",
+      "protocol_300s",
+      "protocol_step"
+    ],
     "not_launched": [],
-    "starts_per_case": {"OLS": 24, "joint": 24},
+    "starts_per_case": {
+      "OLS": 24,
+      "joint": 24
+    },
     "OLS_starts_complete": 216,
     "joint_starts_complete": 216,
     "failed_start_solutions": 0,
     "summary": "results/tier0_sensitivity_summary_final/summary.json",
     "figure": "results/tier0_sensitivity_summary_final/figure_receipt.json",
-    "summary_failures_preserved": ["results/tier0_sensitivity_summary/exit.json", "results/tier0_sensitivity_summary_corrected/figure_receipt.json"],
+    "summary_failures_preserved": [
+      "results/tier0_sensitivity_summary/exit.json",
+      "results/tier0_sensitivity_summary_corrected/figure_receipt.json"
+    ],
     "notice": "Diagnostic sensitivities only; primary hold, ambient bounds and six calibration pairs remain unchanged"
   },
   "diagnostic_calibration": {
@@ -57,20 +80,43 @@
     "rounded_pilot": "results/diagnostic_pilot_rounded",
     "gaussian_pilot_status": "12 of 12 full thermal/ambient/noise refits complete, none flagged",
     "rounded_pilot_status": "12 of 12 full thermal/ambient/noise refits complete, none flagged",
-    "pilot_audits": ["results/diagnostic_pilot_gaussian_audit/audit.json", "results/diagnostic_pilot_rounded_audit/audit.json"],
+    "pilot_audits": [
+      "results/diagnostic_pilot_gaussian_audit/audit.json",
+      "results/diagnostic_pilot_rounded_audit/audit.json"
+    ],
     "pilot_audit_status": "Four selected draws regenerated and independently reconstructed; 24-start agreement within 1.4e-11 NLL",
     "main_source_commit": "d0ce06fc985e3afda2916c5e1a58b2cbd1422714",
     "draws_per_mechanism": 200,
-    "main_outputs": ["results/tier0_diagnostic_gaussian", "results/tier0_diagnostic_rounded"],
-    "observed_completed_at_reconciliation": {"gaussian": 68, "rounded": 60},
+    "main_outputs": [
+      "results/tier0_diagnostic_gaussian",
+      "results/tier0_diagnostic_rounded"
+    ],
+    "status": "complete; 400 usable refits and zero failed/flagged draws",
+    "observed_completed_at_reconciliation": {
+      "gaussian": 200,
+      "rounded": 200
+    },
     "observed_failed_or_flagged_at_reconciliation": 0,
-    "next_gate": "Reconcile the two live 200-refit jobs, inspect completed summaries and selected-draw checks, then freeze the working structure and limitations",
+    "all_draw_audit": "results/tier0_calibration_audit/audit.json",
+    "selected_main_audits": [
+      "results/tier0_diagnostic_gaussian_selected_audit/audit.json",
+      "results/tier0_diagnostic_rounded_selected_audit/audit.json"
+    ],
+    "next_gate": "Satisfied: all-draw regeneration/statistic audit passed and selected draws 99/199 matched 24-start refits",
     "notice": "Pilot tail fractions have 1/13 minimum resolution; not the completed adequacy calibration or pair uncertainty analysis"
   },
   "covariance_matrix": {
     "source_commit": "b84306ebf67a167c4787b3d796113aed8e5bc668",
-    "modes": ["constant", "linear"],
-    "kernels": ["iid", "ou", "ou_nugget", "matern32_nugget"],
+    "modes": [
+      "constant",
+      "linear"
+    ],
+    "kernels": [
+      "iid",
+      "ou",
+      "ou_nugget",
+      "matern32_nugget"
+    ],
     "starts_per_cell": 24,
     "output": "results/tier0_covariance",
     "status": "complete, all eight exit codes zero",
@@ -89,7 +135,46 @@
     "pilot_refinement_reason": "Forward-difference solver stopped with projected gradient 0.334; central derivative refinement reduces it to about 1e-4, preserving model/bounds/tolerances"
   },
   "direct_fit_check": "results/tier0_direct_fit_check/audit.json",
-  "next_phase": "Reconcile live diagnostic simulation jobs before launching workers; finish adequacy interpretation, commit structure_selection.json with limitations, then run guarded run_pair.py for P1 through P6 before their uncertainty/profile/prediction work",
-  "structure_selection": null,
-  "delivery_receipt": null
+  "inference_preflight": "results/inference_preflight/audit.json",
+  "restricted_pairs": {
+    "source_commit": "8a0a4e2",
+    "output": "results/pairs",
+    "expected": [
+      "P1",
+      "P2",
+      "P3",
+      "P4",
+      "P5",
+      "P6"
+    ],
+    "completed_at_launch_checkpoint": [
+      "P1",
+      "P2",
+      "P3",
+      "P4",
+      "P5",
+      "P6"
+    ],
+    "remaining_at_launch_checkpoint": [],
+    "uncertainty_budget_per_pair": {
+      "gaussian": 400,
+      "innovation_blocks_L60": 400,
+      "innovation_blocks_L30": 100,
+      "innovation_blocks_L120": 100
+    },
+    "notice": "Only six pairs. Numerical thermal/ambient/noise parameters are refitted solely from each pair's two records; model structure was selected retrospectively using Tier0.",
+    "information_status": "all six complete"
+  },
+  "next_phase": "Launch 24 bootstrap cells with three numerical workers and 18 profile cells with one; combined numerical cap four",
+  "structure_selection": "structure_selection.json",
+  "delivery_receipt": null,
+  "uncertainty_preflights": {
+    "status": "passed",
+    "results": [
+      "results/noise_gradient_audit/audit.json",
+      "results/profile_preflight_P1/audit.json",
+      "results/prediction_pilot_P1/audit.json"
+    ],
+    "bootstrap_pilots": "P1 Gaussian and L60 blocks, 12 draws each; draws 0/11 audited at 24 starts"
+  }
 }

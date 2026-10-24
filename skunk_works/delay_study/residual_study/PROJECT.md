@@ -7,9 +7,9 @@ This phase leaves the completed October 21 study and deliveries unchanged.
 | Phase | State | Next gate |
 |---|---|---|
 | Data/input and exact mean audit | Passed in frozen source | Preserve conditional startup/alignment assumptions |
-| Tier 0 mean/error exploration | Eight cells and nine sensitivities audited; diagnostic simulations running | Complete two 200-refit comparisons, then freeze working structure with limitations |
-| Tier 1 P1 uncertainty/evaluation | Pending | Full restricted refits and checks |
-| Tier 2 P2-P6 | Pending | Five further pairs; no full enumeration |
+| Tier 0 mean/error exploration | Calculations complete; adequacy unresolved | Working structure frozen with explicit limitations |
+| Tier 1 P1 uncertainty/evaluation | Point fit and local information complete; preflights passed | Bootstrap, profiles and evaluation |
+| Tier 2 P2-P6 | All five point fits and local information complete | Finish exactly six pairs and uncertainty/evaluation |
 | Report/Gmail/push | Pending | Checked ruled-margin PDF; one verified email |
 
 No TC-Lab numerical process was live at startup reconciliation. Read the current
@@ -23,8 +23,9 @@ Hourly continuation is active on `tc-lab-overnight-research` and targets this
 thread. The OLS baseline and independent audit are terminal with exit code zero.
 The covariance comparison, independent audit and diagnostic plotting are terminal
 with exit code zero. All nine assumption-sensitivity cases are also terminal.
-Two diagnostic simulation jobs each have two numerical workers live; reconcile
-`run_manifest.json` before launching another worker. This uses the four-worker cap.
+The diagnostic simulations and their audits are complete. All six restricted-pair fits and local information checks are terminal. The
+profile and prediction preflights passed; uncertainty matrices are next. Reconcile
+`run_manifest.json` before launching another worker.
 
 The acquisition notebook at b114b13f updates lab.Q1 immediately before
 p.update(t), supporting left-held inputs. This is supporting source code, not
@@ -142,20 +143,39 @@ sensitivity, not an independent hardware calibration. Rounding raises pilot ACF
 statistics but does not reproduce the observed strong command association. The
 pilots are too small for the requested final diagnostic calibration.
 
-## Remaining Tier 0 gates
+## Tier 0 decision and restricted analysis
 
-The 200-draw Gaussian and rounded-measurement diagnostic comparisons run from
-d0ce06f, with all nuisance/noise terms re-estimated per replicate and checkpoints
-saved after each completed draw. Read `generation.json`, `checkpoint.json` and
-`summary.json` in their output directories. Do not restart while their parent
-and worker processes are live. Failures or stationarity flags stay in denominators.
+Both 200-draw diagnostic comparisons from d0ce06f completed with all 400 refits
+usable. `tier0_calibration_audit` regenerates every draw and independently checks
+correlation/Q arithmetic, likelihoods/scales and summary values. Maximum statistic
+error is below 1.5e-13 and NLL error below 3.4e-11. Four additional selected draws
+(99/199 per mechanism) match 24-start refits; the earlier pilot checks cover 0/11.
 
-After both finish, inspect global/per-run calibrated statistics and selected
-replicate audits, then freeze the working n=1 structure and its limitations in
-`structure_selection.json`. There may be no adequate candidate under the fixed
-n=1 mean family. Carry that result into conditional uncertainty rather than
-forcing whiteness or adding model orders. `run_pair.py` is committed but refuses
-to run until that structure decision exists; it loads only each pair's two
-training records. Tier 1/2 fits and uncertainty have not started. Subsequent
-intervals and predictions must preserve retrospective selection and any unresolved
-input dependence, ambient-bound and startup qualifications.
+Observed maximum innovation/command association is 0.481. Its simulated 99th
+percentile is 0.113 under Gaussian measurement errors and 0.110 under rounding.
+Neither of 200 replicates per mechanism reaches the observed value; plus-one
+tail fractions are 1/201. The same contrast persists for maximum ACF and Q30.
+These are fitted-model diagnostic calibrations, not exact universal-model tests.
+
+`structure_selection.json` freezes left hold, cold startup, constant +/-2 C
+ambient offsets and OU plus measurement noise as the working n=1 description.
+It explicitly retains inadequate fast-sine residuals and all uncertainty/evaluation
+qualifications; it is agent-selected for the authorized tiers and awaits human
+scientific review. No additional thermal order or pair enumeration is authorized.
+
+The information preflight verifies fixed-gain projection analytically and the
+observed noise-scale Hessian identity. At the pooled exploratory point, conditional
+GLS thermal standard deviations are about 6.3/8.6/3.4 times nominal IID OLS for
+K/tau/theta, with ambient nuisance terms eliminated in both. This still holds
+the covariance fixed. The full observed curvature is indefinite at the bounded
+fit, so no regular Gaussian covariance is released from it. Use profiles and
+bootstrap, and retain the model inadequacy and bound qualifications.
+
+Restricted fits run from 8a0a4e2. Each loads only its two training records, refits
+all thermal/ambient/noise values, preserves OLS and alternating histories, and
+independently reconstructs selected means and dense likelihoods. All six fits and local information checks are terminal with exit code zero.
+P1 Gaussian and 60-s innovation-block pilots completed twelve refits each; selected
+draws match 24-start checks. Small-nugget noise derivatives, profiles at the MLE,
+and ten-record P1 prediction arithmetic passed their independent preflights.
+Launch the declared uncertainty/profile matrices, then evaluate the ten records
+per pair with the completed uncertainty distributions.
