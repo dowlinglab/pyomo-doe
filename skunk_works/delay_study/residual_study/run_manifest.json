@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "goal_started_utc": "2026-10-24T16:39:24Z",
-  "status": "six_pair_fits_complete_uncertainty_preflights_passed",
+  "status": "six_pair_uncertainty_and_profiles_running",
   "branch": "reformulation-exploration",
   "heartbeat_id": "tc-lab-overnight-research",
   "heartbeat_status": "ACTIVE, hourly, confirmed by app update",
@@ -30,8 +30,25 @@
       "scope": "Independent matrix-exponential reconstruction, objective/raw-data/bound checks and residual diagnostics"
     }
   ],
-  "last_reconciliation_utc": "2026-10-24T21:44:42.857055+00:00",
-  "live_jobs": [],
+  "last_reconciliation_utc": "2026-10-24T21:45:09.159430+00:00",
+  "live_jobs": [
+    {
+      "id": "uncertainty_matrix",
+      "tool_session_id": 9511,
+      "workers": 3,
+      "pid": 42323,
+      "process_receipt": "results/uncertainty_matrix/process.json",
+      "source_commit": "37df1ef937c92ecd56dc9d0118e0439c43231317"
+    },
+    {
+      "id": "profile_matrix",
+      "tool_session_id": 32771,
+      "workers": 1,
+      "pid": 42390,
+      "process_receipt": "results/profile_matrix/process.json",
+      "source_commit": "37df1ef937c92ecd56dc9d0118e0439c43231317"
+    }
+  ],
   "sensitivity_matrix": {
     "source_commit": "38d1cc3",
     "output": "results/tier0_sensitivity",
@@ -165,7 +182,7 @@
     "notice": "Only six pairs. Numerical thermal/ambient/noise parameters are refitted solely from each pair's two records; model structure was selected retrospectively using Tier0.",
     "information_status": "all six complete"
   },
-  "next_phase": "Launch 24 bootstrap cells with three numerical workers and 18 profile cells with one; combined numerical cap four",
+  "next_phase": "Monitor full uncertainty/profile matrices, reconcile flagged fits; prepare report and passage-grounded methods concurrently",
   "structure_selection": "structure_selection.json",
   "delivery_receipt": null,
   "uncertainty_preflights": {
@@ -176,5 +193,10 @@
       "results/prediction_pilot_P1/audit.json"
     ],
     "bootstrap_pilots": "P1 Gaussian and L60 blocks, 12 draws each; draws 0/11 audited at 24 starts"
-  }
+  },
+  "literature_checkpoint": "literature_checkpoint.json",
+  "report_source": "report/main.tex",
+  "profile_issues_at_checkpoint": [
+    "P2_theta: two remote small-theta points, no lower reference minimum; independent stationarity reconciliation pending"
+  ]
 }

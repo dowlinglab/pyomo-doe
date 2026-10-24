@@ -179,3 +179,23 @@ draws match 24-start checks. Small-nugget noise derivatives, profiles at the MLE
 and ten-record P1 prediction arithmetic passed their independent preflights.
 Launch the declared uncertainty/profile matrices, then evaluate the ten records
 per pair with the completed uncertainty distributions.
+
+Full six-pair matrices launched from 37df1ef: 24 bootstrap cells (6000 refits,
+three numerical workers) and 18 profile scans (one worker). Combined numerical
+cap remains four. Durable child status is in each matrix manifest. No new pairs
+or thermal orders are included.
+
+P1 Gaussian and L60 block uncertainty cells completed 400 refits each, all usable.
+The Gaussian fit selects the opposite pole labeling in 8/400 draws; L60 blocks do
+so in 3/400. A central 95% interval can hide this small second basin. Preserve
+mode counts and unlabeled pole summaries. The step ambient bound is active in
+162/400 and 165/400 respectively. P2 theta profiling flags two remote grid points
+(theta 0.0228 and 0.271 s, twice-NLL differences above 818) for noisy stationarity
+checks despite near-identical stationary attempts. Original flags are retained;
+audit those attempts before reporting reconciled profile support.
+
+Report sources now compile. The first-page ruled-margin placement was rendered,
+corrected to overlay coordinates and visually checked. This is an unfinished
+report scaffold, not a deliverable. Native literature intake published the
+reviewed Hartikainen/Sarkka author manuscript with local byte readback; final
+claim/page grounding and new report packet export remain pending.

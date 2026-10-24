@@ -1,0 +1,163 @@
+\documentclass[10pt,letterpaper]{article}
+\usepackage[left=0.25in,right=3.25in,top=0.6in,bottom=0.6in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern,amsmath,amssymb,booktabs,tabularx,longtable,graphicx,enumitem}
+\usepackage[round,authoryear]{natbib}
+\usepackage[colorlinks=true,urlcolor=blue,citecolor=blue,linkcolor=blue]{hyperref}
+\usepackage{eso-pic,tikz,microtype}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{5pt}
+\setlist{nosep,leftmargin=*}
+\AddToShipoutPictureBG{%
+  \AtPageLowerLeft{\begin{tikzpicture}[overlay,x=1in,y=1in]
+    \draw[red!25,line width=0.35pt] (5.32,0.6)--(5.32,10.4);
+    \foreach \k in {0,...,34} {
+      \draw[blue!19,line width=0.3pt] (5.4,{0.6+0.28125*\k})--(8.25,{0.6+0.28125*\k});
+    }
+  \end{tikzpicture}}}
+\newcommand{\C}{\,^\circ\mathrm{C}}
+\newcommand{\pending}[1]{\textit{Pending final checked calculation: #1.}}
+\title{\vspace{-1.3em}TC-Lab: an $n=1$ teaching study\\\large Tiers 0--2, researcher review draft}
+\author{Prepared for Alex Dowling}
+\date{October 24, 2026}
+\begin{document}
+\maketitle
+\vspace{-1em}
+\begin{tabularx}{\linewidth}{@{}p{0.38in}X p{1.35in}@{}}
+\toprule
+Tier & Goal & Status and result\\
+\midrule
+0 & Test whether one shared thermal model explains all twelve ENV2 records. Diagnose ambient treatment and residual covariance. & Fits complete. Shared-model adequacy remains unresolved.\\
+1 & Fit one five-minute sine and one step. Quantify uncertainty and predict the other ten records. & Point fit complete; uncertainty and evaluation pending.\\
+2 & Repeat with five further pairs, balancing three steps and three sine periods. & Six total point fits complete; uncertainty and evaluation pending.\\
+3 & Consider the remaining one-sine/one-step combinations after review. & Deferred for Alex's feedback.\\
+\bottomrule
+\end{tabularx}
+
+\textbf{Current interpretation.} The correlated-error fit removes much of the serial dependence, but the thirty-second sine records retain a command-related cycle. The analysis therefore uses an explicit working error model. Its uncertainty ranges describe that model and its resampling sensitivities; they do not establish that a universal physical model explains these experiments.
+
+\section{Model, records and teaching sequence}
+We accept the same-device ENV2 provenance as the study assumption. There are nine sine records (three runs each at 30, 120 and 300 seconds) and three step records. Calibration aliases with duplicate data are excluded.
+
+For experiment $j$, the measured command $u_j$ is held constant from its recorded timestamp to the next update. We propagate the two-state model exactly:
+\begin{align}
+\theta\dot z_j &= u_j-z_j,\\
+\tau\dot T_j &= -T_j+T_{\mathrm{amb},j}+Kz_j,\\
+T_{\mathrm{amb},j} &= T_{1,j}(0)+\delta_j,\qquad -2\C\leq\delta_j\leq2\C.
+\end{align}
+The positive $K,\tau,\theta$ are shared across calibration records. The initial conditions are $z_j(0)=0$ and $T_j(0)=T_{1,j}(0)$; the first temperature is conditioned on and its residual omitted. Initial temperature is a reference, not an independent ambient measurement. The drift comparison replaces the constant correction by a linear function with both endpoints inside the same band. Endpoint bounds are an implementation choice.
+
+With a fixed command-to-power conversion $c$, a lumped physical interpretation is $K=\alpha c/(UA)$ and $\tau=C_p/(UA)$. An unknown shared constant $\alpha$ is absorbed into fitted $K$. Estimating $\alpha$ separately adds no temperature-fit flexibility when $K$ is free. Independent calibration is needed to recover absolute $UA$ or $C_p$; it is not needed to fit $K$.
+
+The cold, zero-offset command transfer is
+\[
+G(s)=\frac{K}{(1+\tau s)(1+\theta s)}.
+\]
+Its two poles can be exchanged without changing that response. The assumed ambient channel acts through $\tau$, so a nonzero offset can distinguish labels conditionally on that channel. We retain both optimization basins and report unlabeled slow/fast poles where useful; pole labels alone do not establish heater or sensor constants.
+
+The teaching sequence is: fit the mean, inspect residuals, fit their temporal covariance, transform response and sensitivities, refit, then reassess uncertainty and predictions. A diagonal set of weights cannot remove temporal correlation.
+
+\section{Tier 0: pooled structure exploration}
+\textbf{Goal.} Determine whether one shared $n=1$ description explains all twelve runs, and use discrepancies to assess ambient drift and error structure.
+
+\begin{tabular}{@{}lrrr@{}}
+\toprule
+Ambient treatment & RMSE, $\C$ & SSE reduction & At bounds\\
+\midrule
+Constant offset & 0.46574 & --- & 7/12\\
+Linear endpoints & 0.43702 & 11.95\% & 9/12\\
+\bottomrule
+\end{tabular}
+
+These are ordinary least-squares fits. Their raw residual lag-one correlations remain 0.879--0.966 for constant offsets. The training reduction from drift does not settle the ambient question.
+
+We compared IID, Ornstein--Uhlenbeck (OU), OU plus independent measurement noise, and Mat\'ern-$3/2$ plus measurement noise under both ambient treatments. Each cell used 24 starts and an alternating generalized-least-squares (GLS) fit. Independent dense-covariance reconstruction checked all 96 selected run trajectories and likelihoods. Alternating GLS and joint likelihood agree within $1.2\times10^{-6}$ in negative log likelihood.
+
+\begin{tabularx}{\linewidth}{@{}Xrr@{}}
+\toprule
+Constant-offset error model & Raw RMSE, $\C$ & Innovation lag-one range\\
+\midrule
+IID & 0.46574 & 0.879 to 0.966\\
+OU & 0.46709 & $-0.541$ to $-0.307$\\
+OU + measurement noise & 0.48320 & $-0.239$ to 0.238\\
+Mat\'ern-$3/2$ + measurement noise & 0.47981 & $-0.186$ to 0.241\\
+\bottomrule
+\end{tabularx}
+
+The working choice is constant offsets and OU plus measurement noise. Its pooled estimates are $K=0.71001\C/\%$, $\tau=137.48$ s, $\theta=18.37$ s and correlation length $\ell=213.87$ s. The total marginal residual SD is $0.47877\C$, split into $0.47012\C$ slow variation and $0.09062\C$ independent measurement variation. Correlated likelihood emphasizes a different part of the residual spectrum than OLS, so a larger raw RMSE can accompany a better likelihood.
+
+With the same covariance family, linear drift lowers negative log likelihood by 6.05 while adding twelve parameters; nominal AICc is 12.00 higher than for constant offsets. This is a conditional comparison under an imperfect error model.
+
+\subsection*{What remains in the residuals}
+The thirty-second sine runs have maximum absolute innovation/command correlations of 0.457--0.481 over the declared $\pm30$-sample lag search. Widening ambient offsets to $\pm4\C$, changing startup by $\pm0.165\C$, adding one second of input prehistory, or using linear ambient drift leaves this cycle. Right-held commands worsen negative log likelihood by 256.30 and increase that association.
+
+The temperatures lie on an inferred $0.32229984\C$ grid after two-decimal reporting. A rounding sensitivity can reproduce some negative innovation correlation. It does not reproduce the command association. We generated and fully refitted 200 Gaussian and 200 rounded-measurement records from the pooled model. Neither mechanism reaches the observed maximum correlation of 0.481; their simulated 99th percentiles are 0.113 and 0.110. These plug-in diagnostic simulations challenge the working model; they do not identify the missing mechanism.
+
+Ambient assumptions also affect interpretation. Widening offsets to $\pm4\C$ removes active ambient bounds and lowers $K$ by 2.47\%, while the fast-sine discrepancy persists. Protocol-specific exploratory fits give $K=0.655,0.689,0.724,0.753$ for 30-second, 120-second, 300-second and step records. Those fits use different observations, so their likelihoods are not directly comparable and the point differences are not a formal heterogeneity test.
+
+\section{Tier 1: one sine and one step}
+\textbf{Goal.} Freeze the working structure, refit all numerical thermal, ambient and noise parameters using only five-minute sine run 1 and step run 1, then predict the other ten records.
+
+The P1 point estimates are $K=0.74063\C/\%$, $\tau=147.60$ s and $\theta=16.59$ s. Its two ambient corrections are $1.261\C$ and $1.947\C$. No pooled noise estimate is fixed in this restricted fit.
+
+\IfFileExists{generated/tier1.tex}{\input{generated/tier1.tex}}{\pending{profiles, bootstrap and evaluation}}
+\section{Tier 2: five further pairs}
+\textbf{Goal.} Assess how much the result depends on the chosen sine and step. Six pairs in total use each step twice and each sine period twice.
+
+\begin{tabular}{@{}llrrrr@{}}
+\toprule
+Pair & Sine (period/run) & Step run & $K$, $\C/\%$ & $\tau$, s & $\theta$, s\\
+\midrule
+P1 & 300 s / 1 & 1 & 0.74063 & 147.60 & 16.59\\
+P2 & 30 s / 2 & 1 & 0.71402 & 127.70 & 22.17\\
+P3 & 120 s / 1 & 2 & 0.72390 & 137.22 & 18.47\\
+P4 & 300 s / 3 & 2 & 0.72193 & 146.61 & 16.12\\
+P5 & 30 s / 3 & 3 & 0.67651 & 129.75 & 19.57\\
+P6 & 120 s / 2 & 3 & 0.69734 & 130.62 & 18.87\\
+\bottomrule
+\end{tabular}
+
+All six point fits pass the declared stationarity checks and independent trajectory/likelihood reconstruction. Their parameter spread can reflect record variation, nuisance-bound effects and model inadequacy as well as statistical uncertainty.
+\IfFileExists{generated/tier2.tex}{\input{generated/tier2.tex}}{\pending{uncertainty and evaluation comparison}}
+
+\section{How uncertainty is calculated}
+For $e_j=y_j-m_j$, the working covariance is
+\[
+C_j=\sigma^2 R_j,\qquad
+(R_j)_{ab}=(1-\eta)e^{-|t_a-t_b|/\ell}+\eta\,\mathbf1_{a=b}.
+\]
+Here $\eta$ is a variance fraction. A stationary innovations filter provides $W_j$ with $W_jR_jW_j^\mathsf T=I$. We transform the response and every design column. For fixed nonlinear coordinates we solve bounded least squares for gain and ambient corrections, profile $\sigma^2=\sum_j\|W_je_j\|^2/N$, and minimize
+\[
+-\log L=\tfrac12\left[N\{\log(2\pi)+1+\log(\widehat\sigma^2)\}
++\sum_j\log|R_j|\right].
+\]
+The determinant is required when estimating covariance parameters. State-space representations of half-integer Mat\'ern kernels support exact temporal covariance computations with stationary initialization and irregular sampling \citep{hartikainen-2010-kalman}. They provide a computation method, not evidence that a chosen kernel describes these experiments.
+
+Local information uses log $K,\tau,\theta$, removes ambient directions and reports eigenvalues/eigenvectors. We compare IID OLS, fixed-covariance GLS, Bartlett HAC sensitivities at 10/30/60 sample lags, and the observed likelihood curvature including noise estimation. HAC covariance addresses serial dependence under its assumptions \citep{newey-1987-simple}. It cannot repair an incorrect mean. We withhold a regular Gaussian covariance when the observed curvature is indefinite; active bounds remain a qualification even when a matrix is positive.
+
+We also profile each thermal parameter, refitting all remaining thermal, ambient and noise terms. Profiles can reveal asymmetric or extended likelihood support that a local quadratic approximation misses \citep{raue-2009-structural}. The displayed $2\Delta(-\log L)=3.84146$ cutoff is nominal; finite bounds, pole alternatives and error misspecification limit its coverage interpretation.
+
+For every pair we request 400 Gaussian parametric refits and 400 innovation-block refits with 60-sample blocks. Block-length sensitivities use 100 draws each at 30 and 120 samples. All nuisance and covariance parameters are re-estimated. Blocks resample centered standardized calibration innovations and are inverse-whitened. This custom sensitivity preserves short residual sequences but breaks alignment with the command; it cannot correct deterministic protocol bias. Finite simulation error, failed refits, pole-basin counts and bound hits are retained.
+
+\section{Prediction interpretation and open questions}
+Each pair drives ten other existing records using their commands and first temperatures. Primary predictions set the unknown future ambient correction to zero. Separate envelopes allow corrections anywhere in $\pm2\C$; those envelopes do not assign a probability distribution to room temperature.
+
+Mean-parameter ranges and future-observation ranges are separate. Observation ranges include estimated noise and parameter variation; they are pointwise, not simultaneous trajectory bands. A later ambient correction fitted to the complete evaluation temperature series is labeled retrospective reconstruction. It diagnoses level error but uses information unavailable to a prospective prediction.
+
+Tier 0 informed structure selection using all twelve records. These evaluations are therefore retrospective checks of a selected model. The sixty pair/record evaluations overlap, and observations within each record are correlated. Empirical fractions inside a band cannot be interpreted as independent-binomial validation.
+
+Before Tier 3, Alex's review should settle:
+\begin{enumerate}
+\item Whether the fast-sine command dependence warrants revising the mean before expanding the pair study.
+\item Whether the $\pm2\C$ ambient band is defensible, given the gain sensitivity and active bounds.
+\item Which sine/step pair gives the clearest teaching sequence, including what its uncertainty fails to explain.
+\item Whether to extend the same analysis to all 27 pairs or revise the working model first.
+\end{enumerate}
+No new hardware experiments or Pyomo.DoE calculations are part of this phase.
+
+\section*{Reproduction and evidence}
+Each numerical job uses read-only copies of committed sources, the pinned scientific environment and hashed raw records. Exact propagation is checked independently with augmented matrix exponentials; innovation likelihoods and inverse whitening are checked against dense covariance algebra. Selected simulation refits receive the full 24-start check. The repository preserves solver failures, sensitivity choices, checkpoints and their source receipts.
+\IfFileExists{generated/verification.tex}{\input{generated/verification.tex}}{\pending{final numerical and citation verification}}
+\bibliographystyle{plainnat}
+\bibliography{references}
+\end{document}
