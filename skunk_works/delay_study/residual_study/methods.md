@@ -122,3 +122,36 @@ It also reports descriptive residual harmonics after t=300 s, fitting a
 constant, linear and quadratic trend plus the known sine/cosine. The five-minute
 window contains only two cycles; no IID uncertainty claim accompanies these
 harmonic coefficients.
+
+## Refit diagnostic calibration and rounding sensitivity
+
+Use a source-bound pilot before the 200-replicate diagnostic comparisons. Generate
+from the leading pooled constant-ambient, OU-plus-measurement fit, preserving
+the real commands/timestamps and fixed first temperatures. Refit thermal,
+ambient and noise parameters for every replicate. Three starts include the
+generating neighborhood, the other pole basin and an additional thermal seed;
+noise values initialize optimization and are re-estimated, never fixed.
+Check selected refits with the full 24-start procedure before relying on the
+shorter refit budget. Preserve failed and nonstationary fits separately.
+
+Use global maximum absolute innovation ACF (lags 1-30), maximum absolute
+innovation/command correlation (lags -30 to 30) and maximum per-run Q30, as well
+as run-level statistics. Refit simulation calibrates those selected searches;
+finite plug-in tail fractions remain approximate. Two hundred draws give a
+minimum plus-one fraction of 1/201, not arbitrarily small significance.
+
+The alternative measurement mechanism retains the fitted slow OU process but
+replaces the independent Gaussian measurement component with temperature-grid
+rounding followed by two-decimal CSV reporting. Infer the grid only from the
+reference fitting records and require it to reconstruct every observed distinct
+level after two-decimal rounding. This is a diagnostic explanation to challenge,
+not an established hardware calibration. The Gaussian working likelihood is
+refitted in both simulations. Comparing their residual statistics can distinguish
+a generic Gaussian-kernel failure from effects compatible with discretized
+observations; neither simulation establishes the physical mean model as true.
+
+Save per-replicate seeds, all optimizer outcomes and fitted nuisance/noise terms.
+Source/config/reference hashes bind a resumable checkpoint. Resume only a
+matching identity into a fresh source-bound output directory. Failed draws stay
+in denominators and are not silently replaced. This Tier 0 diagnostic experiment
+is separate from the 400-draw uncertainty analysis for each of the six pairs.

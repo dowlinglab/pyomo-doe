@@ -67,7 +67,7 @@ def projected_gradient(point, gradient, bounds):
     return projected
 
 
-def joint_fit(records, config, mode, hold, kernel, baseline, callback=None, alternating=None):
+def joint_fit(records, config, mode, hold, kernel, baseline, callback=None, alternating=None, noise_start=None):
     bounds = [tuple(np.log(config["thermal_bounds"][k])) for k in ("tau", "theta")]+covariance_bounds(kernel)
     baseline_best = baseline["best"]
     base_times = [baseline_best["tau"], baseline_best["theta"]]
@@ -87,6 +87,8 @@ def joint_fit(records, config, mode, hold, kernel, baseline, callback=None, alte
     derivative = lambda x: numerical_gradient(objective, x, bounds, step=2e-6)
     for index, thermal in enumerate(pole_seeds):
         noise = noise_seeds[index % len(noise_seeds)]
+        if noise_start is not None and index < 2 and kernel != "iid":
+            noise = noise_start
         coords = [] if kernel == "iid" else [np.log(noise[0])]+([noise[1]] if kernel.endswith("_nugget") else [])
         point = np.r_[np.log(thermal), coords]
         if index == 2 and alternating is not None:
