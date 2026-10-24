@@ -8,8 +8,8 @@ This phase leaves the completed October 21 study and deliveries unchanged.
 |---|---|---|
 | Data/input and exact mean audit | Passed in frozen source | Preserve conditional startup/alignment assumptions |
 | Tier 0 mean/error exploration | Calculations complete; adequacy unresolved | Working structure frozen with explicit limitations |
-| Tier 1 P1 uncertainty/evaluation | Point fit and local information complete; preflights passed | Bootstrap, profiles and evaluation |
-| Tier 2 P2-P6 | All five point fits and local information complete | Finish exactly six pairs and uncertainty/evaluation |
+| Tier 1 P1 uncertainty/evaluation | All calculations and numerical audits complete | Final source and delivery checks |
+| Tier 2 P2-P6 | All five restricted analyses and evaluations complete | Satisfied; Tier 3 awaits researcher review |
 | Report/Gmail/push | Pending | Checked ruled-margin PDF; one verified email |
 
 No TC-Lab numerical process was live at startup reconciliation. Read the current
@@ -216,3 +216,11 @@ the complete evaluation response lowers RMSE to 0.92980 C but is retrospective
 reconstruction. These are descriptive fractions under reused records/serial
 dependence, not independent-binomial coverage tests. The report now leads with
 poor transfer despite narrow conditional parameter ranges.
+
+All 6000 uncertainty refits are terminal and usable. The 49 selected full-start
+audits pass (maximum NLL difference 6.9e-10); all 60 evaluation records and 336
+parameter distributions pass independent arithmetic checks. The nine-page PDF
+has been rendered and visually checked, including exact margins and 35 ruled
+lines per page. Final native passage grounding/export is owned by the current
+execution, followed by commit/push and one Gmail delivery. Do not send or mark
+the goal complete until the remaining source/delivery gates pass.

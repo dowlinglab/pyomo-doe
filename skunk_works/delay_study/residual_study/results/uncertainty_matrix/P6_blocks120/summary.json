@@ -1,0 +1,73 @@
+{
+  "requested_or_completed_draws": 100,
+  "usable": 100,
+  "failed": 0,
+  "requires_revisit": 0,
+  "notice": "Plug-in refit diagnostic calibration or measurement-rounding sensitivity, conditional on fitted structure/startup. Plus-one tail fractions have finite simulation resolution; not exact hypothesis tests or coverage guarantees.",
+  "global_comparisons": {
+    "global_max_abs_acf": {
+      "observed": 0.10328633850949102,
+      "simulation_quantiles_50_95_99": [
+        0.1466314457806278,
+        0.21226541219177614,
+        0.23000226780074867
+      ],
+      "tail_fraction_plus_one": 0.9801980198019802
+    },
+    "global_max_abs_input_correlation": {
+      "observed": 0.005978270783057374,
+      "simulation_quantiles_50_95_99": [
+        0.015180212856958586,
+        0.042282493554173566,
+        0.0459418964682681
+      ],
+      "tail_fraction_plus_one": 0.9504950495049505
+    },
+    "global_max_Q30": {
+      "observed": 47.88672896151533,
+      "simulation_quantiles_50_95_99": [
+        84.02597037721821,
+        138.31328823181585,
+        166.92491790287
+      ],
+      "tail_fraction_plus_one": 1.0
+    }
+  },
+  "per_run": [
+    {
+      "record": "validation_experiment_env_2_sin_2_50_run_2.csv",
+      "comparisons": {
+        "max_abs_acf_1_to_30": {
+          "observed": 0.09618825926511855,
+          "simulation_95": 0.1679831921184589,
+          "tail_fraction_plus_one": 0.9207920792079208
+        },
+        "max_abs_input_correlation": {
+          "observed": 0.005978270783057374,
+          "simulation_95": 0.042282493554173566,
+          "tail_fraction_plus_one": 0.9504950495049505
+        },
+        "ljung_box_Q_30": {
+          "observed": 38.94821551611457,
+          "simulation_95": 98.03769763628665,
+          "tail_fraction_plus_one": 0.9801980198019802
+        }
+      }
+    },
+    {
+      "record": "validation_experiment_env_2_step_50_run_3.csv",
+      "comparisons": {
+        "max_abs_acf_1_to_30": {
+          "observed": 0.10328633850949102,
+          "simulation_95": 0.21226541219177614,
+          "tail_fraction_plus_one": 0.9405940594059405
+        },
+        "ljung_box_Q_30": {
+          "observed": 47.88672896151533,
+          "simulation_95": 138.31328823181585,
+          "tail_fraction_plus_one": 1.0
+        }
+      }
+    }
+  ]
+}

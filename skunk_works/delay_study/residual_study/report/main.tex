@@ -177,8 +177,9 @@ Before Tier 3, Alex's review should settle:
 No new hardware experiments or Pyomo.DoE calculations are part of this phase.
 
 \section*{Reproduction and evidence}
-Each numerical job uses read-only copies of committed sources, the pinned scientific environment and hashed raw records. Exact propagation is checked independently with augmented matrix exponentials; innovation likelihoods and inverse whitening are checked against dense covariance algebra. Selected simulation refits receive the full 24-start check. The repository preserves solver failures, sensitivity choices, checkpoints and their source receipts.
+Every job records its committed source, pinned scientific runtime and raw-data hashes. Independent matrix-exponential and dense-covariance calculations check propagation, likelihoods and whitening. The archive preserves solver failures, sensitivity choices and checkpoints.
 \input{verification.tex}
+\clearpage
 \bibliographystyle{plainnat}
 \bibliography{references}
 \end{document}

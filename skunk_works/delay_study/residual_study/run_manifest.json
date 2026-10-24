@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "goal_started_utc": "2026-10-24T16:39:24Z",
-  "status": "six_pair_uncertainty_and_profiles_running",
+  "status": "numerical_and_pdf_checks_complete_literature_grounding_active",
   "branch": "reformulation-exploration",
   "heartbeat_id": "tc-lab-overnight-research",
   "heartbeat_status": "ACTIVE, hourly, confirmed by app update",
@@ -30,25 +30,8 @@
       "scope": "Independent matrix-exponential reconstruction, objective/raw-data/bound checks and residual diagnostics"
     }
   ],
-  "last_reconciliation_utc": "2026-10-24T22:07:46.705622+00:00",
-  "live_jobs": [
-    {
-      "id": "uncertainty_matrix",
-      "tool_session_id": 9511,
-      "workers": 3,
-      "pid": 42323,
-      "process_receipt": "results/uncertainty_matrix/process.json",
-      "source_commit": "37df1ef937c92ecd56dc9d0118e0439c43231317"
-    },
-    {
-      "id": "prediction_matrix",
-      "tool_session_id": 86855,
-      "workers": 1,
-      "pid": 55105,
-      "process_receipt": "results/prediction_matrix/process.json",
-      "source_commit": "a991414573bbd84f5450203ef5f30a340a321427"
-    }
-  ],
+  "last_reconciliation_utc": "2026-10-24T22:32:23.815596+00:00",
+  "live_jobs": [],
   "sensitivity_matrix": {
     "source_commit": "38d1cc3",
     "output": "results/tier0_sensitivity",
@@ -182,7 +165,7 @@
     "notice": "Only six pairs. Numerical thermal/ambient/noise parameters are refitted solely from each pair's two records; model structure was selected retrospectively using Tier0.",
     "information_status": "all six complete"
   },
-  "next_phase": "Monitor full uncertainty/profile matrices, reconcile flagged fits; prepare report and passage-grounded methods concurrently",
+  "next_phase": "Finish selected full-start audits, verify report numbers and render every page, complete native citation packet, push and email final PDF once",
   "structure_selection": "structure_selection.json",
   "delivery_receipt": null,
   "uncertainty_preflights": {
@@ -213,5 +196,40 @@
     "status": "passed",
     "output": "results/profile_matrix_audit/audit.json",
     "scope": "18 minima/crossing audits; five saved stationary near ties reconciled with independent dense derivatives; all original flags preserved"
+  },
+  "uncertainty_matrix": {
+    "status": "complete",
+    "output": "results/uncertainty_matrix",
+    "cells": 24,
+    "draws": 6000,
+    "usable": 6000,
+    "failed_or_flagged": 0,
+    "source_commit": "37df1ef937c92ecd56dc9d0118e0439c43231317"
+  },
+  "prediction_matrix": {
+    "status": "complete",
+    "output": "results/prediction_matrix",
+    "pairs": 6,
+    "evaluations": 60,
+    "source_commit": "a991414573bbd84f5450203ef5f30a340a321427"
+  },
+  "uncertainty_summary": {
+    "status": "complete",
+    "output": "results/uncertainty_summary/uncertainty.json",
+    "source_commit": "177b329d234b9d8ec84e98ffa49f600ea47e688c"
+  },
+  "uncertainty_audits": {
+    "status": "complete",
+    "output": "results/uncertainty_audits",
+    "selected_refits": 49,
+    "maximum_24_start_nll_difference": 6.893969839438796e-10
+  },
+  "report_numbers_audit": "results/report_numbers_audit/audit.json",
+  "report_pdf_verification": "report/pdf_verification.json",
+  "active_literature_operation": {
+    "functions_cell_id": "225",
+    "operation": "prepare six final passage plans",
+    "progress": "literature_grounding_progress.json",
+    "notice": "Owned by current yielded execution; wait and inspect before replay"
   }
 }
