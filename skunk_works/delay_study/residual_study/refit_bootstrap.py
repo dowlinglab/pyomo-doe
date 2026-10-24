@@ -57,7 +57,7 @@ def statistics(records, fit):
             "global_max_Q30": max(r["ljung_box_Q_30"] for r in rows)}
 
 
-def initialize(reference_dir, starts, measurement, seed_base):
+def initialize(reference_dir, starts, measurement, seed_base, block_length=60):
     global STATE
     directory = Path(reference_dir)
     fit = json.loads((directory/"fit.json").read_text())
@@ -80,18 +80,47 @@ def initialize(reference_dir, starts, measurement, seed_base):
         sigma *= np.sqrt(1-parameters[1])
         parameters = [parameters[0], 0.]
     processes = [NoiseProcess(d.time[1:], kernel, parameters, sigma) for d in records]
+    empirical = None
+    W = None
+    if measurement == "innovation_blocks":
+        W = Whitening([d.time[1:] for d in records], kernel, parameters)
+        raw = np.concatenate([(d.temperature-p)[1:] for d, p in zip(records, predictions)])
+        innovations = W(raw)/sigma
+        empirical = []
+        cursor = 0
+        for data in records:
+            count = len(data.time)-1
+            if not 1 <= block_length <= count:
+                raise ValueError("Block length outside record size")
+            values = innovations[cursor:cursor+count]
+            empirical.append(values-values.mean())
+            cursor += count
     STATE = {"records": records, "reference": fit, "config": config, "predictions": predictions,
-             "processes": processes, "measurement": measurement, "grid": grid, "seed_base": seed_base}
+             "processes": processes, "measurement": measurement, "grid": grid, "seed_base": seed_base,
+             "block_length": block_length, "empirical_innovations": empirical, "whitening": W}
+
+
+def moving_blocks(values, count, block_length, rng):
+    starts = rng.randint(0, len(values)-block_length+1, size=int(np.ceil(count/block_length)))
+    return np.concatenate([values[start:start+block_length] for start in starts])[:count]
 
 
 def synthetic(index):
     S = STATE
     seed = S["seed_base"]+104729*index
     rng = np.random.RandomState(seed)
+    block_errors = None
+    if S["measurement"] == "innovation_blocks":
+        innovations = np.concatenate([moving_blocks(values, len(values), S["block_length"], rng)
+                                       for values in S["empirical_innovations"]])
+        block_errors = S["whitening"].inverse(innovations)*S["reference"]["best"]["sigma_total_ML_C"]
     result = []
+    cursor = 0
     for data, predicted, process in zip(S["records"], S["predictions"], S["processes"]):
         temperature = predicted.copy()
-        temperature[1:] += process.draw(rng)
+        count = len(data.time)-1
+        temperature[1:] += block_errors[cursor:cursor+count] if block_errors is not None else process.draw(rng)
+        cursor += count
         if S["measurement"] == "rounded":
             q, offset = S["grid"]["spacing_C"], S["grid"]["offset_C"]
             temperature[1:] = np.round(offset+q*np.rint((temperature[1:]-offset)/q), 2)

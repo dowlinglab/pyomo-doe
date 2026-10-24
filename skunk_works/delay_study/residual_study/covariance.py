@@ -72,6 +72,20 @@ def _apply(values, transitions, gains, scales):
     return result
 
 
+@njit(cache=True)
+def _inverse(values, transitions, gains, scales):
+    result = np.empty_like(values)
+    for column in range(values.shape[1]):
+        m0, m1 = 0., 0.
+        for k in range(len(values)):
+            a = transitions[k]
+            v0, v1 = a[0, 0]*m0+a[0, 1]*m1, a[1, 0]*m0+a[1, 1]*m1
+            innovation = values[k, column]*scales[k]
+            result[k, column] = v0+innovation
+            m0, m1 = v0+gains[k, 0]*innovation, v1+gains[k, 1]*innovation
+    return result
+
+
 class Whitening:
     def __init__(self, times, kernel, parameters):
         if kernel not in {"iid", "ou", "ou_nugget", "matern32_nugget"}:
@@ -107,6 +121,22 @@ class Whitening:
             offset += len(time)
         if offset != len(values):
             raise ValueError("Whitening dimensions do not match run boundaries")
+        return result[:, 0] if vector else result
+
+    def inverse(self, values):
+        values = np.asarray(values)
+        if self.kernel == "iid":
+            return values.copy()
+        vector = values.ndim == 1
+        matrix = np.ascontiguousarray(values[:, None] if vector else values)
+        result = np.empty_like(matrix)
+        cursor = 0
+        for time, plan in zip(self.times, self.plans):
+            section = slice(cursor, cursor+len(time))
+            result[section] = _inverse(matrix[section], *plan)
+            cursor += len(time)
+        if cursor != len(values):
+            raise ValueError("Inverse whitening run boundaries differ")
         return result[:, 0] if vector else result
 
 

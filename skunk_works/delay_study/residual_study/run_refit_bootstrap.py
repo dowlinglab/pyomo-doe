@@ -14,6 +14,7 @@ sys.path.insert(0, str(HERE.parent))
 import numpy as np
 
 import refit_bootstrap
+from audit_covariance import audit as audit_covariance
 from run_mean import write_json
 
 
@@ -55,19 +56,22 @@ def main():
     parser.add_argument("--draws", type=int, default=200)
     parser.add_argument("--workers", type=int, default=4)
     parser.add_argument("--starts", type=int, default=3)
-    parser.add_argument("--measurement", choices=["gaussian", "rounded"], default="gaussian")
+    parser.add_argument("--measurement", choices=["gaussian", "rounded", "innovation_blocks"], default="gaussian")
+    parser.add_argument("--block-length", type=int, default=60)
     parser.add_argument("--resume-from", type=Path)
     args = parser.parse_args()
     if not 1 <= args.workers <= 4 or args.draws <= 0 or args.starts < 2:
         raise ValueError("Invalid bootstrap resource/count settings")
     args.output.mkdir(parents=True, exist_ok=True)
+    write_json(args.output/"whitening_audit.json", audit_covariance())
     begun = time.time()
     seed_base = 23261024
-    refit_bootstrap.initialize(args.reference, args.starts, args.measurement, seed_base)
+    refit_bootstrap.initialize(args.reference, args.starts, args.measurement, seed_base, args.block_length)
     S = refit_bootstrap.STATE
     identity = {"reference_fit_sha256": hashlib.sha256((args.reference/"fit.json").read_bytes()).hexdigest(),
                 "reference_config_sha256": hashlib.sha256((args.reference/"effective_config.json").read_bytes()).hexdigest(),
                 "measurement": args.measurement, "draws": args.draws, "starts_per_refit": args.starts,
+                "block_length": args.block_length,
                 "seed_base": seed_base,
                 "source_sha256": {p.name: hashlib.sha256(p.read_bytes()).hexdigest() for p in HERE.glob("*.py")},
                 "source_parent_data_sha256": hashlib.sha256((HERE.parent/"data.py").read_bytes()).hexdigest()}
@@ -80,6 +84,8 @@ def main():
     observed = refit_bootstrap.statistics(S["records"], S["reference"])
     write_json(args.output/"observed.json", observed)
     write_json(args.output/"generation.json", {"measurement": args.measurement, "grid": S["grid"],
+               "block_length_samples": args.block_length if args.measurement == "innovation_blocks" else None,
+               "block_notice": "Noncircular moving blocks of centered per-run standardized innovations, inverse-whitened through the fitted temporal covariance. Retains residual dependence as a sensitivity; does not correct deterministic input-related bias, justify stationarity or guarantee coverage.",
                "conditioning": "First recorded temperature fixed; initial lag/prehistory as reference; residual processes reset per run",
                "rounded_notice": "When rounded, replace Gaussian measurement noise by grid rounding; retain fitted slow-process variance. Refit the same Gaussian working likelihood to both mechanisms."})
     write_json(args.output/"checkpoint.json", checkpoint)
@@ -88,7 +94,7 @@ def main():
         raise ValueError("Invalid/duplicate draw identities")
     try:
         with ProcessPoolExecutor(max_workers=args.workers, initializer=refit_bootstrap.initialize,
-                                 initargs=(str(args.reference), args.starts, args.measurement, seed_base)) as pool:
+                                 initargs=(str(args.reference), args.starts, args.measurement, seed_base, args.block_length)) as pool:
             futures = {pool.submit(refit_bootstrap.execute, i): i for i in range(args.draws) if i not in done}
             for future in as_completed(futures):
                 index = futures[future]

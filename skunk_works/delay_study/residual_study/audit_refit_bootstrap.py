@@ -28,7 +28,7 @@ def main():
     identity = checkpoint["identity"]
     if hashlib.sha256((args.reference/"fit.json").read_bytes()).hexdigest() != identity["reference_fit_sha256"]:
         raise ValueError("Reference fit changed")
-    refit_bootstrap.initialize(args.reference, identity["starts_per_refit"], identity["measurement"], identity["seed_base"])
+    refit_bootstrap.initialize(args.reference, identity["starts_per_refit"], identity["measurement"], identity["seed_base"], identity.get("block_length", 60))
     S = refit_bootstrap.STATE
     rows = []
     for index in [int(i) for i in args.indices.split(",")]:

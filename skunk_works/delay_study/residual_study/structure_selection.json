@@ -1,0 +1,55 @@
+{
+  "status": "frozen_working_structure",
+  "authorship": "Codex, autonomous preparation under Alex's authorized Tier 0-2 goal",
+  "human_scientific_review": "pending",
+  "adequacy_status": "not established; reproducible fast-sine input-related innovations remain",
+  "model_order": 1,
+  "target": "T1",
+  "hold": "left",
+  "ambient_mode": "constant",
+  "ambient_offset_bounds_C": [
+    -2.0,
+    2.0
+  ],
+  "kernel": "ou_nugget",
+  "initial_state": "T(0)=first recorded T1, z(0)=0; omit the first temperature residual",
+  "parameter_policy": "For every pair re-estimate K, tau, theta, its two ambient offsets and all OU/measurement-noise parameters. Alpha is absorbed in K. Carry no fixed numerical Tier 0 noise values or priors.",
+  "reasons": [
+    "The user fixed the n1 teaching family and six-pair budget; no additional orders or four-state fitting are authorized here.",
+    "Acquisition ordering and the declared timing sensitivity support left hold; tested startup variations do not remove the fast-sine cycle.",
+    "Under OU plus measurement noise, linear ambient drift has nominal AICc 12.00 higher than constant offsets and leaves the same innovation pattern.",
+    "OU plus measurement noise has the best nominal AICc among the four declared pooled kernels. This is a working description, not proof of Gaussian residual adequacy.",
+    "None of 200 Gaussian or 200 rounded-measurement refit simulations reproduced the observed maximum command association; do not hide that discrepancy by forcing an additional random kernel."
+  ],
+  "limitations": [
+    "The shared n1 mean/error model does not fully explain the thirty-second sine records under the checked assumptions. Conditional uncertainty cannot certify absence of model bias.",
+    "Tier0 inspected all twelve recordings. Subsequent ten-record evaluation per pair is retrospective conditional on the chosen structure.",
+    "Ambient reference is the first sensor reading, not an independent ambient measurement. The +/-2C bound is consequential: widening it to +/-4C shifts pooled K about -2.47%.",
+    "The startup checks are fixed, limited scenarios, not a probability law or an independent-per-run worst-case uncertainty envelope.",
+    "Ambient forcing enters the thermal state in this reduced model. Pole assignment depends on that disturbance channel, initialization and nuisance assumptions; do not impose an ordering or identify physical heater/sensor constants merely from fitted labels.",
+    "Gaussian parametric bootstrap is conditional on a working noise family. Innovation-block resampling is a sensitivity to remaining dependence; it does not repair deterministic input-related bias or guarantee coverage.",
+    "Unknown evaluation ambient is propagated as bounded scenarios, not a fabricated probability prior. Full-response fitted ambient corrections are conditional reconstructions, not prospective predictions."
+  ],
+  "evidence_files": [
+    "results/tier0_covariance_audit/audit.json",
+    "results/tier0_covariance_audit/summary.json",
+    "results/tier0_sensitivity_summary_final/summary.json",
+    "results/tier0_direct_fit_check/audit.json",
+    "results/tier0_diagnostic_gaussian/summary.json",
+    "results/tier0_diagnostic_rounded/summary.json",
+    "results/tier0_calibration_audit/audit.json",
+    "results/tier0_diagnostic_gaussian_selected_audit/audit.json",
+    "results/tier0_diagnostic_rounded_selected_audit/audit.json"
+  ],
+  "evidence_sha256": {
+    "results/tier0_covariance_audit/audit.json": "adc6d11655e479aac8d080c6e249fdea67cefa68fb4ac7d0ab08a14ac30a7f69",
+    "results/tier0_covariance_audit/summary.json": "465c6d886f66b2382954bb61889a253644566fb2f880b49e770b052988242786",
+    "results/tier0_sensitivity_summary_final/summary.json": "f710d7304cc1a0d45bcab0b0aec253010380bbeed4a9265dfb061c7333196559",
+    "results/tier0_direct_fit_check/audit.json": "e7679ca98678691c7ab1d811ac9cbb6658afcf7841c4960d09d6ed8bec68a3d0",
+    "results/tier0_diagnostic_gaussian/summary.json": "45b47b26ceddc779c3ffa9d5d7b1387e2e607c9942ddb25952a554aefa4656a5",
+    "results/tier0_diagnostic_rounded/summary.json": "e3b1b873ec9d6b02b08780271d3e368a3c1bd494e0e5c42e1168e105f0e3773a",
+    "results/tier0_calibration_audit/audit.json": "61a04b040f483d40ee2eef9221a945ee09dd5514d62a7e84760481443f5d9c2a",
+    "results/tier0_diagnostic_gaussian_selected_audit/audit.json": "ae20ed8c158c0451553e373b4e568269cdfcd999ce2108e591e677e396cd1d3e",
+    "results/tier0_diagnostic_rounded_selected_audit/audit.json": "40848328d950b6a7f4c39ad68a2e302e8d529e300a4a6565e1cdbe5b6b5dfe62"
+  }
+}

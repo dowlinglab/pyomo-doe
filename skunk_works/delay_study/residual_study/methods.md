@@ -155,3 +155,40 @@ Source/config/reference hashes bind a resumable checkpoint. Resume only a
 matching identity into a fresh source-bound output directory. Failed draws stay
 in denominators and are not silently replaced. This Tier 0 diagnostic experiment
 is separate from the 400-draw uncertainty analysis for each of the six pairs.
+
+## Restricted-pair uncertainty implementation
+
+Use 400 Gaussian parametric refits per pair. Add 400 innovation-block refits with
+60-sample blocks and 100-refit sensitivities at 30 and 120 samples, motivated by
+the residual cycle and the approximately one-second sampling. Resample centered
+standardized innovations within each calibration run, then apply inverse
+whitening with that run's fitted covariance. This preserves the modeled slow
+dependence while varying the remaining innovation structure. Noncircular moving
+blocks retain empirical distributions/dependence within a block; they break its
+alignment with the command. This is a sensitivity, not a cure for mean bias or
+a theorem establishing interval coverage. Irregular time intervals remain in
+the whitening transform; block lengths are sample counts, approximately seconds.
+
+The inverse innovations transform is checked against dense covariance Cholesky.
+Every bootstrap refit re-estimates thermal, ambient and noise parameters; save
+failure denominators and batch stability. Recheck selected pair-specific refits
+with 24 starts before using the shorter three-start budget in final conclusions.
+No Tier 0 numerical covariance estimate is fixed in a restricted fit.
+
+For local information use log K/tau/theta and ambient offsets divided by 2 C.
+Eliminate ambient columns before describing the three-coordinate thermal
+information. Compare nominal IID OLS, conditional GLS information and
+OLS Bartlett-HAC sensitivities at lags 10/30/60, resetting across runs.
+The observed likelihood Hessian adds log ell and log slow/measurement SDs, so
+noise estimation is not treated as known. Check two finite-difference steps and
+the exact 2N curvature along a common log-noise-scale change. Indefinite or
+bound-dependent curvature is not converted into a falsely regular Gaussian CI.
+
+Profile K/tau/theta while refitting all remaining thermal, ambient and noise
+terms. Scan log grids spanning the declared bounds, denser neighborhoods of both
+pole basins, and the exact MLE. Refine nominal 3.84146 twice-NLL crossings with
+eight log-bisection steps. Retain disconnected included components, unresolved
+points and bound truncation. This cutoff is a nominal likelihood-support aid;
+active bounds and model/error misspecification prevent automatic confidence
+coverage claims. Any lower minimum must be reconciled with the reference fit,
+not hidden by shifting the profile.

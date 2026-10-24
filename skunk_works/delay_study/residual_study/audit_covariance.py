@@ -27,6 +27,11 @@ def audit():
                 start += len(t)
             expected = np.vstack(expected)
             recursive = W(matrix)
+            inverse_error = float(np.max(np.abs(W.inverse(matrix)-np.vstack([
+                cholesky(dense_covariance(t, kernel, parameters), lower=True)@matrix[sum(map(len, grids[:j])):sum(map(len, grids[:j+1]))]
+                for j, t in enumerate(grids)]))))
+            if inverse_error > 2e-8:
+                raise AssertionError(("Inverse whitening", kernel, parameters, inverse_error))
             error = float(np.max(np.abs(expected-recursive)))
             delta = float(abs(logdet-W.logdet))
             limit = 2e-6 if kernel == "matern32_nugget" and parameters[1] == 0 else 2e-8
@@ -38,6 +43,7 @@ def audit():
             if abs(nll-direct_nll) > limit or abs(sigma-direct_sigma) > limit:
                 raise AssertionError("Profile likelihood disagreement")
             cases.append({"kernel": kernel, "parameters": parameters,
+                          "inverse_cholesky_max_abs": inverse_error,
                           "whitening_max_abs": error, "logdet_abs": delta,
                           "nll_abs": abs(nll-direct_nll), "tolerance": limit})
     # A long almost-coincident interval limit is checked without an ill-conditioned

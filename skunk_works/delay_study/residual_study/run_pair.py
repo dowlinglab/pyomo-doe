@@ -13,6 +13,7 @@ sys.path.insert(0, str(HERE.parent))
 import numpy as np
 
 from covariance_fit import alternating_fit, joint_fit
+from audit_covariance import audit as audit_covariance
 from data import load
 from fit_diagnostics import evaluate
 from mean import fit_mean
@@ -40,6 +41,7 @@ def main():
         if selection["status"] != "frozen_working_structure" or selection["model_order"] != 1:
             raise RuntimeError("Tier 0 structure decision is not frozen for the n1 study")
         config = json.loads((HERE/"config.json").read_text())
+        write_json(args.output/"whitening_audit.json", audit_covariance())
         pair = next(p for p in config["pairs"] if p["id"] == args.pair)
         records = pair_records(pair)
         if not set(records).issubset(config["records"]) or len(set(records)) != 2:

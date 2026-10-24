@@ -81,7 +81,7 @@ def main():
         identity = checkpoint["identity"]
         if checkpoint["status"] != "complete" or sorted(d["index"] for d in checkpoint["draws"]) != list(range(identity["draws"])):
             raise AssertionError("Diagnostic draws missing or duplicated")
-        refit_bootstrap.initialize(args.reference, identity["starts_per_refit"], identity["measurement"], identity["seed_base"])
+        refit_bootstrap.initialize(args.reference, identity["starts_per_refit"], identity["measurement"], identity["seed_base"], identity.get("block_length", 60))
         S = refit_bootstrap.STATE
         observed, nll, _ = independent_statistics(S["records"], S["reference"])
         observed_saved = json.loads((folder/"observed.json").read_text())
