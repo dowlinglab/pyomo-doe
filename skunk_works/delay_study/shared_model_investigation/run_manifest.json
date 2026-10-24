@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "status": "active_pooled_comparison",
+  "status": "active_comparison_and_profiles",
   "plan_commit": "b4f7ef7",
   "branch": "reformulation-exploration",
   "heartbeat_id": "tc-lab-overnight-research",
@@ -9,46 +9,93 @@
   "jobs": [
     {
       "id": "baseline",
-      "source_commit": "8a5d8d4",
+      "source_commit": "8a5d8d48829fa677ffe62d95f0480690a2c3f0d5",
       "output": "results/baseline",
       "status": "failed",
       "exit_code": 1,
-      "reason": "Numerical checks reached final receipt stage; optional embedded ps call was sandbox-denied before receipt write. Remove process inspection from numerical driver; controller uses approved ps. Original source snapshot, forward audit and exit retained."
+      "reason": "Numerical checks reached final receipt stage; optional embedded ps call was sandbox-denied before receipt write. Remove process inspection from numerical driver; controller uses approved ps. Original source snapshot, forward audit and exit retained.",
+      "pid": 11355,
+      "command": [
+        "/Users/adowling/opt/anaconda3/bin/python",
+        "/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-shared-8a5d8d48-byfd533f/skunk_works/delay_study/shared_model_investigation/run_baseline.py",
+        "--output",
+        "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/shared_model_investigation/results/baseline",
+        "--baseline",
+        "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/residual_study/results/tier0_covariance/constant_ou_nugget"
+      ]
     },
     {
       "id": "baseline_v2",
-      "source_commit": "fd7b60e",
+      "source_commit": "fd7b60e2ade5635f61969fa13d5ee280e7b4993e",
       "output": "results/baseline_v2",
       "status": "complete",
       "exit_code": 0,
       "pooled_RMSE_C": 0.48320369190250795,
-      "nll_abs_error": 4.3655745685100555e-11
+      "nll_abs_error": 4.3655745685100555e-11,
+      "pid": 11723,
+      "command": [
+        "/Users/adowling/opt/anaconda3/bin/python",
+        "/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-shared-fd7b60e2-r09q_4u1/skunk_works/delay_study/shared_model_investigation/run_baseline.py",
+        "--output",
+        "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/shared_model_investigation/results/baseline_v2",
+        "--baseline",
+        "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/residual_study/results/tier0_covariance/constant_ou_nugget"
+      ]
     },
     {
       "id": "frequency",
-      "source_commit": "09df856",
+      "source_commit": "09df8564e5a9414bd863f463b723d2d04b3c2f59",
       "output": "results/frequency",
       "status": "complete",
       "exit_code": 0,
       "cells": 54,
-      "visual_issue": "Original phase plot uses principal phase and wraps at180deg; use frequency_figures for reviewed display"
+      "visual_issue": "Original phase plot uses principal phase and wraps at180deg; use frequency_figures for reviewed display",
+      "pid": 14461,
+      "command": [
+        "/Users/adowling/opt/anaconda3/bin/python",
+        "/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-shared-09df8564-m8myzbnn/skunk_works/delay_study/shared_model_investigation/run_frequency.py",
+        "--output",
+        "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/shared_model_investigation/results/frequency",
+        "--baseline",
+        "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/residual_study/results/tier0_covariance/constant_ou_nugget"
+      ]
     },
     {
       "id": "frequency_audit",
-      "source_commit": "06f39f8",
+      "source_commit": "06f39f89e8f5248af867c67114ddb080e785e328",
       "output": "results/frequency_audit",
       "status": "complete",
       "exit_code": 0,
       "cells": 54,
-      "max_complex_gain_error": 5.659354221711006e-16
+      "max_complex_gain_error": 5.659354221711006e-16,
+      "pid": 15382,
+      "command": [
+        "/Users/adowling/opt/anaconda3/bin/python",
+        "/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-shared-06f39f89-s4_t118_/skunk_works/delay_study/shared_model_investigation/audit_frequency.py",
+        "--output",
+        "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/shared_model_investigation/results/frequency_audit",
+        "--input",
+        "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/shared_model_investigation/results/frequency",
+        "--baseline",
+        "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/residual_study/results/tier0_covariance/constant_ou_nugget"
+      ]
     },
     {
       "id": "frequency_figures",
-      "source_commit": "06f39f8",
+      "source_commit": "06f39f89e8f5248af867c67114ddb080e785e328",
       "output": "results/frequency_figures",
       "status": "complete",
       "exit_code": 0,
-      "visual_review": "Reviewed phase windows and repeat folds; frequency phases unwrapped independently by increasing frequency; raw principal phases retained"
+      "visual_review": "Reviewed phase windows and repeat folds; frequency phases unwrapped independently by increasing frequency; raw principal phases retained",
+      "pid": 15424,
+      "command": [
+        "/Users/adowling/opt/anaconda3/bin/python",
+        "/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-shared-06f39f89-53k0nqxw/skunk_works/delay_study/shared_model_investigation/render_frequency.py",
+        "--output",
+        "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/shared_model_investigation/results/frequency_figures",
+        "--input",
+        "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/shared_model_investigation/results/frequency"
+      ]
     },
     {
       "id": "pilot_chain2",
@@ -113,38 +160,310 @@
     {
       "id": "chain1",
       "output": "results/chain1",
-      "source_commit": null,
-      "pid": null,
-      "command": null,
-      "status": "running",
-      "exit_code": null
+      "source_commit": "60988368165f1f42080778c80caad1e05f96abcf",
+      "pid": 20134,
+      "command": [
+        "/Users/adowling/opt/anaconda3/bin/python",
+        "/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-shared-60988368-q2c12frw/skunk_works/delay_study/shared_model_investigation/run_pooled.py",
+        "--output",
+        "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/shared_model_investigation/results/chain1",
+        "--kind",
+        "chain",
+        "--order",
+        "1",
+        "--starts",
+        "24"
+      ],
+      "status": "complete",
+      "exit_code": 0
     },
     {
       "id": "chain2",
       "output": "results/chain2",
-      "source_commit": null,
-      "pid": null,
-      "command": null,
-      "status": "running",
-      "exit_code": null
+      "source_commit": "60988368165f1f42080778c80caad1e05f96abcf",
+      "pid": 20136,
+      "command": [
+        "/Users/adowling/opt/anaconda3/bin/python",
+        "/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-shared-60988368-e5l9jxf_/skunk_works/delay_study/shared_model_investigation/run_pooled.py",
+        "--output",
+        "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/shared_model_investigation/results/chain2",
+        "--kind",
+        "chain",
+        "--order",
+        "2",
+        "--starts",
+        "24"
+      ],
+      "status": "complete",
+      "exit_code": 0
     },
     {
       "id": "chain3",
       "output": "results/chain3",
-      "source_commit": null,
-      "pid": null,
-      "command": null,
+      "source_commit": "60988368165f1f42080778c80caad1e05f96abcf",
+      "pid": 20137,
+      "command": [
+        "/Users/adowling/opt/anaconda3/bin/python",
+        "/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-shared-60988368-497ja_in/skunk_works/delay_study/shared_model_investigation/run_pooled.py",
+        "--output",
+        "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/shared_model_investigation/results/chain3",
+        "--kind",
+        "chain",
+        "--order",
+        "3",
+        "--starts",
+        "24"
+      ],
+      "status": "complete",
+      "exit_code": 0
+    },
+    {
+      "id": "flexible2",
+      "output": "results/flexible2",
+      "source_commit": "52697bce94ec0da8dc501c2fec2e0de1d6f06f90",
+      "pid": 21932,
+      "command": [
+        "/Users/adowling/opt/anaconda3/bin/python",
+        "/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-shared-52697bce-rmp37m93/skunk_works/delay_study/shared_model_investigation/run_pooled.py",
+        "--output",
+        "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/shared_model_investigation/results/flexible2",
+        "--kind",
+        "flexible_real",
+        "--order",
+        "2",
+        "--starts",
+        "24"
+      ],
+      "status": "complete",
+      "exit_code": 0
+    },
+    {
+      "id": "flexible3",
+      "output": "results/flexible3",
+      "source_commit": "52697bce94ec0da8dc501c2fec2e0de1d6f06f90",
+      "pid": 22692,
+      "command": [
+        "/Users/adowling/opt/anaconda3/bin/python",
+        "/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-shared-52697bce-t3chq2y1/skunk_works/delay_study/shared_model_investigation/run_pooled.py",
+        "--output",
+        "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/shared_model_investigation/results/flexible3",
+        "--kind",
+        "flexible_real",
+        "--order",
+        "3",
+        "--starts",
+        "24"
+      ],
+      "status": "complete",
+      "exit_code": 0
+    },
+    {
+      "id": "pilot_flexible3_audit",
+      "output": "results/pilot_flexible3_audit",
+      "source_commit": "52697bce94ec0da8dc501c2fec2e0de1d6f06f90",
+      "pid": 20879,
+      "command": [
+        "/Users/adowling/opt/anaconda3/bin/python",
+        "/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-shared-52697bce-asnxma91/skunk_works/delay_study/shared_model_investigation/audit_pooled.py",
+        "--output",
+        "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/shared_model_investigation/results/pilot_flexible3_audit",
+        "--input",
+        "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/shared_model_investigation/results/pilot_flexible3"
+      ],
+      "status": "complete",
+      "exit_code": 0
+    },
+    {
+      "id": "reference_diagnostics",
+      "output": "results/reference_diagnostics",
+      "source_commit": "52697bce94ec0da8dc501c2fec2e0de1d6f06f90",
+      "pid": 21159,
+      "command": [
+        "/Users/adowling/opt/anaconda3/bin/python",
+        "/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-shared-52697bce-n_r50252/skunk_works/delay_study/shared_model_investigation/run_diagnostics.py",
+        "--output",
+        "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/shared_model_investigation/results/reference_diagnostics",
+        "--input",
+        "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/residual_study/results/tier0_covariance/constant_ou_nugget"
+      ],
+      "status": "complete",
+      "exit_code": 0
+    },
+    {
+      "id": "chain_profiles",
+      "output": "results/chain_profiles",
+      "source_commit": "59111a4ba2368c77f304abdbf118cc3d33a33936",
+      "pid": 27109,
+      "command": [
+        "/Users/adowling/opt/anaconda3/bin/python",
+        "/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-shared-59111a4b-16ywatmf/skunk_works/delay_study/shared_model_investigation/run_profiles.py",
+        "--output",
+        "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/shared_model_investigation/results/chain_profiles",
+        "--inputs",
+        "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/shared_model_investigation/results/chain1",
+        "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/shared_model_investigation/results/chain2",
+        "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/shared_model_investigation/results/chain3"
+      ],
       "status": "running",
       "exit_code": null
+    },
+    {
+      "id": "comparison_initial",
+      "output": "results/comparison_initial",
+      "source_commit": "1e6fa630617d563cdcecb71dde3113d4c4486387",
+      "pid": 28400,
+      "command": [
+        "/Users/adowling/opt/anaconda3/bin/python",
+        "/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-shared-1e6fa630-diiz5_ls/skunk_works/delay_study/shared_model_investigation/compare_models.py",
+        "--output",
+        "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/shared_model_investigation/results/comparison_initial",
+        "--frequency",
+        "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/shared_model_investigation/results/frequency",
+        "--inputs",
+        "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/shared_model_investigation/results/chain1",
+        "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/shared_model_investigation/results/chain2",
+        "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/shared_model_investigation/results/chain3",
+        "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/shared_model_investigation/results/flexible2",
+        "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/shared_model_investigation/results/flexible3"
+      ],
+      "status": "complete",
+      "exit_code": 0
+    },
+    {
+      "id": "flexible3_audit",
+      "output": "results/flexible3_audit",
+      "source_commit": "1e6fa630617d563cdcecb71dde3113d4c4486387",
+      "pid": 28401,
+      "command": [
+        "/Users/adowling/opt/anaconda3/bin/python",
+        "/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-shared-1e6fa630-evakcml5/skunk_works/delay_study/shared_model_investigation/run_secondary_matrix.py",
+        "--output",
+        "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/shared_model_investigation/results/flexible3_audit",
+        "--audit-inputs",
+        "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/shared_model_investigation/results/flexible3"
+      ],
+      "status": "complete",
+      "exit_code": 0
+    },
+    {
+      "id": "flexible4",
+      "output": "results/flexible4",
+      "source_commit": "93358960cdf2ff7dde1e8932465ef2cb6b08d68d",
+      "pid": 23614,
+      "command": [
+        "/Users/adowling/opt/anaconda3/bin/python",
+        "/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-shared-93358960-eqgvzrgl/skunk_works/delay_study/shared_model_investigation/run_pooled.py",
+        "--output",
+        "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/shared_model_investigation/results/flexible4",
+        "--kind",
+        "flexible_real",
+        "--order",
+        "4",
+        "--starts",
+        "24"
+      ],
+      "status": "running",
+      "exit_code": null
+    },
+    {
+      "id": "information_flexible3",
+      "output": "results/information_flexible3",
+      "source_commit": "1e6fa630617d563cdcecb71dde3113d4c4486387",
+      "pid": 29239,
+      "command": [
+        "/Users/adowling/opt/anaconda3/bin/python",
+        "/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-shared-1e6fa630-_k1ky3m9/skunk_works/delay_study/shared_model_investigation/run_information.py",
+        "--output",
+        "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/shared_model_investigation/results/information_flexible3",
+        "--inputs",
+        "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/shared_model_investigation/results/flexible3"
+      ],
+      "status": "complete",
+      "exit_code": 0
+    },
+    {
+      "id": "information_initial",
+      "output": "results/information_initial",
+      "source_commit": "46e4c2c1fca4b118bee9fdcb74b20f2afad2da0f",
+      "pid": 26115,
+      "command": [
+        "/Users/adowling/opt/anaconda3/bin/python",
+        "/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-shared-46e4c2c1-elwqfp6r/skunk_works/delay_study/shared_model_investigation/run_information.py",
+        "--output",
+        "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/shared_model_investigation/results/information_initial",
+        "--inputs",
+        "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/shared_model_investigation/results/chain1",
+        "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/shared_model_investigation/results/chain2",
+        "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/shared_model_investigation/results/chain3",
+        "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/shared_model_investigation/results/flexible2"
+      ],
+      "status": "complete",
+      "exit_code": 0
+    },
+    {
+      "id": "primary_audits",
+      "output": "results/primary_audits",
+      "source_commit": "46e4c2c1fca4b118bee9fdcb74b20f2afad2da0f",
+      "pid": 25229,
+      "command": [
+        "/Users/adowling/opt/anaconda3/bin/python",
+        "/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-shared-46e4c2c1-a5tdtghd/skunk_works/delay_study/shared_model_investigation/run_secondary_matrix.py",
+        "--output",
+        "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/shared_model_investigation/results/primary_audits",
+        "--audit-inputs",
+        "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/shared_model_investigation/results/chain1",
+        "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/shared_model_investigation/results/chain2",
+        "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/shared_model_investigation/results/chain3",
+        "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/shared_model_investigation/results/flexible2"
+      ],
+      "status": "complete",
+      "exit_code": 0
+    },
+    {
+      "id": "reference_diagnostics_v2",
+      "output": "results/reference_diagnostics_v2",
+      "source_commit": "93358960cdf2ff7dde1e8932465ef2cb6b08d68d",
+      "pid": 23613,
+      "command": [
+        "/Users/adowling/opt/anaconda3/bin/python",
+        "/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-shared-93358960-tk0rqwu7/skunk_works/delay_study/shared_model_investigation/run_diagnostics.py",
+        "--output",
+        "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/shared_model_investigation/results/reference_diagnostics_v2",
+        "--input",
+        "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/residual_study/results/tier0_covariance/constant_ou_nugget"
+      ],
+      "status": "complete",
+      "exit_code": 0
+    },
+    {
+      "id": "secondary_matrix",
+      "output": "results/secondary_matrix",
+      "source_commit": "df6e7536edfebe5dbbf415c261722f2b78b741d3",
+      "pid": 24511,
+      "command": [
+        "/Users/adowling/opt/anaconda3/bin/python",
+        "/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-shared-df6e7536-mbsrw_vr/skunk_works/delay_study/shared_model_investigation/run_secondary_matrix.py",
+        "--output",
+        "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/shared_model_investigation/results/secondary_matrix",
+        "--starts",
+        "8"
+      ],
+      "status": "complete",
+      "exit_code": 0
     }
   ],
   "live_jobs": [
-    "chain1",
-    "chain2",
-    "chain3"
+    "chain_profiles",
+    "flexible4"
   ],
-  "next_phase": "Reconcile four pooled jobs; pilot_flexible3 needs independent audit, then flexible2/3/4 multistarts within4process cap. Chain1/2/3 full24start fits running. Finish per-run/harmonic/prediction diagnostics, audit selected fits, then information/profiles and synthesis.",
+  "next_phase": "Reconcile flexible4 and chain_profiles live processes. Chain1/2/3/flexible2/flexible3 and6objective sensitivities are terminal and independently audited. Audit flexible4 when terminal; complete comparison/information for all6models. Resolve profile flags and audit minima/crossings. Then test flexible numerator-bound sensitivity and a positive-response explicit transport-delay alternative motivated by nonminimum-phase benchmark; consider linear-ambient sensitivity for persistent slow errors. Complete report and scope audit before goal completion.",
   "delivery": "No new email requested; completed residual_study delivery remains unchanged",
   "startup_reconciliation": "Approved controller ps inspection: no live residual_study/shared_model_investigation numerical Python jobs after baseline failure.",
-  "material_finding": "Fast30s sine has28.3–32.3degrees additional circular phase lag vs matched n1, across3repeats/3startup windows/2nuisance choices;120s differences about−1.8to+0.95deg;300s about−0.02to+2.04deg with only1–2settled cycles. Interpretation provisional until flexible benchmark and delay-order comparison."
+  "material_finding": "Fast30s sine has28.3–32.3degrees additional circular phase lag vs matched n1, across3repeats/3startup windows/2nuisance choices;120s differences about−1.8to+0.95deg;300s about−0.02to+2.04deg with only1–2settled cycles. Interpretation provisional until flexible benchmark and delay-order comparison.",
+  "harmonic_correction": "reference_diagnostics had separate input-frequency projections on noninteger windows, unsuitable for direct harmonic comparison. v2 uses joint continuous held-input projection, independently quadrature-audited. The forecast diagnostics are unaffected.",
+  "pending_evidence_guided_choices": {
+    "numerator_bound_sensitivity": "Flexible3 hits coefficient−2bound and identifies0.1395s pole weakly. Compare ±4/±8bounds with declared starts/warm point; inspect transfer stability within excitation versus parameter drift.",
+    "transport_delay": "Flexible3 removes fast phase error using right-half-plane zeros and sign-changing early impulse. Test explicit additional transport delay on n1, with cold held input and physical ambient forcing, as candidate passive explanation, not proof.",
+    "ambient": "Slow per-run trends remain even after dynamic correction. Revisit linear ambient with same endpoint convention only as labeled sensitivity; avoid covariance absorbing all mean error."
+  }
 }

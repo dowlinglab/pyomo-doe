@@ -17,12 +17,12 @@ this goal. Its report was already delivered; send no new email.
 | Phase | Status |
 |---|---|
 | 0. Reproduce and verify | Passed independent reconstruction |
-| 1. Decompose errors and compare repeats | Scalar decomposition and phase folds complete; per-run plots/interpretation next |
-| 2. Frequency-response estimates | 54 estimates independently reconstructed; harmonics/limitations remain |
-| 3. Flexible shared LTI benchmarks | Pending |
-| 4. n=1/2/3 matched comparison | Pending |
-| 5. Evidence-guided follow-ups | Pending earlier diagnostics |
-| 6. Investigation report and review | Pending |
+| 1. Decompose errors and compare repeats | Per-run and phase-fold plots reviewed; descriptive decomposition complete |
+| 2. Frequency-response estimates | 54 estimates audited; joint harmonic input correction audited; limitations retained |
+| 3. Flexible shared LTI benchmarks | Two/three-state real-pole fits audited; four-state fit running |
+| 4. n=1/2/3 matched comparison | 24 starts each plus fixed-weight/IID sensitivities audited; profiles running |
+| 5. Evidence-guided follow-ups | Numerator-bound and transport-delay tests motivated; not yet implemented |
+| 6. Investigation report and review | report.md updated with qualified findings; incomplete |
 
 Reconcile [run_manifest.json](run_manifest.json) and actual process identities
 before launching jobs. Use committed-source snapshots and the pinned scientific
@@ -54,3 +54,29 @@ The raw estimates and independent audit retain input bindings and audit scope.
 Next finish Phase 1 per-run plots/energy interpretation, examine harmonics, then
 implement the shared flexible linear benchmark and matched n=1/2/3 fits. All
 current numerical jobs are terminal. Reconcile process IDs before launching.
+
+## Latest comparisons
+
+All three chain fits, two/three-state real-pole benchmarks and six secondary
+chain fits are terminal and independently audited. Primary fits use 24 starts;
+secondary fixed-reference OU and IID fits use eight. The n=1 reference agrees
+with the original engine. n=2 suppresses part of the fast residual cycle but
+increases raw RMSE under joint noise fitting; n=3 is worse under that criterion.
+The real three-state benchmark reduces fast phase mismatch to about two degrees
+and input/innovation association to 0.038–0.064. It also hits a numerator bound,
+uses a weakly estimated 0.14-second pole, and has nonminimum-phase zeros and an
+early sign-changing impulse. These features motivate bound sensitivity and an
+explicit transport-delay candidate; do not interpret the states physically.
+
+Per-run plots and harmonic/causal forecasting diagnostics are reviewed. Use
+reference_diagnostics_v2: its input harmonics are projected jointly over partial
+cycles. The original separate-frequency input projections leaked the fundamental
+into higher harmonics; forecasts and plots were unaffected. Local sensitivity
+and projected-curvature results are in information_initial and
+information_flexible3. Mean information can have full numerical rank while the
+flexible model's fast pole and numerator remain practically unestimable.
+
+At the last checkpoint flexible4 and chain_profiles were still live. Reconcile
+actual process identities and terminal artifacts before continuing. Finish and
+audit those outputs; complete physical/bound sensitivities and profile audits,
+then the report requirement audit. The active goal is not complete.

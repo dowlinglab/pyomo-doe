@@ -52,6 +52,13 @@ def main():
         A,B=physical_system(times,physical)
         impulse=np.array([(expm(A*t)@B)[-1] for t in time])
         H=np.array([model.frequency_response(x,c,w) for w in omega])
+        state_frequency=np.array([np.linalg.solve(1j*w*np.eye(model.m)-A,B)[-1] for w in omega])
+        denominator=np.poly1d([1.])
+        for value in times:denominator*=np.poly1d([value,1.])
+        polynomial_frequency=np.polyval(polynomial,1j*omega)/np.polyval(denominator,1j*omega)
+        frequency_error=float(max(np.max(abs(H-state_frequency)),np.max(abs(H-polynomial_frequency))))
+        dc_error=float(abs(np.linalg.solve(-A,B)[-1]-c[0]))
+        if frequency_error>1e-8 or dc_error>1e-9:raise AssertionError((folder.name,frequency_error,dc_error))
         freq=[]
         for period in (30.,120.,300.):
             theoretical=model.frequency_response(x,c,2*np.pi/period)
@@ -70,6 +77,7 @@ def main():
              'ambient_bound_count':int(sum(abs(v)>2-1e-7 for v in c[model.ninput:])),
              'physical_input_coefficients':physical.tolist(),
              'transfer_zeros':[{'real':float(v.real),'imag':float(v.imag)} for v in zeros],
+             'frequency_realization_max_abs_error':frequency_error,'DC_gain_max_abs_error':dc_error,
              'right_half_plane_zero_count':int(sum(v.real>1e-8 for v in zeros)),
              'initial_impulse_C_per_percent_s':float(impulse[0]),'minimum_impulse_first120s':float(impulse.min()),
              'fast_input_innovation_correlation_range':[min(r['max_abs_input_innovation_correlation_lags30'] for r in fit['per_run'][:3]),max(r['max_abs_input_innovation_correlation_lags30'] for r in fit['per_run'][:3])],
