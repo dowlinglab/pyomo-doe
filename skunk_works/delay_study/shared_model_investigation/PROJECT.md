@@ -17,8 +17,8 @@ this goal. Its report was already delivered; send no new email.
 | Phase | Status |
 |---|---|
 | 0. Reproduce and verify | Passed independent reconstruction |
-| 1. Decompose errors and compare repeats | Driver prepared |
-| 2. Frequency-response estimates | Synthetic/input-integral/HAC audits prepared |
+| 1. Decompose errors and compare repeats | Scalar decomposition and phase folds complete; per-run plots/interpretation next |
+| 2. Frequency-response estimates | 54 estimates independently reconstructed; harmonics/limitations remain |
 | 3. Flexible shared LTI benchmarks | Pending |
 | 4. n=1/2/3 matched comparison | Pending |
 | 5. Evidence-guided follow-ups | Pending earlier diagnostics |
@@ -34,3 +34,23 @@ The existing hourly thread heartbeat has been updated and read back as ACTIVE
 for this investigation. It replaces its old Tier0–2 instructions. Mark the goal
 complete and pause that heartbeat after the scoped report and checks finish.
 The remaining calibration pairs, DoE, hardware and new email remain deferred.
+
+## Current evidence and next work
+
+The 54 frequency cells cover startup cutoffs of 300, 450 and 600 seconds, two
+nuisance treatments and all nine sine records. Independent continuous-command
+quadrature and QR solves agree within 5.7e-16 in complex gain. The fast 30-second
+records show 28.3–32.3 degrees more lag than matched n=1 across these choices.
+Slower 120-second discrepancies are about −1.8 to +0.95 degrees; 300-second
+ones about −0.02 to +2.04 degrees, with only 1–2 settled cycles. These are
+per-record descriptive estimates with working HAC uncertainty. They do not
+identify a unique mechanism. See report.md for current interpretation.
+
+Use results/frequency_figures for reviewed plots. The original phase display
+wrapped at 180 degrees; the revised display unwraps increasing frequency
+independently for measured/model curves, preserving all numerical estimates.
+The raw estimates and independent audit retain input bindings and audit scope.
+
+Next finish Phase 1 per-run plots/energy interpretation, examine harmonics, then
+implement the shared flexible linear benchmark and matched n=1/2/3 fits. All
+current numerical jobs are terminal. Reconcile process IDs before launching.
