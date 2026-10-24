@@ -79,6 +79,12 @@ def main():
         bindings[pair] = {"fit_sha256": fit_hash, "prediction_summary_sha256": digest(args.predictions/pair/"summary.json"),
                           "information_sha256": digest(args.results/"information"/pair/"information.json")}
     metrics = {pair: prediction_metrics(s) for pair, s in P.items()}
+    common_names = set.intersection(*[{r["record"] for r in s["records"]} for s in P.values()])
+    if len(common_names) != 3 or any("step" in name for name in common_names):
+        raise ValueError("The declared six-pair design should leave three common sine evaluation records")
+    for pair, summary in P.items():
+        selected = [r for r in summary["records"] if r["record"] in common_names]
+        metrics[pair]["common_three_sine_RMSE_C"] = float(np.sqrt(sum(r["n"]*r["RMSE_C"]**2 for r in selected)/sum(r["n"] for r in selected)))
     first = U["pairs"]["P1"]
     rows = []
     range_rows = []
@@ -121,7 +127,7 @@ def main():
         eigen_rows.append([pair, format(spectral["eigenvalues"][0], ".3g"), format(spectral["condition_number"], ".1f"),
                            "("+", ".join(format(v, ".2f") for v in vector)+")"])
         m = metrics[pair]
-        fit_rows.append([pair]+[format(m[k], ".3f") for k in ("ordinary_RMSE_C", "RMSE_C", "conditional_reconstruction_RMSE_C")])
+        fit_rows.append([pair]+[format(m[k], ".3f") for k in ("ordinary_RMSE_C", "RMSE_C", "common_three_sine_RMSE_C", "conditional_reconstruction_RMSE_C")])
         band_rows.append([pair]+[format(100*m[method][family]["fraction_inside"], ".1f") for method,family in
                                   [("gaussian","observation"),("innovation_blocks","observation"),("gaussian","ambient_observation")]])
     tier2 = table(["Pair", "Gaussian $K$ range", "Block $K$ range", "Swaps G/B"], rows)
@@ -132,8 +138,9 @@ def main():
     tier2 += "Widths are in $\\C/\\%$. Blocks count samples, approximately seconds. The 30/120-s sensitivities use 100 draws each; their 2.5\\% tails involve only two or three order statistics. The 400-draw primary methods have about ten draws per tail. Rare pole switches can move endpoints; the archive retains order-statistic Monte Carlo ranges and half-batch discrepancies.\n"
     tier2 += table(["Pair", "Smallest information eigenvalue", "Condition", "Weak log direction"], eigen_rows)
     tier2 += "Directions use $(\\log K,\\log\\tau,\\log\\theta)$ after eliminating ambient columns; eigenvector signs are arbitrary. These are local fixed-covariance diagnostics and ignore box geometry and separated modes.\n"
-    tier2 += table(["Pair", "OLS prediction RMSE", "GLS prediction RMSE", "Ambient reconstruction"], fit_rows)
-    tier2 += "RMSE is in degrees Celsius, pooled over each pair's ten evaluation records. Primary OLS/GLS predictions use zero future ambient correction. The last column fits an offset using the complete evaluation response and is retrospective reconstruction.\n"
+    tier2 += "All six conditional thermal information matrices have rank three at relative eigenvalue thresholds $10^{-8}$, $10^{-10}$ and $10^{-12}$. P2's full observed curvature is indefinite, so its regular Gaussian covariance is withheld. P4 has an active ambient bound despite positive observed curvature. Rank and positive curvature alone do not settle bounded or global inference.\n"
+    tier2 += table(["Pair", "OLS RMSE", "GLS RMSE", "Common sines", "Ambient reconstruction"], fit_rows)
+    tier2 += "RMSE is in degrees Celsius. OLS/GLS columns pool each pair's ten evaluation records; the exclusions differ, so those aggregates are not a controlled same-test-set ranking. Common sines restrict GLS evaluation to 30-s run 1, 120-s run 3 and 300-s run 2, which are excluded from all six calibrations. Primary predictions use zero future ambient correction. The last column fits an offset using the complete evaluation response and is retrospective reconstruction.\n"
     tier2 += table(["Pair", "Gaussian inside, \\%", "Block inside, \\%", "Gaussian + ambient, \\%"], band_rows)
     tier2 += "Fractions count measured temperatures inside pointwise future-observation ranges, pooled by sample count. Ambient envelopes are scenarios. Overlapping evaluation records and serial dependence prevent independent-binomial coverage claims.\n"
     tier2 += "\\begin{figure}[htbp]\\centering\\includegraphics[width=\\linewidth]{generated/figures/prediction_RMSE.pdf}\\caption{Zero-ambient prediction RMSE in degrees Celsius. White cells are the two calibration records for that pair. Records are labeled by sine period or step (S), then run number.}\\end{figure}\n"
@@ -162,7 +169,7 @@ def main():
         for j in range(12):
             if np.isfinite(matrix[i,j]):ax.text(j,i,format(matrix[i,j],".1f"),ha="center",va="center",fontsize=6,color="black" if matrix[i,j]<np.nanmax(matrix)*.55 else "white")
     ax.set_xticks(range(12));ax.set_xticklabels(labels,rotation=45,ha="right");ax.set_yticks(range(6));ax.set_yticklabels(list(P));fig.colorbar(im,ax=ax,label="RMSE, C",fraction=.04,pad=.025);fig.tight_layout();fig.savefig(figures/"prediction_RMSE.pdf");plt.close(fig)
-    output={"prediction_metrics":metrics,"binding":bindings,"uncertainty_summary_sha256":digest(args.uncertainty_summary/"uncertainty.json"),
+    output={"prediction_metrics":metrics,"common_evaluation_records":sorted(common_names),"binding":bindings,"uncertainty_summary_sha256":digest(args.uncertainty_summary/"uncertainty.json"),
             "profile_audit_sha256":digest(args.profile_audit/"audit.json"),"figures":{p.name:digest(p) for p in figures.glob("*.pdf")},
             "notice":"Generated tables and descriptive figures; final prose interpretation and all-page rendered layout review remain required."}
     (args.output/"report_numbers.json").write_text(json.dumps(output,indent=2,allow_nan=False)+"\n")
