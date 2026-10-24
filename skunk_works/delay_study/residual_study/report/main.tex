@@ -5,6 +5,7 @@
 \usepackage[round,authoryear]{natbib}
 \usepackage[colorlinks=true,urlcolor=blue,citecolor=blue,linkcolor=blue]{hyperref}
 \usepackage{eso-pic,tikz,microtype,placeins}
+\hypersetup{pdftitle={TC-Lab n=1 teaching study: Tiers 0-2},pdfauthor={Prepared for Alex Dowling},pdfsubject={Residual covariance, uncertainty and retrospective predictions across six calibration pairs}}
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{5pt}
 \setlist{nosep,leftmargin=*}
@@ -16,20 +17,19 @@
     }
   \end{tikzpicture}}}
 \newcommand{\C}{\,^\circ\mathrm{C}}
-\newcommand{\pending}[1]{\textit{Pending final checked calculation: #1.}}
 \title{\vspace{-1.3em}TC-Lab: an $n=1$ teaching study\\\large Tiers 0--2, researcher review draft}
 \author{Prepared for Alex Dowling}
 \date{October 24, 2026}
 \begin{document}
 \maketitle
 \vspace{-1em}
-\begin{tabularx}{\linewidth}{@{}p{0.38in}X p{1.35in}@{}}
+\begin{tabularx}{\linewidth}{@{}p{0.38in}X >{\raggedright\arraybackslash}p{1.35in}@{}}
 \toprule
 Tier & Goal & Status and result\\
 \midrule
-0 & Test whether one shared thermal model explains all twelve ENV2 records. Diagnose ambient treatment and residual covariance. & Fits complete. Shared-model adequacy remains unresolved.\\
-1 & Fit one five-minute sine and one step. Quantify uncertainty and predict the other ten records. & Point fit complete; uncertainty and evaluation pending.\\
-2 & Repeat with five further pairs, balancing three steps and three sine periods. & Six total point fits complete; uncertainty and evaluation pending.\\
+0 & Test whether one shared thermal model explains all twelve ENV2 records. Diagnose ambient treatment and residual covariance. & Complete. Input-related residuals remain; adequacy unresolved.\\
+1 & Fit one five-minute sine and one step. Quantify uncertainty and predict the other ten records. & Complete. Narrow parameter ranges; poor transfer.\\
+2 & Repeat with five further pairs, balancing three steps and three sine periods. & Complete. Calibration choice changes estimates and predictions.\\
 3 & Consider the remaining one-sine/one-step combinations after review. & Deferred for Alex's feedback.\\
 \bottomrule
 \end{tabularx}
@@ -94,7 +94,7 @@ With the same covariance family, linear drift lowers negative log likelihood by 
 
 \begin{figure}[htbp]
 \centering
-\includegraphics[width=\linewidth]{generated_release/figures/residual_ACF.pdf}
+\includegraphics[width=\linewidth]{generated_release2/figures/residual_ACF.pdf}
 \caption{Residual correlation before and after the covariance-aware fit, using run 1 of each protocol. Whitening reduces the long persistence but leaves oscillation in the thirty-second sine and negative short-lag association in other records. These are descriptive ACFs; no IID significance bands are implied.}
 \end{figure}
 
@@ -111,7 +111,7 @@ Ambient assumptions also affect interpretation. Widening offsets to $\pm4\C$ rem
 
 The P1 point estimates are $K=0.74063\C/\%$, $\tau=147.60$ s and $\theta=16.59$ s. Its two ambient corrections are $1.261\C$ and $1.947\C$. No pooled noise estimate is fixed in this restricted fit.
 
-\input{generated_release/tier1.tex}
+\input{generated_release2/tier1.tex}
 \FloatBarrier
 \section{Tier 2: five further pairs}
 \textbf{Goal.} Assess how much the result depends on the chosen sine and step. Six pairs in total use each step twice and each sine period twice.
@@ -130,7 +130,13 @@ P6 & 120 s / 2 & 3 & 0.69734 & 130.62 & 18.87\\
 \end{tabular}
 
 All six point fits pass the declared stationarity checks and independent trajectory/likelihood reconstruction. Their parameter spread can reflect record variation, nuisance-bound effects and model inadequacy as well as statistical uncertainty.
-\input{generated_release/tier2.tex}
+\input{generated_release2/tier2.tex}
+
+P1's Gaussian $K$ range is $[0.737,0.757]\C/\%$; P5's is $[0.661,0.705]\C/\%$. These conditional ranges do not overlap. The shared records, nuisance bounds and inadequate working error law prevent interpreting this as a formal independent test of physical gain variation.
+
+P2 has the lowest ten-record aggregate prediction RMSE, $1.695\C$. P6 has the lowest RMSE on the common three sine records, $1.358\C$. Gaussian observation-range inclusion varies from 15.7\% to 55.3\% at zero future ambient correction, and from 58.5\% to 100\% with the bounded ambient envelope. Broader ranges can contain more observations while leaving the command-related discrepancy unresolved. GLS does not systematically reduce unweighted prediction RMSE across these pairs.
+
+For teaching, P1 provides a direct example of narrow fitted parameter ranges accompanying poor transfer. The pooled analysis and the other five pairs then expose the mean/error assumptions behind those ranges. I recommend reviewing that shared description before extending the pair enumeration.
 \FloatBarrier
 
 \section{How uncertainty is calculated}
@@ -152,7 +158,7 @@ Local information uses log $K,\tau,\theta$, removes ambient directions and repor
 
 We also profile each thermal parameter, refitting all remaining thermal, ambient and noise terms. Profiles can reveal asymmetric or extended likelihood support that a local quadratic approximation misses \citep{raue-2009-structural}. The displayed $2\Delta(-\log L)=3.84146$ cutoff is nominal; finite bounds, pole alternatives and error misspecification limit its coverage interpretation.
 
-For every pair we request 400 Gaussian parametric refits and 400 innovation-block refits with 60-sample blocks. Block-length sensitivities use 100 draws each at 30 and 120 samples. All nuisance and covariance parameters are re-estimated. Blocks resample centered standardized calibration innovations and are inverse-whitened. This custom sensitivity preserves short residual sequences but breaks alignment with the command; it cannot correct deterministic protocol bias. Finite simulation error, failed refits, pole-basin counts and bound hits are retained.
+For every pair we completed 400 Gaussian parametric refits and 400 innovation-block refits with 60-sample blocks. Block-length sensitivities use 100 draws each at 30 and 120 samples. All nuisance and covariance parameters are re-estimated. Blocks resample centered standardized calibration innovations and are inverse-whitened. This custom sensitivity preserves short residual sequences but breaks alignment with the command; it cannot correct deterministic protocol bias. Finite simulation error, failed-refit denominators, pole-basin counts and bound hits are retained.
 
 \section{Prediction interpretation and open questions}
 Each pair drives ten other existing records using their commands and first temperatures. Primary predictions set the unknown future ambient correction to zero. Separate envelopes allow corrections anywhere in $\pm2\C$; those envelopes do not assign a probability distribution to room temperature.
@@ -172,7 +178,7 @@ No new hardware experiments or Pyomo.DoE calculations are part of this phase.
 
 \section*{Reproduction and evidence}
 Each numerical job uses read-only copies of committed sources, the pinned scientific environment and hashed raw records. Exact propagation is checked independently with augmented matrix exponentials; innovation likelihoods and inverse whitening are checked against dense covariance algebra. Selected simulation refits receive the full 24-start check. The repository preserves solver failures, sensitivity choices, checkpoints and their source receipts.
-\IfFileExists{generated/verification.tex}{\input{generated/verification.tex}}{\pending{final numerical and citation verification}}
+\input{verification.tex}
 \bibliographystyle{plainnat}
 \bibliography{references}
 \end{document}

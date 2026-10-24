@@ -164,7 +164,7 @@ def main():
     axes[-1].set_xlabel("Sample lag (approximately s)");fig.tight_layout();fig.savefig(figures/"residual_ACF.pdf");plt.close(fig)
     examples = ["sin_50_50_run_1", "sin_5_50_run_2", "step_50_run_3"]
     numeric = np.load(args.predictions/"P1"/"predictions.npz")
-    fig, axes = plt.subplots(3,1,figsize=(5,5.4))
+    fig, axes = plt.subplots(3,1,figsize=(5,4.3))
     for ax, token in zip(axes, examples):
         j = next(j for j,r in enumerate(P["P1"]["records"]) if token in r["record"])
         t=numeric["time_"+str(j)]/60
