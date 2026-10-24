@@ -110,6 +110,17 @@ def make_plots(output, rows, folded):
     import matplotlib.pyplot as plt
     plt.rcParams.update({'font.size':9, 'savefig.dpi':160})
     colors = ['#2166ac','#b2182b','#1b7837']
+    # Unwrap increasing frequency independently for each measured/model curve.
+    # No model-guided branch selection: retain principal values in the JSON.
+    unwrapped = {}
+    for run in (1,2,3):
+        for cutoff in (300.,450.,600.):
+            selected = sorted([r for r in rows if r['run']==run and r['cutoff_s']==cutoff
+                               and r['nuisance']=='trend'], key=lambda r: -r['period_s'])
+            for kind in ('measured','matched_sampled_n1'):
+                phase = np.unwrap(np.deg2rad([r[kind]['phase_deg'] for r in selected]))
+                for r, value in zip(selected, np.rad2deg(phase)):
+                    unwrapped[(run,cutoff,r['period_s'],kind)] = value
     fig, axes = plt.subplots(2,3,figsize=(12,6),sharex=True)
     for col, period in enumerate((30,120,300)):
         for run in (1,2,3):
@@ -117,16 +128,18 @@ def make_plots(output, rows, folded):
             for k, key in enumerate(('gain_C_per_percent','phase_deg')):
                 ax = axes[k,col]
                 sd = 'gain_SD' if k==0 else 'phase_SD_deg'
-                ax.errorbar([r['cutoff_s']+(run-2)*6 for r in selected], [r['measured'][key] for r in selected],
+                measured_values = [r['measured'][key] if k==0 else unwrapped[(run,r['cutoff_s'],period,'measured')] for r in selected]
+                model_values = [r['matched_sampled_n1'][key] if k==0 else unwrapped[(run,r['cutoff_s'],period,'matched_sampled_n1')] for r in selected]
+                ax.errorbar([r['cutoff_s']+(run-2)*6 for r in selected], measured_values,
                             yerr=[1.96*r['measured']['HAC']['60'][sd] for r in selected],
                             fmt='o-',color=colors[run-1],label='Run '+str(run),capsize=2)
-                ax.plot([r['cutoff_s'] for r in selected], [r['matched_sampled_n1'][key] for r in selected],
+                ax.plot([r['cutoff_s'] for r in selected], model_values,
                         color=colors[run-1],linestyle='--',alpha=.6)
                 ax.grid(alpha=.2)
         axes[0,col].set_title(str(period)+'-second sine')
         axes[1,col].set_xlabel('Startup cutoff, s')
     axes[0,0].set_ylabel('Gain, C / heater percent')
-    axes[1,0].set_ylabel('Output-input phase, degrees')
+    axes[1,0].set_ylabel('Frequency-unwrapped phase, degrees')
     axes[0,0].legend()
     fig.suptitle('Measured response (solid) and matched n=1 (dashed); working HAC60 ranges')
     fig.tight_layout(rect=(0,0,1,.95))
