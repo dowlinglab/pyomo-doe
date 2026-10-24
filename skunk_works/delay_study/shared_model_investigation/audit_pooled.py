@@ -58,7 +58,7 @@ def main():
         error=float(np.max(np.abs(predicted-arrays['predicted_'+str(j)])))
         residual=d.temperature[1:]-predicted[1:]
         t=d.time[1:]
-        C=(1-eta)*np.exp(-abs(t[:,None]-t[None,:])/ell)+eta*np.eye(len(t))
+        C=np.eye(len(t)) if fit.get('kernel')=='iid' else (1-eta)*np.exp(-abs(t[:,None]-t[None,:])/ell)+eta*np.eye(len(t))
         L=cholesky(C,lower=True)
         z=solve_triangular(L,residual,lower=True)
         ie=float(np.max(np.abs(z/best['sigma_C']-arrays['standardized_innovation_'+str(j)])))

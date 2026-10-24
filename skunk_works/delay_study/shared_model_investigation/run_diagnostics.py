@@ -81,6 +81,7 @@ def main():
         ell,eta=best['noise_parameters'];sigma=best['sigma_total_ML_C']
     else:
         x=best['point'];ell,eta=np.exp(x[-2]),x[-1];sigma=best['sigma_C']
+    if fit.get('kernel')=='iid':ell,eta=1.,1.
     forecasts=[];harmonics=[];series=[]
     for j,name in enumerate(fit['record_names']):
         t=arrays['time_'+str(j)];t=t-t[0]
