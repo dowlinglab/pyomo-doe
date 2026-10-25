@@ -60,3 +60,32 @@ illustrates a one-way sensor-lag approximation; this study retains the sensor
 heat capacity and reciprocal heater/sensor heat flow in the balance above.
 The Lab Literature search did not return within the controller's bounded wait;
 no result from that unreturned query is used as evidence.
+
+The reciprocal four-state balance is also given in
+https://ndcbe.github.io/controls/tclab/03.06-Four-State-Model.html . Its labels
+for interheater and sensor conductances differ from some other TC-Lab notes;
+Us and Ux above refer to heat paths, not those inconsistent letter assignments.
+
+## Interpretation to preserve
+
+Unequal time constants can arise from the eigenmodes of different heat capacities
+and conductances. Coupling is physical, but a cascade with three positive poles
+is not automatically equivalent to this four-state network. The network also
+has zeros. For B=tA*rS, a=tA+rS*(1+r), and q=Ux/Ua, its numerators are
+K*[B*s^2+(a+q*rS)*s+1+q] for T1 and K*q*(rS*s+1) for T2, over D+*D-.
+Consequently T2/T1=q*(rS*s+1)/[B*s^2+(a+q*rS)*s+1+q]. This ratio cancels
+a shared input lag and K. It would help separate sensor and command dynamics
+with sufficiently informative two-channel data. Here the fast T2 oscillation
+must first be checked against quantization and harmonic-estimation uncertainty.
+
+Structural recoverability of scale-free parameters follows in the ideal
+common/differential chart. If the normalized modal coefficients are
+(K,a+,b+) and (K/l,a-/l,b+/l), l=1+2*q, then
+rS=(l*(a-/l)-a+)/(l-1), tA=b+/rS, r=(a+-tA)/rS-1.
+This needs nonzero interheater coupling and resolvable modal responses; it is
+not a practical-estimability guarantee for the finite records.
+
+All new results belong in this folder. The earlier completed research goal and
+paused heartbeat stay unchanged. This follow-up does not authorize another
+email or a new hardware experiment. Commit source before measured runs, then
+commit selected evidence and the report, and push the branch when complete.
