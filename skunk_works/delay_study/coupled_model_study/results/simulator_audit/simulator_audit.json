@@ -1,0 +1,125 @@
+{
+  "status": "passed",
+  "source_url": "https://raw.githubusercontent.com/jckantor/TCLab/master/tclab/tclab.py",
+  "source_sha256": "f3eb0ad5cc3fb7f572c7b8a558c691548e569881ad16643986ba4d82264e98ad",
+  "source_git_blob_sha1": "9c7c2b85a036a323184253c3ed979ff0c7757b98",
+  "inspected_method_AST_sha256": {
+    "quantize": "94c6f201e2841350f505cc0261a35f03b67641998b3800db2ecfc61e615552b9",
+    "measurement": "287446d2465a8c685e70f90624e4b25aef412ff6a168c932565379d5140ad444",
+    "update": "e02b3f873697f1272ea83e7664fae0d2925b8e0f5bd4be18073a90569e410e19"
+  },
+  "model": "Symmetric two coupled heater states, nonloading first-order sensor states, fixed linear command conversion; no explicit command lag or radiation term in this inspected update.",
+  "common_heater_time_s": 20.0,
+  "differential_heater_time_s": 14.285714285714285,
+  "sensor_time_s": 140.0,
+  "matrix_A": [
+    [
+      -0.06,
+      0.0,
+      0.01,
+      0.0
+    ],
+    [
+      0.007142857142857143,
+      -0.007142857142857143,
+      0.0,
+      0.0
+    ],
+    [
+      0.01,
+      0.0,
+      -0.06,
+      0.0
+    ],
+    [
+      0.0,
+      0.0,
+      0.007142857142857143,
+      -0.007142857142857143
+    ]
+  ],
+  "unit_Q1_B": [
+    0.03496503496503497,
+    0.0,
+    0.0,
+    0.0
+  ],
+  "steady_gain_C_per_percent": [
+    0.5994005994005994,
+    0.09990009990009993
+  ],
+  "upstream_Euler_checks": [
+    {
+      "maxstep_s": 0.2,
+      "max_output_error_vs_exact_C": 0.011678180946063321
+    },
+    {
+      "maxstep_s": 0.1,
+      "max_output_error_vs_exact_C": 0.005934310804093457
+    },
+    {
+      "maxstep_s": 0.05,
+      "max_output_error_vs_exact_C": 0.0029924149675153444
+    }
+  ],
+  "frequency": [
+    {
+      "period_s": 300.0,
+      "continuous_gain": [
+        0.18108518258165762,
+        0.0284947503067735
+      ],
+      "continuous_phase_deg": [
+        -91.31082999726898,
+        -110.55318052698433
+      ],
+      "Euler_point_input_phase_difference_deg": [
+        -0.12220980434940032,
+        -0.13519965921001104
+      ]
+    },
+    {
+      "period_s": 120.0,
+      "continuous_gain": [
+        0.05946757260134866,
+        0.007467621009085992
+      ],
+      "continuous_phase_deg": [
+        -124.23882192196056,
+        -165.34887478343518
+      ],
+      "Euler_point_input_phase_difference_deg": [
+        -0.42927102188902455,
+        -0.5587826151973686
+      ]
+    },
+    {
+      "period_s": 30.0,
+      "continuous_gain": [
+        0.0054605049940399525,
+        0.000250637750969341
+      ],
+      "continuous_phase_deg": [
+        -162.1246183324932,
+        123.86127207288641
+      ],
+      "Euler_point_input_phase_difference_deg": [
+        -2.306262715316967,
+        -3.416970104341453
+      ]
+    }
+  ],
+  "measurement": {
+    "quantization_step_C": 0.3223,
+    "prequantization_normal_SD_C": 0.043,
+    "interior_conditional_bias_range_over_one_bin_C": [
+      -0.23624945554240995,
+      -0.08616845755271996
+    ],
+    "clipping_C": [
+      -50,
+      132.2
+    ]
+  },
+  "notice": "Source-inspection and synthetic arithmetic audit, not an ENV2 fit or evidence that this library version generated the records. Repeated sensor pole cancels once in each transfer. Defaults are emulator assumptions, not independently calibrated hardware properties. Euler phase comparison uses point commands on its own 0.2 s grid; actual command holds are separate."
+}

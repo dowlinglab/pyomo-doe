@@ -1,243 +1,440 @@
 {
-  "status": "in_progress",
+  "status": "complete_for_researcher_review",
+  "selected_models": [
+    "main_base_ou",
+    "main_lag_ou",
+    "main_lag_curve_ou",
+    "sensitivity_lag_curve_affine_ou"
+  ],
   "jobs": [
     {
-      "id": "foundation",
-      "source_commit": "f866e8ba9fa204d22c345d6c2275c2e9f1867467",
-      "status": "complete",
+      "id": "affine_warm_pilot",
       "exit_code": 0,
-      "process": {
-        "pid": 7111,
-        "parent_pid": 6924,
-        "command": [
-          "/Users/adowling/opt/anaconda3/bin/python",
-          "/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-coupled-f866e8ba-_w_g9mzj/skunk_works/delay_study/coupled_model_study/foundation.py",
-          "--output",
-          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/coupled_model_study/results/foundation"
-        ]
-      }
+      "source_commit": "0599057d363a7c7773df934fd1768c1454893fb0",
+      "command": [
+        "/Users/adowling/opt/anaconda3/bin/python",
+        "/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-coupled-0599057d-5zu6kyzj/skunk_works/delay_study/coupled_model_study/run_fit.py",
+        "--output",
+        "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/coupled_model_study/results/affine_warm_pilot",
+        "--lag",
+        "--curve",
+        "--ambient",
+        "linear",
+        "--kernel",
+        "ou_nugget",
+        "--starts",
+        "1",
+        "--maxiter",
+        "500",
+        "--warm",
+        "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/coupled_model_study/affine_warm_seed.json"
+      ]
+    },
+    {
+      "id": "affine_warm_pilot_audit",
+      "exit_code": 0,
+      "source_commit": "c52dcf775fd11932baf5fb20d66c52a67cba5fe9",
+      "command": [
+        "/Users/adowling/opt/anaconda3/bin/python",
+        "/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-coupled-c52dcf77-2w7w4dui/skunk_works/delay_study/coupled_model_study/audit_fit.py",
+        "--input",
+        "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/coupled_model_study/results/affine_warm_pilot",
+        "--output",
+        "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/coupled_model_study/results/affine_warm_pilot_audit"
+      ]
+    },
+    {
+      "id": "base_diagnostics",
+      "exit_code": 0,
+      "source_commit": "0599057d363a7c7773df934fd1768c1454893fb0",
+      "command": [
+        "/Users/adowling/opt/anaconda3/bin/python",
+        "/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-coupled-0599057d-wp0zuocr/skunk_works/delay_study/coupled_model_study/analyze.py",
+        "--output",
+        "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/coupled_model_study/results/base_diagnostics",
+        "--fits",
+        "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/coupled_model_study/results/main_base_ou"
+      ]
+    },
+    {
+      "id": "envelope_audit",
+      "exit_code": 0,
+      "source_commit": "c52dcf775fd11932baf5fb20d66c52a67cba5fe9",
+      "command": [
+        "/Users/adowling/opt/anaconda3/bin/python",
+        "/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-coupled-c52dcf77-absxcf_8/skunk_works/delay_study/coupled_model_study/check_envelope.py",
+        "--output",
+        "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/coupled_model_study/results/envelope_audit"
+      ]
+    },
+    {
+      "id": "final_analysis",
+      "exit_code": 0,
+      "source_commit": "80b23ff9888b0c9f589123f83d2fe6219d59e2aa",
+      "command": [
+        "/Users/adowling/opt/anaconda3/bin/python",
+        "/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-coupled-80b23ff9-dswu5tkp/skunk_works/delay_study/coupled_model_study/analyze.py",
+        "--output",
+        "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/coupled_model_study/results/final_analysis",
+        "--fits",
+        "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/coupled_model_study/results/main_base_ou",
+        "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/coupled_model_study/results/main_lag_ou",
+        "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/coupled_model_study/results/main_lag_curve_ou",
+        "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/coupled_model_study/results/sensitivity_lag_curve_affine_ou"
+      ]
+    },
+    {
+      "id": "final_summary",
+      "exit_code": 0,
+      "source_commit": "80b23ff9888b0c9f589123f83d2fe6219d59e2aa",
+      "command": [
+        "/Users/adowling/opt/anaconda3/bin/python",
+        "/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-coupled-80b23ff9-ushladgy/skunk_works/delay_study/coupled_model_study/summarize.py",
+        "--output",
+        "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/coupled_model_study/results/final_summary",
+        "--results",
+        "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/coupled_model_study/results",
+        "--analysis",
+        "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/coupled_model_study/results/final_analysis",
+        "--selected",
+        "main_base_ou",
+        "main_lag_ou",
+        "main_lag_curve_ou",
+        "sensitivity_lag_curve_affine_ou"
+      ]
+    },
+    {
+      "id": "foundation",
+      "exit_code": 0,
+      "source_commit": "f866e8ba9fa204d22c345d6c2275c2e9f1867467",
+      "command": [
+        "/Users/adowling/opt/anaconda3/bin/python",
+        "/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-coupled-f866e8ba-_w_g9mzj/skunk_works/delay_study/coupled_model_study/foundation.py",
+        "--output",
+        "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/coupled_model_study/results/foundation"
+      ]
     },
     {
       "id": "foundation_v2",
-      "source_commit": "79f00bb920c415f3c9522440806a852836bcfbb0",
-      "status": "complete",
       "exit_code": 0,
-      "process": {
-        "pid": 15906,
-        "parent_pid": 15696,
-        "command": [
-          "/Users/adowling/opt/anaconda3/bin/python",
-          "/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-coupled-79f00bb9-3_1l4p78/skunk_works/delay_study/coupled_model_study/foundation.py",
-          "--output",
-          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/coupled_model_study/results/foundation_v2"
-        ]
-      }
+      "source_commit": "79f00bb920c415f3c9522440806a852836bcfbb0",
+      "command": [
+        "/Users/adowling/opt/anaconda3/bin/python",
+        "/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-coupled-79f00bb9-3_1l4p78/skunk_works/delay_study/coupled_model_study/foundation.py",
+        "--output",
+        "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/coupled_model_study/results/foundation_v2"
+      ]
     },
     {
       "id": "main_base_ou",
+      "exit_code": 0,
       "source_commit": "9e37d55706f43da8d66202e6d09905367eef96c2",
-      "status": "running",
-      "exit_code": null,
-      "process": {
-        "pid": 12052,
-        "parent_pid": 11671,
-        "command": [
-          "/Users/adowling/opt/anaconda3/bin/python",
-          "/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-coupled-9e37d557-63_krdke/skunk_works/delay_study/coupled_model_study/run_fit.py",
-          "--output",
-          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/coupled_model_study/results/main_base_ou",
-          "--kernel",
-          "ou_nugget",
-          "--starts",
-          "8",
-          "--maxiter",
-          "500",
-          "--warm",
-          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/coupled_model_study/results/pilot_base_iid/fit.json"
-        ]
-      }
+      "command": [
+        "/Users/adowling/opt/anaconda3/bin/python",
+        "/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-coupled-9e37d557-63_krdke/skunk_works/delay_study/coupled_model_study/run_fit.py",
+        "--output",
+        "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/coupled_model_study/results/main_base_ou",
+        "--kernel",
+        "ou_nugget",
+        "--starts",
+        "8",
+        "--maxiter",
+        "500",
+        "--warm",
+        "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/coupled_model_study/results/pilot_base_iid/fit.json"
+      ]
+    },
+    {
+      "id": "main_base_ou_audit",
+      "exit_code": 0,
+      "source_commit": "29681b7655d060c944af7d8982b632c065548597",
+      "command": [
+        "/Users/adowling/opt/anaconda3/bin/python",
+        "/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-coupled-29681b76-uz1cg3of/skunk_works/delay_study/coupled_model_study/audit_fit.py",
+        "--input",
+        "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/coupled_model_study/results/main_base_ou",
+        "--output",
+        "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/coupled_model_study/results/main_base_ou_audit"
+      ]
     },
     {
       "id": "main_lag_curve_ou",
+      "exit_code": 0,
       "source_commit": "9e37d55706f43da8d66202e6d09905367eef96c2",
-      "status": "running",
-      "exit_code": null,
-      "process": {
-        "pid": 12596,
-        "parent_pid": 12244,
-        "command": [
-          "/Users/adowling/opt/anaconda3/bin/python",
-          "/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-coupled-9e37d557-bi2knjsg/skunk_works/delay_study/coupled_model_study/run_fit.py",
-          "--output",
-          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/coupled_model_study/results/main_lag_curve_ou",
-          "--lag",
-          "--curve",
-          "--kernel",
-          "ou_nugget",
-          "--starts",
-          "8",
-          "--maxiter",
-          "500",
-          "--warm",
-          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/coupled_model_study/results/pilot_lag_iid/fit.json"
-        ]
-      }
+      "command": [
+        "/Users/adowling/opt/anaconda3/bin/python",
+        "/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-coupled-9e37d557-bi2knjsg/skunk_works/delay_study/coupled_model_study/run_fit.py",
+        "--output",
+        "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/coupled_model_study/results/main_lag_curve_ou",
+        "--lag",
+        "--curve",
+        "--kernel",
+        "ou_nugget",
+        "--starts",
+        "8",
+        "--maxiter",
+        "500",
+        "--warm",
+        "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/coupled_model_study/results/pilot_lag_iid/fit.json"
+      ]
+    },
+    {
+      "id": "main_lag_curve_ou_audit",
+      "exit_code": 0,
+      "source_commit": "c52dcf775fd11932baf5fb20d66c52a67cba5fe9",
+      "command": [
+        "/Users/adowling/opt/anaconda3/bin/python",
+        "/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-coupled-c52dcf77-5ubnv946/skunk_works/delay_study/coupled_model_study/audit_fit.py",
+        "--input",
+        "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/coupled_model_study/results/main_lag_curve_ou",
+        "--output",
+        "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/coupled_model_study/results/main_lag_curve_ou_audit"
+      ]
     },
     {
       "id": "main_lag_ou",
+      "exit_code": 0,
       "source_commit": "9e37d55706f43da8d66202e6d09905367eef96c2",
-      "status": "running",
-      "exit_code": null,
-      "process": {
-        "pid": 12148,
-        "parent_pid": 11704,
-        "command": [
-          "/Users/adowling/opt/anaconda3/bin/python",
-          "/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-coupled-9e37d557-66rvti48/skunk_works/delay_study/coupled_model_study/run_fit.py",
-          "--output",
-          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/coupled_model_study/results/main_lag_ou",
-          "--lag",
-          "--kernel",
-          "ou_nugget",
-          "--starts",
-          "8",
-          "--maxiter",
-          "500",
-          "--warm",
-          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/coupled_model_study/results/pilot_lag_iid/fit.json"
-        ]
-      }
+      "command": [
+        "/Users/adowling/opt/anaconda3/bin/python",
+        "/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-coupled-9e37d557-66rvti48/skunk_works/delay_study/coupled_model_study/run_fit.py",
+        "--output",
+        "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/coupled_model_study/results/main_lag_ou",
+        "--lag",
+        "--kernel",
+        "ou_nugget",
+        "--starts",
+        "8",
+        "--maxiter",
+        "500",
+        "--warm",
+        "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/coupled_model_study/results/pilot_lag_iid/fit.json"
+      ]
+    },
+    {
+      "id": "main_lag_ou_audit",
+      "exit_code": 0,
+      "source_commit": "c52dcf775fd11932baf5fb20d66c52a67cba5fe9",
+      "command": [
+        "/Users/adowling/opt/anaconda3/bin/python",
+        "/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-coupled-c52dcf77-03001zoz/skunk_works/delay_study/coupled_model_study/audit_fit.py",
+        "--input",
+        "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/coupled_model_study/results/main_lag_ou",
+        "--output",
+        "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/coupled_model_study/results/main_lag_ou_audit"
+      ]
     },
     {
       "id": "pilot_analysis",
-      "source_commit": "f8ce5a1e86289dc1d5c3d3570ac37546fdd55555",
-      "status": "complete",
       "exit_code": 0,
-      "process": {
-        "pid": 14336,
-        "parent_pid": 14125,
-        "command": [
-          "/Users/adowling/opt/anaconda3/bin/python",
-          "/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-coupled-f8ce5a1e-pi799qp8/skunk_works/delay_study/coupled_model_study/analyze.py",
-          "--output",
-          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/coupled_model_study/results/pilot_analysis",
-          "--fits",
-          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/coupled_model_study/results/pilot_base_iid",
-          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/coupled_model_study/results/pilot_lag_iid"
-        ]
-      }
+      "source_commit": "f8ce5a1e86289dc1d5c3d3570ac37546fdd55555",
+      "command": [
+        "/Users/adowling/opt/anaconda3/bin/python",
+        "/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-coupled-f8ce5a1e-pi799qp8/skunk_works/delay_study/coupled_model_study/analyze.py",
+        "--output",
+        "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/coupled_model_study/results/pilot_analysis",
+        "--fits",
+        "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/coupled_model_study/results/pilot_base_iid",
+        "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/coupled_model_study/results/pilot_lag_iid"
+      ]
     },
     {
       "id": "pilot_base_iid",
-      "source_commit": "f866e8ba9fa204d22c345d6c2275c2e9f1867467",
-      "status": "complete",
       "exit_code": 0,
-      "process": {
-        "pid": 8032,
-        "parent_pid": 7637,
-        "command": [
-          "/Users/adowling/opt/anaconda3/bin/python",
-          "/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-coupled-f866e8ba-jn9319zl/skunk_works/delay_study/coupled_model_study/run_fit.py",
-          "--output",
-          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/coupled_model_study/results/pilot_base_iid",
-          "--kernel",
-          "iid",
-          "--starts",
-          "2",
-          "--maxiter",
-          "300"
-        ]
-      }
+      "source_commit": "f866e8ba9fa204d22c345d6c2275c2e9f1867467",
+      "command": [
+        "/Users/adowling/opt/anaconda3/bin/python",
+        "/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-coupled-f866e8ba-jn9319zl/skunk_works/delay_study/coupled_model_study/run_fit.py",
+        "--output",
+        "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/coupled_model_study/results/pilot_base_iid",
+        "--kernel",
+        "iid",
+        "--starts",
+        "2",
+        "--maxiter",
+        "300"
+      ]
     },
     {
       "id": "pilot_base_iid_audit",
-      "source_commit": "9e37d55706f43da8d66202e6d09905367eef96c2",
-      "status": "complete",
       "exit_code": 0,
-      "process": {
-        "pid": 9634,
-        "parent_pid": 9084,
-        "command": [
-          "/Users/adowling/opt/anaconda3/bin/python",
-          "/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-coupled-9e37d557-7yhvpwyn/skunk_works/delay_study/coupled_model_study/audit_fit.py",
-          "--input",
-          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/coupled_model_study/results/pilot_base_iid",
-          "--output",
-          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/coupled_model_study/results/pilot_base_iid_audit"
-        ]
-      }
+      "source_commit": "9e37d55706f43da8d66202e6d09905367eef96c2",
+      "command": [
+        "/Users/adowling/opt/anaconda3/bin/python",
+        "/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-coupled-9e37d557-7yhvpwyn/skunk_works/delay_study/coupled_model_study/audit_fit.py",
+        "--input",
+        "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/coupled_model_study/results/pilot_base_iid",
+        "--output",
+        "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/coupled_model_study/results/pilot_base_iid_audit"
+      ]
     },
     {
       "id": "pilot_lag_iid",
-      "source_commit": "f866e8ba9fa204d22c345d6c2275c2e9f1867467",
-      "status": "complete",
       "exit_code": 0,
-      "process": {
-        "pid": 8033,
-        "parent_pid": 7636,
-        "command": [
-          "/Users/adowling/opt/anaconda3/bin/python",
-          "/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-coupled-f866e8ba-y7d0wprc/skunk_works/delay_study/coupled_model_study/run_fit.py",
-          "--output",
-          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/coupled_model_study/results/pilot_lag_iid",
-          "--kernel",
-          "iid",
-          "--lag",
-          "--starts",
-          "2",
-          "--maxiter",
-          "300"
-        ]
-      }
+      "source_commit": "f866e8ba9fa204d22c345d6c2275c2e9f1867467",
+      "command": [
+        "/Users/adowling/opt/anaconda3/bin/python",
+        "/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-coupled-f866e8ba-y7d0wprc/skunk_works/delay_study/coupled_model_study/run_fit.py",
+        "--output",
+        "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/coupled_model_study/results/pilot_lag_iid",
+        "--kernel",
+        "iid",
+        "--lag",
+        "--starts",
+        "2",
+        "--maxiter",
+        "300"
+      ]
     },
     {
       "id": "pilot_lag_iid_audit",
-      "source_commit": "9e37d55706f43da8d66202e6d09905367eef96c2",
-      "status": "complete",
       "exit_code": 0,
-      "process": {
-        "pid": 9638,
-        "parent_pid": 9085,
-        "command": [
-          "/Users/adowling/opt/anaconda3/bin/python",
-          "/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-coupled-9e37d557-mnydkp0v/skunk_works/delay_study/coupled_model_study/audit_fit.py",
-          "--input",
-          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/coupled_model_study/results/pilot_lag_iid",
-          "--output",
-          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/coupled_model_study/results/pilot_lag_iid_audit"
-        ]
-      }
+      "source_commit": "9e37d55706f43da8d66202e6d09905367eef96c2",
+      "command": [
+        "/Users/adowling/opt/anaconda3/bin/python",
+        "/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-coupled-9e37d557-mnydkp0v/skunk_works/delay_study/coupled_model_study/audit_fit.py",
+        "--input",
+        "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/coupled_model_study/results/pilot_lag_iid",
+        "--output",
+        "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/coupled_model_study/results/pilot_lag_iid_audit"
+      ]
     },
     {
       "id": "sensitivity_lag_curve_affine_ou",
+      "exit_code": 0,
       "source_commit": "badb0a691b43b2b92027b9fe5ffd262ecb4e7ea2",
-      "status": "running",
-      "exit_code": null,
-      "process": {
-        "pid": 14799,
-        "parent_pid": 14600,
-        "command": [
-          "/Users/adowling/opt/anaconda3/bin/python",
-          "/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-coupled-badb0a69-wec_lyq_/skunk_works/delay_study/coupled_model_study/run_fit.py",
-          "--output",
-          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/coupled_model_study/results/sensitivity_lag_curve_affine_ou",
-          "--lag",
-          "--curve",
-          "--ambient",
-          "linear",
-          "--kernel",
-          "ou_nugget",
-          "--starts",
-          "4",
-          "--maxiter",
-          "500",
-          "--warm",
-          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/coupled_model_study/results/pilot_lag_iid/fit.json"
-        ]
-      }
+      "command": [
+        "/Users/adowling/opt/anaconda3/bin/python",
+        "/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-coupled-badb0a69-wec_lyq_/skunk_works/delay_study/coupled_model_study/run_fit.py",
+        "--output",
+        "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/coupled_model_study/results/sensitivity_lag_curve_affine_ou",
+        "--lag",
+        "--curve",
+        "--ambient",
+        "linear",
+        "--kernel",
+        "ou_nugget",
+        "--starts",
+        "4",
+        "--maxiter",
+        "500",
+        "--warm",
+        "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/coupled_model_study/results/pilot_lag_iid/fit.json"
+      ]
+    },
+    {
+      "id": "sensitivity_lag_curve_affine_ou_audit",
+      "exit_code": 0,
+      "source_commit": "c52dcf775fd11932baf5fb20d66c52a67cba5fe9",
+      "command": [
+        "/Users/adowling/opt/anaconda3/bin/python",
+        "/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-coupled-c52dcf77-2hhi2gl9/skunk_works/delay_study/coupled_model_study/audit_fit.py",
+        "--input",
+        "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/coupled_model_study/results/sensitivity_lag_curve_affine_ou",
+        "--output",
+        "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/coupled_model_study/results/sensitivity_lag_curve_affine_ou_audit"
+      ]
+    },
+    {
+      "id": "simulator_audit",
+      "exit_code": 0,
+      "source_commit": "eca3a54c1e716a5805a28bf8c66fd39b936d6177",
+      "command": [
+        "/Users/adowling/opt/anaconda3/bin/python",
+        "/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-coupled-eca3a54c-yqxba1kw/skunk_works/delay_study/coupled_model_study/simulator_audit.py",
+        "--output",
+        "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/coupled_model_study/results/simulator_audit",
+        "--source",
+        "/private/tmp/tclab_upstream_source.py",
+        "--sha256",
+        "f3eb0ad5cc3fb7f572c7b8a558c691548e569881ad16643986ba4d82264e98ad"
+      ]
+    },
+    {
+      "id": "weak_frequency",
+      "exit_code": 0,
+      "source_commit": "bcff89528ffacd6a4c00991aa6e6f63b31693173",
+      "command": [
+        "/Users/adowling/opt/anaconda3/bin/python",
+        "/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-coupled-bcff8952-uldr42ff/skunk_works/delay_study/coupled_model_study/weak_frequency.py",
+        "--output",
+        "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/coupled_model_study/results/weak_frequency"
+      ]
+    },
+    {
+      "id": "weak_frequency_v2",
+      "exit_code": 0,
+      "source_commit": "e8911cf843fcce6013b9704777c3dd90245ed642",
+      "command": [
+        "/Users/adowling/opt/anaconda3/bin/python",
+        "/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-coupled-e8911cf8-iefncwe4/skunk_works/delay_study/coupled_model_study/weak_frequency.py",
+        "--output",
+        "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/coupled_model_study/results/weak_frequency_v2"
+      ]
+    },
+    {
+      "id": "final_summary_v2",
+      "exit_code": 0,
+      "source_commit": "b6c578109273110884240ec37973ee39d9eb082d",
+      "command": [
+        "/Users/adowling/opt/anaconda3/bin/python",
+        "/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-coupled-b6c57810-pushuiw0/skunk_works/delay_study/coupled_model_study/summarize.py",
+        "--output",
+        "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/coupled_model_study/results/final_summary_v2",
+        "--results",
+        "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/coupled_model_study/results",
+        "--analysis",
+        "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/coupled_model_study/results/final_analysis",
+        "--selected",
+        "main_base_ou",
+        "main_lag_ou",
+        "main_lag_curve_ou",
+        "sensitivity_lag_curve_affine_ou"
+      ]
+    },
+    {
+      "id": "final_check",
+      "exit_code": 0,
+      "source_commit": "e4dd79841d892c2a5d69564e8bc993645ff5f933",
+      "command": [
+        "/Users/adowling/opt/anaconda3/bin/python",
+        "/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-coupled-e4dd7984-pml6ru_0/skunk_works/delay_study/coupled_model_study/final_check.py",
+        "--output",
+        "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/coupled_model_study/results/final_check",
+        "--study",
+        "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/coupled_model_study"
+      ]
     }
   ],
-  "next_phase": "Finish four declared OU model fits; independently audit and analyze both outputs; summarize physical constraints and weak directions.",
-  "prior_goal": "Complete; heartbeat stays paused",
-  "email": "No new email authorized for this follow-up"
+  "live_jobs": [],
+  "bindings_sha256": {
+    "main_base_ou/fit.json": "e7ea805619dda6a37ba471f3beda93661fc39e4025d85198aadcbfdff67ce949",
+    "main_base_ou_audit/audit.json": "24055a7ce494d8e508fa321f86d64741a8fc7477ed28df997168298d30a75810",
+    "main_base_ou/trajectories.npz": "ce94e6c6fe61ba553dd721bfa0954c9115efc7241518c62e06555b29eabac613",
+    "main_lag_ou/fit.json": "14cb29886b98a0a6c40eec2460dd5a78c90afea2110ce53cbed4b7b084a9bf95",
+    "main_lag_ou_audit/audit.json": "23c493adda4ce457f3a97a15a6f6f8c3ed584e4c548ffd15396484c3ff317c59",
+    "main_lag_ou/trajectories.npz": "e6f56bb9c2c42bfbfd92f80847f385275cb82774024b5c9d049b87e9662bd772",
+    "main_lag_curve_ou/fit.json": "d889a8b3c79153d21a3cbced2c0ad9901c6ce907ee81e4b054f92a880445449d",
+    "main_lag_curve_ou_audit/audit.json": "d4e52404fb150160bcacdd47edd37af040861f0ae0fa1dab48b4028391b4a663",
+    "main_lag_curve_ou/trajectories.npz": "67b473cc78212064b564ef425a28da839e050fe6d3210510b1146a8dd6d59b7d",
+    "sensitivity_lag_curve_affine_ou/fit.json": "63026725bc8aa8b7f4eb395d3eacff2f31e4bc3df222bc30ea9ac8507e4d3590",
+    "sensitivity_lag_curve_affine_ou_audit/audit.json": "becb49195dea11a354734e81340ba5977234819a67bc9398033f92937dcb8cfa",
+    "sensitivity_lag_curve_affine_ou/trajectories.npz": "c8e615474029806f181f4b1e8b9780730904ec903752321748b126c6685a4ee1",
+    "pilot_lag_iid/fit.json": "c8684c4371c01e99d6a0dc2be6e8b46aec4a24791dee199ea99df1746c59ce21",
+    "weak_frequency_v2/weak_frequency.json": "a4e17f5166dae57db7d626d2116649c285bf380ab235afa03d3444cf1c0ec202",
+    "simulator_audit/simulator_audit.json": "e70cffdc3b48846a9ea461e20f17a867b88ef622d06c43041940c174d8563f03",
+    "final_analysis/analysis.json": "b0ae06cd29292b3beaa653bf2844a179a9c6b937ca511ceb0fb82dfddc332836"
+  },
+  "report_sha256": "1f5f9d4eb993b29b3bb37a644fd3622808cabadf5a9a131dab8173d98e6c058b",
+  "stationarity_warnings": [],
+  "visual_review": "See results/final_analysis/visual_review.json",
+  "prior_goal": "Complete; heartbeat remains paused",
+  "scope": "Bounded physical two-output follow-up; no hardware, DoE, email, untouched validation or unique physical mechanism established.",
+  "completion_checks": {
+    "final_evidence": "results/final_check/audit.json",
+    "final_evidence_sha256": "616aa26fc2d3ae58862a2292680cbba79784930d2613585a47d230cad9a10e70",
+    "controller_process_check": "No coupled fitting, freeze or audit process remained",
+    "unchanged_relative_to": "f27d959: data, residual_study and shared_model_investigation diff empty",
+    "email": "No new email"
+  }
 }
