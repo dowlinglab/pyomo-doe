@@ -5,6 +5,18 @@ Use both measured temperature channels from the same twelve ENV2 records.
 Preserve all completed studies and raw files. No new email, hardware or DoE.
 Apply the existing no-ai-slop and claude-for-researchers practices.
 
+## Current state
+
+Complete for researcher review. `report.md` owns the interpretation and
+`run_manifest.json` binds the four selected, independently audited joint-output
+fits. All declared numerical jobs are terminal; no goal or heartbeat was started
+for this follow-up. Raw data and the two earlier completed studies are unchanged.
+The extra approximately 2.7 s lag improves fast T1 phase under colored errors,
+but the symmetric coupled model still leaves about 1 C T1 RMSE. Fast T2 joint
+complex-response ellipses include zero in all three repeats. The simulator's
+quantized measurement mechanism is a specific next question; it was inspected
+and synthetically checked, not fitted to ENV2.
+
 ## Question and bounded comparison
 
 Can coupled heater/sensor energy balances explain the extra response mode?

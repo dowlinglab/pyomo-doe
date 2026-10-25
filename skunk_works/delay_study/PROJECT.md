@@ -7,6 +7,15 @@ This file owns current execution state. Git preserves superseded states.
 
 ## Current state
 
+- The October 25 follow-up on the physical interpretation of unequal lags is
+  complete for researcher review in `coupled_model_study/report.md`. It fits
+  both temperatures using coupled energy balances and tests an extra input lag,
+  command curvature and ambient drift. Its own manifest and independent audits
+  retain the numerical scope. The TCLab Python emulator source and measurement
+  quantizer were also inspected and checked. The completed
+  `shared_model_investigation` goal and paused heartbeat are unchanged; this
+  follow-up does not send another email or perform a new hardware experiment.
+
 - The October 24 discussion's agreed working approach is `review/approach.md`.
   It combines constant command holds, shared gain/time parameters and per-run
   constant ambient offsets bounded by ±2°C; a later ambient-drift comparison
