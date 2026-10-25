@@ -90,6 +90,18 @@ def main():
         except ValueError:pass
     expected=[[float(format(r['RMSE_C'],'.3f')),float(format(r['nll'],'.1f')),r['parameter_count']] for r in rows]
     if reported!=expected:raise AssertionError('Report model table differs from audited arrays/counts')
+    values={r['id']:r for r in rows};revised=values['mapped_unequal3']
+    reduction=100*(1-revised['RMSE_C']/values['chain1']['RMSE_C'])
+    claims=[f"{revised['RMSE_C']:.3f} C, a {reduction:.1f}% reduction",
+            f"correlations fall to {revised['fast_cross_min']:.3f}–{revised['fast_cross_max']:.3f}",
+            f"{revised['max_abs_acf']:.3f} over lags 1–30",
+            f"SDs span {revised['innovation_SD_min']:.3f}–{revised['innovation_SD_max']:.3f}",
+            f"by about {values['mapped_chain2']['nll']-revised['nll']:.0f}"]
+    for name in ['chain1_K','mapped_chain1_K']:
+        support=[r for r in curves if r['id']==name][0]['nominal_grid_support'][0]
+        claims.append(f"{support['lower_interpolated']:.3f}–{support['upper_interpolated']:.3f}")
+    prose=' '.join(args.report.read_text().split())
+    if not all(claim in prose for claim in claims):raise AssertionError(('Report headline claim differs',claims))
     pd.DataFrame(rows).to_csv(args.output/'model_table.csv',index=False)
     table=['| Model | Raw RMSE, C | Negative log likelihood | Parameters |',
            '|---|---:|---:|---:|']
@@ -98,6 +110,7 @@ def main():
     plot(args,rows,read)
     write_json(args.output/'evidence.json',{'status':'passed','models':rows,'profiles':curves,'beta_profile':beta,
         'report_sha256':hashlib.sha256(args.report.read_bytes()).hexdigest(),'report_table_rows_checked':len(reported),
+        'headline_numeric_phrases_checked':claims,
         'arithmetic_checks':arithmetic,'consumed_sha256':hashes,
         'scope':'Saved prediction arithmetic, counts, AICc, artifact hashes and audited support. Independent propagation/dense-likelihood audits remain separate. These checks do not establish scientific model adequacy.'})
     print(json.dumps({'status':'passed','models':len(rows),'audited_profile_curves':len(curves),
