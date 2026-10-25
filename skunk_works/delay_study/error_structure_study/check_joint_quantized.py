@@ -15,15 +15,15 @@ def main():
     parser=argparse.ArgumentParser();parser.add_argument('--output',type=Path,required=True)
     parser.add_argument('--warm',type=Path,required=True);args=parser.parse_args()
     fit=json.loads(args.warm.read_text());rng=np.random.RandomState(813331);rows=[]
-    for family in ['conductance','radiation']:
+    for family,band in [('conductance',.1),('radiation',.1),('conductance',0.),('radiation',0.)]:
         records=[]
         for d in load_records()[:3]:
             v=dict(d)
             for name in ['t','u','y']:v[name]=d[name][:61].copy()
             records.append(v)
-        m=Model(records,nodes=128,family=family);shape=np.asarray(fit['best']['point'][:6]).copy();shape[2]=np.log(.03)
-        if family=='conductance':mean=np.r_[shape,[-.02,0.,.02],np.log(.85),[.3,-.5,.7]]
-        else:mean=np.r_[shape,np.log(.85),.5,[-.02,0.,.02],[.3,-.5,.7]]
+        m=Model(records,band=band,nodes=128,family=family);shape=np.asarray(fit['best']['point'][:6]).copy();shape[2]=np.log(.03)
+        if family=='conductance':mean=np.r_[shape,[-.02,0.,.02] if band else np.zeros(0),np.log(.85),[.3,-.5,.7]]
+        else:mean=np.r_[shape,np.log(.85),.5,[-.02,0.,.02] if band else np.zeros(3),[.3,-.5,.7]]
         noise=np.log([.3,30.,.05,.1,10.,.03]);point=np.r_[mean,noise];truth=m.mean(point,False);cursor=0;generated=[]
         for j,d in enumerate(records):
             v=dict(d);y=d['y'].copy();n=len(d['t'])-1
@@ -34,7 +34,7 @@ def main():
                         a=np.exp(-(d['t'][i+1]-d['t'][i])/ell);x=a*x+rng.normal(0,latent*np.sqrt(1-a*a))
                     y[i+1,k]=report(truth[k*m.N+cursor+i]+x+rng.normal(0,measurement))
             v['y']=y;generated.append(v);cursor+=n
-        model=Model(generated,nodes=128,family=family);gradient=model.gradient(point);checks=[]
+        model=Model(generated,band=band,nodes=128,family=family);gradient=model.gradient(point);checks=[]
         # Independent finite differences of the marginal bin likelihood,
         # including shape, per-run deviation, ambient/gain and covariance.
         from quantized import filter_ou
@@ -53,7 +53,7 @@ def main():
             fd=(nll(point+d)-nll(point-d))/(2*h)
             error=abs(fd-gradient[j])/(1+abs(fd));checks.append(error)
         assert max(checks)<2e-3,(family,max(checks))
-        rows.append({'family':family,'coordinates_checked':len(point),'maximum_scaled_score_error':max(checks),
+        rows.append({'family':family,'band':band,'coordinates_checked':len(point),'maximum_scaled_score_error':max(checks),
             'normalization_error':max(r['normalization_error'] for r in model.details(point)),
             'smoothing_closure_error':max(r['smoothing_closure_error'] for r in model.details(point))})
     result={'status':'passed','rows':rows,'scope':'All mean and covariance coordinate scores against finite differences of the marginal bin likelihood on three 60-observation synthetic held-input records, for linear-conductance and radiative families. Does not establish full hardware optimum or practical identifiability.'}

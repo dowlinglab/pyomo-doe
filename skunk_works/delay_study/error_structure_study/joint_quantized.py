@@ -38,11 +38,13 @@ class Model:
 
     def centered_constraint(self,p):
         start=6 if self.family=='conductance' else 8
-        return float(np.sum(p[start:start+self.nr]))
+        count=self.mean_model.nv if self.family=='conductance' else self.nr
+        return float(np.sum(p[start:start+count]))
 
     def centered_jacobian(self,p):
         start=6 if self.family=='conductance' else 8
-        a=np.zeros(len(p));a[start:start+self.nr]=1.
+        count=self.mean_model.nv if self.family=='conductance' else self.nr
+        a=np.zeros(len(p));a[start:start+count]=1.
         return a
 
     def mean(self,p,jacobian=True):
