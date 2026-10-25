@@ -16,7 +16,7 @@ from covariance_fit import numerical_gradient,projected_gradient
 from data import load
 from diagnostics import input_correlation
 from run_mean import write_json
-from nonlinear import predict_rise,audit
+from nonlinear import predict_rise,audit,stable_gradient
 
 
 def main():
@@ -49,7 +49,7 @@ def main():
     decode=lambda x:np.insert(x,4,args.fixed_beta/.01) if args.fixed_beta is not None else x
     optbounds=[b for j,b in enumerate(bounds) if j!=4] if args.fixed_beta is not None else bounds
     function=lambda x:state(decode(x))[0]
-    gradient=lambda x:numerical_gradient(function,x,optbounds,step=2e-6)
+    gradient=lambda x:stable_gradient(function,x,optbounds,step=2e-6)
     starts=[];chosen=None;begun=time.monotonic()
     for j in range(args.starts):
         seed=point.copy();seed[4]=[.1,0.,.3,.6,.03,1.][j%6]

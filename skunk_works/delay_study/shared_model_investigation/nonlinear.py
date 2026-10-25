@@ -10,6 +10,27 @@ from numba import njit
 from scipy.integrate import solve_ivp
 
 
+def stable_gradient(function,point,bounds,step=2e-6):
+    """Keep full one-sided steps near active bounds; avoid tiny central steps."""
+    result=[];f0=None
+    for j,(lo,hi) in enumerate(bounds):
+        h=step
+        if lo==0 and hi==1:h=min(h,max(1e-8,1e-4*min(point[j],1-point[j])))
+        unit=np.zeros(len(point));unit[j]=1.
+        if point[j]-lo>=h and hi-point[j]>=h:
+            value=(function(point+h*unit)-function(point-h*unit))/(2*h)
+        else:
+            if f0 is None:f0=function(point)
+            if hi-point[j]<h:
+                h=min(h,(point[j]-lo)/2)
+                value=(3*f0-4*function(point-h*unit)+function(point-2*h*unit))/(2*h)
+            else:
+                h=min(h,(hi-point[j])/2)
+                value=(-3*f0+4*function(point+h*unit)-function(point+2*h*unit))/(2*h)
+        result.append(value)
+    return np.asarray(result)
+
+
 @njit(cache=True)
 def advance(z,v,held,duration,K,tau,theta,beta,max_step):
     left=duration
@@ -61,6 +82,10 @@ def audit(max_step=.1):
     rng=np.random.RandomState(1232)
     time=np.r_[0.,np.cumsum(rng.uniform(.4,3.,60))];u=rng.uniform(0,100,len(time))
     rows=[]
+    bounds=[(-2.,2.),(0.,1.)]
+    for x in (np.array([-2.+1e-12,.02]),np.array([2.-1e-12,.98])):
+        actual=stable_gradient(lambda q:np.sum((q-.3)**2),x,bounds)
+        if np.max(abs(actual-2*(x-.3)))>1e-7:raise AssertionError('Boundary gradient')
     for K,tau,theta,delay,beta,ambient in [(.71,140.,16.,2.5,0.,-1.3),(.8,140.,16.,2.5,.002,1.7),(.8,140.,16.,0.,.006,-1.5),(.7,80.,80.,5.,.003,.5)]:
         p=predict_rise(time,u,K,tau,theta,delay,beta,ambient,max_step)
         q=reference(time,u,K,tau,theta,delay,beta,ambient)
