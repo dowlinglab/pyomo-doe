@@ -95,6 +95,43 @@ and [two-heater parameter estimation](https://apmonitor.com/do/index.php/Main/TC
 Example areas, emissivities and convection coefficients vary between models;
 do not mix their constants or transfer channels without checking assumptions.
 
+## Radiation scale — parent calculation for discussion
+
+Radiation is worth checking quantitatively. For a surface at absolute
+temperature T exchanging with surroundings at Tr,
+
+\[
+q_{rad}=\epsilon\sigma A(T^4-T_r^4)
+=A\,h_{rad}(T,T_r)(T-T_r),\qquad
+h_{rad}=\epsilon\sigma(T+T_r)(T^2+T_r^2).
+\]
+
+Using the **illustrative** APMonitor radiative-example assumptions
+epsilon=0.9, A=0.0012 m2, sigma=5.67e-8 W/(m2 K4), and surroundings at
+23 C gives:
+
+| Assumed surface temperature, C | Equivalent h_rad, W/(m2 K) | Radiative loss, W |
+| ---: | ---: | ---: |
+| 23 | 5.30 | 0 |
+| 50 | 6.07 | 0.197 |
+| 70.54 | 6.72 | 0.383 |
+
+The example's convective coefficient is 5 W/(m2 K), so radiation need not be
+small under those assumptions. This is an order-of-magnitude calculation,
+not an estimated heat-loss split for our device. The largest measured T1 is
+70.54 C, but T1 is a sensor reading, not a direct heater-surface measurement.
+Actual emissivity, effective area, view factors and surrounding surface
+temperatures remain unmeasured here. Radiative surroundings and room air need
+not have identical temperatures.
+
+The linear part of radiative heat loss can already be absorbed into a fitted
+lumped conductance. The new information would come from its temperature
+dependence and any independently known physical quantities. An explicit
+convection-plus-radiation model must refit the loss parameters; adding radiation
+on top of the old fitted effective Ua would risk counting the same loss twice.
+This also means a large radiation fraction does not, by itself, establish that
+neglecting its nonlinearity explains the remaining error.
+
 ## Questions not yet assigned to numerical investigation
 
 | Question | Why it could matter | Candidate diagnostic; not yet launched |
