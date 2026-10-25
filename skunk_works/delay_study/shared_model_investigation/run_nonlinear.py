@@ -26,6 +26,7 @@ def main():
     parser.add_argument('--starts',type=int,default=6)
     parser.add_argument('--max-step',type=float,default=.1)
     parser.add_argument('--maxiter',type=int,default=500)
+    parser.add_argument('--warm-start',type=Path)
     args=parser.parse_args()
     write_json(args.output/'forward_audit.json',audit(args.max_step))
     base=json.loads(args.reference.read_text());best=base['best']
@@ -48,6 +49,7 @@ def main():
     starts=[];chosen=None;begun=time.monotonic()
     for j in range(args.starts):
         seed=point.copy();seed[4]=[.1,0.,.3,.6,.03,1.][j%6]
+        if j==0 and args.warm_start:seed=np.array(json.loads(args.warm_start.read_text())['best']['point'])
         if j>=6:
             rng=np.random.RandomState(805+j);seed[:2]+=rng.uniform(-.15,.15,2);seed[2]=np.clip(seed[2]+rng.uniform(-1,1),0,15)
         write_json(args.output/'progress.json',{'current_start':j,'completed':len(starts),'elapsed_s':time.monotonic()-begun})
