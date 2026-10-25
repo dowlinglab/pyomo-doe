@@ -13,6 +13,7 @@ import sys
 import time
 HERE=Path(__file__).resolve().parent
 sys.path.insert(0,str(HERE.parent/'shared_model_investigation'))
+sys.path.insert(0,str(HERE.parent/'residual_study'))
 import numpy as np
 from scipy.optimize import minimize
 from nonlinear import stable_gradient
