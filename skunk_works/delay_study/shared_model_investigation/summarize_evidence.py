@@ -117,7 +117,7 @@ def plot(args,rows,read):
         r=values[n]
         axes[1].plot([r['fast_cross_min'],r['fast_cross_max']],[j,j],'o-',color='#2166ac')
         axes[2].plot([r['innovation_SD_min'],r['innovation_SD_max']],[j,j],'o-',color='#2166ac')
-    axes[1].set_xlabel('Fast-run max input cross-correlation')
+    axes[1].set_xlabel('Fast runs: max |input correlation|')
     axes[2].set_xlabel('Innovation SD across twelve runs');axes[2].axvline(1,color='gray',linestyle=':')
     axes[0].set_yticks(pos);axes[0].set_yticklabels(select);axes[0].invert_yaxis()
     for ax in axes:ax.grid(axis='x',alpha=.2)
