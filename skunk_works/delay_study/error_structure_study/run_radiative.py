@@ -1,5 +1,6 @@
 """Matched two-output convection/radiation fit with centered run conductances."""
 import argparse
+import hashlib
 import json
 from pathlib import Path
 import sys
@@ -7,7 +8,7 @@ import time
 HERE=Path(__file__).resolve().parent
 sys.path.insert(0,str(HERE.parent/'coupled_model_study'))
 import numpy as np
-from scipy.optimize import minimize
+from scipy.optimize import minimize,brentq
 from physical import load_records
 from radiative import Model,TREF
 from run_bounded import stationary,write
@@ -16,7 +17,7 @@ from run_bounded import stationary,write
 def main():
     parser=argparse.ArgumentParser();parser.add_argument('--output',type=Path,required=True)
     parser.add_argument('--warm',type=Path,required=True);parser.add_argument('--band',type=float,default=.1)
-    parser.add_argument('--gamma-fixed',type=float);parser.add_argument('--curve-fixed',type=float)
+    parser.add_argument('--resume-starts',type=Path);parser.add_argument('--gamma-fixed',type=float);parser.add_argument('--curve-fixed',type=float)
     parser.add_argument('--starts',type=int,default=4);parser.add_argument('--maxiter',type=int,default=600)
     parser.add_argument('--max-step',type=float,default=.25);args=parser.parse_args();begun=time.monotonic()
     warm=json.loads(args.warm.read_text());records=load_records();nr=len(records)
@@ -35,7 +36,14 @@ def main():
         shape[[0,2,3]]+=np.log(factor)
         if args.curve_fixed is not None:shape[5]=args.curve_fixed
         seed=np.r_[shape,np.log(K*factor),gamma,delta,ambient,noise]
+        if j==0 and args.resume_starts:
+            attempts=json.loads(args.resume_starts.read_text())
+            saved=min([v for v in attempts if 'point' in v],key=lambda v:v['nll'])
+            seed=np.asarray(saved['point'],dtype=float)
         seed=np.clip(seed,np.array(bounds)[:,0],np.array(bounds)[:,1])
+        ds=seed[8:8+nr].copy();lo,hi=np.log(1-args.band),np.log(1+args.band)
+        shift=brentq(lambda v:float(np.clip(ds-v,lo,hi).sum()),-1.,1.)
+        seed[8:8+nr]=np.clip(ds-shift,lo,hi)
         write(args.output/'progress.json',{'current_start':j,'completed_starts':len(starts),'elapsed_s':time.monotonic()-begun})
         try:
             scale=2*model.N
@@ -48,10 +56,10 @@ def main():
                 constraints=[{'type':'eq','fun':model.centered_constraint,'jac':model.centered_jacobian}],
                 options={'maxiter':args.maxiter,'ftol':1e-12})
             stat=stationary(model,f.x,model.gradient(f.x))
-            row={'start':j,'gamma_seed':gamma,'seed':seed.tolist(),'point':f.x.tolist(),'nll':float(f.fun*scale),'optimizer_scale':scale,
+            row={'start':j,'gamma_seed':float(seed[7]),'seed':seed.tolist(),'point':f.x.tolist(),'nll':float(f.fun*scale),'optimizer_scale':scale,
                  'solver_success':bool(f.success),'message':str(f.message),'nfev':int(f.nfev),'stationarity':stat,
-                 'success':bool(f.success and abs(stat['equality_residual'])<1e-7)}
-        except Exception as exc:row={'start':j,'gamma_seed':gamma,'seed':seed.tolist(),'success':False,'exception':repr(exc)}
+                 'success':bool(f.success and abs(stat['equality_residual'])<1e-7 and stat['lagrangian_projected_gradient_max_abs']<.05)}
+        except Exception as exc:row={'start':j,'gamma_seed':float(seed[7]),'seed':seed.tolist(),'success':False,'exception':repr(exc)}
         starts.append(row);write(args.output/'starts.json',starts)
         print(json.dumps({k:v for k,v in row.items() if k not in ['seed','point']}),flush=True)
     valid=[r for r in starts if r['success']]
@@ -68,7 +76,7 @@ def main():
     parameter_count=len(p)-(args.gamma_fixed is not None)-(args.curve_fixed is not None)
     fit={'model':'convection_ambient_radiation','band':args.band,'gamma_fixed':args.gamma_fixed,'curve_fixed':args.curve_fixed,
          'lag':True,'curve':True,'ambient':'constant','kernel':'ou_nugget','shape_count':model.nmean,
-         'best':best,'starts':starts,'bounds':bounds,'coefficients':np.r_[np.exp(p[6]),p[8+nr:model.nmean]].tolist(),
+         'best':best,'starts':starts,'bounds':bounds,'warm_fit_sha256':hashlib.sha256(args.warm.read_bytes()).hexdigest(),'resume_starts_sha256':hashlib.sha256(args.resume_starts.read_bytes()).hexdigest() if args.resume_starts else None,'coefficients':np.r_[np.exp(p[6]),p[8+nr:model.nmean]].tolist(),
          'sigma1_C':sigma,'sigma2_C':sigma*rho,'record_names':[d['name'] for d in records],
          'raw_sha256':{d['name']:d['sha256'] for d in records},'nobs':2*model.N,'parameter_count':parameter_count,
          'parameters':{'K_common_nominal':float(np.exp(p[6])),'tA_nominal_s':float(np.exp(p[0])),
