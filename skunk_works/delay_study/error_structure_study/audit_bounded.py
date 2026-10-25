@@ -29,6 +29,8 @@ def independent(d,fit):
     offsets=np.asarray(fit['coefficients'][1+width*j:1+width*(j+1)])
     A[a,one]=(offsets[-1]-offsets[0])/d['t'][-1]
     state=np.zeros(m+3);state[2:4]=d['y'][0,1]-d['y'][0,0];state[a]=offsets[0];state[one]=1
+    if fit.get('startup_offsets_C'):
+        state[0]+=fit['startup_offsets_C'][j][0];state[2]+=fit['startup_offsets_C'][j][1]
     result=[state[[1,3]]+d['y'][0,0]];cache={}
     for k,step in enumerate(np.diff(d['t'])):
         if float(step) not in cache:cache[float(step)]=expm(A*step)
@@ -44,6 +46,7 @@ def main():
     deviations=np.asarray(f['parameters']['log_deviations']);ratios=np.asarray(f['parameters']['Ua_run_over_nominal'])
     assert abs(sum(deviations))<1e-7 and np.max(abs(np.exp(deviations)-ratios))<1e-12
     assert np.all(ratios>=1-f['band']-1e-7) and np.all(ratios<=1+f['band']+1e-7)
+    if f.get('startup_offsets_C'):assert np.max(abs(np.asarray(f['startup_offsets_C'])))<=f['startup_band_C']+1e-7
     for j,d in enumerate(load_records()):
         assert d['sha256']==f['raw_sha256'][d['name']]
         pred=independent(d,f);error=float(np.max(abs(pred-arrays['predicted_'+str(j)])))

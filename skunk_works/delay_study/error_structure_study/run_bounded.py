@@ -35,12 +35,21 @@ def main():
     parser=argparse.ArgumentParser();parser.add_argument('--output',type=Path,required=True)
     parser.add_argument('--warm',type=Path,required=True);parser.add_argument('--band',type=float,required=True)
     parser.add_argument('--ambient',choices=['constant','linear'],default='constant')
-    parser.add_argument('--starts',type=int,default=4);parser.add_argument('--maxiter',type=int,default=600)
+    parser.add_argument('--startup-band',type=float,default=0.);parser.add_argument('--starts',type=int,default=4);parser.add_argument('--maxiter',type=int,default=600)
     args=parser.parse_args();begun=time.monotonic()
     warm=json.loads(args.warm.read_text());records=load_records()
     assert warm['lag'] and warm['curve'] and warm['kernel']=='ou_nugget'
-    model=Model(records,args.band,ambient=args.ambient)
-    p=np.array(warm['best']['point']);point=np.r_[p[:6],np.zeros(model.nv),p[6:]]
+    if args.startup_band:
+        from effects import Model as StartupModel
+        model=StartupModel(records,args.band,args.startup_band,ambient=args.ambient)
+    else:model=Model(records,args.band,ambient=args.ambient)
+    p=np.array(warm['best']['point']);noise=p[warm['shape_count']:]
+    delta=np.asarray(warm['parameters'].get('log_deviations',np.zeros(model.nv))) if model.nv else np.zeros(0)
+    if len(delta)!=model.nv:delta=np.zeros(model.nv)
+    if model.nv:
+        delta=delta-delta.mean();ratio=max(abs(delta))/min(abs(np.log(1-args.band)),np.log(1+args.band))
+        if ratio>1:delta=delta/ratio*.99
+    point=np.r_[p[:6],delta,noise]
     rng=np.random.RandomState(38091);objective=Objective(model);bounds=model.bounds()
     constraints=[{'type':'eq','fun':model.centered_constraint,'jac':model.centered_jacobian}] if model.nv else []
     starts=[]
@@ -82,9 +91,9 @@ def main():
         cursor+=n
     delta=model.deltas(p);g=np.exp(delta)
     parameter_count=len(p)+len(c)+1-(1 if model.nv else 0)
-    fit={'model':'bounded_Ua','band':args.band,'lag':True,'curve':True,'ambient':args.ambient,'kernel':'ou_nugget',
+    fit={'model':'bounded_Ua_startup' if args.startup_band else 'bounded_Ua','band':args.band,'startup_band_C':args.startup_band,'lag':True,'curve':True,'ambient':args.ambient,'kernel':'ou_nugget',
          'base_shape_count':model.base_ns,'shape_count':model.ns,'best':best,'starts':starts,
-         'coefficients':c.tolist(),'sigma1_C':sigma,'sigma2_C':sigma*rho,'record_names':[d['name'] for d in records],
+         'coefficients':c.tolist(),'startup_offsets_C':c[1+model.width*len(records):].reshape(-1,2).tolist() if args.startup_band else None,'sigma1_C':sigma,'sigma2_C':sigma*rho,'record_names':[d['name'] for d in records],
          'raw_sha256':{d['name']:d['sha256'] for d in records},'bounds':bounds,'nobs':2*model.N,
          'parameter_count':parameter_count,'nominal_AICc':2*nll+2*parameter_count+2*parameter_count*(parameter_count+1)/(2*model.N-parameter_count-1),
          'parameters':{'K_common_nominal':float(c[0]),'tA_nominal_s':float(np.exp(p[0])),
