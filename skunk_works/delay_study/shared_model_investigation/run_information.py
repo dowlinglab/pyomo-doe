@@ -78,7 +78,7 @@ def main():
                 response_uncertainty.append({'period_s':period,'gain':float(abs(H)),'phase_deg':float(np.angle(H,deg=True)),
                     'gain_SD':float(np.sqrt(max(0.,gA@covariance@gA))),
                     'phase_SD_deg':float(np.sqrt(max(0.,gP@covariance@gP))*180/np.pi),
-                    'reference':'Linear block / local input-map linearization at command50;5s is outside primary excitation' if fit['kind']=='power_curve' else 'Conditional mean transfer;5s is outside primary excitation'})
+                    'reference':'Linear block / local input-map linearization at command50;5s is outside primary excitation' if fit['kind'] in ('power_curve','mapped_chain','mapped_unequal') else 'Conditional mean transfer;5s is outside primary excitation'})
         permutation=None
         if fit['kind'] in ('unequal_chain','mapped_unequal') and model.m==3:
             swapped=x.copy();swapped[1:3]=x[2:0:-1]

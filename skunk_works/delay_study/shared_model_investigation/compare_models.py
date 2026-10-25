@@ -41,7 +41,7 @@ def main():
         fit=json.loads((folder/'fit.json').read_text());best=fit['best']
         model=make_model([load(n) for n in fit['record_names']],fit['kind'],fit['order'],fit.get('numerator_bound',2.),fit.get('ambient_mode','constant'))
         x=np.array(best['point']);c=np.array(best['coefficients']);times=np.array(fit['time_constants_s'])
-        physical=np.r_[np.zeros(model.m-1),c[0]] if fit['kind'] in ('chain','transport','unequal_chain') else np.r_[c[1:model.m],c[0]-sum(c[1:model.m])]
+        physical=np.r_[np.zeros(model.m-1),c[0]] if fit['kind'] in ('chain','transport','unequal_chain','power_curve','mapped_chain','mapped_unequal') else np.r_[c[1:model.m],c[0]-sum(c[1:model.m])]
         polynomial=np.poly1d([0.])
         for j,coefficient in enumerate(physical):
             term=np.poly1d([coefficient])
@@ -50,7 +50,7 @@ def main():
         coefficients=np.trim_zeros(polynomial.c,'f')
         zeros=np.roots(coefficients) if len(coefficients)>1 else np.array([])
         A,B=physical_system(times,physical)
-        delay=x[2] if fit['kind']=='transport' else 0.
+        delay=x[2] if fit['kind'] in ('transport','power_curve') else 0.
         impulse=np.array([(expm(A*(t-delay))@B)[-1] if t>=delay else 0. for t in time])
         H=np.array([model.frequency_response(x,c,w) for w in omega])
         state_frequency=np.array([np.exp(-1j*w*delay)*np.linalg.solve(1j*w*np.eye(model.m)-A,B)[-1] for w in omega])
@@ -69,9 +69,11 @@ def main():
             freq.append({'period_s':period,'model_gain':float(abs(theoretical)),
                          'model_principal_phase_deg':float(np.angle(theoretical,deg=True)),
                          'empirical_minus_model_phase_deg':differences,'empirical_model_gain_ratios':ratios,
-                         'notice':'Measured windowed response versus continuous candidate; primary matched-window n1 sensitivity is saved separately. Settling/window errors remain.'})
+                         'notice':'Measured windowed response versus continuous linear block. For static-map models the block is also the local transfer at command50, not a global nonlinear transfer function. Settling/window errors remain.'})
         row={'id':folder.name,'kind':fit['kind'],'order':fit['order'],'K':c[0],'time_constants_s':times.tolist(),
              'additional_delay_s':delay,'ambient_mode':fit.get('ambient_mode','constant'),
+             'static_input_map_curvature':fit.get('power_curvature'),
+             'frequency_is_linear_block':fit['kind'] in ('power_curve','mapped_chain','mapped_unequal'),
              'nll':best['nll'],'RMSE_C':fit['RMSE_C'],'nominal_AICc':fit['nominal_AICc'],
              'parameter_count':fit['parameter_count'],'sigma_C':best['sigma_C'],'ell_s':float(np.exp(x[-2])),
              'eta':x[-1],'successful_starts':sum(r['success'] for r in fit['starts']),
