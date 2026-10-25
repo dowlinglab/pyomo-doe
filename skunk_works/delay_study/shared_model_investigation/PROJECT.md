@@ -1,82 +1,85 @@
 # Shared-model discrepancy investigation
 
-The goal is active. Scientific scope and rationale are in
-[the investigation plan](../review/tier0_followup_investigation.md), committed
-at b4f7ef7 after preserving the original brainstorming note at 8cb58c0.
-Alex requested continued work after voice chat and removed any duration limit.
+The goal is active. Follow [the scientific plan](../review/tier0_followup_investigation.md)
+and [methods](methods.md). Alex prioritizes understanding the discrepancies and
+set no duration constraint. Preserve the completed residual_study and its email.
 
-## Current state
-
-Phase 0 passed: independent matrix propagation and dense-covariance likelihood
-reproduce all twelve saved runs. Pooled RMSE is 0.48320369 C; likelihood differs
-by 4.4e-11. Orders 1/2/3 forward preflight passed against ODE and repeated-pole
-analytic responses. See results/baseline_v2/audit.json. The first attempt retained
-a process-inspection sandbox failure; reconciliation now belongs to the controller. The original residual_study is read-only input to
-this goal. Its report was already delivered; send no new email.
-
-| Phase | Status |
+| Phase | Current state |
 |---|---|
-| 0. Reproduce and verify | Passed independent reconstruction |
-| 1. Decompose errors and compare repeats | Per-run and phase-fold plots reviewed; descriptive decomposition complete |
-| 2. Frequency-response estimates | 54 estimates audited; joint harmonic input correction audited; limitations retained |
-| 3. Flexible shared LTI benchmarks | Two/three-state real-pole fits audited; four-state fit running |
-| 4. n=1/2/3 matched comparison | 24 starts each plus fixed-weight/IID sensitivities audited; profiles running |
-| 5. Evidence-guided follow-ups | Numerator-bound and transport-delay tests motivated; not yet implemented |
-| 6. Investigation report and review | report.md updated with qualified findings; incomplete |
+| 0. Reproduce reference | Complete; independent propagation and dense likelihood agree |
+| 1. Locate discrepancies | Per-run plots, phase folds and descriptive energy decomposition reviewed |
+| 2. Frequency response | 54 estimates independently reconstructed; joint-harmonic correction audited |
+| 3. LTI benchmarks | Two/three/four real-pole fits audited; numerator-bound sensitivities establish a weak fast pole |
+| 4. Equal-stage comparison | n=1/2/3 joint fits and fixed-weight/IID sensitivities audited; all six profiles/78 points audited |
+| 5. Targeted explanations | Positive unequal lags, transport and linear-ambient fits audited; FIR16 cells audited; nonlinear/transport checks audited; revised-mean stage comparison closing |
+| 6. Report and review | report.md is a draft; numerical/source/figure/requirement audit pending |
 
-Reconcile [run_manifest.json](run_manifest.json) and actual process identities
-before launching jobs. Use committed-source snapshots and the pinned scientific
-Python runtime. Keep at most four long numerical processes, each with one BLAS
-thread. This is a computation limit, not permission to spawn additional agents.
-User-authorized note-editing workers have finished their scoped edits.
+## Established evidence
 
-The existing hourly thread heartbeat has been updated and read back as ACTIVE
-for this investigation. It replaces its old Tier0–2 instructions. Mark the goal
-complete and pause that heartbeat after the scoped report and checks finish.
-The remaining calibration pairs, DoE, hardware and new email remain deferred.
+The n=1 reference reproduces at RMSE 0.48320 C. Its fast-sine response lacks
+about 28–32 degrees of phase lag across repeats and startup treatments. Retuning
+a positive two-real-pole transfer cannot match the estimated fast phase under
+the steady LTI interpretation. n=2 suppresses some cycling, but n=3 performs
+worse under the working joint likelihood. Better likelihood can accompany worse
+raw temperature error because the fitted disturbance also changes.
 
-## Current evidence and next work
+Flexible three/four-state real-pole fits reduce fast mismatch but reach numerator
+bounds and have poorly estimated fast modes. Widening bounds moves the three-
+state fast pole from 0.14 to 0.07 to 0.04 s with nearly unchanged likelihood and
+K. Do not interpret those states physically. Positive unequal lag stages and
+an explicit extra delay provide simpler alternatives. The transport d estimate
+is about 2.53 s; nominal profiled support is about 2.41–2.65 s under that model,
+not a hardware delay calibration.
 
-The 54 frequency cells cover startup cutoffs of 300, 450 and 600 seconds, two
-nuisance treatments and all nine sine records. Independent continuous-command
-quadrature and QR solves agree within 5.7e-16 in complex gain. The fast 30-second
-records show 28.3–32.3 degrees more lag than matched n=1 across these choices.
-Slower 120-second discrepancies are about −1.8 to +0.95 degrees; 300-second
-ones about −0.02 to +2.04 degrees, with only 1–2 settled cycles. These are
-per-record descriptive estimates with working HAC uncertainty. They do not
-identify a unique mechanism. See report.md for current interpretation.
+Use results/reference_diagnostics_v2 for harmonics/forecasts. The original
+separate input-frequency projections leaked the fundamental on partial-cycle
+windows; v2 projects jointly. Forecasts/plots were unaffected. The reference
+one-second conditional RMSE is 0.117 C versus 0.484 C free-run on identical
+targets; both use retrospectively fitted parameters. No independent forecasting
+claim follows from that comparison.
 
-Use results/frequency_figures for reviewed plots. The original phase display
-wrapped at 180 degrees; the revised display unwraps increasing frequency
-independently for measured/model curves, preserving all numerical estimates.
-The raw estimates and independent audit retain input bindings and audit scope.
+The FIR sensitivity permits mostly positive response shapes with modest
+smoothing, while showing tail/onset sensitivity to bins, horizon and penalty.
+It conditions on the n=1 ambient/noise reference and is not another jointly
+estimated likelihood competitor. Selected kernels were independently audited
+using command-step convolution and dense covariance weighting.
 
-Next finish Phase 1 per-run plots/energy interpretation, examine harmonics, then
-implement the shared flexible linear benchmark and matched n=1/2/3 fits. All
-current numerical jobs are terminal. Reconcile process IDs before launching.
+## Final bounded comparison and remaining work
 
-## Latest comparisons
+The targeted quadratic-loss and monotone command-map checks have selected-fit
+and profile audits. A command map plus transport and linear ambient fits at
+0.38794 C RMSE. A command map alone with n=1 and linear ambient fits at
+0.33413 C, but retains a much poorer working likelihood. Raw RMSE, stochastic
+weighting and dynamic adequacy must be assessed together.
 
-All three chain fits, two/three-state real-pole benchmarks and six secondary
-chain fits are terminal and independently audited. Primary fits use 24 starts;
-secondary fixed-reference OU and IID fits use eight. The n=1 reference agrees
-with the original engine. n=2 suppresses part of the fast residual cycle but
-increases raw RMSE under joint noise fitting; n=3 is worse under that criterion.
-The real three-state benchmark reduces fast phase mismatch to about two degrees
-and input/innovation association to 0.038–0.064. It also hits a numerator bound,
-uses a weakly estimated 0.14-second pole, and has nonminimum-phase zeros and an
-early sign-changing impulse. These features motivate bound sensitivity and an
-explicit transport-delay candidate; do not interpret the states physically.
+Complete the matched command-map/linear-ambient n=1/2/3 and unequal-positive
+three-pole comparisons before assigning a stage preference. These are the final
+mean families in scope. Run their independent selected-fit audits, scaled
+information/response uncertainty, K/theta profiles, and innovation checks.
+The existing phase, FIR and nonlinear results explain why these follow-ups
+were selected; no additional broad model search is planned.
 
-Per-run plots and harmonic/causal forecasting diagnostics are reviewed. Use
-reference_diagnostics_v2: its input harmonics are projected jointly over partial
-cycles. The original separate-frequency input projections leaked the fundamental
-into higher harmonics; forecasts and plots were unaffected. Local sensitivity
-and projected-curvature results are in information_initial and
-information_flexible3. Mean information can have full numerical rank while the
-flexible model's fast pole and numerator remain practically unestimable.
+Reconcile [run_manifest.json](run_manifest.json), exact process commands and
+terminal files before launching or retrying. The manifest identifies current
+jobs; it is not proof that a process remains alive. Never restart based on an
+observation timeout. Keep at most four long numerical processes.
 
-At the last checkpoint flexible4 and chain_profiles were still live. Reconcile
-actual process identities and terminal artifacts before continuing. Finish and
-audit those outputs; complete physical/bound sensitivities and profile audits,
-then the report requirement audit. The active goal is not complete.
+Final diagnostics must retain the quantized step response, remaining slow
+trends, per-run innovation scales and input association. One-step conditioning
+can hide mean error. Complete the report, figure review and requirement audit
+before marking this goal finished.
+
+## Execution and completion rules
+
+Use committed-source/data snapshots and the pinned scientific runtime. Keep at
+most four long numerical processes, each with one BLAS thread. This does not
+authorize extra agents. Retain failures and recoveries; commit coherent progress.
+The existing hourly thread heartbeat is active for this goal.
+
+Finish with a concise report linking numerical evidence, methods and reviewed
+figures. Distinguish physical hypotheses, working likelihood support and actual
+model adequacy. All ENV2 records have informed selection; evaluation remains
+retrospective. Stop for Alex's review after the report and requirement audit.
+Mark the goal complete and pause the heartbeat only then. Do not enumerate
+additional calibration pairs, run DoE/hardware, expand to a full two-temperature
+model or send another email.

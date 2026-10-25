@@ -1,162 +1,152 @@
-# Shared TC-Lab model investigation
+# What explains the shared TC-Lab model discrepancies?
 
-Status: baseline diagnostics and five selected dynamic models are audited. The
-four-state benchmark, profiles and evidence-guided follow-ups remain in progress.
-The [plan](../review/tier0_followup_investigation.md) defines the scope.
+Status: investigation draft. The matched stage comparison under the revised
+mean assumptions is still running. The completed results below have numerical
+audits; the final synthesis and requirement audit remain pending.
 
-| Question | Evidence so far | Status |
+The fast residual cycle points to missing dynamic structure in the original
+two-pole formulation. A shared command-map/transport model with bounded linear
+ambient variation fits the twelve records at 0.388 C RMSE, versus 0.483 C for the
+original n=1 formulation. This is retrospective pooled fitting. We have not
+established a unique physical explanation or a calibrated universal error model.
+
+| Question | Evidence | Status |
 |---|---|---|
-| Does the saved reference reproduce? | All 12 trajectories and dense likelihood reconstructed; pooled RMSE 0.48320 C | Numerical audit passed |
-| Is the fast residual cycle reproducible? | Phase-aligned residuals and innovations show a similar cycle in all three fast-sine repeats | Descriptive evidence; per-run decomposition interpretation pending |
-| Does n=1 miss amplitude or phase? | Fast-sine response has approximately 28–32 degrees additional lag across windows, repeats and nuisance treatments | 54 harmonic estimates independently reconstructed |
-| Can flexible shared LTI dynamics explain it? | Three-state real-pole benchmark reduces fast phase error; its parameters are weakly determined | Four-state fit and bound sensitivity remain |
-| Do n=2 or 3 improve the explanation? | n=2 reduces the fast innovation cycle; n=3 worsens it under the working likelihood | Profiles and synthesis pending |
-| Are nonlinear or disturbance extensions needed? | Slow trends and small harmonics remain; neither identifies a unique mechanism | Follow evidence |
+| Does the reference reproduce? | Independent means and likelihood agree; RMSE 0.48320 C | Complete |
+| Is the fast cycle repeatable? | All three fast-sine repeats share a phase-aligned pattern | Complete descriptive analysis |
+| What response feature is missing? | About 28–32 degrees of extra phase lag at the 30-second input | 54 estimates independently audited |
+| Can linear dynamics explain it? | Unequal positive lags and explicit transport are alternatives; free numerators also fit but are unstable to bounds | Selected fits audited |
+| What changes with nonlinearity and ambient? | A modest shared command curve plus affine ambient improves trajectory fit | Selected means audited; residual assessment pending |
+| Does stage preference survive the revised mean? | Matched n=1/2/3 and unequal-stage reruns underway | In progress |
 
-## Numerical reference
+## The fast discrepancy is larger than parameter uncertainty
 
-The independent reference uses augmented matrix exponentials, followed by dense
-covariance Cholesky whitening. Its likelihood differs from the saved fit by
-4.4e-11. This verifies reproduction, without certifying model adequacy.
-See [baseline audit](results/baseline_v2/audit.json).
+Measured frequency responses use the actual held input, three startup cutoffs
+and two nuisance treatments. At 450 s, the fast-sine phase differs from matched
+n=1 by about −29, −32 and −31 degrees across repeats. The corresponding
+working HAC phase SDs are about 1.7, 2.4 and 3.1 degrees. The discrepancy remains
+across the other windows. The slower tests have much smaller phase differences;
+only 1–2 settled cycles remain in the 300-second tests.
 
-## Frequency response
+A positive two-real-pole transfer has phase between 0 and −180 degrees at
+positive frequency. The fast measured response is near −193 degrees on the
+independently unwrapped branch, or +167 degrees as a principal phase. Under the
+steady LTI interpretation, adjusting only its three positive parameters cannot
+match that phase. The original model's conditional local phase SD is only
+0.14 degrees at this frequency. Precise parameters therefore do not establish
+an adequate response structure.
 
-The nine sine records were analyzed after 300, 450 and 600 seconds. Each window uses
-both an offset-plus-trend nuisance treatment and a sensitivity with exponential
-nuisance terms at the pooled reference rates. The latter is conditional on those
-rates. The input reference integrates the recorded left-held command exactly.
+![Measured gain and phase](results/frequency_figures/frequency_windows.png)
 
-There are 18 estimates per period: three repeats, three windows and two nuisance
-treatments. The fast-sine circular phase difference from the matched n=1
-prediction ranges from −32.25 to −28.26 degrees. For 120-second tests it ranges
-from −1.82 to +0.95 degrees; for 300-second tests from −0.02 to +2.04 degrees.
-Long-period estimates retain only 1–2 cycles, so startup and slow
-variation require particular care.
+See the [frequency estimates](results/frequency/frequency_estimates.json),
+[all-estimate audit](results/frequency_audit/audit.json), and
+[phase-aligned repeats](results/frequency_figures/phase_repeats.png).
 
-The fast response points toward a reproducible dynamic mismatch. It does not
-identify pure delay, an additional thermal state, nonlinear behavior or a
-timestamp mechanism uniquely. Those alternatives motivate the next comparisons.
+## What the model comparisons establish so far
 
-There is also a structural constraint: with positive parameters, the n=1
-continuous transfer function has phase between 0 and −180 degrees at positive
-frequency. The fast measured response is near −193 degrees on the displayed
-continuity branch, equivalently about +167 degrees as a principal phase. Under
-the steady LTI interpretation, retuning its three positive parameters cannot
-match that phase. The finite-window estimates, command timing, nonlinear effects
-and disturbance assumptions still qualify this interpretation.
+All rows use the same twelve records, input holds, startup convention, ambient
+reference and OU-plus-measurement family. Numeric covariance parameters are
+reestimated. Main variable-projection fits use 24 starts; the nonlinear heat-loss
+check uses twelve, including another thermal-role basin. Labels mentioning
+linear ambient use two bounded endpoint offsets per run; the other rows use
+one constant offset. Parameter counts include nuisance terms and noise scale.
 
-![Measured gain and phase across startup windows](results/frequency_figures/frequency_windows.png)
-
-Measured curves use working HAC with 60 sample lags, with 30 and 120 stored as
-sensitivities. These are per-record asymptotic uncertainty calculations under a
-working residual description; they do not establish calibrated coverage or
-independent repetitions. Displayed phase is unwrapped by increasing frequency
-independently for each measured/model curve; principal phases remain in the
-saved estimates. The chosen branch does not identify a unique transport delay.
-
-![Phase-aligned residuals and innovations](results/frequency_figures/phase_repeats.png)
-
-The phase-fold plots remove jointly fitted offset/trend terms and show 12 phase
-bins after 300 seconds. Bin counts measure sampling density, not independent
-experimental replication.
-
-Independent quadrature of the held input and QR regression reconstructed all 54
-measured/matched estimates; maximum complex-gain discrepancy is 5.7e-16.
-See [estimates](results/frequency/frequency_estimates.json),
-[frequency audit](results/frequency_audit/audit.json), and
-[error decomposition](results/frequency/error_decomposition.csv).
-
-## Offset, trend and oscillating error
-
-A descriptive, nested projection assigns about 38% of reference residual SSE to
-per-run means, another 36% to linear trends, 10% to the sine fundamentals and
-16% to the remainder. The sequence is mean, then trend, then fundamental; these
-fractions depend on that sequence. They are not causal allocations to ambient,
-physics and measurement noise. Ambient changes act through thermal dynamics,
-and a residual trend can also reflect an incorrect thermal model.
-
-The [per-run plots](results/reference_diagnostics_v2/runs_step_50.png) show slow
-errors alongside quantized temperature changes. The phase-fold plots show a
-separate reproducible fast cycle, even though it contributes less total SSE.
-
-## Prediction versus simulation
-
-With the reference thermal mean and covariance fixed at their pooled estimates,
-conditioning on temperature history gives the following within-record results.
-
-| Horizon | Conditional prediction RMSE, C | Free-run RMSE on the same targets, C |
-|---|---:|---:|
-| 1 s | 0.117 | 0.484 |
-| 10 s | 0.182 | 0.485 |
-| 60 s | 0.292 | 0.494 |
-| 300 s | 0.483 | 0.529 |
-
-The forecasting calculation uses temperatures only through each forecast origin.
-Its parameters and ambient offsets were fitted retrospectively to all twelve
-records. This demonstrates the effect of measurement conditioning; it is not
-an independent forecasting test. Dense Gaussian conditioning independently
-verified the recursive predictor's mean and variance.
-
-## Current dynamic comparisons
-
-The following selected fits use the same records, ambient bounds, input holds,
-startup and OU-plus-measurement family. All numerical covariance parameters are
-reestimated. Each model used 24 starts; selected trajectories and likelihoods
-passed independent physical-state and dense-covariance audits.
-
-| Model | Raw temperature RMSE, C | Negative log likelihood | Fast input/innovation correlation range |
+| Model | Raw RMSE, C | Negative log likelihood | Nominal parameter count |
 |---|---:|---:|---:|
-| n=1 chain | 0.483 | −7927.2 | 0.457–0.481 |
-| n=2 chain | 0.972 | −8237.0 | 0.196–0.227 |
-| n=3 chain | 1.188 | −7744.8 | 0.438–0.456 |
-| Flexible two-state real-pole model | 1.100 | −8322.0 | 0.217–0.259 |
-| Flexible three-state real-pole model | 0.911 | −8426.8 | 0.038–0.064 |
+| n=1 equal chain | 0.483 | -7927.2 | 18 |
+| n=2 equal chain | 0.972 | -8237.0 | 18 |
+| n=3 equal chain | 1.188 | -7744.8 | 18 |
+| Flexible three-state real-pole benchmark | 0.911 | -8426.8 | 21 |
+| Flexible four-state real-pole benchmark | 0.854 | -8449.3 | 23 |
+| Three unequal positive poles | 0.908 | -8402.8 | 19 |
+| Two poles plus transport delay | 1.034 | -8396.8 | 19 |
+| Transport plus linear ambient | 0.750 | -8406.5 | 31 |
+| Command map plus transport | 0.647 | -8426.5 | 20 |
+| Command map, transport and linear ambient | 0.388 | -8439.3 | 32 |
+| Quadratic heat loss plus transport | 0.734 | -8411.7 | 20 |
 
-Lower negative log likelihood is better under the working Gaussian law. It need
-not mean lower raw temperature error: the selected models also change the
-estimated disturbance. For example, its correlation length increases from about
-214 s for n=1 to about 1391 s for n=2. Fixed-reference-covariance sensitivities
-and IID fits preserve the conclusion that these constrained higher-order chains
-do not improve raw temperature RMSE. These results do not establish adequacy
-of any candidate's noise law.
+Lower negative log likelihood is better under the working Gaussian law, but it
+can accompany worse raw temperature error because the fitted disturbance also
+changes. The initial n=2 fit suppresses part of the fast cycle while increasing
+raw RMSE. Fixed-covariance and IID sensitivities preserve the conclusion that
+these equal-stage increases do not improve raw RMSE under the initial mean.
+The final matched reruns will test stage preference after adding the command
+map and linear-ambient convention.
 
-The three-state real-pole benchmark matches the fast measured phase within about
-two degrees at the 450-second cutoff. It uses a 0.14-second pole and a numerator
-coefficient at its declared −2 C/percent bound, with a pair of right-half-plane zeros and
-a sign-changing early impulse response. Those features support a more flexible
-linear explanation of the observed phase, while leaving physical interpretation
-unresolved. Beyond the three measured frequencies, response curves are
-extrapolations.
+The flexible three-state model nearly matches the fast phase, but reaches a
+numerator bound and uses a poorly estimated fast pole. Widening the coefficient
+bounds moves that pole from 0.14 to 0.07 to 0.04 s with almost unchanged
+likelihood and gain. It has nonminimum-phase zeros and a sign-changing early
+impulse. This supports revisiting the constrained dynamics, without identifying
+those states as thermal mechanisms. A local full-rank sensitivity matrix does
+not make those parameters practically estimable.
 
-Its scaled mean sensitivity matrix has full numerical rank but a condition
-number of about 141,000. The local conditional SD of the log fast time constant
-is about 64; two normalized numerator SDs are about 185. A full-rank matrix does
-not make those parameters usefully estimable. The result motivates numerator-
-bound sensitivities and an explicit transport-delay alternative, whose early
-response can remain physically positive. The four-state benchmark is still
-running.
+Positive alternatives avoid that interpretation. Three unequal poles fit at
+approximately 142.5, 13.6 and 3.0 s; swapping the last two preserves all predicted
+trajectories and likelihood. Two poles with an effective additional delay fit
+d near 2.53 s. The nominal profile support is 2.41–2.65 s under that model;
+physical transport and acquisition timing are not separated by this parameter.
 
-## Harmonics and uncertainty qualifications
+## Two nonlinear explanations and ambient variation
 
-Joint input-harmonic projection corrects finite-window leakage in the original
-diagnostic implementation; use results/reference_diagnostics_v2. The forecast
-results were unaffected. Small output harmonics persist, particularly in the
-large-excursion 300-second tests. Input discretization, quantization, startup,
-slow variation and the short windows prevent unique attribution to nonlinearity.
+The shared command curve is u_eff=u+c*u*(1−u/100), followed by positive delayed
+linear dynamics. The fitted constant-ambient c is about 0.097; nominal profile
+support is 0.074–0.121. With affine ambient, c is about 0.109 and d about 2.54 s.
+For ideal 50+50 sin input this map changes the mean and adds a second harmonic,
+while preserving the fundamental. It therefore tests step/sine gain differences
+and harmonics. A constant alpha multiplier remains absorbed into K; command
+curvature is a separate response hypothesis.
 
-All three chain mean sensitivity matrices have rank three at the declared
-relative thresholds, with Jacobian condition numbers around five. Projected
-observed curvature is locally positive at the selected active constraint face.
-This differs from an unconstrained full-coordinate Hessian that allows ambient
-parameters to leave their active bounds. Neither establishes regular interval
-coverage. Gain and total-delay profiles are in progress to examine the bounded
-working likelihood directly.
+The temperature-dependent alternative adds −beta*v² to the thermal balance,
+with beta about 0.0025 per C. Its scoped nominal profile support is 0.0016–0.0036 per C. This
+is a phenomenological heat-loss term, not an identified radiation coefficient.
+The command-map alternative has better working likelihood and raw error in this
+comparison, but that does not prove where the nonlinearity occurs physically.
+Both structures have grounding in established modeling approaches: a
+[static input map followed by linear dynamics](https://www.mathworks.com/help/ident/ref/idnlhw.html),
+and [nonlinear TC-Lab heat loss](https://apmonitor.com/pdc/index.php/Main/TCLabRadiative).
 
-## Next decisions
+Affine ambient reduces raw error substantially after revising dynamics, but its
+nominal AICc advantage in the command-map case is only about 1.5. The additional
+ambient flexibility is not decisive evidence of physical room-temperature drift.
+Model discrepancy and ambient variation remain confounded without independent
+ambient measurements.
 
-Finish per-run error and harmonic checks, then test flexible shared LTI dynamics
-and n=1/2/3 chains with matched input, ambient and error conventions. Separate
-short-horizon temperature-conditioned prediction from free-run simulation.
-Use those results to decide which impulse-response, operating-condition or
-disturbance comparisons are needed. Additional calibration pairs remain deferred.
+## Error structure and the limits of these uncertainty ranges
+
+A descriptive nested projection assigns roughly 38% of reference SSE to per-run
+means, another 36% to linear trends, 10% to sine fundamentals and 16% to the
+remainder. These fractions depend on projection order; they do not allocate
+causal fractions to ambient or measurement noise.
+
+Conditioning on temperature history reduces reference one-second RMSE from
+0.484 C to 0.117 C on identical targets. At 300 s the errors are 0.529 C and
+0.483 C. Parameters and ambient offsets were fitted to the full records, so this
+shows the effect of retrospective measurement conditioning, not independent
+forecast validation. See [forecast diagnostics](results/reference_diagnostics_v2/diagnostics.json).
+
+The regularized impulse-response fits support mostly positive response shapes
+with modest smoothing. The best descriptive raw error is about 0.451 C. Their
+early response and tails depend on lag bins, horizon and penalty; these
+sensitivities are not confidence bands or sub-bin delay estimates. They also
+condition on the reference ambient/noise model, so their score is not another
+joint likelihood competitor. See [FIR audit](results/fir_audit/audit.json).
+
+All reported profile support is nominal, bounded working-likelihood support;
+no coverage guarantee follows under misspecification or data-dependent model
+selection. Local information fixes covariance and allows unrestricted nuisance
+directions even at bounds. Residual input association, remaining autocorrelation,
+variance changes and quantization still need final assessment for the revised
+mean models. No untouched validation set has been created from these records.
+
+## What remains before the recommendation
+
+Finish the matched revised-mean n=1/2/3 and unequal-stage fits, their independent
+audits, uncertainty and innovation checks. Then state which explanations these
+records support, which remain indistinguishable, and what evidence would resolve
+the remaining uncertainty. Restricted-pair calibration, new experiments and
+DoE remain for a later researcher decision.
+
+Full equations, bounds, numerical methods and source references are in
+[methods.md](methods.md). Current execution and evidence locations are in
+[PROJECT.md](PROJECT.md) and [run_manifest.json](run_manifest.json).

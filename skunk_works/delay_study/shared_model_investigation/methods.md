@@ -104,6 +104,12 @@ Actual fitting uses the recorded held commands, not the ideal sine formula.
 This is a static input nonlinearity followed by linear dynamics, a Hammerstein
 structure. An estimated map does not establish a firmware or heater defect.
 
+After the command-map/ambient result, repeat n=1/2/3 and the unequal positive
+three-pole model with that same shared map and linear-ambient convention. This
+closes the stage comparison under revised mean assumptions. Equal-stage cases
+then have 31 nominal parameters; the unequal case has 32. Do not infer stage
+preference solely from comparisons that used the earlier mean formulation.
+
 The nonlinear checks are separately nested alternatives, not a search over
 arbitrary nonlinear functions. Evaluate them before proposing a larger physical
 model. No full two-temperature fit is authorized by this phase.
