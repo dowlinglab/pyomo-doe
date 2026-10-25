@@ -6,11 +6,13 @@ import sys
 import time
 HERE=Path(__file__).resolve().parent
 sys.path.insert(0,str(HERE.parent/'residual_study'))
+sys.path.insert(0,str(HERE.parent/'shared_model_investigation'))
 import numpy as np
 from scipy.optimize import minimize
 from covariance_fit import numerical_gradient,projected_gradient
 from run_mean import write_json
 from physical import Model,load_records,matrices
+from nonlinear import stable_gradient
 
 
 def main():
@@ -22,7 +24,9 @@ def main():
     parser.add_argument('--warm',type=Path);args=parser.parse_args()
     records=load_records();model=Model(records,args.lag,args.curve,args.ambient,args.kernel)
     objective=lambda p:model.projected(p)[0];bounds=model.bounds()
-    gradient=lambda p:numerical_gradient(objective,p,bounds,step=2e-6)
+    # Full one-sided steps near active shape bounds avoid a central difference
+    # whose denominator shrinks to floating-point distance from the boundary.
+    gradient=lambda p:stable_gradient(objective,p,bounds,step=2e-6)
     base=[[150,12,.4,.35],[200,20,.2,.4],[100,3,1.,.3],[220,40,1,.5],[80,10,3,.25],[300,2,.1,.6]]
     rng=np.random.RandomState(12713);initial=[]
     for j in range(args.starts):
