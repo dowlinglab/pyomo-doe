@@ -7,12 +7,13 @@ This file owns current execution state. Git preserves superseded states.
 
 ## Current state
 
-- The subsequent discussion and three worker reviews are consolidated in
-  `review/next_investigation_discussion.md`. It records the hardware temperature
-  grid audit, installed-package/firmware and sensor-calibration evidence, prior
-  modeling literature, radiation scale, and remaining hypotheses. These are
-  preparation for a future agreed goal; no new goal, fitting run, hardware
-  experiment, automation or email has been launched from that discussion.
+- The October 25 remaining-error goal is active. Its scientific plan is
+  `review/next_investigation_discussion.md`, committed before launch as
+  `346a03d`; `error_structure_study/PROJECT.md` and its run manifest own current
+  execution state. It tests bounded conductance variation around a fitted shared
+  nominal, radiation/startup sensitivities and correlated, quantized observations.
+  The existing hourly TC-Lab heartbeat is active. No new hardware, DoE or email
+  is authorized for this goal. Earlier studies and delivery receipts are preserved.
 
 - The October 25 follow-up on the physical interpretation of unequal lags is
   complete for researcher review in `coupled_model_study/report.md`. It fits
