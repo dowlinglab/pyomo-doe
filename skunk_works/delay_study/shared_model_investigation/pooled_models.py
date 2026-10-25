@@ -25,11 +25,11 @@ def propagate(command, indices, transitions, forcing):
 
 class PooledModel:
     def __init__(self, records, kind, order):
-        if kind not in ('chain','flexible_real') or order not in (1,2,3,4):
+        if kind not in ('chain','flexible_real','unequal_chain') or order not in (1,2,3,4):
             raise ValueError((kind,order))
         if kind == 'chain' and order > 3:
             raise ValueError('Chain order is1,2,3')
-        if kind == 'flexible_real' and order < 2:
+        if kind in ('flexible_real','unequal_chain') and order < 2:
             raise ValueError('Flexible state count is2,3,4')
         self.records, self.kind, self.order = records, kind, order
         intervals = np.concatenate([np.diff(d.time) for d in records])
@@ -37,7 +37,7 @@ class PooledModel:
         self.indices = [np.searchsorted(self.intervals,np.diff(d.time)) for d in records]
         self.count = sum(len(d.time)-1 for d in records)
         self.m = order+1 if kind == 'chain' else order
-        self.ninput = 1 if kind == 'chain' else order
+        self.ninput = 1 if kind in ('chain','unequal_chain') else order
         self.nt = 2 if kind == 'chain' else self.m
         self.numerator_bound = 2.
         self.ambient_mode='constant'
@@ -129,6 +129,7 @@ class PooledModel:
         h=1/(1+1j*omega*times[0])
         if self.kind=='chain':
             return coefficients[0]*h/(1+1j*omega*times[1])**self.order
+        if self.kind=='unequal_chain':return coefficients[0]/np.prod(1+1j*omega*times)
         physical=np.r_[coefficients[1:self.ninput],coefficients[0]-sum(coefficients[1:self.ninput])]
         result=physical[0]*h
         for k in range(1,self.m):
@@ -159,7 +160,7 @@ def audit():
     u=rng.uniform(0,100,len(t))
     records=[Experiment('synthetic',t,np.full(len(t),22.),u,22.)]
     rows=[]
-    for kind,order in [('chain',1),('chain',2),('chain',3),('flexible_real',2),('flexible_real',3),('flexible_real',4)]:
+    for kind,order in [('chain',1),('chain',2),('chain',3),('flexible_real',2),('flexible_real',3),('flexible_real',4),('unequal_chain',3)]:
         model=PooledModel(records,kind,order)
         times=np.r_[137.,np.full(model.m-1,9.)]
         logarithms=np.log([137.,18.]) if kind=='chain' else np.log(times)
@@ -168,7 +169,7 @@ def audit():
         point=np.r_[logarithms,np.log(200.),.04]
         pred=model.trajectories(point,c)[0]
         physical=np.r_[c[1:model.ninput],c[0]-sum(c[1:model.ninput])]
-        if kind=='chain':
+        if kind in ('chain','unequal_chain'):
             physical=np.r_[np.zeros(model.m-1),c[0]]
         state=np.zeros(model.m)
         expected=[22.]

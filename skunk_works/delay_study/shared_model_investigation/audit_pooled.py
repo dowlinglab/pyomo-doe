@@ -48,7 +48,7 @@ def main():
     best=fit['best'];c=np.array(best['coefficients']);x=np.array(best['point'])
     times=np.array(fit['time_constants_s']);m=len(times)
     nt=len(x)-2
-    physical=np.r_[np.zeros(m-1),c[0]] if fit['kind'] in ('chain','transport') else np.r_[c[1:m],c[0]-sum(c[1:m])]
+    physical=np.r_[np.zeros(m-1),c[0]] if fit['kind'] in ('chain','transport','unequal_chain') else np.r_[c[1:m],c[0]-sum(c[1:m])]
     ninput=fit.get('input_coefficient_count',1 if fit['kind']=='chain' else m)
     width=fit.get('ambient_width',1)
     ell,eta=np.exp(x[nt]),x[nt+1]

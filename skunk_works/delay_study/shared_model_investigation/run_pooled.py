@@ -44,7 +44,7 @@ def seeds(model,count):
 def main():
     parser=argparse.ArgumentParser()
     parser.add_argument('--output',type=Path,required=True)
-    parser.add_argument('--kind',choices=['chain','flexible_real','transport'],required=True)
+    parser.add_argument('--kind',choices=['chain','flexible_real','transport','unequal_chain'],required=True)
     parser.add_argument('--order',type=int,required=True)
     parser.add_argument('--starts',type=int,default=24)
     parser.add_argument('--maxiter',type=int,default=600)

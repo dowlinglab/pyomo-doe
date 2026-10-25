@@ -41,7 +41,7 @@ def main():
         fit=json.loads((folder/'fit.json').read_text());best=fit['best']
         model=make_model([load(n) for n in fit['record_names']],fit['kind'],fit['order'],fit.get('numerator_bound',2.),fit.get('ambient_mode','constant'))
         x=np.array(best['point']);c=np.array(best['coefficients']);times=np.array(fit['time_constants_s'])
-        physical=np.r_[np.zeros(model.m-1),c[0]] if fit['kind'] in ('chain','transport') else np.r_[c[1:model.m],c[0]-sum(c[1:model.m])]
+        physical=np.r_[np.zeros(model.m-1),c[0]] if fit['kind'] in ('chain','transport','unequal_chain') else np.r_[c[1:model.m],c[0]-sum(c[1:model.m])]
         polynomial=np.poly1d([0.])
         for j,coefficient in enumerate(physical):
             term=np.poly1d([coefficient])
