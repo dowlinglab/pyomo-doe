@@ -20,6 +20,7 @@ def main():
     parser=argparse.ArgumentParser()
     parser.add_argument('--results',type=Path,required=True)
     parser.add_argument('--output',type=Path,required=True)
+    parser.add_argument('--report',type=Path,required=True)
     args=parser.parse_args();hashes={}
     def read(relative):
         p=args.results/relative
@@ -80,12 +81,22 @@ def main():
     beta=read('beta_profiles/profile.json')
     assert beta['status']=='complete' and len(beta['points'])==7
     assert not any(r['stationarity_warning'] for r in beta['points'])
+    reported=[]
+    for line in args.report.read_text().splitlines():
+        if not line.startswith('|'):continue
+        cells=[v.strip() for v in line.strip('|').split('|')]
+        if len(cells)!=4:continue
+        try:reported.append([float(v) for v in cells[1:]])
+        except ValueError:pass
+    expected=[[float(format(r['RMSE_C'],'.3f')),float(format(r['nll'],'.1f')),r['parameter_count']] for r in rows]
+    if reported!=expected:raise AssertionError('Report model table differs from audited arrays/counts')
     pd.DataFrame(rows).to_csv(args.output/'model_table.csv',index=False)
     table=['| Model | Raw RMSE, C | Negative log likelihood | Parameters |',
            '|---|---:|---:|---:|']
     table += ['| {id} | {RMSE_C:.3f} | {nll:.1f} | {parameter_count} |'.format(**r) for r in rows]
     (args.output/'report_table.md').write_text('\n'.join(table)+'\n')
     write_json(args.output/'evidence.json',{'status':'passed','models':rows,'profiles':curves,'beta_profile':beta,
+        'report_sha256':hashlib.sha256(args.report.read_bytes()).hexdigest(),'report_table_rows_checked':len(reported),
         'arithmetic_checks':arithmetic,'consumed_sha256':hashes,
         'scope':'Saved prediction arithmetic, counts, AICc, artifact hashes and audited support. Independent propagation/dense-likelihood audits remain separate. These checks do not establish scientific model adequacy.'})
     plot(args,rows,read)
