@@ -50,7 +50,7 @@ def main():
             if profile['parameter']=='K' and abs(c[0]-row['value'])>1e-9:raise AssertionError('Fixed gain')
             if profile['parameter']=='theta' and abs(np.exp(x[1])-row['value'])>1e-8:raise AssertionError('Fixed theta')
             if profile['parameter']=='delay' and abs(x[2]-row['value'])>1e-8:raise AssertionError('Fixed additional delay')
-            if profile['parameter']=='power' and abs(x[3]-row['value'])>1e-8:raise AssertionError('Fixed input curvature')
+            if profile['parameter']=='power' and abs(x[2 if fit['kind']=='mapped_chain' else 3]-row['value'])>1e-8:raise AssertionError('Fixed input curvature')
             if np.any(abs(c[1:])>2+1e-7):raise AssertionError('Ambient bounds')
             ell,eta=np.exp(x[-2]),x[-1]
             n=0;quadratic=0.;logdet=0.
@@ -64,7 +64,10 @@ def main():
                     if width==1:pred+=c[1+j]*a
                     else:
                         b=(elapsed-times[0]*a)/(d.time[-1]-d.time[0]);pred+=c[1+2*j]*(a-b)+c[2+2*j]*b
-                else:pred=d.temperature[0]+physical_reference(d.time,d.input,times,physical,c[1+j])
+                else:
+                    command=d.input+x[2]*d.input*(1-d.input/100) if fit['kind']=='mapped_chain' else d.input
+                    ambient=c[1+j] if width==1 else c[1+2*j:3+2*j]
+                    pred=d.temperature[0]+physical_reference(d.time,command,times,physical,ambient)
                 r=d.temperature[1:]-pred[1:];t=d.time[1:]
                 C=(1-eta)*np.exp(-abs(t[:,None]-t[None,:])/ell)+eta*np.eye(len(t))
                 L=cholesky(C,lower=True);z=solve_triangular(L,r,lower=True)

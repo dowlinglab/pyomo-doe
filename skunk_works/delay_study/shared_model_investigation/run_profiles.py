@@ -25,7 +25,7 @@ def main():
     write_json(args.output/'matrix_manifest.json',manifest)
     for folder in args.inputs:
         fit=json.loads((folder/'fit.json').read_text())
-        if fit['kind'] not in ('chain','transport','power_curve'):raise ValueError('Profiles support chains and input-map/transport extensions')
+        if fit['kind'] not in ('chain','transport','power_curve','mapped_chain'):raise ValueError('Profiles support chains and input-map/transport extensions')
         records=[load(n) for n in fit['record_names']]
         model=make_model(records,fit['kind'],fit['order'],fit.get('numerator_bound',2.),fit.get('ambient_mode','constant'))
         reference=np.array(fit['best']['point']);K=fit['best']['coefficients'][0]
@@ -34,8 +34,9 @@ def main():
         if abs(fixed_nll-reference_nll)>3e-5:raise AssertionError('Fixed-gain center does not reproduce projected reference')
         for parameter in args.parameters:
             if parameter=='delay' and fit['kind'] not in ('transport','power_curve'):raise ValueError('Additional delay applies only to transport extension')
-            if parameter=='power' and fit['kind']!='power_curve':raise ValueError('Input-map curvature applies only to power_curve')
-            center=K if parameter=='K' else (reference[3] if parameter=='power' else (reference[2] if parameter=='delay' else np.exp(reference[1])))
+            if parameter=='power' and fit['kind'] not in ('power_curve','mapped_chain'):raise ValueError('Input-map curvature not present')
+            power_index=model.base_nt if fit['kind']=='mapped_chain' else 3
+            center=K if parameter=='K' else (reference[power_index] if parameter=='power' else (reference[2] if parameter=='delay' else np.exp(reference[1])))
             points=[];warm=reference.copy();begun=time.monotonic()
             factors=([0.]+[sign*d for d in (.02,.05,.1,.2,.5,1.) for sign in (-1,1)]+[-center]
                      if parameter in ('delay','power') else [0.]+[sign*d for d in (.002,.005,.01,.02,.05,.1) for sign in (-1,1)])
@@ -51,7 +52,7 @@ def main():
                     objective=lambda q:model.projected(q,fixed_gain=value)[0]
                     seeds=[warm.copy(),reference.copy()]
                 else:
-                    index=3 if parameter=='power' else (2 if parameter=='delay' else 1)
+                    index=power_index if parameter=='power' else (2 if parameter=='delay' else 1)
                     freebounds=[b for j,b in enumerate(bounds) if j!=index]
                     def decode(q):return np.insert(q,index,value if parameter in ('delay','power') else np.log(value))
                     objective=lambda q:model.projected(decode(q))[0]
