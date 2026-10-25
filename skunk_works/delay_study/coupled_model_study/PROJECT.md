@@ -1,0 +1,62 @@
+# Physical origin of the apparent extra lag
+
+Alex authorized this follow-up after reviewing the unequal-lag explanation.
+Use both measured temperature channels from the same twelve ENV2 records.
+Preserve all completed studies and raw files. No new email, hardware or DoE.
+Apply the existing no-ai-slop and claude-for-researchers practices.
+
+## Question and bounded comparison
+
+Can coupled heater/sensor energy balances explain the extra response mode?
+Start with symmetric heaters and sensors, positive capacities/conductances,
+one common ambient trajectory per run and Q2=0. Test the base four-state model,
+then one shared first-order command lag if the fast phase is unexplained.
+Compare fixed linear command conversion with the existing bounded command map.
+Use constant ambient first and affine endpoints as a declared sensitivity.
+Do not assume that estimated modes correspond to individual physical parts.
+
+The equations are CH*dHi=Ua*(A-Hi)+Us*(Si-Hi)+Ux*(Hj-Hi)+beta*Qi,
+CS*dSi=Us*(Hi-Si). Fit K=beta/Ua, tA=CH/Ua, rS=CS/Us,
+r=Us/Ua and q=Ux/Ua. This removes the common absolute calibration scale.
+Q2 is zero, so its heater conversion cannot be estimated. A second powered-off
+heater can still participate thermally. Initial heater temperatures equal their
+respective first sensor readings as an explicit assumption. First observations
+are conditioned on and omitted from the residual vector. Inputs use left holds.
+
+With fixed ambient, common/differential sensor transfers are
+G+=K/[tA*rS*s^2+(tA+rS*(1+r))*s+1] and
+G-=K/[tA*rS*s^2+(tA+rS*(1+r+2*q))*s+1+2*q].
+Thus T1/Q1=(G++G-)/2 and T2/Q1=(G+-G-)/2. Both modal transfers
+have negative imaginary part at positive frequency. The base symmetric model
+therefore cannot produce T1 phase outside(-180,0) degrees, even with four poles.
+Verify this algebra independently before interpreting fits. Extra poles alone
+do not imply the all-pole cascade found in the previous study.
+
+## Execution and verification
+
+Freeze committed code/data with freeze.py and the pinned runtime in ../environment.json.
+Keep at most four long numerical processes with one BLAS thread each. Inspect
+actual process/terminal records before retries. Save multistarts and failures.
+Audit exact propagation against direct energy-balance integration, analytic
+common/differential transfers, dense covariance likelihoods and saved raw hashes.
+Fit both outputs jointly. Begin with IID pilots, then independently colored
+OU-plus-measurement errors with separate channel scales; cross-channel error
+independence is a working assumption to diagnose. No likelihood comparison
+against a T1-only fit uses a different observation count as if it were matched.
+
+Report both-channel residuals, fast frequency mismatch, pole locations/residues,
+common/differential response, local identifiability and the physical hypotheses
+the data support or refute. Nominal within-model uncertainty is conditional on
+symmetry, initialization, ambient, command timing and measurement assumptions.
+All data have informed model selection; no untouched validation claim follows.
+
+## Sources
+
+The existing analytic four-state scope check is ../review/check_four_state_scope.py.
+The two-state balance is ../models.py:simulate_original. Primary teaching sources
+consulted October25,2026: the Notre Dame TC-Lab model-identification notes and
+https://apmonitor.com/pdc/index.php/Main/TCLabStateSpace . The latter also
+illustrates a one-way sensor-lag approximation; this study retains the sensor
+heat capacity and reciprocal heater/sensor heat flow in the balance above.
+The Lab Literature search did not return within the controller's bounded wait;
+no result from that unreturned query is used as evidence.
