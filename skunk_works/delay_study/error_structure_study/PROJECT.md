@@ -12,7 +12,7 @@ prior evidence bindings match, and all 26 prior jobs have successful terminal
 exit artifacts. No related process was live at launch. Stage 1 has a first
 source-bound decomposition of 384 run/channel/window combinations, independently
 checked by QR projections (maximum energy difference 9.1e-12 C2). Both figures
-were visually inspected. New thermal fits have not started.
+were visually inspected. The initial conductance fits are now terminal.
 
 In the short-lag/command-curve constant-ambient model, offsets explain 74.6%
 and additional linear trends 19.3% of T1 squared error. The fundamental adds
@@ -21,21 +21,25 @@ projections, not identified environmental effects. This favors investigating
 slow between-run mismatch before adding another response lag. Detailed initial
 findings are in `initial_findings.md` and `results/decomposition`.
 
-The current manifest owns phase status and job paths. Three four-start fits are
-running for conductance bands ±5%, ±10% and ±20%, with constant ambient and the
-matched OU+nugget criterion. Inspect their process/exit files before new work;
-controller sessions are 15170, 94113 and 66267 respectively. Never relaunch an
-unchanged live job. Run `audit_bounded.py` after each terminal successful fit.
+The three constant-ambient conductance fits and independent dense likelihood/
+dimensional trajectory audits passed. At ±10%, T1/T2 RMSE is 0.639/0.115 C;
+at ±20%, 0.641/0.115 C. Two ±10% deviations hit the lower band. The ±5% job
+retains three failed SLSQP starts and one feasible converged start; its RMSE is
+0.646/0.147 C. Training likelihood alone does not select a band or establish
+that deviations measure actual airflow. The run ratios depend on protocol.
 
-The varying-conductance implementation matches the zero-band baseline exactly,
-agrees with direct ODE integration within 2.0e-12 C, and its profiled gradient
-matches full finite differences within 2.7e-7 scaled error. Two synthetic starts
-recover centered deviations and linear coefficients with shared dynamics fixed;
-this is not a proof that all physical parameters are estimable. Radiation scale
-calculations passed independent quadrature and derivative checks. Remaining
-stage-1 operating-point/common-differential diagnostics and quantization/filter
-small cases can proceed in the available fourth process slot. `config.json`
-fixes initial choices. Check `initial_findings.md` for conditional interpretations.
+Three four-start jobs now compare affine ambient and hidden-heater startup
+bands ±2/±5 C at the 10% conductance band. Their outputs are band_10_affine,
+band_10_startup2 and band_10_startup5; controller sessions 32642, 5303, 93466.
+Reconcile before new launches. Audit every terminal fit with audit_bounded.py.
+
+Quantized scalar OU filtering passed independent Gaussian rectangle integrals,
+node-count convergence and a known-truth synthetic randomized-PIT check. This
+supports a hardware likelihood pilot; it does not establish Gaussian hardware
+noise. Operating-point/common-differential diagnostics, hardware quadrature
+convergence and later covariance refitting remain unfinished. Radiation's
+conditional scale and startup propagation checks passed. Read the manifest and
+initial_findings.md before proceeding; existing source/data receipts bind work.
 
 ## Resume instructions
 

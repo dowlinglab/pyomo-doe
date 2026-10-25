@@ -7,10 +7,10 @@
   "phases": {
     "0_reconcile": "complete",
     "1_decompose": "in_progress",
-    "2_radiation_and_synthetic": "in_progress: radiation scale, zero-band nesting, direct ODE and conditional noiseless recovery passed; quantization checks pending",
-    "3_bounded_conductance": "in_progress: three four-start constant-ambient jobs",
-    "4_physical_extensions": "pending",
-    "5_observation_model": "pending",
+    "2_radiation_and_synthetic": "radiation scale, direct ODE, conditional recovery, startup columns and quantized-filter small cases passed; model-specific extensions still require audits",
+    "3_bounded_conductance": "constant-ambient 5/10/20 percent fits terminal and independently audited; diagnostic/uncertainty work remains",
+    "4_physical_extensions": "in_progress: matched affine ambient and hidden-start bands 2/5 C",
+    "5_observation_model": "bin-integrated OU filter passed Gaussian rectangle and known-truth PIT checks; hardware pilot and covariance refitting pending",
     "6_uncertainty_transfer": "pending",
     "7_report": "pending"
   },
@@ -119,7 +119,7 @@
     },
     {
       "id": "band_05_constant",
-      "status": "running",
+      "status": "terminal",
       "source_commit": "97d074ba0182543c0110e8cb69a7625068b9f847",
       "process": {
         "pid": 75534,
@@ -141,11 +141,12 @@
         "started_utc": "2026-10-25T19:47:34.783969+00:00"
       },
       "output": "skunk_works/delay_study/error_structure_study/results/band_05_constant",
-      "source_receipt_sha256": "8922b0dc6dd5a5aa488574aec7c4a59931192c005123c69c67f90948a8df8fab"
+      "source_receipt_sha256": "8922b0dc6dd5a5aa488574aec7c4a59931192c005123c69c67f90948a8df8fab",
+      "exit_code": 0
     },
     {
       "id": "band_10_constant",
-      "status": "running",
+      "status": "terminal",
       "source_commit": "97d074ba0182543c0110e8cb69a7625068b9f847",
       "process": {
         "pid": 75533,
@@ -167,11 +168,12 @@
         "started_utc": "2026-10-25T19:47:34.750992+00:00"
       },
       "output": "skunk_works/delay_study/error_structure_study/results/band_10_constant",
-      "source_receipt_sha256": "64435eee95ec5fea6290a189355a6d54d4d1742fa01225b772d66593dd6e8e7b"
+      "source_receipt_sha256": "64435eee95ec5fea6290a189355a6d54d4d1742fa01225b772d66593dd6e8e7b",
+      "exit_code": 0
     },
     {
       "id": "band_20_constant",
-      "status": "running",
+      "status": "terminal",
       "source_commit": "97d074ba0182543c0110e8cb69a7625068b9f847",
       "process": {
         "pid": 75530,
@@ -193,14 +195,202 @@
         "started_utc": "2026-10-25T19:47:34.678492+00:00"
       },
       "output": "skunk_works/delay_study/error_structure_study/results/band_20_constant",
-      "source_receipt_sha256": "6ab5620b53627097dd317323a0ed553a3bcb819e3af13a524c10c11fc0908b3e"
+      "source_receipt_sha256": "6ab5620b53627097dd317323a0ed553a3bcb819e3af13a524c10c11fc0908b3e",
+      "exit_code": 0
+    },
+    {
+      "id": "band_05_constant_audit",
+      "status": "terminal",
+      "source_commit": "620a09255096261e510362dab9de66c00482a3d1",
+      "process": {
+        "pid": 79535,
+        "parent_pid": 79101,
+        "command": [
+          "/Users/adowling/opt/anaconda3/bin/python",
+          "/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-error-620a0925-6uf8251f/skunk_works/delay_study/error_structure_study/audit_bounded.py",
+          "--output",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/band_05_constant_audit",
+          "--input",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/band_05_constant"
+        ],
+        "started_utc": "2026-10-25T19:58:25.781176+00:00"
+      },
+      "output": "skunk_works/delay_study/error_structure_study/results/band_05_constant_audit",
+      "source_receipt_sha256": "7ddbfdacea57181e27a9b7713c530267d2e4c848635b3eb96f95b3309735fd62",
+      "exit_code": 0
+    },
+    {
+      "id": "band_10_constant_audit",
+      "status": "terminal",
+      "source_commit": "979c94069a9cd762ee2f063e2ec9f68b71ee687e",
+      "process": {
+        "pid": 77811,
+        "parent_pid": 77387,
+        "command": [
+          "/Users/adowling/opt/anaconda3/bin/python",
+          "/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-error-979c9406-ngxmc4i5/skunk_works/delay_study/error_structure_study/audit_bounded.py",
+          "--output",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/band_10_constant_audit",
+          "--input",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/band_10_constant"
+        ],
+        "started_utc": "2026-10-25T19:52:59.244622+00:00"
+      },
+      "output": "skunk_works/delay_study/error_structure_study/results/band_10_constant_audit",
+      "source_receipt_sha256": "8afeb967d87966e3055ccf9accc17ff1553803bc9922265fccf4ec00653e4a84",
+      "exit_code": 0
+    },
+    {
+      "id": "band_20_constant_audit",
+      "status": "terminal",
+      "source_commit": "979c94069a9cd762ee2f063e2ec9f68b71ee687e",
+      "process": {
+        "pid": 77810,
+        "parent_pid": 77388,
+        "command": [
+          "/Users/adowling/opt/anaconda3/bin/python",
+          "/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-error-979c9406-hx62v6it/skunk_works/delay_study/error_structure_study/audit_bounded.py",
+          "--output",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/band_20_constant_audit",
+          "--input",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/band_20_constant"
+        ],
+        "started_utc": "2026-10-25T19:52:59.243234+00:00"
+      },
+      "output": "skunk_works/delay_study/error_structure_study/results/band_20_constant_audit",
+      "source_receipt_sha256": "5e30c21de68ec5ae0f3c77f1bc752121ca3f3ea783e921ca1345e33c9b931b3e",
+      "exit_code": 0
+    },
+    {
+      "id": "startup_check",
+      "status": "terminal",
+      "source_commit": "620a09255096261e510362dab9de66c00482a3d1",
+      "process": {
+        "pid": 79534,
+        "parent_pid": 79100,
+        "command": [
+          "/Users/adowling/opt/anaconda3/bin/python",
+          "/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-error-620a0925-2sft7341/skunk_works/delay_study/error_structure_study/check_effects.py",
+          "--output",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/startup_check",
+          "--warm",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/coupled_model_study/results/main_lag_curve_ou/fit.json"
+        ],
+        "started_utc": "2026-10-25T19:58:25.780423+00:00"
+      },
+      "output": "skunk_works/delay_study/error_structure_study/results/startup_check",
+      "source_receipt_sha256": "cde03007dfadbdc5edc71819c943c9fff8b7d4d4a3d04bc629e86afc59108dae",
+      "exit_code": 0
+    },
+    {
+      "id": "quantization_check",
+      "status": "terminal",
+      "source_commit": "3d6cbe29e6225f7f3a60da9d9f7e7d3ca5fbe0f5",
+      "process": {
+        "pid": 78643,
+        "parent_pid": 78429,
+        "command": [
+          "/Users/adowling/opt/anaconda3/bin/python",
+          "/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-error-3d6cbe29-x2c_zfx_/skunk_works/delay_study/error_structure_study/check_quantized.py",
+          "--output",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/quantization_check"
+        ],
+        "started_utc": "2026-10-25T19:55:05.215759+00:00"
+      },
+      "output": "skunk_works/delay_study/error_structure_study/results/quantization_check",
+      "source_receipt_sha256": "02d68538862c8657f7dd5219efb7436bd1fca5e55851b03a6f182c46e767ea53",
+      "exit_code": 0
+    },
+    {
+      "id": "band_10_affine",
+      "status": "running",
+      "source_commit": "620a09255096261e510362dab9de66c00482a3d1",
+      "process": {
+        "pid": 80407,
+        "parent_pid": 79773,
+        "command": [
+          "/Users/adowling/opt/anaconda3/bin/python",
+          "/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-error-620a0925-c1lle1ya/skunk_works/delay_study/error_structure_study/run_bounded.py",
+          "--output",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/band_10_affine",
+          "--warm",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/band_10_constant/fit.json",
+          "--band",
+          "0.10",
+          "--starts",
+          "4",
+          "--maxiter",
+          "600",
+          "--ambient",
+          "linear"
+        ],
+        "started_utc": "2026-10-25T19:59:56.330470+00:00"
+      },
+      "output": "skunk_works/delay_study/error_structure_study/results/band_10_affine",
+      "source_receipt_sha256": "8e8bd6c1431d0f8a8d4deacfdc3bcb0be9cf0786d8ae34af851acbdc979a49fd"
+    },
+    {
+      "id": "band_10_startup2",
+      "status": "running",
+      "source_commit": "620a09255096261e510362dab9de66c00482a3d1",
+      "process": {
+        "pid": 80408,
+        "parent_pid": 79774,
+        "command": [
+          "/Users/adowling/opt/anaconda3/bin/python",
+          "/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-error-620a0925-caj3rh1y/skunk_works/delay_study/error_structure_study/run_bounded.py",
+          "--output",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/band_10_startup2",
+          "--warm",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/band_10_constant/fit.json",
+          "--band",
+          "0.10",
+          "--starts",
+          "4",
+          "--maxiter",
+          "600",
+          "--startup-band",
+          "2"
+        ],
+        "started_utc": "2026-10-25T19:59:56.336429+00:00"
+      },
+      "output": "skunk_works/delay_study/error_structure_study/results/band_10_startup2",
+      "source_receipt_sha256": "6f99904334895bc8e78e6fadcb4c4d34b10c87d9e2ea5b2e3f2a23e233537183"
+    },
+    {
+      "id": "band_10_startup5",
+      "status": "running",
+      "source_commit": "620a09255096261e510362dab9de66c00482a3d1",
+      "process": {
+        "pid": 80405,
+        "parent_pid": 79775,
+        "command": [
+          "/Users/adowling/opt/anaconda3/bin/python",
+          "/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-error-620a0925-ysv6pprt/skunk_works/delay_study/error_structure_study/run_bounded.py",
+          "--output",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/band_10_startup5",
+          "--warm",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/band_10_constant/fit.json",
+          "--band",
+          "0.10",
+          "--starts",
+          "4",
+          "--maxiter",
+          "600",
+          "--startup-band",
+          "5"
+        ],
+        "started_utc": "2026-10-25T19:59:56.313477+00:00"
+      },
+      "output": "skunk_works/delay_study/error_structure_study/results/band_10_startup5",
+      "source_receipt_sha256": "64961ae40f3aa43698adfbfc95ac6c904d7da3dd7bb41c6ee0d3c54b03e1044a"
     }
   ],
   "live_jobs": [
-    "band_05_constant",
-    "band_10_constant",
-    "band_20_constant"
+    "band_10_affine",
+    "band_10_startup2",
+    "band_10_startup5"
   ],
-  "next_action": "Reconcile band_05_constant, band_10_constant and band_20_constant before new jobs. Audit terminal fits with audit_bounded.py from frozen source; preserve failures. Continue remaining stage-1 diagnostics and quantization-aware small-case checks in available capacity.",
-  "updated_utc": "2026-10-25T19:48:34.905603+00:00"
+  "next_action": "Reconcile affine/startup jobs, audit terminal fits, extend operating diagnostics and evaluate hardware bin likelihood quadrature convergence before observation-parameter fitting.",
+  "updated_utc": "2026-10-25T20:02:21.453226+00:00"
 }
