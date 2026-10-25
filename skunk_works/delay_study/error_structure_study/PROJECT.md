@@ -21,10 +21,21 @@ projections, not identified environmental effects. This favors investigating
 slow between-run mismatch before adding another response lag. Detailed initial
 findings are in `initial_findings.md` and `results/decomposition`.
 
-The current manifest owns phase status and job paths. Stage 1 still needs
-operating-point, heating/cooling, common/differential and prediction diagnostics.
-Next implement and audit centered conductance variation and radiation/observation
-small cases before measured model fits. `config.json` fixes initial choices.
+The current manifest owns phase status and job paths. Three four-start fits are
+running for conductance bands ±5%, ±10% and ±20%, with constant ambient and the
+matched OU+nugget criterion. Inspect their process/exit files before new work;
+controller sessions are 15170, 94113 and 66267 respectively. Never relaunch an
+unchanged live job. Run `audit_bounded.py` after each terminal successful fit.
+
+The varying-conductance implementation matches the zero-band baseline exactly,
+agrees with direct ODE integration within 2.0e-12 C, and its profiled gradient
+matches full finite differences within 2.7e-7 scaled error. Two synthetic starts
+recover centered deviations and linear coefficients with shared dynamics fixed;
+this is not a proof that all physical parameters are estimable. Radiation scale
+calculations passed independent quadrature and derivative checks. Remaining
+stage-1 operating-point/common-differential diagnostics and quantization/filter
+small cases can proceed in the available fourth process slot. `config.json`
+fixes initial choices. Check `initial_findings.md` for conditional interpretations.
 
 ## Resume instructions
 

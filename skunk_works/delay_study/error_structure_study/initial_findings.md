@@ -43,3 +43,29 @@ Evidence: [aggregate table](results/decomposition/aggregate.csv),
 [independent arithmetic audit](results/decomposition_audit/audit.json),
 [error partition figure](results/decomposition/error_partition.png) and
 [selected residual curves](results/decomposition/selected_residuals.png).
+
+
+The bounded-conductance equations also passed a zero-band nesting check,
+independent direct energy-balance integration and a full-versus-envelope
+profiled-gradient check. A three-record synthetic example recovers the known
+centered conductance deviations from two starts when the shared dynamics are
+fixed. This verifies a recoverable conditional problem; it does not establish
+all-parameter identifiability in the hardware data. Three four-start real-data
+comparisons are now running and have no selected result yet.
+
+The radiation calculation uses scenarios, not a fitted emissivity. With area
+0.0012 m2, surroundings 23 C and surface 70.54 C, the heat loss is 0.0213 W
+at epsilon=0.05 and 0.3834 W at epsilon=0.9. At those same endpoints, the
+nonlinear remainder beyond a linear radiative loss matched at 50 C is 0.0021
+and 0.0370 W. A fitted linear loss can absorb the larger linear contribution.
+Surface 100 C raises the high-emissivity heat loss to 0.7163 W and the remainder
+to 0.1552 W. Hidden heater temperatures could therefore matter. These scenarios
+cannot yet be translated into degrees of model error without a fitted energy
+balance, nor establish the surface finish of this device.
+
+Sources and qualifications are in [radiation_sources.md](radiation_sources.md);
+computed [scenario table](results/radiation_scale/scenarios.csv) and
+[independent quadrature/derivative checks](results/radiation_scale/audit.json)
+retain the calculation. The two finishes differ by a factor of eighteen in the
+assumed emissivity; the purpose is to show sensitivity, not assign a physical
+confidence interval.

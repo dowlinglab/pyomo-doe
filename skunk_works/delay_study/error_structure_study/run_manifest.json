@@ -7,8 +7,8 @@
   "phases": {
     "0_reconcile": "complete",
     "1_decompose": "in_progress",
-    "2_radiation_and_synthetic": "pending",
-    "3_bounded_conductance": "pending",
+    "2_radiation_and_synthetic": "in_progress: radiation scale, zero-band nesting, direct ODE and conditional noiseless recovery passed; quantization checks pending",
+    "3_bounded_conductance": "in_progress: three four-start constant-ambient jobs",
     "4_physical_extensions": "pending",
     "5_observation_model": "pending",
     "6_uncertainty_transfer": "pending",
@@ -56,9 +56,151 @@
       },
       "output": "skunk_works/delay_study/error_structure_study/results/decomposition_audit",
       "source_receipt_sha256": "49d50e003dcdbc174262985dcd307d4f57b3f2b66e8626ed5aafd41cba27a5ef"
+    },
+    {
+      "id": "bounded_check",
+      "status": "terminal",
+      "source_commit": "50450dea3edb63186cf012e5144af20f54ee198b",
+      "process": {
+        "pid": 71512,
+        "parent_pid": 71294,
+        "command": [
+          "/Users/adowling/opt/anaconda3/bin/python",
+          "/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-error-50450dea-711kpnza/skunk_works/delay_study/error_structure_study/check_bounded.py",
+          "--output",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/bounded_check",
+          "--warm",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/coupled_model_study/results/main_lag_curve_ou/fit.json"
+        ]
+      },
+      "output": "skunk_works/delay_study/error_structure_study/results/bounded_check",
+      "source_receipt_sha256": "138dba62453158c4ce462c08344983b7c18fb06d570d5d21d3b5e51f7dd5f998",
+      "exit_code": 0
+    },
+    {
+      "id": "bounded_recovery",
+      "status": "terminal",
+      "source_commit": "97d074ba0182543c0110e8cb69a7625068b9f847",
+      "process": {
+        "pid": 73625,
+        "parent_pid": 73073,
+        "command": [
+          "/Users/adowling/opt/anaconda3/bin/python",
+          "/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-error-97d074ba-9m6sgasp/skunk_works/delay_study/error_structure_study/recover_bounded.py",
+          "--output",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/bounded_recovery",
+          "--warm",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/coupled_model_study/results/main_lag_curve_ou/fit.json"
+        ],
+        "started_utc": "2026-10-25T19:47:01.352910+00:00"
+      },
+      "output": "skunk_works/delay_study/error_structure_study/results/bounded_recovery",
+      "source_receipt_sha256": "d6afce612b58abcec68c5aa21dc6af8d7cf0f5707da444b7883d35df0a333894",
+      "exit_code": 0
+    },
+    {
+      "id": "radiation_scale",
+      "status": "terminal",
+      "source_commit": "97d074ba0182543c0110e8cb69a7625068b9f847",
+      "process": {
+        "pid": 73624,
+        "parent_pid": 73072,
+        "command": [
+          "/Users/adowling/opt/anaconda3/bin/python",
+          "/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-error-97d074ba-s_voda0m/skunk_works/delay_study/error_structure_study/radiation_scale.py",
+          "--output",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/radiation_scale"
+        ],
+        "started_utc": "2026-10-25T19:47:01.352781+00:00"
+      },
+      "output": "skunk_works/delay_study/error_structure_study/results/radiation_scale",
+      "source_receipt_sha256": "d504abed8427645481802f59d9d81f0598b105c3209877d113ea4766d0656e4c",
+      "exit_code": 0
+    },
+    {
+      "id": "band_05_constant",
+      "status": "running",
+      "source_commit": "97d074ba0182543c0110e8cb69a7625068b9f847",
+      "process": {
+        "pid": 75534,
+        "parent_pid": 74767,
+        "command": [
+          "/Users/adowling/opt/anaconda3/bin/python",
+          "/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-error-97d074ba-4iy6xmx9/skunk_works/delay_study/error_structure_study/run_bounded.py",
+          "--output",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/band_05_constant",
+          "--warm",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/coupled_model_study/results/main_lag_curve_ou/fit.json",
+          "--band",
+          "0.05",
+          "--starts",
+          "4",
+          "--maxiter",
+          "600"
+        ],
+        "started_utc": "2026-10-25T19:47:34.783969+00:00"
+      },
+      "output": "skunk_works/delay_study/error_structure_study/results/band_05_constant",
+      "source_receipt_sha256": "8922b0dc6dd5a5aa488574aec7c4a59931192c005123c69c67f90948a8df8fab"
+    },
+    {
+      "id": "band_10_constant",
+      "status": "running",
+      "source_commit": "97d074ba0182543c0110e8cb69a7625068b9f847",
+      "process": {
+        "pid": 75533,
+        "parent_pid": 74766,
+        "command": [
+          "/Users/adowling/opt/anaconda3/bin/python",
+          "/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-error-97d074ba-_kkqjsxm/skunk_works/delay_study/error_structure_study/run_bounded.py",
+          "--output",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/band_10_constant",
+          "--warm",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/coupled_model_study/results/main_lag_curve_ou/fit.json",
+          "--band",
+          "0.10",
+          "--starts",
+          "4",
+          "--maxiter",
+          "600"
+        ],
+        "started_utc": "2026-10-25T19:47:34.750992+00:00"
+      },
+      "output": "skunk_works/delay_study/error_structure_study/results/band_10_constant",
+      "source_receipt_sha256": "64435eee95ec5fea6290a189355a6d54d4d1742fa01225b772d66593dd6e8e7b"
+    },
+    {
+      "id": "band_20_constant",
+      "status": "running",
+      "source_commit": "97d074ba0182543c0110e8cb69a7625068b9f847",
+      "process": {
+        "pid": 75530,
+        "parent_pid": 74768,
+        "command": [
+          "/Users/adowling/opt/anaconda3/bin/python",
+          "/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-error-97d074ba-fnecydil/skunk_works/delay_study/error_structure_study/run_bounded.py",
+          "--output",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/band_20_constant",
+          "--warm",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/coupled_model_study/results/main_lag_curve_ou/fit.json",
+          "--band",
+          "0.20",
+          "--starts",
+          "4",
+          "--maxiter",
+          "600"
+        ],
+        "started_utc": "2026-10-25T19:47:34.678492+00:00"
+      },
+      "output": "skunk_works/delay_study/error_structure_study/results/band_20_constant",
+      "source_receipt_sha256": "6ab5620b53627097dd317323a0ed553a3bcb819e3af13a524c10c11fc0908b3e"
     }
   ],
-  "live_jobs": [],
-  "next_action": "Extend decomposition by operating point, heating/cooling and common/differential residuals; implement and verify centered bounded-conductance model, radiation scaling and quantization small cases before measured fits.",
-  "updated_utc": "2026-10-25T19:43:26.596487+00:00"
+  "live_jobs": [
+    "band_05_constant",
+    "band_10_constant",
+    "band_20_constant"
+  ],
+  "next_action": "Reconcile band_05_constant, band_10_constant and band_20_constant before new jobs. Audit terminal fits with audit_bounded.py from frozen source; preserve failures. Continue remaining stage-1 diagnostics and quantization-aware small-case checks in available capacity.",
+  "updated_utc": "2026-10-25T19:48:34.905603+00:00"
 }
