@@ -7,11 +7,24 @@ ten-plus-hour research scope without an idle minimum or fixed stopping time.
 
 ## Current state
 
-The goal is active. Stage 0 is reconciling prior terminal jobs and source/data
-bindings. Stage 1 will decompose the four saved joint-output model trajectories;
-new thermal fits have not started. No related process was live at goal launch.
-The current manifest owns phase status and job paths; update it after each
-terminal result. `config.json` fixes the initial bands, windows and diagnostics.
+The goal is active. Stage 0 passed: all twelve unique raw records and sixteen
+prior evidence bindings match, and all 26 prior jobs have successful terminal
+exit artifacts. No related process was live at launch. Stage 1 has a first
+source-bound decomposition of 384 run/channel/window combinations, independently
+checked by QR projections (maximum energy difference 9.1e-12 C2). Both figures
+were visually inspected. New thermal fits have not started.
+
+In the short-lag/command-curve constant-ambient model, offsets explain 74.6%
+and additional linear trends 19.3% of T1 squared error. The fundamental adds
+0.64%. After 450 s, 96.1% is run offsets. These are descriptive nested
+projections, not identified environmental effects. This favors investigating
+slow between-run mismatch before adding another response lag. Detailed initial
+findings are in `initial_findings.md` and `results/decomposition`.
+
+The current manifest owns phase status and job paths. Stage 1 still needs
+operating-point, heating/cooling, common/differential and prediction diagnostics.
+Next implement and audit centered conductance variation and radiation/observation
+small cases before measured model fits. `config.json` fixes initial choices.
 
 ## Resume instructions
 
