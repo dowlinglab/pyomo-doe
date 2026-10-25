@@ -77,7 +77,9 @@ def main():
     write_json(args.output/'harmonic_audit.json',audit_harmonics())
     fit=json.loads((args.input/'fit.json').read_text());best=fit['best']
     arrays=np.load(args.input/'trajectories.npz')
-    if 'noise_parameters' in best:
+    if fit.get('kind')=='quadratic_loss':
+        ell,eta=fit['parameters']['ell_s'],fit['parameters']['eta'];sigma=fit['sigma_C']
+    elif 'noise_parameters' in best:
         ell,eta=best['noise_parameters'];sigma=best['sigma_total_ML_C']
     else:
         x=best['point'];ell,eta=np.exp(x[-2]),x[-1];sigma=best['sigma_C']
@@ -131,11 +133,11 @@ def main():
     write_json(args.output/'diagnostics.json',{'forecast_summary':summary,'harmonic_cells':harmonics,
         'input_fit_sha256':hashlib.sha256((args.input/'fit.json').read_bytes()).hexdigest(),
         'notice':'Within-record retrospective fitted parameters/ambient; conditioning only on temperatures through each origin. Not held-out prediction. Forecast ranges condition on parameters and covariance. Harmonic regressions descriptive; finite-window projection leakage, trend, input harmonics and quantization prevent unique nonlinear attribution. Rounded-model comparison is deterministic sensitivity, not an independent calibration/noise law.'})
-    plots(args.output,series,summary)
+    plots(args.output,series,summary,args.input.name)
     print(json.dumps({'status':'complete','forecast_summary':summary,'harmonic_cells':len(harmonics)}),flush=True)
 
 
-def plots(output,series,summary):
+def plots(output,series,summary,model_label):
     import matplotlib
     matplotlib.use('Agg')
     import matplotlib.pyplot as plt
@@ -157,7 +159,7 @@ def plots(output,series,summary):
         for col,text in enumerate(('Temperature','Raw residual, C','Standardized innovation')):axes[0,col].set_title(text)
         axes[0,0].legend();axes[0,1].legend()
         for ax in axes[-1]:ax.set_xlabel('Elapsed time, s')
-        fig.suptitle(label+'; pooled reference; dotted line marks 300 s')
+        fig.suptitle(label+'; '+model_label+'; dotted line marks 300 s')
         fig.tight_layout(rect=(0,0,1,.96));fig.savefig(output/('runs_'+stem+'.png'));plt.close(fig)
     fig,ax=plt.subplots(figsize=(6,4))
     ax.semilogx([r['horizon_s'] for r in summary],[r['conditional_RMSE_C'] for r in summary],'o-',label='Condition on temperature history')
