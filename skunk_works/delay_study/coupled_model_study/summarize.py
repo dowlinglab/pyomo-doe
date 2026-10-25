@@ -63,6 +63,11 @@ def main():
         '| --- | ---: | ---: | ---: | ---: | ---: |']
     for n in args.selected:
         f=fits[n];text.append('| '+n+' | '+' | '.join([f"{f['RMSE_by_channel_C'][0]:.4f}",f"{f['RMSE_by_channel_C'][1]:.4f}",f"{f['nominal_AICc']:.2f}",f"{f['best']['projected_gradient']:.4g}",str(sum(s['success'] for s in f['starts']))+'/'+str(len(f['starts']))])+' |')
+    iid_path=r/'pilot_lag_iid/fit.json';iid=json.loads(iid_path.read_text());bindings[str(iid_path.relative_to(r))]=sha(iid_path)
+    text+=['',f"The IID pilot pushed the extra input lag to its {iid['parameters']['input_lag_s']:.2f} s lower bound, "
+        f"with T1/T2 RMSE {iid['RMSE_by_channel_C'][0]:.3f}/{iid['RMSE_by_channel_C'][1]:.3f} C. "
+        'The colored-error analysis supports a finite short lag while accepting more slow temperature mismatch. '
+        'The error model changes the fitted dynamics as well as their uncertainty; a lag estimate should always name the fitting criterion.']
     text+=['','AICc compares the same two-output observations under the working Gaussian covariance. '
         'It is not compared with the earlier T1-only likelihood. A lower correlated-error objective need not lower raw temperature RMSE. '
         'These are retrospective fits; all records have informed model selection.','',
