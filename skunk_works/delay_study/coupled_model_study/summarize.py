@@ -125,7 +125,22 @@ def main():
         'Swapping their time constants leaves both command-to-temperature transfers unchanged. '
         'Ambient and startup assumptions can break this equivalence, so any apparent allocation can depend on those assumptions. '
         'An extra lag that improves the fit is therefore evidence for a missing dynamic contribution, not a calibrated actuator or sensor time constant.','',
+        '## What the TCLab Python simulator adds','']
+    simulator_path=r/'simulator_audit/simulator_audit.json';sim=json.loads(simulator_path.read_text());assert sim['status']=='passed'
+    bindings[str(simulator_path.relative_to(r))]=sha(simulator_path)
+    fast=next(x for x in sim['frequency'] if x['period_s']==30)
+    text += [f"The inspected [TCLabModel source](https://github.com/jckantor/TCLab/blob/master/tclab/tclab.py#L336-L370) "
+        f"uses two coupled heater states and two nonloading sensor states. Defaults give common/differential heater times "
+        f"{sim['common_heater_time_s']:.1f}/{sim['differential_heater_time_s']:.1f} s and a {sim['sensor_time_s']:.0f} s sensor lag. "
+        f"There is no separate input lag. Its derived continuous T1 phase at 30 s is {fast['continuous_phase_deg'][0]:.1f} degrees; "
+        'this architecture also leaves the extra-phase question open. The defaults are not ENV2 calibration results.','',
+        'The measurement routine adds independent normal noise before flooring to a 0.3223 C grid. '
+        'That produces a temperature-dependent conditional bias and can leave apparent serial structure when a smooth mean model ignores it. '
+        'It does not create dependence between independent draws conditional on the true trajectory. '
+        'A quantization-aware measurement likelihood is a better targeted next check than assuming every remaining pattern requires another thermal state. '
+        'The inspected source is bound by SHA-256 in `results/simulator_audit/simulator_audit.json`; its private cache is `../_private/upstream/tclab_source.py`.','',
         '## Open questions','',
+        '- How do quantization-aware fitting and uncertainty differ from the present additive Gaussian error model? The simulator suggests this check; it does not establish the actual device noise law.',
         '- Does relaxing heater/sensor symmetry improve both outputs while preserving the fast phase evidence? The present comparison does not answer that.',
         '- How much of the remaining cross-channel dependence comes from common environmental disturbance versus mean-model error?',
         '- Can independently measured electrical power, sensor dynamics or ambient temperature distinguish the competing lag interpretations?',
@@ -134,6 +149,7 @@ def main():
         'The frozen foundation checks compare exact holds with independent dimensional energy-balance integration, transfer inversion and the common/differential identities. '
         'Every selected fit has a separate dimensional-matrix forward audit and dense-Cholesky covariance/likelihood audit. '
         'The analysis checks its pole/residue reconstruction against the analytic transfer. '
+        'The simulator audit executes only its inspected arithmetic update, compares Euler steps with an independent exact state-space solution, and records the source hash. '
         'Source commits, raw hashes, multistarts, solver outcomes and audit bindings are retained in `run_manifest.json` and `results/`. '
         'Numerical agreement verifies implementation, not the physical assumptions or scientific adequacy. The previous completed study and email delivery are unchanged.','',
         'The reciprocal balances follow the [Notre Dame four-state TC-Lab notes](https://ndcbe.github.io/controls/tclab/03.06-Four-State-Model.html). '

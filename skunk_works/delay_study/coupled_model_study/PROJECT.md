@@ -97,3 +97,13 @@ All new results belong in this folder. The earlier completed research goal and
 paused heartbeat stay unchanged. This follow-up does not authorize another
 email or a new hardware experiment. Commit source before measured runs, then
 commit selected evidence and the report, and push the branch when complete.
+
+Alex also requested inspection of the TCLab Python simulation mode. The package
+is not installed in the pinned numerical environment. Inspect its official
+upstream source without changing that environment or importing hardware code.
+The cached source is ../_private/upstream/tclab_source.py (ignored); bind exact
+bytes and selected arithmetic-method ASTs in results/simulator_audit. Its
+nonloading sensor model is the weak-loading limit of the present network;
+the default sensor/thermal time labels do not calibrate this experimental unit.
+Its floor quantizer motivates a future measurement-likelihood check, not a claim
+that the simulator generated ENV2 or that its noise law matches this device.
