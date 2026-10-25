@@ -11,7 +11,7 @@ set no duration constraint. Preserve the completed residual_study and its email.
 | 2. Frequency response | 54 estimates independently reconstructed; joint-harmonic correction audited |
 | 3. LTI benchmarks | Two/three/four real-pole fits audited; numerator-bound sensitivities establish a weak fast pole |
 | 4. Equal-stage comparison | n=1/2/3 joint fits and fixed-weight/IID sensitivities audited; all six profiles/78 points audited |
-| 5. Targeted explanations | Positive unequal lags, transport and linear-ambient fits audited; FIR16 cells audited; nonlinear/transport checks audited; revised-mean stage comparison closing |
+| 5. Targeted explanations | Positive unequal lags, transport and linear-ambient fits audited; FIR16 cells audited; nonlinear/transport checks audited; all16 main fits audited; revised-stage profiles pending |
 | 6. Report and review | report.md is a draft; numerical/source/figure/requirement audit pending |
 
 ## Established evidence
@@ -44,30 +44,31 @@ It conditions on the n=1 ambient/noise reference and is not another jointly
 estimated likelihood competitor. Selected kernels were independently audited
 using command-step convolution and dense covariance weighting.
 
-## Final bounded comparison and remaining work
+## Final comparison and remaining checks
 
-The targeted quadratic-loss and monotone command-map checks have selected-fit
-and profile audits. A command map plus transport and linear ambient fits at
-0.38794 C RMSE. A command map alone with n=1 and linear ambient fits at
-0.33413 C, but retains a much poorer working likelihood. Raw RMSE, stochastic
-weighting and dynamic adequacy must be assessed together.
+All sixteen main fits and their selected means/innovations/dense likelihoods
+are audited. The revised unequal-positive model has RMSE0.37397 C, shared
+K0.688645, time constants142.84/2.99/13.47 s and command curvature0.10184.
+It removes much of the fast input-linked error but retains maximum innovation
+ACF0.163 and slow/quantized discrepancies. It is a candidate reduced reference,
+not an established universal stochastic description.
 
-Complete the matched command-map/linear-ambient n=1/2/3 and unequal-positive
-three-pole comparisons before assigning a stage preference. These are the final
-mean families in scope. Run their independent selected-fit audits, scaled
-information/response uncertainty, K/theta profiles, and innovation checks.
-The existing phase, FIR and nonlinear results explain why these follow-ups
-were selected; no additional broad model search is planned.
+Revised equal-stage n=1/2/3 use the same command-map and affine ambient treatment.
+Their raw RMSEs are0.334/0.514/0.741 C; revised n=1 retains fast input-innovation
+cross-correlations0.458–0.482 despite its low raw error. Scaled information and
+pole-permutation checks are complete. The revised K/theta profiles are the only
+remaining numerical fits. No new mean families are planned.
+
+Finish those profiles and independently audit all saved points. Then run the
+committed summarize_evidence.py to check prediction arithmetic, AICc/counts,
+artifact bindings and the report table, and review its two figures. Complete
+verification.md, commit results and report, reconcile processes and stop for
+Alex's review. report.md already contains the scientific synthesis; its status
+and final profile discussion still need updating after these checks.
 
 Reconcile [run_manifest.json](run_manifest.json), exact process commands and
-terminal files before launching or retrying. The manifest identifies current
-jobs; it is not proof that a process remains alive. Never restart based on an
-observation timeout. Keep at most four long numerical processes.
-
-Final diagnostics must retain the quantized step response, remaining slow
-trends, per-run innovation scales and input association. One-step conditioning
-can hide mean error. Complete the report, figure review and requirement audit
-before marking this goal finished.
+terminal files before launching or retrying. Never restart from an observation
+timeout. Keep at most four long numerical processes with one BLAS thread each.
 
 ## Execution and completion rules
 

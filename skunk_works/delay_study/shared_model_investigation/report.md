@@ -1,152 +1,238 @@
 # What explains the shared TC-Lab model discrepancies?
 
-Status: investigation draft. The matched stage comparison under the revised
-mean assumptions is still running. The completed results below have numerical
-audits; the final synthesis and requirement audit remain pending.
+Status: results synthesis; final revised-stage profile audits pending.
 
-The fast residual cycle points to missing dynamic structure in the original
-two-pole formulation. A shared command-map/transport model with bounded linear
-ambient variation fits the twelve records at 0.388 C RMSE, versus 0.483 C for the
-original n=1 formulation. This is retrospective pooled fitting. We have not
-established a unique physical explanation or a calibrated universal error model.
+The original n=1 formulation misses a repeatable fast phase lag. A shared
+positive model with unequal lags, a small command curve and bounded affine
+ambient fits all twelve ENV2 records at 0.374 C RMSE, compared with 0.483 C for
+the reference. Adding more identical delay stages does not resolve the
+restriction. The revised model removes much of the fast input-related error,
+while remaining autocorrelation, slow bias and temperature quantization prevent
+us from claiming an adequate universal stochastic model.
 
-| Question | Evidence | Status |
+| Phase and question | Evidence | Status |
 |---|---|---|
-| Does the reference reproduce? | Independent means and likelihood agree; RMSE 0.48320 C | Complete |
-| Is the fast cycle repeatable? | All three fast-sine repeats share a phase-aligned pattern | Complete descriptive analysis |
-| What response feature is missing? | About 28–32 degrees of extra phase lag at the 30-second input | 54 estimates independently audited |
-| Can linear dynamics explain it? | Unequal positive lags and explicit transport are alternatives; free numerators also fit but are unstable to bounds | Selected fits audited |
-| What changes with nonlinearity and ambient? | A modest shared command curve plus affine ambient improves trajectory fit | Selected means audited; residual assessment pending |
-| Does stage preference survive the revised mean? | Matched n=1/2/3 and unequal-stage reruns underway | In progress |
+| 0. Does the reference reproduce? | Independently reconstructed means, innovations and likelihood; RMSE 0.48320 C | Verified |
+| 1. Is the discrepancy offset, drift or cycling? | All three fast-sine repeats share a phase-aligned cycle; slow trends also remain | Descriptive decomposition complete |
+| 2. Is amplitude or phase wrong? | About 28–32 degrees of extra fast phase lag; 54 estimates with window/HAC sensitivities | Independently verified |
+| 3. Can flexible linear dynamics explain it? | Free numerators nearly remove fast cycling but identify fast modes poorly | Scoped real-pole benchmark complete |
+| 4. Does increasing n help? | n=2 improves working likelihood; n=3 worsens it, including under revised mean assumptions | Fits/information complete; final profiles pending |
+| 5. Which targeted revision helps? | Unequal positive lags and transport explain extra phase; command curvature and ambient improve level fit | Selected fits independently verified |
+| 6. What can we claim? | Shared trajectories improve; residual adequacy and unique mechanisms remain unresolved | Researcher review after final audit |
 
-## The fast discrepancy is larger than parameter uncertainty
+## A repeatable dynamic discrepancy
 
-Measured frequency responses use the actual held input, three startup cutoffs
-and two nuisance treatments. At 450 s, the fast-sine phase differs from matched
-n=1 by about −29, −32 and −31 degrees across repeats. The corresponding
-working HAC phase SDs are about 1.7, 2.4 and 3.1 degrees. The discrepancy remains
-across the other windows. The slower tests have much smaller phase differences;
-only 1–2 settled cycles remain in the 300-second tests.
+Measured frequency responses use the actual held command, three startup
+cutoffs and two nuisance treatments. At 450 s, the fast-sine phase differs from
+matched n=1 by about −29, −32 and −31 degrees across repeats. The corresponding
+working HAC phase SDs are about 1.7, 2.4 and 3.1 degrees. The discrepancy persists
+across other windows. The 120-second and 300-second tests have much smaller
+phase differences; only 1–2 settled cycles remain in the slowest tests.
 
 A positive two-real-pole transfer has phase between 0 and −180 degrees at
 positive frequency. The fast measured response is near −193 degrees on the
 independently unwrapped branch, or +167 degrees as a principal phase. Under the
-steady LTI interpretation, adjusting only its three positive parameters cannot
-match that phase. The original model's conditional local phase SD is only
-0.14 degrees at this frequency. Precise parameters therefore do not establish
-an adequate response structure.
+steady LTI interpretation, adjusting only the three positive n=1 parameters
+cannot match that phase. Its conditional local phase SD is only 0.14 degrees.
+These narrow parameter ranges omit the observed structural discrepancy.
 
 ![Measured gain and phase](results/frequency_figures/frequency_windows.png)
 
-See the [frequency estimates](results/frequency/frequency_estimates.json),
-[all-estimate audit](results/frequency_audit/audit.json), and
+The [54 frequency estimates](results/frequency/frequency_estimates.json) and
+[independent quadrature/QR audit](results/frequency_audit/audit.json) preserve
+the windows, repeat-level uncertainty and phase reference. See also the
 [phase-aligned repeats](results/frequency_figures/phase_repeats.png).
 
-## What the model comparisons establish so far
+## Shared model comparisons
 
-All rows use the same twelve records, input holds, startup convention, ambient
-reference and OU-plus-measurement family. Numeric covariance parameters are
-reestimated. Main variable-projection fits use 24 starts; the nonlinear heat-loss
-check uses twelve, including another thermal-role basin. Labels mentioning
-linear ambient use two bounded endpoint offsets per run; the other rows use
-one constant offset. Parameter counts include nuisance terms and noise scale.
+All rows use the same twelve records, actual irregular timestamps, left input
+holds, startup convention and OU-plus-measurement family. Numerical covariance
+parameters are reestimated. Each main variable-projection fit uses 24 starts;
+the quadratic heat-loss fit uses twelve, including another thermal-role basin.
+Parameter counts include ambient nuisance values and all noise parameters.
+Affine ambient uses two endpoint offsets per run, each within ±2 C; otherwise
+each run has one constant offset.
 
-| Model | Raw RMSE, C | Negative log likelihood | Nominal parameter count |
+For equal stages, n counts input-delay states and theta is their total mean
+delay: G_n(s)=K/[(1+tau*s)(1+theta*s/n)^n]. The full mean model has n+1 states.
+
+| Model | Raw RMSE, C | Negative log likelihood | Parameters |
 |---|---:|---:|---:|
-| n=1 equal chain | 0.483 | -7927.2 | 18 |
-| n=2 equal chain | 0.972 | -8237.0 | 18 |
-| n=3 equal chain | 1.188 | -7744.8 | 18 |
-| Flexible three-state real-pole benchmark | 0.911 | -8426.8 | 21 |
-| Flexible four-state real-pole benchmark | 0.854 | -8449.3 | 23 |
+| Original n=1 | 0.483 | -7927.2 | 18 |
+| Original n=2 | 0.972 | -8237.0 | 18 |
+| Original n=3 | 1.188 | -7744.8 | 18 |
+| Flexible two-state real-pole | 1.100 | -8322.0 | 19 |
+| Flexible three-state real-pole | 0.911 | -8426.8 | 21 |
+| Flexible four-state real-pole | 0.854 | -8449.3 | 23 |
 | Three unequal positive poles | 0.908 | -8402.8 | 19 |
-| Two poles plus transport delay | 1.034 | -8396.8 | 19 |
-| Transport plus linear ambient | 0.750 | -8406.5 | 31 |
-| Command map plus transport | 0.647 | -8426.5 | 20 |
-| Command map, transport and linear ambient | 0.388 | -8439.3 | 32 |
-| Quadratic heat loss plus transport | 0.734 | -8411.7 | 20 |
+| Two poles + transport | 1.034 | -8396.8 | 19 |
+| Transport + affine ambient | 0.750 | -8406.5 | 31 |
+| Command map + transport | 0.647 | -8426.5 | 20 |
+| Command map + transport + affine ambient | 0.388 | -8439.3 | 32 |
+| Quadratic heat loss + transport | 0.734 | -8411.7 | 20 |
+| Command map + n=1 + affine ambient | 0.334 | -7961.1 | 31 |
+| Command map + n=2 + affine ambient | 0.514 | -8284.0 | 31 |
+| Command map + n=3 + affine ambient | 0.741 | -7785.4 | 31 |
+| Command map + unequal three poles + affine ambient | 0.374 | -8447.8 | 32 |
 
 Lower negative log likelihood is better under the working Gaussian law, but it
 can accompany worse raw temperature error because the fitted disturbance also
-changes. The initial n=2 fit suppresses part of the fast cycle while increasing
-raw RMSE. Fixed-covariance and IID sensitivities preserve the conclusion that
-these equal-stage increases do not improve raw RMSE under the initial mean.
-The final matched reruns will test stage preference after adding the command
-map and linear-ambient convention.
+changes. For example, the original n=2 fit has a much longer disturbance time
+scale than n=1. Fixed-covariance and IID sensitivities also fail to improve raw
+error by increasing equal-stage order under the original mean assumptions.
 
-The flexible three-state model nearly matches the fast phase, but reaches a
-numerator bound and uses a poorly estimated fast pole. Widening the coefficient
-bounds moves that pole from 0.14 to 0.07 to 0.04 s with almost unchanged
-likelihood and gain. It has nonminimum-phase zeros and a sign-changing early
-impulse. This supports revisiting the constrained dynamics, without identifying
-those states as thermal mechanisms. A local full-rank sensitivity matrix does
-not make those parameters practically estimable.
+The revised n=1 fit has the lowest raw RMSE among these joint fits, yet retains
+fast input–innovation correlations of 0.458–0.482. For revised n=2 and n=3 they
+are 0.201–0.232 and 0.440–0.458. Increasing identical stages therefore leaves a
+repeatable dynamic mismatch even after improving the level response.
 
-Positive alternatives avoid that interpretation. Three unequal poles fit at
-approximately 142.5, 13.6 and 3.0 s; swapping the last two preserves all predicted
-trajectories and likelihood. Two poles with an effective additional delay fit
-d near 2.53 s. The nominal profile support is 2.41–2.65 s under that model;
-physical transport and acquisition timing are not separated by this parameter.
+The flexible three-state benchmark nearly matches fast phase and reduces those
+correlations to 0.038–0.064. It reaches a numerator bound and has a weakly
+estimated fast pole. Widening coefficient bounds moves that pole from 0.14 to
+0.07 to 0.04 s with almost unchanged likelihood and gain. Its nonminimum-phase
+zeros and sign-changing early impulse should not be assigned physical meaning.
+The four-state benchmark has similar problems. These are stable real-pole
+benchmarks; we did not fit an unrestricted LTI family or run a subspace estimator.
+The four-state fit retains a better nominal AICc than the positive revisions.
+Its weak fast modes, bound sensitivity and larger raw error prevent a clear
+physical recommendation from that criterion alone.
 
-## Two nonlinear explanations and ambient variation
+![Initial dynamic comparisons](results/comparison_primary/model_frequency_impulse.png)
 
-The shared command curve is u_eff=u+c*u*(1−u/100), followed by positive delayed
-linear dynamics. The fitted constant-ambient c is about 0.097; nominal profile
-support is 0.074–0.121. With affine ambient, c is about 0.109 and d about 2.54 s.
-For ideal 50+50 sin input this map changes the mean and adds a second harmonic,
-while preserving the fundamental. It therefore tests step/sine gain differences
-and harmonics. A constant alpha multiplier remains absorbed into K; command
-curvature is a separate response hypothesis.
+## A supported reduced revision, with alternatives
 
-The temperature-dependent alternative adds −beta*v² to the thermal balance,
-with beta about 0.0025 per C. Its scoped nominal profile support is 0.0016–0.0036 per C. This
-is a phenomenological heat-loss term, not an identified radiation coefficient.
-The command-map alternative has better working likelihood and raw error in this
-comparison, but that does not prove where the nonlinearity occurs physically.
-Both structures have grounding in established modeling approaches: a
-[static input map followed by linear dynamics](https://www.mathworks.com/help/ident/ref/idnlhw.html),
-and [nonlinear TC-Lab heat loss](https://apmonitor.com/pdc/index.php/Main/TCLabRadiative).
+Allowing two different input-lag times gives a positive three-state cascade:
 
-Affine ambient reduces raw error substantially after revising dynamics, but its
-nominal AICc advantage in the command-map case is only about 1.5. The additional
-ambient flexibility is not decisive evidence of physical room-temperature drift.
-Model discrepancy and ambient variation remain confounded without independent
-ambient measurements.
+\[
+G(s)=\frac{K}{(1+\tau s)(1+\theta_1s)(1+\theta_2s)}.
+\]
 
-## Error structure and the limits of these uncertainty ranges
+With the shared command map u_eff=u+c*u*(1−u/100) and affine ambient, the fitted
+values are K=0.6886 C/percent, tau=142.8 s, input lags 13.47 and 2.99 s, and
+c=0.1018. This is one thermal state plus two unequal lag states. Its raw RMSE is
+0.374 C, a 22.6% reduction from the original reference. Fast input–innovation
+correlations fall to 0.085–0.116. The two lag labels can be interchanged without
+changing any trajectory or likelihood; local full rank does not remove that
+exact ambiguity.
 
-A descriptive nested projection assigns roughly 38% of reference SSE to per-run
-means, another 36% to linear trends, 10% to sine fundamentals and 16% to the
-remainder. These fractions depend on projection order; they do not allocate
-causal fractions to ambient or measurement noise.
+The transport alternative uses two positive poles plus an effective extra delay.
+Without a command curve its fitted d is about 2.53 s, with scoped nominal profile
+support 2.41–2.65 s. With the command map and affine ambient it reaches 0.388 C
+RMSE and d about 2.54 s. The unequal-lag model has a nominal AICc advantage of
+about 17 over that matched transport model. Timing conventions, unmeasured
+ambient variation and the remaining noise mismatch qualify that preference;
+the delay is not an independent hardware calibration.
+
+![Revised dynamic comparisons](results/comparison_mapped/model_frequency_impulse.png)
+
+For command-map models these curves show the linear dynamic block, which is
+also the local response about command 50%. A nonlinear model has no single
+global transfer function.
+
+For an ideal 50+50 sin input, the command map adds c[12.5+12.5 cos(2wt)] while
+preserving the fundamental. It tests step/sine mean-response differences and a
+second harmonic. Constant alpha remains absorbed in K. Estimating another
+constant alpha cannot improve these temperature-only fits. The constant-ambient
+command-curve profile supports c about 0.074–0.121 under its working likelihood.
+
+The quadratic-loss alternative adds −beta*v² to the thermal balance. Its beta
+is about 0.0025 per C, with scoped grid-interpolated support about
+0.0016–0.0036 per C. It improves over the linear transport mean, but the command
+map has better working likelihood and raw error in this comparison. This does
+not identify where the nonlinearity occurs. The structures follow established
+[static-map/linear-block identification](https://www.mathworks.com/help/ident/ref/idnlhw.html)
+and [nonlinear TC-Lab heat-loss modeling](https://apmonitor.com/pdc/index.php/Main/TCLabRadiative);
+we imported no published device calibration values.
+
+Affine ambient improves level fit after revising dynamics. In the transport
+command-map comparison its nominal AICc advantage over constant ambient is only
+about 1.5 despite the raw RMSE reduction. Neither actual room-temperature drift
+nor its slope is measured. Both endpoint bounds are an explicit computational
+convention, and model discrepancy can be absorbed by that flexibility.
+
+## Residual structure and uncertainty
+
+A sequential descriptive projection assigns roughly 38% of reference SSE to
+per-run means, another 36% to linear trends, 10% to fundamentals and 16% to the
+remainder. The fractions depend on projection order and do not assign causal
+ambient/noise contributions. The regularized FIR fits also permit mostly
+positive response shapes; their best descriptive raw error is about 0.451 C.
+Their onset/tails depend on lag bins, horizon and penalty. They condition on the
+reference ambient/covariance, so their score is not another joint likelihood
+competitor. All 16 FIR cells have an [independent audit](results/fir_audit/audit.json).
+
+The revised unequal-lag model still has a maximum absolute innovation ACF of
+0.163 over lags 1–30 and all runs, versus 0.256 for original n=1. Per-run innovation
+SDs span 0.903–1.074. The pooled mean square is one by fitted-scale algebra;
+that is no adequacy check. Slow biases and quantized step plateaus/pulses remain
+visible. Correlations with input shape, temperature and temperature rate, plus
+time-block scales, are retained in the [innovation assessment](results/innovation_assessment/assessment.json).
+These are descriptive checks with selected lag searches, not calibrated joint
+whiteness tests.
+
+![Revised step records and innovations](results/diagnostics_mapped_unequal/runs_step_50.png)
+
+The revised unequal model has a scaled sensitivity condition number about 20
+and local SD(log K) about 0.0088. Conditional local SDs for log(3.0-second lag)
+and log(13.5-second lag) are about 0.037 and 0.015; SD(c) is about 0.0138. Flexible three/four-state
+models have much weaker directions despite local full rank. The scaled
+information eigendecompositions, full covariance and response uncertainty are
+saved with each model. These calculations fix covariance and permit all ambient
+nuisance directions locally, even at bounds.
+
+All profile support uses scoped grids, bounded reoptimization and nominal
+2-delta-NLL threshold 3.84146. Independent propagation/dense-likelihood audits
+check the saved points. Bounds, limited excitation, data-dependent selection
+and remaining misspecification prevent a 95% coverage guarantee. A narrow
+within-model parameter range cannot represent the uncertainty across competing
+mean and measurement descriptions.
+
+## Prediction versus simulation, and the earlier two-record study
 
 Conditioning on temperature history reduces reference one-second RMSE from
-0.484 C to 0.117 C on identical targets. At 300 s the errors are 0.529 C and
-0.483 C. Parameters and ambient offsets were fitted to the full records, so this
-shows the effect of retrospective measurement conditioning, not independent
-forecast validation. See [forecast diagnostics](results/reference_diagnostics_v2/diagnostics.json).
+0.484 C to 0.117 C on identical targets. For the revised unequal model these
+values are 0.374 C and 0.111 C. At 300 s, revised free-run and conditional RMSEs
+are 0.419 C and 0.373 C. The short-horizon predictor can compensate for a poor
+mean, so one-step accuracy alone cannot select a physical model.
 
-The regularized impulse-response fits support mostly positive response shapes
-with modest smoothing. The best descriptive raw error is about 0.451 C. Their
-early response and tails depend on lag bins, horizon and penalty; these
-sensitivities are not confidence bands or sub-bin delay estimates. They also
-condition on the reference ambient/noise model, so their score is not another
-joint likelihood competitor. See [FIR audit](results/fir_audit/audit.json).
+Forecast conditioning uses temperatures only through each origin. However,
+parameters and ambient endpoints were fitted to complete records. These are
+retrospective within-record comparisons. A new run's ±2 C ambient envelope is
+not a probability distribution, and its endpoint values cannot be estimated
+prospectively from its future temperatures. See the
+[forecast calculation and audit](results/diagnostics_mapped_unequal/diagnostics.json).
 
-All reported profile support is nominal, bounded working-likelihood support;
-no coverage guarantee follows under misspecification or data-dependent model
-selection. Local information fixes covariance and allows unrestricted nuisance
-directions even at bounds. Residual input association, remaining autocorrelation,
-variance changes and quantization still need final assessment for the revised
-mean models. No untouched validation set has been created from these records.
+The earlier one-sine/one-step calibration errors combine limited calibration
+information, ambient uncertainty and mean/error mismatch. This investigation
+shows a pooled structural revision is possible, but does not establish how
+much it will improve a newly calibrated pair or unseen records. All twelve
+ENV2 records have informed structure selection. Another restricted-pair study
+would be retrospective and should follow the researcher decision below.
 
-## What remains before the recommendation
+## Recommendation and open questions
 
-Finish the matched revised-mean n=1/2/3 and unequal-stage fits, their independent
-audits, uncertainty and innovation checks. Then state which explanations these
-records support, which remain indistinguishable, and what evidence would resolve
-the remaining uncertainty. Restricted-pair calibration, new experiments and
-DoE remain for a later researcher decision.
+Use the positive unequal-lag/command-map model as the next reduced-model
+reference, retaining the transport alternative as a sensitivity. Keep the
+original n=1 model as the documented simpler approximation. Defer the remaining
+calibration-pair matrix until deciding how to handle the measurement process
+and slow discrepancies.
 
-Full equations, bounds, numerical methods and source references are in
-[methods.md](methods.md). Current execution and evidence locations are in
-[PROJECT.md](PROJECT.md) and [run_manifest.json](run_manifest.json).
+1. Can the recorded temperature quantization explain the remaining innovation
+   autocorrelation and sparse step pulses? A quantization-aware observation
+   model is a targeted next comparison; another flexible covariance alone may
+   obscure this feature.
+2. How much of the slow residual bias is ambient forcing versus thermal-model
+   discrepancy? Independent ambient information would separate these better;
+   the current bounded endpoints cannot do so causally.
+3. Are the fast lag and transport estimates thermal dynamics or acquisition
+   timing? Three sine frequencies and the current timestamp assumptions leave
+   those mechanisms partly interchangeable.
+4. Does command curvature describe actual delivered power, or approximate
+   temperature-dependent heat loss? Current protocol/operating-condition
+   confounding and harmonic uncertainty prevent a unique physical attribution.
+
+Full equations, bounds and method sources are in [methods.md](methods.md).
+The [verification record](verification.md) links numerical checks and limitations;
+[PROJECT.md](PROJECT.md) and [run_manifest.json](run_manifest.json) own execution
+state. Review these alternatives before authorizing a wider physical model,
+additional calibration pairings or new experiments.
