@@ -24,10 +24,18 @@ def main():
             z=arrays['standardized_innovation_'+str(j)];u=arrays['input_'+str(j)][1:]
             correlation=acf(z,30);cross=input_correlation(z,u,30)
             values=[abs(r['correlation']) for r in cross if r['correlation'] is not None]
+            shaped=input_correlation(z,u*(1-u/100),30)
+            shaped_values=[abs(r['correlation']) for r in shaped if r['correlation'] is not None]
+            pred=arrays['predicted_'+str(j)][1:];t=arrays['time_'+str(j)][1:]
+            rate=np.abs(np.gradient(pred,t))
+            def safe_correlation(a,b):return None if np.std(a)<1e-12 or np.std(b)<1e-12 else float(np.corrcoef(a,b)[0,1])
             blocks=np.array_split(z,6)
             rows.append({'name':name,'mean':float(z.mean()),'SD':float(z.std()),
                          'acf_lags1_to30':correlation,'max_abs_acf_lags1_to30':float(max(abs(v) for v in correlation)),
                          'max_abs_input_correlation_lags30':max(values) if values else None,
+                         'max_abs_input_quadratic_shape_correlation_lags30':max(shaped_values) if shaped_values else None,
+                         'correlation_innovation_square_abs_mean_temperature_rate':safe_correlation(z*z,rate),
+                         'correlation_innovation_square_mean_temperature':safe_correlation(z*z,pred),
                          'block_means':[float(v.mean()) for v in blocks],
                          'block_SD':[float(v.std()) for v in blocks],
                          'fraction_abs_greater3':float(np.mean(abs(z)>3))})
