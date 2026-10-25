@@ -38,11 +38,17 @@ def main():
         seed=np.clip(seed,np.array(bounds)[:,0],np.array(bounds)[:,1])
         write(args.output/'progress.json',{'current_start':j,'completed_starts':len(starts),'elapsed_s':time.monotonic()-begun})
         try:
-            f=minimize(model.objective,seed,jac=model.gradient,method='SLSQP',bounds=bounds,
+            scale=2*model.N
+            trace=[]
+            def callback(x):
+                value=model.objective(x)
+                trace.append({'iteration':len(trace),'nll':value,'gamma':float(x[7]),'elapsed_s':time.monotonic()-begun})
+                write(args.output/('trace_start_'+str(j)+'.json'),trace)
+            f=minimize(lambda p:model.objective(p)/scale,seed,jac=lambda p:model.gradient(p)/scale,method='SLSQP',bounds=bounds,callback=callback,
                 constraints=[{'type':'eq','fun':model.centered_constraint,'jac':model.centered_jacobian}],
-                options={'maxiter':args.maxiter,'ftol':1e-9})
+                options={'maxiter':args.maxiter,'ftol':1e-12})
             stat=stationary(model,f.x,model.gradient(f.x))
-            row={'start':j,'gamma_seed':gamma,'seed':seed.tolist(),'point':f.x.tolist(),'nll':float(f.fun),
+            row={'start':j,'gamma_seed':gamma,'seed':seed.tolist(),'point':f.x.tolist(),'nll':float(f.fun*scale),'optimizer_scale':scale,
                  'solver_success':bool(f.success),'message':str(f.message),'nfev':int(f.nfev),'stationarity':stat,
                  'success':bool(f.success and abs(stat['equality_residual'])<1e-7)}
         except Exception as exc:row={'start':j,'gamma_seed':gamma,'seed':seed.tolist(),'success':False,'exception':repr(exc)}
