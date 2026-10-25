@@ -1,5 +1,6 @@
 """Run committed investigation code with pinned dependencies and frozen raw data."""
 import hashlib
+from datetime import datetime, timezone
 import importlib.metadata
 import json
 import os
@@ -57,9 +58,9 @@ def main():
     env['XDG_CACHE_HOME'] = str(snapshot/'runtime_cache')
     with (output/'run.log').open('w') as log:
         child = subprocess.Popen(command, cwd=snapshot, env=env, stdout=log, stderr=subprocess.STDOUT)
-        (output/'process.json').write_text(json.dumps({'pid': child.pid, 'parent_pid': os.getpid(), 'command': command}, indent=2)+'\n')
+        (output/'process.json').write_text(json.dumps({'pid': child.pid, 'parent_pid': os.getpid(), 'command': command, 'started_utc': datetime.now(timezone.utc).isoformat()}, indent=2)+'\n')
         code = child.wait()
-    (output/'exit.json').write_text(json.dumps({'exit_code': code})+'\n')
+    (output/'exit.json').write_text(json.dumps({'exit_code': code, 'finished_utc': datetime.now(timezone.utc).isoformat()})+'\n')
     print(json.dumps({'output': str(output), 'exit_code': code}), flush=True)
     print((output/'run.log').read_text()[-5000:], flush=True)
     return code
