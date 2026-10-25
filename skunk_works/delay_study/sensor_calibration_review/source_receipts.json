@@ -1,0 +1,122 @@
+{
+  "reviewed_on": "2026-10-25",
+  "scope": "Physical sensor calibration; no new fit, install, firmware flash or hardware access",
+  "coverage_limit": "Bounded documentation/source review, not an exhaustive systematic review",
+  "sources": [
+    {
+      "id": "installed_pip_package",
+      "path": "/Users/adowling/opt/anaconda3/envs/controls3/lib/python3.10/site-packages",
+      "version": "tclab1.0.0",
+      "kind": "existing local pip installation",
+      "inspected": "tclab.py, historian.py,version.py,METADATA,INSTALLER,WHEEL,RECORD",
+      "receipt": "installed_package_inspection.json",
+      "supports": "Actual installed hardware getters and CSV export have no calibration/decimal rounding in those paths; tclab.py identical to cached upstream",
+      "record_nonempty_hashes_checked": 6,
+      "record_all_checked_hashes_match": true,
+      "package_imported": false,
+      "environment_modified": false,
+      "limit": "Independent wheel provenance and Dan acquisition version remain unknown"
+    },
+    {
+      "id": "sensor_official",
+      "url": "https://apmonitor.com/pdc/index.php/Main/TCLabSensor",
+      "kind": "device-author documentation",
+      "inspected": "full sensor page",
+      "supports": "TMP36GZ identity and nominal voltage conversion",
+      "limit": "Teaching accuracy shorthand requires manufacturer qualifications"
+    },
+    {
+      "id": "sensor_manufacturer",
+      "url": "https://www.analog.com/media/en/technical-documentation/data-sheets/tmp35_36_37.pdf",
+      "version": "Rev H, May2015",
+      "kind": "manufacturer datasheet",
+      "inspected": "pp1,3 and thermal/electronic response distinctions",
+      "supports": "Nominal conversion, grade-specific typical/max accuracy, linearity and thermal mounting cautions",
+      "limit": "Does not calibrate the assembled ENV2 unit"
+    },
+    {
+      "id": "calibration_worksheet",
+      "url": "https://www.apmonitor.com/pdc/uploads/Main/TCLab1.pdf",
+      "kind": "device-author teaching worksheet",
+      "inspected": "all3pages, calibration questions p3",
+      "supports": "Manufacturing variability, slope/offset calibration and ADC-error questions",
+      "limit": "No measured reference calibration results"
+    },
+    {
+      "id": "pip_release_metadata",
+      "url": "https://pypi.org/project/tclab/",
+      "version": "1.0.0, released2023-09-11",
+      "kind": "package registry metadata",
+      "inspected": "release page and checksum",
+      "published_wheel_sha256": "40fa767e1ebfe49d8124f83774d0af1b3928cd3c753d8d9ae04e19118e202b82",
+      "artifact_downloaded": false,
+      "artifact_byte_verified": false,
+      "limit": "Wheel code not inspected; metadata download failed restricted DNS; escalation interrupted with no saved file"
+    },
+    {
+      "id": "upstream_python",
+      "url": "https://github.com/jckantor/TCLab/blob/master/tclab/tclab.py",
+      "kind": "official upstream source",
+      "inspected": "cached entire file, hardware constructor/getters/scan and separate emulator paths",
+      "sha256": "f3eb0ad5cc3fb7f572c7b8a558c691548e569881ad16643986ba4d82264e98ad",
+      "receipt": "source_inspection.json",
+      "limit": "Unresolved acquisition version and pip-wheel equivalence"
+    },
+    {
+      "id": "upstream_historian",
+      "url": "https://github.com/jckantor/TCLab/blob/master/tclab/historian.py",
+      "kind": "official upstream web source listing",
+      "inspected": "Historian.to_csv",
+      "supports": "CSV writer receives log values without explicit decimal format or calibration",
+      "limit": "No source byte hash; mutable master listing; released/acquisition implementation not verified"
+    },
+    {
+      "id": "firmware_historical",
+      "url": "https://github.com/jckantor/TCLab-sketch/blob/master/TCLab-sketch-webusb-old/TCLab-sketch-webusb-old.ino",
+      "version": "internal vers1.3.0",
+      "kind": "official historical firmware web listing",
+      "inspected": "version, readTemperature, dispatch and setup",
+      "supports": "Single read,0.3223count conversion,-50offset, external reference",
+      "limit": "No byte hash or deployed-device version; historical WebUSB variant"
+    },
+    {
+      "id": "firmware_apmonitor",
+      "url": "https://github.com/APMonitor/arduino/blob/master/0_Test_Device/Python/tclab_v2/tclab_v2.ino",
+      "version": "internal vers2.0.1",
+      "kind": "device-author firmware web listing",
+      "inspected": "changelog, readTemperature, n, sendFloatResponse and setup",
+      "supports": "Ten-sample mean, active3.3V conversion, commented1.75V alternative, external reference and3-decimal reporting",
+      "limit": "No byte hash or deployed-device version"
+    },
+    {
+      "id": "benchmark",
+      "url": "https://apm.byu.edu/prism/uploads/Members/2020_park_tclab.pdf",
+      "kind": "device-author benchmark paper",
+      "inspected": "hardware section excerpt",
+      "supports": "Uno/Leonardo ten-bit ADC and sensor hardware description",
+      "limit": "Not a reference thermometer calibration; calls semiconductor sensors thermistors"
+    },
+    {
+      "id": "almeria_excluded_from_calibration_evidence",
+      "url": "https://doi.org/10.1016/j.ifacol.2022.09.306",
+      "kind": "primary curricula paper, abstract only",
+      "inspected": "abstract",
+      "supports": "Thermal model calibration discussed",
+      "limit": "Abstract does not establish sensor metrology; no sensor calibration claim used"
+    }
+  ],
+  "searches": [
+    "TCLab sensor calibration",
+    "TCLab calibrate temperature",
+    "TCLab voltage reference",
+    "TCLab calibration TMP36",
+    "site:github.com/jckantor/TCLab/issues temperature calibration",
+    "site:github.com/jckantor/TCLab-sketch calibration"
+  ],
+  "excluded": [
+    "Unrelated Testing and Calibration Laboratory sharing TCLab abbreviation",
+    "Generic Arduino/TMP36 forum anecdotes on different circuits",
+    "Thermal model calibration treated as sensor calibration without metrological evidence"
+  ],
+  "conclusion_limit": "No calibration error or causal explanation of ENV2 RMSE established"
+}

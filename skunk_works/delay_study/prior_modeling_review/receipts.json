@@ -1,0 +1,65 @@
+{
+  "date": "2026-10-25",
+  "mode": "autonomous-preparation",
+  "author": "agent",
+  "human_review": "pending",
+  "source_byte_hashes": "unavailable; no source PDFs downloaded",
+  "literature_runtime": {
+    "package": "shared-literature-rag",
+    "package_version": "0.5.9",
+    "runtime_mode": "maintenance",
+    "installed_source_sha256": "8aa3bbb3ec0cb812e72f2c4413aef11221e14bde48f9e905de08d7b47743f985",
+    "changed_since_startup": false,
+    "scope": "Runtime identity only; not corpus health, synchronization or source grounding."
+  },
+  "configuration_inspection": {
+    "status": "succeeded",
+    "scope": "Local paths and account/device identities deliberately omitted; no configuration changes made."
+  },
+  "bibliography_lookup": {
+    "tool": "search_bibliography",
+    "arguments": {
+      "title": "TCLab",
+      "limit": 25
+    },
+    "status": "failed",
+    "error": "Metadata generation retention capacity exhausted; no silent eviction",
+    "scope": "No conclusion about whether TCLab papers are present; no retry or maintenance performed."
+  },
+  "source_versions": {
+    "park2020": "author manuscript 2019-10-01,37 physical PDF pages; published2020 DOI10.1016/j.compchemeng.2020.106736",
+    "kuntz_rawlings2025": "arXiv2406.03760v3 extended report Sept2025; published DOI10.1109/TAC.2025.3547607",
+    "nguyen_tique2024": "arXiv2410.02258v1 2024-10-03",
+    "santos2026": "CBA5980 landing abstract only,2026-10-05",
+    "di_teodoro2024": "ACS Omega DOI10.1021/acsomega.3c10514,PMC11292832"
+  },
+  "source_locators": {
+    "park2020": {
+      "url": "https://apm.byu.edu/prism/uploads/Members/2020_park_tclab.pdf",
+      "inspected": "Physical PDF pp. 5\u20139, 9\u201315 and 16; web PDF text, not downloaded bytes."
+    },
+    "kuntz_rawlings2025": {
+      "url": "https://arxiv.org/html/2406.03760v3",
+      "inspected": "Problem formulation, \u00a76.1, Table1, discussion of Figs2\u20138; extended report rather than published journal layout."
+    },
+    "nguyen_tique2024": {
+      "url": "https://arxiv.org/html/2410.02258v1",
+      "inspected": "\u00a7V-B; physical PDF pp.5\u20136; v1 only."
+    },
+    "di_teodoro2024": {
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11292832/",
+      "inspected": "\u00a75.2 experimental/model validation and control context."
+    },
+    "santos2026": {
+      "url": "https://ojs.sba.org.br/index.php/cba/article/view/5980",
+      "inspected": "Abstract only; full-text methods and numerical claims unverified."
+    }
+  },
+  "access_limits": [
+    "No source PDF bytes downloaded or source SHA256 asserted.",
+    "Terminal Park PDF download failed sandbox DNS; required approval retry was aborted; no bypass used.",
+    "CBA full-text viewer unavailable; Seville thesis PDF HTTP403; KTH PDF timeouts; Taylor NN v2 HTML unavailable.",
+    "Source URLs and page/section/version locators are retained; human scientific review pending."
+  ],
+  "packet_status": "No new evidence packet or shared fine grounding completed; external web inspection only"
+}

@@ -7,6 +7,12 @@ writing and launching another research goal. **No new goal is authorized yet.**
 Alex explicitly asked the workers and parent to keep going after voice chat
 ends, populate this note, and preserve findings in the repository.
 
+The three first-pass reviews are now complete. They establish a hardware-style
+temperature grid in the recorded data, document the distinction between common
+and channel-specific calibration, and identify prior physical and stochastic
+models worth comparing. They do not establish the cause of the remaining T1
+error. Source access and historical-version gaps are recorded below.
+
 ## Decisions and scope
 
 - Treat Dan's records as physical TCLab experiments. Alex trusts that they were
@@ -55,9 +61,9 @@ before repeating an old test under a new name.
 
 | Worker | Assignment | Current status | Detailed evidence |
 | --- | --- | --- | --- |
-| Hardware quantization | Inspect Dan's data for temperature grids; separate ADC quantization from CSV rounding; trace hardware conversion and reporting. | Running; findings pending. | To be linked below. |
-| Sensor calibration | Official documentation, published pip package, firmware and documented calibration studies; distinguish offset, slope, reference-voltage and nonlinear effects. | Running; findings pending. | To be linked below. |
-| Prior modeling literature | Physical and empirical TC-Lab models, radiation, convection, disturbances, sensor dynamics, identification and validation. | Running; preliminary source leads, synthesis pending. | To be linked below. |
+| Hardware quantization | Inspect Dan's data for temperature grids; separate ADC quantization from CSV rounding; trace hardware conversion and reporting. | Complete; all ENV2 values match the shifted 0.3223 C grid. Historical firmware identity remains unknown. | [Findings and numerical audit](../hardware_quantization_review/findings.md) |
+| Sensor calibration | Official documentation, installed pip package, firmware and documented calibration studies; distinguish offset, slope, reference-voltage and nonlinear effects. | Complete first pass; installed 1.0.0 inspected. No calibration of Dan's unit established. | [Calibration and source review](../sensor_calibration_review/README.md) |
+| Prior modeling literature | Physical and empirical TC-Lab models, radiation, convection, disturbances, sensor dynamics, identification and validation. | Complete first pass; ten reviewed source families and four explicitly incomplete leads. | [Review and evidence matrix](../prior_modeling_review/review.md) |
 
 Each worker owns only its named section below. Keep detailed source receipts,
 code and numerical output in its separate review folder and link them here.
@@ -69,31 +75,174 @@ this device. The parent owns the shared synthesis, decisions and proposed work.
 
 ## Hardware quantization findings — worker section
 
-Pending. Report per-channel/run grid evidence, numerical precision and rounding,
-plausible hardware conversion formulas, documentation/version limits, and
-whether the data distinguish quantization from formatting.
+All **21,614 T1/T2 observations** in the twelve distinct ENV2 records exactly
+match `round(0.3223*n - 50, 2)` for inferred integer codes n. The same law fits
+both channels in every run. Across both channels there are 158 levels,
+19.94–70.54 C, with adjacent gaps of 0.32 or 0.33 C. The 0.01 C text precision
+is finer than the underlying approximately 0.3223 C grid. All 27,198 values
+across the fifteen current CSV paths also match; two paths are duplicate
+aliases and do not add experiments.
+
+The zero-offset floor lattice in the inspected Python emulator has the same
+spacing but a different offset: after two-decimal reporting it matches **zero**
+ENV2 values. It must not be copied as the hardware measurement law. The exact
+3.3 V/1024 coefficient, 0.322265625, matches only 2,331 ENV2 values after
+reporting and differs by up to 0.02 C. The data therefore support the rounded
+0.3223 coefficient specifically, conditional on the inferred code labels.
+
+Repeated adjacent readings are common: T1 51.6–81.3 percent, T2 85.4–89.7
+percent across runs. The longest fast-sine T2 plateau is 137 samples. These
+facts support a quantization-aware measurement analysis; they do not identify
+analogue-noise variance or establish that quantization explains all residual
+correlation. Estimated sinusoidal amplitudes can be smaller than one grid step
+if the record contains informative threshold crossings or noise.
+
+Hardware provenance is supported by the historical acquisition notebook using
+physical `TCLab()` and `Historian.to_csv`, alongside Alex's knowledge of the
+experiments. The notebook has no retained text giving package/firmware version
+and is not a complete per-file execution log. Official Python hardware getters
+parse serial float responses; they do not apply the emulator quantizer. The
+old official WebUSB firmware lists `analogRead(pin)*0.3223 - 50.0` and an
+external analogue reference. The exact firmware used for Dan's device is still
+unknown. The calibration worker found another official firmware variant that
+uses different sampling/conversion/reporting, so version differences must be
+preserved rather than inferred from a current upstream default.
+
+The [detailed findings](../hardware_quantization_review/findings.md),
+[reproducible audit source](../hardware_quantization_review/audit.py),
+[per-file/channel results and raw hashes](../hardware_quantization_review/results/summary.json)
+and [level table](../hardware_quantization_review/results/ENV2_levels.csv)
+contain the evidence. Source was committed as `016101b` before the successful
+single-threaded pinned-runtime audit. Raw CSVs are unchanged. The fixed-offset
+rounding-bin step bounds [0.3222997033, 0.3223000000] C are arithmetic feasibility
+bounds conditional on candidate labels, not confidence intervals, calibration
+accuracy or proof against finer submultiple grids.
+
+Source links: [official Python](https://github.com/jckantor/TCLab/blob/master/tclab/tclab.py),
+[old official WebUSB firmware](https://github.com/jckantor/TCLab-sketch/blob/master/TCLab-sketch-webusb-old/TCLab-sketch-webusb-old.ino).
+Remaining questions are exact firmware/board identity, reference-voltage and
+sensor accuracy, analogue-noise statistics, and how an appropriate hardware
+observation likelihood changes the existing uncertainty conclusions. No
+thermal refitting was performed.
 
 ## Sensor calibration findings — worker section
 
-Pending. Report sensor identification, documented calibration/conversion,
-reference-voltage assumptions, accuracy evidence and the consequences for the
-shared model. Separate known mechanisms from an unproven calibration error in
-Dan's device.
+The [calibration review](../sensor_calibration_review/README.md) documents the
+inspected sources, algebra, search limits and remaining evidence requirements.
+The [source inspection receipt](../sensor_calibration_review/source_inspection.json)
+binds the cached upstream Python file and hardware getter methods by SHA-256.
+
+- Official documentation identifies **TMP36GZ analog semiconductor sensors**
+  with nominal T(C)=0.1 Vout(mV)-50. The manufacturer specifies typical ±1 C
+  accuracy at25 C and ±2 C across -40 to125 C; G-grade maximum limits are
+  ±3 C and ±4 C respectively. These specifications are not observed errors
+  in Dan's device. The common ±1/±2 C shorthand is not a hard accuracy bound.
+  See [Analog Devices Rev H, pp.1,3](https://www.analog.com/media/en/technical-documentation/data-sheets/tmp35_36_37.pdf).
+- The inspected upstream hardware `T1`/`T2` getters request a temperature
+  string from firmware and parse it as float. They apply no sensor slope or
+  offset calibration. The Python constructor exposes no channel calibration
+  argument. That does not establish every historical interface's behavior.
+  [Upstream hardware path](https://github.com/jckantor/TCLab/blob/master/tclab/tclab.py).
+- A common static temperature offset trades with ambient and initial
+  temperatures in a linear model. A common positive slope trades with freely
+  fitted gain and does not add phase. **Different channel slopes or offsets
+  can affect the symmetric two-output fit**, because it does not contain
+  unrestricted channel calibration. Sensor calibration, physical asymmetry
+  and coupling can then trade off. Static calibration cannot by itself
+  explain a frequency-dependent missing lag.
+- ADC-reference error is a distinct mechanism: under an ideal nominal sensor,
+  y=(Vnom/Vref)*(T+50)-50, so even a constant reference error creates both a
+  slope and an offset. Time-varying reference or nonlinear conversion errors
+  would have different consequences. No reference drift has been measured.
+- The official [sensor worksheet, p.3](https://www.apmonitor.com/pdc/uploads/Main/TCLab1.pdf)
+  explicitly discusses manufacturing differences, reference comparisons and
+  calibration offsets. The bounded online search has not verified a
+  reference-thermometer calibration study that measures errors relevant to
+  ENV2. Thermal-model parameter calibration papers do not establish sensor
+  calibration. Generic TMP36 forum reports were not used as device evidence.
+- Firmware differences are concrete: the official historical WebUSB-old
+  sketch (internal version1.3.0) uses a single ADC read,0.3223 C per count
+  and a -50 C offset. The APMonitor version2.0.1 listing averages ten reads
+  and actively uses0.322265625 per count. Both select an external reference;
+  neither listing proves Dan's actual firmware. The current upstream
+  Historian CSV export adds no explicit decimal rounding. The detailed
+  review links both code listings and separates inspected web code from a
+  verified pip artifact.
+
+Source/version gaps remain explicit. PyPI lists1.0.0 (September2023), but its
+wheel archive has not been downloaded and independently byte-verified. An
+existing **pip-installed1.0.0** was then located in the local `controls3`
+environment and inspected without imports or changes. Its hardware source is
+byte-identical to the cached upstream file; inspected source/metadata hashes
+match its RECORD. Its Historian confirms no explicit decimal rounding.
+The [installed-package receipt](../sensor_calibration_review/installed_package_inspection.json)
+records that evidence. This local installation does not establish Dan's
+acquisition version. The exact firmware/package used for ENV2 is not recorded
+in the CSVs; firmware versions differ in reference calculation and averaging.
+We need those versions, or independent reference measurements, before selecting
+a device-specific calibration law. No calibration error has been established
+as the cause of the approximately1 C pooled T1 RMSE.
 
 ## Prior modeling literature — worker section
 
-Pending synthesis. The worker has identified author documentation stating that
-delivered heater power can depend on temperature and vary by device:
-[Kantor, Python Coding for TCLab, section 1.3.5.1](https://jckantor.github.io/cbe30338-book/tclab/00.03-using-tclab.html).
-This is a qualitative mechanism to investigate, not a calibrated power law for
-ENV2. The worker will supply the reviewed evidence matrix and limits.
+The [first source review](../prior_modeling_review/review.md) and
+[search/verification record](../prior_modeling_review/search_log.md) are saved.
+This is a focused comparison of ten source families, with four partial leads;
+it does not claim to find every TC-Lab study. Agent-authored and awaiting Alex's
+scientific review. Three findings directly affect our next choices:
 
-Parent source leads on radiation are
-[APMonitor's radiative heat-transfer example](https://apmonitor.com/pdc/index.php/Main/TCLabRadiative),
-[higher-order models](https://apmonitor.com/pdc/index.php/Main/TCLabHigherOrder),
-and [two-heater parameter estimation](https://apmonitor.com/do/index.php/Main/TCLabC).
-Example areas, emissivities and convection coefficients vary between models;
-do not mix their constants or transfer channels without checking assumptions.
+- **Nonlinear heat loss has prior TC-Lab precedent.** Park et al.'s
+  [2020 benchmark manuscript](https://apm.byu.edu/prism/uploads/Members/2020_park_tclab.pdf)
+  uses ambient and interheater convection/radiation with separate sensor lags.
+  It compares physical, FOPDT, ARX and Hammerstein models on separate step-test
+  validation. Strong training fits do not always transfer. Nominal constants and
+  validation scores are specific to that experiment; they are not our RMSE.
+- **Temperature-dependent power is distinct from constant alpha.**
+  [Kantor's documentation, §1.3.5.1](https://jckantor.github.io/cbe30338-book/tclab/00.03-using-tclab.html)
+  explicitly says delivered power depends on temperature at constant P settings.
+  This supports a constrained power(T,Q) sensitivity, but supplies no calibrated
+  law for ENV2. Temperature-dependent loss and power may be hard to separate
+  without electrical measurements.
+- **Disturbance modeling needs its own validation.**
+  [Kuntz & Rawlings, extended 2025 report §6.1](https://arxiv.org/html/2406.03760v3)
+  fits stochastic state-space models with integrating output disturbances on
+  physical TCLab. It separates noise-free response, feedback estimation/control
+  and covariance-normalized innovation checks. This is a grounded alternative
+  to independent-channel OU errors. A better filter or likelihood does not
+  establish the deterministic model's accuracy or physical parameter meaning.
+
+Two source qualifications guard against misleading interpretations. The
+[Di Teodoro et al. 2024 experiments, §5.2](https://pmc.ncbi.nlm.nih.gov/articles/PMC11292832/)
+use a fan but add their 200 s delay in software. That delay is not evidence about
+native TCLab hardware. Some
+[APMonitor higher-order examples](https://apmonitor.com/pdc/index.php/Main/TCLabHigherOrder)
+concern Q1 to T2; their order should not be assigned to the directly heated T1
+transfer.
+
+[APMonitor nonlinear model code](https://apmonitor.com/do/index.php/Main/TCLabG)
+uses area As for interheater radiation while Park's displayed balance uses A.
+This may affect numerical coupling; choose and document a geometry assumption
+rather than combining parameter sets. Radiation's linear contribution can be
+absorbed into existing effective conductance, as the parent's calculation below
+explains. An explicit radiation extension must refit the loss terms.
+
+The review also found a monotonic Taylor-neural TCLab demonstration, but its
+15 s sampling and closed-loop test do not establish the missing few-second
+mechanism. A new CBA SINDy/WSINDy preprint claims weak radiation identification;
+only its abstract was accessible, so its methods/results remain unverified.
+These are secondary leads, not reasons to replace the current model immediately.
+
+Proposed next comparison: retain matched free simulation and frequency response,
+test constrained nonlinear loss and temperature-dependent power separately, then
+assess shared environmental/noise structure. Compare errors at similar
+absolute temperatures but different commands and during heating/cooling. None
+of these causal explanations has been established in Dan's records.
+
+The Lab Literature metadata lookup failed because metadata-generation retention
+capacity was exhausted. No corpus completeness or source-grounding claim follows.
+Official web-source inspection supplied this first review; source bytes were not
+downloaded or hashed, and no new evidence packet was completed. Access failures
+and exact inspected versions are retained in the detailed record.
 
 ## Radiation scale — parent calculation for discussion
 
@@ -145,11 +294,32 @@ neglecting its nonlinearity explains the remaining error.
 
 ## Synthesis and decisions still open
 
-No cause of the remaining T1 error has been established. The reviews should
-help rank hypotheses and specify discriminating analyses. Avoid adding many
-free effects simultaneously: an improved objective alone will not tell us
-whether the explanation is power delivery, heat loss, calibration, startup,
-timing or measurement statistics.
+The observation model now has a direct empirical constraint: the shifted
+hardware-style grid fits every recorded temperature. Future likelihood work
+should account for that grid without importing the emulator's unmeasured noise
+variance or floor thresholds. Resolution, calibration accuracy and temporal
+noise dependence remain different quantities. The grid explains the available
+levels and is consistent with plateaus; it does not measure analogue noise or
+attribute the full T1 RMSE to quantization.
+
+Alex's point about linear calibration remains valid for a common static scaling
+with free gain. The two-output model adds a distinction: relative channel
+calibration can trade with coupling and physical asymmetry. A free calibration
+parameter that lowers the residual is therefore not, by itself, a measured
+calibration error. Static scaling also does not supply the missing phase.
+
+The literature gives specific alternatives to investigate: nonlinear radiative
+loss, temperature-dependent delivered power, and shared environmental/stochastic
+disturbances. These are supported model structures, not diagnoses of this
+device. Preserve the differences between free simulation and filtered prediction,
+and between native hardware dynamics and deliberately injected delays.
+
+No cause of the remaining T1 error has been established. Avoid adding many free
+effects simultaneously: an improved objective alone will not tell us whether
+the explanation is power delivery, heat loss, calibration, startup, timing or
+measurement statistics. The existing empirical command curve and quadratic-loss
+sensitivities should inform the next comparison, while retaining their limited
+physical interpretation.
 
 Before drafting the next goal, agree on which findings justify a numerical
 test, the order of those tests, what existing results can be reused, what

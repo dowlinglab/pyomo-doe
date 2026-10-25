@@ -7,6 +7,13 @@ This file owns current execution state. Git preserves superseded states.
 
 ## Current state
 
+- The subsequent discussion and three worker reviews are consolidated in
+  `review/next_investigation_discussion.md`. It records the hardware temperature
+  grid audit, installed-package/firmware and sensor-calibration evidence, prior
+  modeling literature, radiation scale, and remaining hypotheses. These are
+  preparation for a future agreed goal; no new goal, fitting run, hardware
+  experiment, automation or email has been launched from that discussion.
+
 - The October 25 follow-up on the physical interpretation of unequal lags is
   complete for researcher review in `coupled_model_study/report.md`. It fits
   both temperatures using coupled energy balances and tests an extra input lag,
