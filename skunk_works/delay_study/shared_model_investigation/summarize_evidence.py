@@ -95,11 +95,11 @@ def main():
            '|---|---:|---:|---:|']
     table += ['| {id} | {RMSE_C:.3f} | {nll:.1f} | {parameter_count} |'.format(**r) for r in rows]
     (args.output/'report_table.md').write_text('\n'.join(table)+'\n')
+    plot(args,rows,read)
     write_json(args.output/'evidence.json',{'status':'passed','models':rows,'profiles':curves,'beta_profile':beta,
         'report_sha256':hashlib.sha256(args.report.read_bytes()).hexdigest(),'report_table_rows_checked':len(reported),
         'arithmetic_checks':arithmetic,'consumed_sha256':hashes,
         'scope':'Saved prediction arithmetic, counts, AICc, artifact hashes and audited support. Independent propagation/dense-likelihood audits remain separate. These checks do not establish scientific model adequacy.'})
-    plot(args,rows,read)
     print(json.dumps({'status':'passed','models':len(rows),'audited_profile_curves':len(curves),
                       'max_RMSE_abs_error':max(r['RMSE_abs_error'] for r in arithmetic)}),flush=True)
 
