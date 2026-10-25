@@ -78,7 +78,14 @@ def main():
         error=float(np.max(abs(fitrec.x-truth[indices])))
         assert fitrec.success and error<2e-5,(fitrec.message,error)
         attempts.append({'gamma_seed':gamma,'recovered':fitrec.x.tolist(),'maximum_error':error,'SSE_C2':float(fitrec.fun)})
-    result={'status':'passed','direct_dimensional_ODE_max_error_C':ode_error,'step_halving_max_error_C':step_error,
+    full=load_records();zero=Model(full);nr=len(full)
+    zero_point=np.r_[fit['best']['point'][:6],np.log(fit['coefficients'][0]),0.,fit['parameters']['log_deviations'],fit['coefficients'][1:1+nr],fit['best']['point'][fit['shape_count']:]]
+    zero_mean=zero.prediction(zero_point);arrays=np.load(args.warm.parent/'trajectories.npz')
+    saved=np.concatenate([np.concatenate([arrays['predicted_'+str(j)][1:,k] for j in range(nr)]) for k in [0,1]])
+    nesting_error=float(np.max(abs(zero_mean-saved)))
+    nesting_nll_error=abs(zero.profile_noise(zero_point,zero.y-zero_mean)[0]-fit['best']['nll'])
+    assert nesting_error<2e-6 and nesting_nll_error<.001,(nesting_error,nesting_nll_error)
+    result={'status':'passed','zero_radiation_full_record_prediction_max_error_C':nesting_error,'zero_radiation_nll_abs_error':nesting_nll_error,'direct_dimensional_ODE_max_error_C':ode_error,'step_halving_max_error_C':step_error,
         'full_profile_gradient_max_scaled_error':derivative_error,'conditional_recovery':attempts,
         'scope':'Radiative balances at one interior point, time-step convergence, complex mean/noise derivatives and noiseless gain/radiation/ambient recovery with dynamics fixed. Does not establish all-parameter identifiability.'}
     (args.output/'audit.json').write_text(json.dumps(result,indent=2)+'\n');print(json.dumps(result),flush=True)
