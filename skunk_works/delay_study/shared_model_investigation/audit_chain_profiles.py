@@ -45,19 +45,21 @@ def main():
         rows=[]
         for row in profile['points']:
             x=np.array(row['best']['point']);c=np.array(row['coefficients'])
-            times=np.exp(x[:2]) if fit['kind']=='transport' else np.r_[np.exp(x[0]),np.full(fit['order'],np.exp(x[1])/fit['order'])]
+            times=np.exp(x[:2]) if fit['kind'] in ('transport','power_curve') else np.r_[np.exp(x[0]),np.full(fit['order'],np.exp(x[1])/fit['order'])]
             physical=np.r_[np.zeros(len(times)-1),c[0]]
             if profile['parameter']=='K' and abs(c[0]-row['value'])>1e-9:raise AssertionError('Fixed gain')
             if profile['parameter']=='theta' and abs(np.exp(x[1])-row['value'])>1e-8:raise AssertionError('Fixed theta')
             if profile['parameter']=='delay' and abs(x[2]-row['value'])>1e-8:raise AssertionError('Fixed additional delay')
+            if profile['parameter']=='power' and abs(x[3]-row['value'])>1e-8:raise AssertionError('Fixed input curvature')
             if np.any(abs(c[1:])>2+1e-7):raise AssertionError('Ambient bounds')
             ell,eta=np.exp(x[-2]),x[-1]
             n=0;quadratic=0.;logdet=0.
             for j,d in enumerate(records):
                 width=fit.get('ambient_width',1)
-                if fit['kind']=='transport':
+                if fit['kind'] in ('transport','power_curve'):
                     from transport import independent_reference
-                    pred=d.temperature[0]+c[0]*independent_reference(d.time,d.input,*times,x[2])
+                    command=d.input+x[3]*d.input*(1-d.input/100) if fit['kind']=='power_curve' else d.input
+                    pred=d.temperature[0]+c[0]*independent_reference(d.time,command,*times,x[2])
                     elapsed=d.time-d.time[0];a=-np.expm1(-elapsed/times[0])
                     if width==1:pred+=c[1+j]*a
                     else:
@@ -76,7 +78,7 @@ def main():
                          'stationarity_warning':row['stationarity_warning'],'lower_than_reference':row['lower_than_reference']})
         curve={'id':profile['id'],'parameter':profile['parameter'],'reference_value':profile['reference_value'],
                'profile_sha256':hashlib.sha256(path.read_bytes()).hexdigest(),'points':rows,
-               'nominal_support':grid_support(rows,profile['nominal_95_threshold'],'linear' if profile['parameter']=='delay' else 'log'),
+               'nominal_support':grid_support(rows,profile['nominal_95_threshold'],'linear' if profile['parameter'] in ('delay','power') else 'log'),
                'numerical_warnings':sum(p['stationarity_warning'] for p in rows),
                'lower_reference_points':sum(p['lower_than_reference'] for p in rows)}
         curves.append(curve)
@@ -84,7 +86,7 @@ def main():
         print(json.dumps({'id':curve['id'],'points':len(rows),'max_nll_error':max(r['nll_abs_error'] for r in rows),'support':curve['nominal_support']}),flush=True)
     if len(curves)!=args.expected_curves:raise AssertionError('Unexpected number of profiles')
     write_json(args.output/'audit.json',{'status':'passed','curves':curves,
-        'scope':'All78profile points, independent physical propagation and dense likelihood, fixed parameters, bounds and grid-support interpolation. This does not certify global profile optima or nominal coverage.'})
+        'scope':'Every point in the requested terminal curves: independent physical propagation and dense likelihood, fixed parameters, bounds and grid-support interpolation. This does not certify global profile optima or nominal coverage.'})
 
 
 if __name__=='__main__':main()

@@ -19,13 +19,13 @@ from run_mean import write_json
 def main():
     parser=argparse.ArgumentParser()
     parser.add_argument('--inputs',type=Path,nargs='+',required=True)
-    parser.add_argument('--parameters',nargs='+',choices=['K','theta','delay'],default=['K','theta'])
+    parser.add_argument('--parameters',nargs='+',choices=['K','theta','delay','power'],default=['K','theta'])
     parser.add_argument('--output',type=Path,required=True)
     args=parser.parse_args();manifest={'status':'running','curves':[]}
     write_json(args.output/'matrix_manifest.json',manifest)
     for folder in args.inputs:
         fit=json.loads((folder/'fit.json').read_text())
-        if fit['kind'] not in ('chain','transport'):raise ValueError('Profiles support chains and transport extension')
+        if fit['kind'] not in ('chain','transport','power_curve'):raise ValueError('Profiles support chains and input-map/transport extensions')
         records=[load(n) for n in fit['record_names']]
         model=make_model(records,fit['kind'],fit['order'],fit.get('numerator_bound',2.),fit.get('ambient_mode','constant'))
         reference=np.array(fit['best']['point']);K=fit['best']['coefficients'][0]
@@ -33,25 +33,27 @@ def main():
         fixed_nll=model.projected(reference,fixed_gain=K)[0]
         if abs(fixed_nll-reference_nll)>3e-5:raise AssertionError('Fixed-gain center does not reproduce projected reference')
         for parameter in args.parameters:
-            if parameter=='delay' and fit['kind']!='transport':raise ValueError('Additional delay applies only to transport extension')
-            center=K if parameter=='K' else (reference[2] if parameter=='delay' else np.exp(reference[1]))
+            if parameter=='delay' and fit['kind'] not in ('transport','power_curve'):raise ValueError('Additional delay applies only to transport extension')
+            if parameter=='power' and fit['kind']!='power_curve':raise ValueError('Input-map curvature applies only to power_curve')
+            center=K if parameter=='K' else (reference[3] if parameter=='power' else (reference[2] if parameter=='delay' else np.exp(reference[1])))
             points=[];warm=reference.copy();begun=time.monotonic()
             factors=([0.]+[sign*d for d in (.02,.05,.1,.2,.5,1.) for sign in (-1,1)]+[-center]
-                     if parameter=='delay' else [0.]+[sign*d for d in (.002,.005,.01,.02,.05,.1) for sign in (-1,1)])
+                     if parameter in ('delay','power') else [0.]+[sign*d for d in (.002,.005,.01,.02,.05,.1) for sign in (-1,1)])
             for displacement in factors:
-                value=center+displacement if parameter=='delay' else center*np.exp(displacement)
+                value=center+displacement if parameter in ('delay','power') else center*np.exp(displacement)
                 if parameter=='K' and not .2<=value<=1.5:continue
                 if parameter=='theta' and not .01<=value<=200:continue
                 if parameter=='delay' and not 0<=value<=15:continue
+                if parameter=='power' and not -.8<=value<=.8:continue
                 if parameter=='K':
                     freebounds=bounds
                     decode=lambda q:q
                     objective=lambda q:model.projected(q,fixed_gain=value)[0]
                     seeds=[warm.copy(),reference.copy()]
                 else:
-                    index=2 if parameter=='delay' else 1
+                    index=3 if parameter=='power' else (2 if parameter=='delay' else 1)
                     freebounds=[b for j,b in enumerate(bounds) if j!=index]
-                    def decode(q):return np.insert(q,index,value if parameter=='delay' else np.log(value))
+                    def decode(q):return np.insert(q,index,value if parameter in ('delay','power') else np.log(value))
                     objective=lambda q:model.projected(decode(q))[0]
                     seeds=[np.delete(warm,index),np.delete(reference,index)]
                 # Explore the other thermal-role basin as a numerical check.
@@ -81,7 +83,7 @@ def main():
                 if not valid:raise RuntimeError('No converged profile attempts')
                 best=min(valid,key=lambda r:r['nll']);warm=np.array(best['point'])
                 _,coefficients,sigma,_=model.projected(warm,fixed_gain=value if parameter=='K' else None)
-                point={'value':float(value),'displacement':displacement,'displacement_scale':'seconds' if parameter=='delay' else 'log_ratio','best':best,'attempts':attempts,
+                point={'value':float(value),'displacement':displacement,'displacement_scale':'absolute' if parameter in ('delay','power') else 'log_ratio','best':best,'attempts':attempts,
                        'coefficients':coefficients.tolist(),'sigma_C':sigma,
                        'twice_delta_nll':2*(best['nll']-reference_nll),
                        'stationarity_warning':best['projected_gradient_max_abs']>.05,
