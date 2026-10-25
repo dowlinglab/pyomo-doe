@@ -28,11 +28,19 @@ def main():
         return json.loads(p.read_text())
     assessment=read('innovation_assessment/assessment.json')
     innovations={r['id']:r for r in assessment['models']}
+    audit_index={}
+    for path in args.results.rglob('audit.json'):
+        audit=json.loads(path.read_text())
+        binding=audit.get('fit_sha256',audit.get('input_fit_sha256'))
+        if audit.get('status')=='passed' and binding:
+            audit_index[binding]=str(path.relative_to(args.results))
     rows=[];arithmetic=[]
     names=None
     for name in MODELS:
         assert read(name+'/exit.json')['exit_code']==0
         fit=read(name+'/fit.json')
+        audit_path=audit_index[hashes[name+'/fit.json']]
+        audit=read(audit_path)
         path=args.results/name/'trajectories.npz'
         hashes[name+'/trajectories.npz']=hashlib.sha256(path.read_bytes()).hexdigest()
         a=np.load(path);e=[];z=[]
@@ -50,6 +58,7 @@ def main():
         diag=innovations[name]
         assert diag['fit_sha256']==hashes[name+'/fit.json']
         row={'id':name,'RMSE_C':rmse,'nll':best['nll'],'nominal_AICc':aicc,
+             'independent_selected_audit':audit_path,'independent_nll_abs_error':audit['nll_abs_error'],
              'parameter_count':k,'successful_starts':sum(r['success'] for r in fit['starts']),
              'total_starts':len(fit['starts']),'max_abs_acf':diag['max_abs_acf'],
              'fast_cross_min':diag['fast_input_correlation_range'][0],
