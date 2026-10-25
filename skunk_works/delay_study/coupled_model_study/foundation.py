@@ -59,9 +59,18 @@ def audit():
         shape=np.log([rng.uniform(20,400),rng.uniform(.1,80),rng.uniform(.01,10),rng.uniform(.01,3)])
         imaginary=np.array([transfers(shape,1.,w)[0].imag for w in np.logspace(-4,2,100)])
         assert np.max(imaginary)<0;worst=max(worst,float(imaginary.max()))
+    # For negligible sensor loading, sensor and command low-pass factors
+    # commute in both command responses. This is an ambiguity of mechanisms,
+    # not a numerical failure of the state-space propagator.
+    swap=[]
+    for loading in [1e-2,1e-4,1e-6,1e-8]:
+        original=np.log([150.,14.,loading,.35,3.]);swapped=np.log([150.,3.,loading,.35,14.])
+        error=max(np.max(abs(transfers(original,1.,w,True)-transfers(swapped,1.,w,True))) for w in np.logspace(-4,1,100))
+        swap.append({'Us_over_Ua':loading,'two_channel_transfer_swap_max_abs':float(error)})
+    assert swap[-1]['two_channel_transfer_swap_max_abs']<1e-9
     return {'status':'passed','synthetic_cases':cases,'recovered_scale_free_parameters':recovered.tolist(),
             'phase_constraint':'For positive parameters Im(G+) and Im(G-) are strictly negative for omega>0, so Im(T1/Q1)<0. This analytical bound is checked numerically but does not depend on the sampled parameter points.',
-            'largest_base_T1_imaginary_in_synthetic_sweep':worst}
+            'largest_base_T1_imaginary_in_synthetic_sweep':worst,'sensor_command_swap_limit':swap}
 
 
 def main():
