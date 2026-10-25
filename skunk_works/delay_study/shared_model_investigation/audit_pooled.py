@@ -48,7 +48,7 @@ def main():
     best=fit['best'];c=np.array(best['coefficients']);x=np.array(best['point'])
     times=np.array(fit['time_constants_s']);m=len(times)
     nt=len(x)-2
-    physical=np.r_[np.zeros(m-1),c[0]] if fit['kind'] in ('chain','transport','unequal_chain','power_curve') else np.r_[c[1:m],c[0]-sum(c[1:m])]
+    physical=np.r_[np.zeros(m-1),c[0]] if fit['kind'] in ('chain','transport','unequal_chain','power_curve','mapped_chain','mapped_unequal') else np.r_[c[1:m],c[0]-sum(c[1:m])]
     ninput=fit.get('input_coefficient_count',1 if fit['kind']=='chain' else m)
     width=fit.get('ambient_width',1)
     ell,eta=np.exp(x[nt]),x[nt+1]
@@ -68,7 +68,8 @@ def main():
                 b=(elapsed-times[0]*a)/(d.time[-1]-d.time[0]);predicted+=ambient[0]*(a-b)+ambient[1]*b
         else:
             ambient=c[ninput+j] if width==1 else c[ninput+2*j:ninput+2*j+2]
-            predicted=d.temperature[0]+physical_reference(d.time,d.input,times,physical,ambient)
+            command=d.input+fit['power_curvature']*d.input*(1-d.input/100) if fit['kind'] in ('mapped_chain','mapped_unequal') else d.input
+            predicted=d.temperature[0]+physical_reference(d.time,command,times,physical,ambient)
         error=float(np.max(np.abs(predicted-arrays['predicted_'+str(j)])))
         residual=d.temperature[1:]-predicted[1:]
         t=d.time[1:]

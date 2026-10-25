@@ -50,10 +50,11 @@ def main():
         B=W(X[:,model.ninput:])/sigma
         J=J-B@np.linalg.lstsq(B,J,rcond=None)[0]
         U,s,Vh=np.linalg.svd(J,full_matrices=False)
-        names=(['log_tau','log_theta','additional_delay_seconds','power_curvature'] if fit['kind']=='power_curve' else
+        names=((['log_tau','log_theta'] if fit['kind']=='mapped_chain' else ['log_tau']+['log_lag'+str(k) for k in range(1,model.m)])+['power_curvature'] if fit['kind'] in ('mapped_chain','mapped_unequal') else
+               (['log_tau','log_theta','additional_delay_seconds','power_curvature'] if fit['kind']=='power_curve' else
                (['log_tau','log_theta','additional_delay_seconds'] if fit['kind']=='transport' else
                (['log_tau','log_theta'] if fit['kind']=='chain' else ['log_tau']+['log_lag'+str(k) for k in range(1,model.m)]))
-               )
+               ))
         names+=['log_K']+['numerator_coefficient'+str(k)+'_scaled_by_K' for k in range(1,model.ninput)]
         info=J.T@J
         eigen=np.linalg.eigvalsh(info)
@@ -79,7 +80,7 @@ def main():
                     'phase_SD_deg':float(np.sqrt(max(0.,gP@covariance@gP))*180/np.pi),
                     'reference':'Linear block / local input-map linearization at command50;5s is outside primary excitation' if fit['kind']=='power_curve' else 'Conditional mean transfer;5s is outside primary excitation'})
         permutation=None
-        if fit['kind']=='unequal_chain' and model.m==3:
+        if fit['kind'] in ('unequal_chain','mapped_unequal') and model.m==3:
             swapped=x.copy();swapped[1:3]=x[2:0:-1]
             prediction_error=float(np.max(abs(model.design(tuple(x[:nt]))@c-model.design(tuple(swapped[:nt]))@c)))
             nll_error=abs(model.projected(x)[0]-model.projected(swapped)[0])

@@ -21,6 +21,11 @@ from pooled_models import make_model,audit
 def seeds(model,count):
     rng=np.random.RandomState(20261025+model.order)
     nt=model.nt
+    if model.kind in ('mapped_chain','mapped_unequal'):
+        base=[[141.,17.],[17.,141.],[150.,12.],[130.,25.],[80.,70.],[200.,5.]] if model.kind=='mapped_chain' else [[142.,3.,14.],[142.,14.,3.],[14.,140.,3.],[140.,.1,16.],[120.,5.,30.],[170.,2.,15.]]
+        while len(base)<count:base.append([np.exp(rng.uniform(*b)) for b in model.bounds()[:model.base_nt]])
+        noise=[[274.,.065],[50.,.1],[300.,.02],[30.,.3]]
+        return [np.r_[np.log(t),[.1,0.,.25,-.1,.5,.7][j%6],np.log(noise[j%4][0]),noise[j%4][1]] for j,t in enumerate(base[:count])]
     if model.kind in ('transport','power_curve'):
         initial=[[137.48,18.37,2.5],[137.48,18.37,0.],[150.,12.,5.],[18.37,137.48,2.5],[130.,30.,8.],[200.,5.,12.]]
         while len(initial)<count:
@@ -45,7 +50,7 @@ def seeds(model,count):
 def main():
     parser=argparse.ArgumentParser()
     parser.add_argument('--output',type=Path,required=True)
-    parser.add_argument('--kind',choices=['chain','flexible_real','transport','unequal_chain','power_curve'],required=True)
+    parser.add_argument('--kind',choices=['chain','flexible_real','transport','unequal_chain','power_curve','mapped_chain','mapped_unequal'],required=True)
     parser.add_argument('--order',type=int,required=True)
     parser.add_argument('--starts',type=int,default=24)
     parser.add_argument('--maxiter',type=int,default=600)
@@ -128,7 +133,7 @@ def main():
             'ambient_linear_convention':'Both endpoint offsets within±2C relative to first T1; explicit technical sensitivity, not measured slope bounds' if args.ambient=='linear' else None,
             'warm_start_fit_sha256':hashlib.sha256(args.warm_start.read_bytes()).hexdigest() if args.warm_start else None,
             'additional_transport_delay_s':float(point[2]) if args.kind in ('transport','power_curve') else None,
-            'power_curvature':float(point[3]) if args.kind=='power_curve' else None,
+            'power_curvature':float(point[3]) if args.kind=='power_curve' else (float(point[model.base_nt]) if args.kind in ('mapped_chain','mapped_unequal') else None),
             'best':best,'starts':starts,'nobs':model.count,'parameter_count':pcount,
             'nominal_AICc':2*nll+2*pcount+2*pcount*(pcount+1)/(model.count-pcount-1),
             'RMSE_C':float(np.sqrt(np.mean(residual**2))),'per_run':metrics,'bounds':bounds,

@@ -65,7 +65,7 @@ class PooledModel:
         X = np.zeros((self.count,self.ninput+self.ambient_width*len(self.records)))
         cursor = 0
         for j,d in enumerate(self.records):
-            h = propagate(d.input,self.indices[j],transitions,forcing)[1:]
+            h = propagate(self.effective_command(d,logarithms),self.indices[j],transitions,forcing)[1:]
             count = len(h); section = slice(cursor,cursor+count)
             X[section,0] = h[:,-1]
             if self.kind == 'flexible_real':
@@ -78,6 +78,8 @@ class PooledModel:
                 X[section,self.ninput+2*j:self.ninput+2*j+2]=np.column_stack((a-b,b))
             cursor += count
         return X
+
+    def effective_command(self,record,coordinates):return record.input
 
     def bounds(self):
         times = [(np.log(5.),np.log(600.))]
@@ -138,8 +140,32 @@ class PooledModel:
         return result
 
 
+class MappedCascade(PooledModel):
+    """Repeat stage comparison under the same selected static command map."""
+    def __init__(self,records,base_kind,order):
+        super().__init__(records,base_kind,order)
+        self.base_kind=base_kind;self.base_nt=self.nt;self.nt+=1
+        self.kind='mapped_chain' if base_kind=='chain' else 'mapped_unequal'
+        if any(np.any((d.input<0)|(d.input>100)) for d in records):raise ValueError('Command outside0..100')
+
+    def time_constants(self,coordinates):
+        v=np.exp(coordinates[:self.base_nt])
+        return np.r_[v[0],np.full(self.order,v[1]/self.order)] if self.base_kind=='chain' else v
+
+    def effective_command(self,record,coordinates):
+        u=record.input;return u+coordinates[self.base_nt]*u*(1-u/100)
+
+    def bounds(self):
+        return [(np.log(5.),np.log(600.))]+[(np.log(.01),np.log(200.))]*(self.base_nt-1)+[(-.8,.8),(np.log(.05),np.log(3000.)),(0.,1.)]
+
+    def frequency_response(self,point,coefficients,omega):
+        return coefficients[0]/np.prod(1+1j*omega*self.time_constants(point[:self.nt]))
+
+
 def make_model(records,kind,order,numerator_bound=2.,ambient_mode='constant'):
-    if kind in ('transport','power_curve'):
+    if kind in ('mapped_chain','mapped_unequal'):
+        model=MappedCascade(records,'chain' if kind=='mapped_chain' else 'unequal_chain',order)
+    elif kind in ('transport','power_curve'):
         from transport import TransportModel,PowerCurveModel
         if order!=1:raise ValueError('Transport extension applies to the n=1 baseline')
         model=PowerCurveModel(records) if kind=='power_curve' else TransportModel(records)
@@ -204,4 +230,20 @@ def audit():
         error=float(np.max(abs(prediction-expected)))
         if error>2e-8:raise AssertionError(('Linear ambient',tau,error))
         rows.append({'kind':'chain','order':1,'ambient_mode':'linear','tau':tau,'ODE_max_abs_C':error})
+    for kind,order in [('mapped_chain',1),('mapped_chain',2),('mapped_chain',3),('mapped_unequal',3)]:
+        model=make_model(records,kind,order,ambient_mode='linear')
+        base=np.log([137.,18.]) if kind=='mapped_chain' else np.log([137.,3.,14.])
+        point=np.r_[base,.12,np.log(200.),.04]
+        p=model.trajectories(point,np.array([.71,-1.3,1.7]))[0]
+        mapped=u+.12*u*(1-u/100)
+        from dynamics import response as chain_reference
+        if kind=='mapped_chain':
+            linear=chain_reference(t,mapped,order,.71,137.,18.)
+        else:
+            from audit_pooled import physical_reference
+            linear=physical_reference(t,mapped,np.exp(base),np.array([0.,0.,.71]),0.)
+        slope=3./(t[-1]-t[0]);ambient=solve_ivp(lambda s,x:(-1.3+slope*(s-t[0])-x)/137.,(t[0],t[-1]),[0.],t_eval=t,rtol=2e-11,atol=1e-12).y[0]
+        error=float(np.max(abs(p-(22+linear+ambient))))
+        if error>2e-8:raise AssertionError((kind,order,error))
+        rows.append({'kind':kind,'order':order,'ambient_mode':'linear','independent_max_abs_C':error})
     return {'status':'passed','cases':rows,'scope':'Exact irregular intervals, physical ambient forcing, free numerator and orders1/2/3; independent physical-state ODE'}
