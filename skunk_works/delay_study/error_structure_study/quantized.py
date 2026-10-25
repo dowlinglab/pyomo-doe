@@ -38,7 +38,7 @@ def report(analogue,phase=-.5):
     return np.round(STEP*n+OFFSET,2)
 
 
-def filter_ou(time,mean,observed,sigma,ell,eta,phase=-.5,nodes=128,tail_sd=9.):
+def filter_ou(time,mean,observed,sigma,ell,eta,phase=-.5,nodes=128,tail_sd=9.,keep_history=False):
     """Return predictive bin probabilities and an approximate latent posterior.
 
     Latent X has variance sigma^2*(1-eta) and OU length ell; independent analogue
@@ -52,13 +52,14 @@ def filter_ou(time,mean,observed,sigma,ell,eta,phase=-.5,nodes=128,tail_sd=9.):
     if np.any(np.diff(time)<=0):raise ValueError('Time must strictly increase')
     lo,hi=bins(observed,phase);low=lo-mean;high=hi-mean
     if eta==1:
+        if keep_history:raise ValueError('Latent smoothing requires nonzero latent variance')
         lp=log_probability(low/sigma,high/sigma)
         return {'nll':float(-lp.sum()),'log_bin_probability':lp,'cdf_lower':ndtr(low/sigma),
                 'cdf_upper':ndtr(high/sigma),'log_CDF_lower':log_ndtr(low/sigma),'log_SF_upper':log_ndtr(-high/sigma),'posterior_normalization_ratio':np.ones(len(time)),
                 'posterior_mean':np.zeros(len(time)),'posterior_SD':np.zeros(len(time))}
     points,weights=leggauss(nodes)
     slow=sigma*sigma*(1-eta);measurement=sigma*np.sqrt(eta)
-    previous=None;mass=None;logp=[];cdflo=[];cdfhi=[];normalization=[];pm=[];ps=[];logcdf=[];logsf=[]
+    previous=None;mass=None;logp=[];cdflo=[];cdfhi=[];normalization=[];pm=[];ps=[];logcdf=[];logsf=[];history=[]
     for k in range(len(time)):
         if k==0:
             lp=float(log_probability(low[k]/sigma,high[k]/sigma))
@@ -100,13 +101,23 @@ def filter_ou(time,mean,observed,sigma,ell,eta,phase=-.5,nodes=128,tail_sd=9.):
         # Keep strictly positive mixture weights without moving the normalized
         # distribution at floating-point precision; discard underflowed atoms.
         take=mass>0;previous=x[take];mass=mass[take];mass/=mass.sum()
+        if keep_history:
+            if measurement==0:raise ValueError('Score smoothing requires positive analogue measurement variance')
+            aa=(low[k]-previous)/measurement;bb=(high[k]-previous)/measurement
+            lb=log_probability(aa,bb)
+            ratio_a=np.exp(-.5*aa*aa-.5*LOG2PI-lb);ratio_b=np.exp(-.5*bb*bb-.5*LOG2PI-lb)
+            vm=measurement*(ratio_a-ratio_b)
+            v2=measurement*measurement*(1+aa*ratio_a-bb*ratio_b)
+            if np.any(v2<-1e-10):raise FloatingPointError('Negative truncated Gaussian second moment')
+            history.append({'grid':previous.copy(),'weight':mass.copy(),'prior_log_density':lpredict[take],
+                            'measurement_mean':vm,'measurement_second':np.maximum(v2,0.)})
         m=float(mass@previous);pm.append(m);ps.append(float(np.sqrt(mass@((previous-m)**2))))
         logp.append(lp)
     return {'nll':float(-np.sum(logp)),'log_bin_probability':np.asarray(logp),
             'cdf_lower':np.asarray(cdflo),'cdf_upper':np.asarray(cdfhi),
             'log_CDF_lower':np.asarray(logcdf),'log_SF_upper':np.asarray(logsf),
             'posterior_normalization_ratio':np.asarray(normalization),
-            'posterior_mean':np.asarray(pm),'posterior_SD':np.asarray(ps)}
+            'posterior_mean':np.asarray(pm),'posterior_SD':np.asarray(ps),'history':history if keep_history else None}
 
 
 def randomized_residual(result,seed):
