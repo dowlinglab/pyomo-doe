@@ -7,39 +7,50 @@ ten-plus-hour research scope without an idle minimum or fixed stopping time.
 
 ## Current state
 
-The goal is active. Stage 0 passed: all twelve unique raw records and sixteen
-prior evidence bindings match, and all 26 prior jobs have successful terminal
-exit artifacts. No related process was live at launch. Stage 1 has a first
-source-bound decomposition of 384 run/channel/window combinations, independently
-checked by QR projections (maximum energy difference 9.1e-12 C2). Both figures
-were visually inspected. The initial conductance fits are now terminal.
+The goal is active. Read `run_manifest.json` for authoritative job identities and
+terminal artifacts. Stage 0 and the first error partition passed. The constant
+ambient conductance fits at ±5/±10/±20% are terminal and independently audited.
+At ±10%, T1/T2 RMSE is 0.639/0.115 C; widening to ±20% gives 0.641/0.115 C.
+Two ±10% deviations reach their lower bound. Protocol-aligned ratios are fitted
+behavior, not measured airflow. The ±5% fit retains three failed starts.
 
-In the short-lag/command-curve constant-ambient model, offsets explain 74.6%
-and additional linear trends 19.3% of T1 squared error. The fundamental adds
-0.64%. After 450 s, 96.1% is run offsets. These are descriptive nested
-projections, not identified environmental effects. This favors investigating
-slow between-run mismatch before adding another response lag. Detailed initial
-findings are in `initial_findings.md` and `results/decomposition`.
+Matched ambient/startup tests passed dimensional trajectory and dense likelihood
+audits. Affine ambient gives 0.728/0.111 C. Hidden starting offsets bounded by
+±2 C give 0.615/0.111 C; ±5 C gives the same result, with every selected offset
+within 0.35 C. This supports cold starts as a reasonable working assumption;
+absolute run timestamps and between-run recovery times remain unknown.
 
-The three constant-ambient conductance fits and independent dense likelihood/
-dimensional trajectory audits passed. At ±10%, T1/T2 RMSE is 0.639/0.115 C;
-at ±20%, 0.641/0.115 C. Two ±10% deviations hit the lower band. The ±5% job
-retains three failed SLSQP starts and one feasible converged start; its RMSE is
-0.646/0.147 C. Training likelihood alone does not select a band or establish
-that deviations measure actual airflow. The run ratios depend on protocol.
+The radiative implementation passed independent balances, time-step, derivative
+and synthetic recovery checks. Its zero-radiation limit matches all saved
+baseline trajectories within 4.4e-8 C. The original four-start free-radiation
+solver ended without an accepted converged result; all four attempts and scores
+are preserved. A scaled-objective recovery is running in radiation_free_scaled
+(controller 11817). The original linear-command/radiation fit is terminal and
+independently audited. No process was killed: both original jobs ended naturally
+before the approved stop retry found no such process.
 
-Three four-start jobs now compare affine ambient and hidden-heater startup
-bands ±2/±5 C at the 10% conductance band. Their outputs are band_10_affine,
-band_10_startup2 and band_10_startup5; controller sessions 32642, 5303, 93466.
-Reconcile before new launches. Audit every terminal fit with audit_bounded.py.
+Fixed-mean bin-likelihood covariance estimates passed 512-node full-record checks
+and independent trivariate Gaussian rectangle integrals for every run prefix.
+T1 analogue measurement SD is 0.0255 C and correlation length 725 s; T2 is
+0.0325 C and 54.8 s. These are conditional model parameters, not reference-sensor
+calibrations. The initial import failures and corrected v2 runs are preserved.
+Medians/normality alone do not establish independence or physical adequacy.
 
-Quantized scalar OU filtering passed independent Gaussian rectangle integrals,
-node-count convergence and a known-truth synthetic randomized-PIT check. This
-supports a hardware likelihood pilot; it does not establish Gaussian hardware
-noise. Operating-point/common-differential diagnostics, hardware quadrature
-convergence and later covariance refitting remain unfinished. Radiation's
-conditional scale and startup propagation checks passed. Read the manifest and
-initial_findings.md before proceeding; existing source/data receipts bind work.
+Backward quadrature smoothing and Fisher-identity scores passed independent
+posterior-moment and derivative checks. The full physical-plus-bin score check
+is running in joint_score_check (controller 66603). After it passes, implement
+and run joint mean/noise optimization. See quantized_methods.md for the derivation.
+Earlier marginal PIT pilots reused random seeds; joint/cross-channel diagnostics
+must be regenerated using independent streams by channel and run. Do not infer
+joint independence from those pilot arrays.
+
+Operating-point, heating/cooling, common/differential and Gaussian forecast
+horizon tables are in operating_first; independent conditional-Gaussian and RMSE
+checks passed. Noise-only conditional forecasts use earlier temperatures and are
+not free simulation or independent validation. All twelve records informed
+selection. Remaining work includes updated frequency diagnostics, sequential
+GLS, joint quantized fits, cross-channel checks, profiles/eigendecompositions,
+simulation uncertainty, retrospective transfer and the checked report.
 
 ## Resume instructions
 

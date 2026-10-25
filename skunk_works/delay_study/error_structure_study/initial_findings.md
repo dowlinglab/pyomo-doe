@@ -50,8 +50,7 @@ independent direct energy-balance integration and a full-versus-envelope
 profiled-gradient check. A three-record synthetic example recovers the known
 centered conductance deviations from two starts when the shared dynamics are
 fixed. This verifies a recoverable conditional problem; it does not establish
-all-parameter identifiability in the hardware data. Three four-start real-data
-comparisons are now running and have no selected result yet.
+all-parameter identifiability in the hardware data. The three four-start real-data comparisons and their independent audits are now complete.
 
 The radiation calculation uses scenarios, not a fitted emissivity. With area
 0.0012 m2, surroundings 23 C and surface 70.54 C, the heat loss is 0.0213 W
@@ -69,3 +68,41 @@ computed [scenario table](results/radiation_scale/scenarios.csv) and
 retain the calculation. The two finishes differ by a factor of eighteen in the
 assumed emissivity; the purpose is to show sensitivity, not assign a physical
 confidence interval.
+
+
+At ±10% conductance variation, pooled T1/T2 RMSE is 0.639/0.115 C. At ±20%,
+it is 0.641/0.115 C, with little likelihood improvement. Two 10% deviations
+reach the lower bound. The three fast-sine ratios exceed nominal, while some
+slow-sine and step ratios are below nominal; this protocol dependence prevents
+calling the inferred variation an airflow measurement. Three of four 5% starts
+failed SLSQP status/feasibility checks and remain recorded alongside the selected
+converged fit. A larger training likelihood is not a physical explanation.
+
+With the 10% band, allowing linear ambient gives 0.728/0.111 C, while bounded
+hidden-heater starting offsets give 0.615/0.111 C. Widening those starting offsets
+from ±2 to ±5 C does not improve the result; all selected offsets are within
+0.35 C. Initial disequilibrium has not explained most of the remaining T1 error.
+
+Bin-likelihood refitting with the physical mean fixed gives an estimated analogue
+measurement SD of 0.0255 C for T1 and 0.0325 C for T2. The corresponding old
+continuous-data values were about 0.094 and 0.072 C. T2's fitted correlation
+length grows from 7.9 to 54.8 s. Both channels passed full-record 512-node score
+checks and independent trivariate rectangle integrals. These changes show why
+whitening and uncertainty must be revisited under the discrete observation law.
+They do not measure this device's calibration accuracy. Physical parameters
+have not yet been jointly re-estimated under that bin likelihood.
+
+The working Gaussian forecast comparison also separates simulation from noise
+state feedback. With the 10% band, T1 one-second conditional RMSE is 0.111 C;
+at 10/30/60 seconds it is 0.145/0.202/0.260 C. Free-simulation pooled RMSE is
+0.639 C. The forecasts condition on preceding observations and use parameters
+estimated from all twelve records. Their current intervals include observation
+noise only, excluding parameter, model-form and quantization uncertainty. The
+dense Gaussian conditioning identities and all 336 printed free-simulation RMSE
+cells passed independent arithmetic checks.
+
+Joint predictive residual diagnostics still need independent random streams.
+The existing pilots used repeated seeds within channels/runs, so their marginal
+illustrations should not be pooled to claim cross-channel or cross-run
+independence. Simulated references and nonrandomized bin-transition diagnostics
+remain necessary even when randomized residuals look Gaussian.
