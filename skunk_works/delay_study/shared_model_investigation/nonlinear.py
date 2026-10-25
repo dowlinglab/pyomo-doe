@@ -33,6 +33,11 @@ def stable_gradient(function,point,bounds,step=2e-6):
 
 @njit(cache=True)
 def advance(z,v,held,duration,K,tau,theta,beta,max_step):
+    if beta==0:
+        h=duration;a=h*(1/tau-1/theta);et=np.exp(-h/tau);eh=np.exp(-h/theta)
+        if abs(a)<1e-5:cross=et*h/tau*(1+a/2+a*a/6+a*a*a/24+a**4/120)
+        else:cross=theta/(theta-tau)*(eh-et)
+        return eh*z+held*(-np.expm1(-h/theta)),et*v+K*held*(-np.expm1(-h/tau))+K*(z-held)*cross
     left=duration
     while left>1e-12:
         h=min(left,max_step,tau/50)
