@@ -1,6 +1,6 @@
 # What explains the shared TC-Lab model discrepancies?
 
-Status: results synthesis; final revised-stage profile audits pending.
+Status: scoped investigation complete for researcher review. Numerical checks and figure review are documented in verification.md.
 
 The original n=1 formulation misses a repeatable fast phase lag. A shared
 positive model with unequal lags, a small command curve and bounded affine
@@ -16,9 +16,9 @@ us from claiming an adequate universal stochastic model.
 | 1. Is the discrepancy offset, drift or cycling? | All three fast-sine repeats share a phase-aligned cycle; slow trends also remain | Descriptive decomposition complete |
 | 2. Is amplitude or phase wrong? | About 28–32 degrees of extra fast phase lag; 54 estimates with window/HAC sensitivities | Independently verified |
 | 3. Can flexible linear dynamics explain it? | Free numerators nearly remove fast cycling but identify fast modes poorly | Scoped real-pole benchmark complete |
-| 4. Does increasing n help? | n=2 improves working likelihood; n=3 worsens it, including under revised mean assumptions | Fits/information complete; final profiles pending |
+| 4. Does increasing n help? | n=2 improves working likelihood; n=3 worsens it, including under revised mean assumptions | Matched fits, information and profiles complete |
 | 5. Which targeted revision helps? | Unequal positive lags and transport explain extra phase; command curvature and ambient improve level fit | Selected fits independently verified |
-| 6. What can we claim? | Shared trajectories improve; residual adequacy and unique mechanisms remain unresolved | Researcher review after final audit |
+| 6. What can we claim? | Shared trajectories improve; residual adequacy and unique mechanisms remain unresolved | Ready for researcher review |
 
 ## A repeatable dynamic discrepancy
 
@@ -52,6 +52,9 @@ the quadratic heat-loss fit uses twelve, including another thermal-role basin.
 Parameter counts include ambient nuisance values and all noise parameters.
 Affine ambient uses two endpoint offsets per run, each within ±2 C; otherwise
 each run has one constant offset.
+
+Input–innovation correlation ranges below are per-run maxima of absolute
+correlations over leads/lags up to 30 samples. They are descriptive lag searches.
 
 For equal stages, n counts input-delay states and theta is their total mean
 delay: G_n(s)=K/[(1+tau*s)(1+theta*s/n)^n]. The full mean model has n+1 states.
@@ -115,6 +118,12 @@ correlations fall to 0.085–0.116. The two lag labels can be interchanged witho
 changing any trajectory or likelihood; local full rank does not remove that
 exact ambiguity.
 
+The revised n=2 model is the equal-input-lag restriction of this cascade.
+Freeing that equality adds one parameter and improves negative log likelihood
+by about 164 under the same command-map, ambient and error conventions. This
+supports relaxing equal stages. Pole coalescence, label symmetry and the
+remaining model mismatch preclude a routine chi-square significance claim.
+
 The transport alternative uses two positive poles plus an effective extra delay.
 Without a command curve its fitted d is about 2.53 s, with scoped nominal profile
 support 2.41–2.65 s. With the command map and affine ambient it reaches 0.388 C
@@ -138,7 +147,7 @@ command-curve profile supports c about 0.074–0.121 under its working likelihoo
 The quadratic-loss alternative adds −beta*v² to the thermal balance. Its beta
 is about 0.0025 per C, with scoped grid-interpolated support about
 0.0016–0.0036 per C. It improves over the linear transport mean, but the command
-map has better working likelihood and raw error in this comparison. This does
+map has better working likelihood and raw error under matched constant ambient. This does
 not identify where the nonlinearity occurs. The structures follow established
 [static-map/linear-block identification](https://www.mathworks.com/help/ident/ref/idnlhw.html)
 and [nonlinear TC-Lab heat-loss modeling](https://apmonitor.com/pdc/index.php/Main/TCLabRadiative);
@@ -170,6 +179,8 @@ time-block scales, are retained in the [innovation assessment](results/innovatio
 These are descriptive checks with selected lag searches, not calibrated joint
 whiteness tests.
 
+![Trajectory error and innovation diagnostics](results/final_evidence/fit_and_innovations.png)
+
 ![Revised step records and innovations](results/diagnostics_mapped_unequal/runs_step_50.png)
 
 The revised unequal model has a scaled sensitivity condition number about 20
@@ -179,6 +190,16 @@ models have much weaker directions despite local full rank. The scaled
 information eigendecompositions, full covariance and response uncertainty are
 saved with each model. These calculations fix covariance and permit all ambient
 nuisance directions locally, even at bounds.
+For the revised unequal model, local block-phase SD at 30 s is about 0.74 degrees;
+the much smaller 0.14-degree value for the original n=1 model accompanies a
+roughly 30-degree observed phase discrepancy. Local precision alone therefore
+does not certify dynamic adequacy.
+
+For n=1, scoped nominal K support shifts from 0.702–0.715 under the original
+mean assumptions to 0.679–0.693 after adding command curvature and affine
+ambient. Those ranges do not overlap, although both appear narrow within their
+own model. That shift records uncertainty about the formulation that either
+individual profile omits.
 
 All profile support uses scoped grids, bounded reoptimization and nominal
 2-delta-NLL threshold 3.84146. Independent propagation/dense-likelihood audits
@@ -187,9 +208,16 @@ and remaining misspecification prevent a 95% coverage guarantee. A narrow
 within-model parameter range cannot represent the uncertainty across competing
 mean and measurement descriptions.
 
+![Nominal stage profiles](results/final_evidence/stage_profiles.png)
+
+The full [comparison table](results/final_evidence/model_table.csv) and
+[checked numerical evidence](results/final_evidence/evidence.json) bind the
+report table and headline numbers to saved predictions, independent audits
+and profile artifacts.
+
 ## Prediction versus simulation, and the earlier two-record study
 
-Conditioning on temperature history reduces reference one-second RMSE from
+Conditioning on temperature history reduces reference nominal one-second RMSE from
 0.484 C to 0.117 C on identical targets. For the revised unequal model these
 values are 0.374 C and 0.111 C. At 300 s, revised free-run and conditional RMSEs
 are 0.419 C and 0.373 C. The short-horizon predictor can compensate for a poor

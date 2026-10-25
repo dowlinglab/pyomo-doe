@@ -17,7 +17,8 @@ These references are assumptions, not measured ambient temperatures.
 The linear-ambient sensitivity uses an affine trajectory whose two endpoint
 offsets both lie within ±2 C. This is an explicit computational convention;
 Alex requested trying linear drift without specifying a physical slope bound.
-All primary comparisons retain constant offsets. Mean propagation uses actual
+The initial comparisons retain constant offsets; revised-mean comparisons use
+the explicitly labeled affine endpoints. Mean propagation uses actual
 irregular intervals, without resampling or changing command timestamps.
 
 K absorbs a shared constant alpha calibration. No separate alpha multiplier is
@@ -161,6 +162,10 @@ propagates the filtered disturbance without future temperatures. Compare against
 free-run errors on the same targets. Since parameters/ambient were estimated
 from the full records, this is retrospective within-record conditioning, not
 independent forecast validation.
+For each origin and nominal horizon, the target is the first observation at or
+after origin time plus that horizon. Irregular observations can therefore give
+a slightly longer actual horizon. Origins, target counts and free-run rows
+are identical in each paired forecast comparison.
 
 ## Information, profiles and nonparametric response
 

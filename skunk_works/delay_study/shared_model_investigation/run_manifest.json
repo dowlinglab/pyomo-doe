@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "status": "active_final_profiles_and_delivery_audit",
+  "status": "complete_for_researcher_review",
   "plan_commit": "b4f7ef7",
   "branch": "reformulation-exploration",
   "heartbeat_id": "tc-lab-overnight-research",
@@ -1279,8 +1279,8 @@
         "--inputs",
         "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/shared_model_investigation/results/mapped_chain1"
       ],
-      "status": "running",
-      "exit_code": null
+      "status": "complete",
+      "exit_code": 0
     },
     {
       "id": "mapped_audit3",
@@ -1332,8 +1332,8 @@
         "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/shared_model_investigation/results/mapped_chain2",
         "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/shared_model_investigation/results/mapped_chain3"
       ],
-      "exit_code": null,
-      "status": "running"
+      "exit_code": 0,
+      "status": "complete"
     },
     {
       "id": "information_mapped",
@@ -1484,13 +1484,67 @@
       ],
       "exit_code": 0,
       "status": "complete"
+    },
+    {
+      "id": "mapped_profiles23_audit",
+      "output": "results/mapped_profiles23_audit",
+      "source_commit": "9fdf1a471b4353525871ca9507d2842c53037ee0",
+      "pid": 15132,
+      "parent_pid": 14909,
+      "command": [
+        "/Users/adowling/opt/anaconda3/bin/python",
+        "/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-shared-9fdf1a47-thtuems2/skunk_works/delay_study/shared_model_investigation/audit_chain_profiles.py",
+        "--output",
+        "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/shared_model_investigation/results/mapped_profiles23_audit",
+        "--input",
+        "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/shared_model_investigation/results/mapped_profiles23",
+        "--expected-curves",
+        "4"
+      ],
+      "exit_code": 0,
+      "status": "complete"
+    },
+    {
+      "id": "mapped_profiles1_audit",
+      "output": "results/mapped_profiles1_audit",
+      "source_commit": "581cd802741c6f8daec9e92bf6816ed9e5d008bd",
+      "pid": 94736,
+      "parent_pid": 94430,
+      "command": [
+        "/Users/adowling/opt/anaconda3/bin/python",
+        "/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-shared-581cd802-y9nmzs2s/skunk_works/delay_study/shared_model_investigation/audit_chain_profiles.py",
+        "--output",
+        "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/shared_model_investigation/results/mapped_profiles1_audit",
+        "--input",
+        "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/shared_model_investigation/results/mapped_profiles1",
+        "--expected-curves",
+        "2"
+      ],
+      "exit_code": 0,
+      "status": "complete"
+    },
+    {
+      "id": "final_evidence",
+      "output": "results/final_evidence",
+      "source_commit": "9fdf1a471b4353525871ca9507d2842c53037ee0",
+      "pid": 15667,
+      "parent_pid": 15442,
+      "command": [
+        "/Users/adowling/opt/anaconda3/bin/python",
+        "/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-shared-9fdf1a47-abo2_69a/skunk_works/delay_study/shared_model_investigation/summarize_evidence.py",
+        "--output",
+        "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/shared_model_investigation/results/final_evidence",
+        "--results",
+        "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/shared_model_investigation/results",
+        "--report",
+        "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/shared_model_investigation/report.md"
+      ],
+      "exit_code": 0,
+      "status": "complete"
     }
   ],
-  "live_jobs": [
-    "mapped_profiles1",
-    "mapped_profiles23"
-  ],
-  "next_phase": "Finish mapped_profiles1 and mapped_profiles23; independently audit all78 revised profile points. Run summarize_evidence.py against report, review figures, complete requirement audit and stop for researcher review.",
+  "live_jobs": [],
+  "next_phase": "Researcher review of report.md; no further numerical work in this goal.",
   "delivery": "No new email requested; completed residual_study delivery remains unchanged",
   "startup_reconciliation": "Approved controller ps inspection: no live residual_study/shared_model_investigation numerical Python jobs after baseline failure.",
   "material_finding": "Fast30s sine has28.3\u201332.3degrees additional circular phase lag vs matched n1, across3repeats/3startup windows/2nuisance choices;120s differences about\u22121.8to+0.95deg;300s about\u22120.02to+2.04deg with only1\u20132settled cycles. Interpretation provisional until flexible benchmark and delay-order comparison.",
@@ -1511,5 +1565,16 @@
     "input_map": "Shared monotone command map u+c*u*(1-u/100) changes mean sine versus step power and generates second harmonic. This is distinct from an unidentifiable extra constant alpha. Pilot c0.0974, NLL\u22128426.49, rawRMSE0.6474C passed independent audit. Main24starts and linear-ambient sensitivity running. Structure grounded in official Hammerstein documentation; no actuator defect claimed."
   },
   "closing_loop_rationale": "Power-map plus linear ambient gives pooledRMSE0.38794C with sharedc0.10926 and effective d2.54045s. Apply the same map/ambient assumptions to n1/2/3 and unequal3 before concluding stage preference. This closes comparison within existing families, not a new broad model search.",
-  "final_candidate_evidence": "All16 selected mean fits complete and independently audited. Revised unequal3: RMSE0.37397C, K0.688645, lags142.84/2.99/13.47s,c0.10184, fast input-innovation cross0.085-0.116; residual ACFmax0.163. Equal-stage revised n1/2/3 still leave fast cycling. No adequate universal stochastic law or unique mechanism established."
+  "final_candidate_evidence": "All16 selected mean fits complete and independently audited. Revised unequal3: RMSE0.37397C, K0.688645, lags142.84/2.99/13.47s,c0.10184, fast input-innovation cross0.085-0.116; residual ACFmax0.163. Equal-stage revised n1/2/3 still leave fast cycling. No adequate universal stochastic law or unique mechanism established.",
+  "completion_checks": {
+    "selected_models": 16,
+    "report_table_rows": 16,
+    "regular_profile_curves": 15,
+    "nonlinear_beta_profile_points": 7,
+    "numerical_evidence": "results/final_evidence/evidence.json",
+    "report_SHA256": "2e256ca54378f13d1276d280bf020afb72d0f2976df6b87be5153b58588ec506",
+    "figures": "Reviewed all figures linked in report",
+    "raw_and_completed_study_diff": "Empty relative to b4f7ef7",
+    "email": "No new email; prior delivery preserved"
+  }
 }
