@@ -21,12 +21,15 @@ def main():
     parser.add_argument('--ambient',choices=['constant','linear'],default='constant')
     parser.add_argument('--kernel',choices=['iid','ou_nugget'],default='ou_nugget')
     parser.add_argument('--starts',type=int,default=12);parser.add_argument('--maxiter',type=int,default=500)
-    parser.add_argument('--warm',type=Path);args=parser.parse_args()
+    parser.add_argument('--warm',type=Path);parser.add_argument('--envelope-gradient',action='store_true');args=parser.parse_args()
     records=load_records();model=Model(records,args.lag,args.curve,args.ambient,args.kernel)
     objective=lambda p:model.projected(p)[0];bounds=model.bounds()
     # Full one-sided steps near active shape bounds avoid a central difference
     # whose denominator shrinks to floating-point distance from the boundary.
     gradient=lambda p:stable_gradient(objective,p,bounds,step=2e-6)
+    if args.envelope_gradient:
+        from envelope import Objective
+        envelope=Objective(model);objective=envelope;gradient=envelope.gradient
     base=[[150,12,.4,.35],[200,20,.2,.4],[100,3,1.,.3],[220,40,1,.5],[80,10,3,.25],[300,2,.1,.6]]
     rng=np.random.RandomState(12713);initial=[]
     for j in range(args.starts):
@@ -85,6 +88,7 @@ def main():
          'RMSE_by_channel_C':[float(np.sqrt(np.mean(residual[k*model.N:(k+1)*model.N]**2))) for k in range(2)],
          'nominal_AICc':2*nll+2*pcount+2*pcount*(pcount+1)/(nobs-pcount-1),'bounds':bounds,
          'stationarity_warning':best['projected_gradient']>.05,'elapsed_s':time.monotonic()-begun,
+         'derivative_method':'bounded envelope derivative' if args.envelope_gradient else 'full profiled finite differences with stable boundary steps',
          'notice':'Two-output retrospective pooled fit; independent channel colored errors and symmetric thermal properties are assumptions. Initial heater temperatures equal first sensor readings; alpha scale absorbed. No comparison of two-output likelihood with a T1-only likelihood.'}
     write_json(args.output/'fit.json',fit);np.savez_compressed(args.output/'trajectories.npz',**arrays)
     print(json.dumps({'status':'complete','RMSE':fit['RMSE_by_channel_C'],'nll':nll,'parameters':fit['parameters'],'stationarity_warning':fit['stationarity_warning']}),flush=True)
