@@ -98,11 +98,18 @@ def main():
         text.append(f'| {n} | {min(p):.2f} to {max(p):.2f} | {min(g):.3f}–{max(g):.3f} |')
     f=[x for x in models[best_name]['frequency'] if x['channel']==2 and x['period_s']==30 and x['cutoff_s']==450]
     sd=[x['measured']['HAC']['60']['phase_SD_deg'] for x in f]
+    weak_path=r/'weak_frequency_v2/weak_frequency.json';weak=json.loads(weak_path.read_text())
+    w=[x for x in weak['rows'] if x['channel']==2 and x['period_s']==30 and x['cutoff_s']==450]
+    count=sum(x['HAC']['60']['working95_ellipse_contains_zero'] for x in w)
+    bindings[str(weak_path.relative_to(r))]=sha(weak_path)
     text+=['',f'The fast T2 phase has working HAC60 standard errors of {min(sd):.1f}–{max(sd):.1f} degrees across repeats. '
+        f'The joint complex-gain 95% ellipses include zero in {count}/{len(w)} fast T2 repeats after 450 s. '
+        'A phase confidence set from an ellipse containing zero is unbounded around the circle; the scalar phase bars are only delta-method diagnostics. '
         'Its small oscillation cannot reliably locate an additional fast mode. The slow rise still supplies coupling information. '
         'Frequency plots use identical finite windows for measured and simulated temperatures; the JSON retains 300, 450 and 600 s cutoffs.','',
         '![Joint trajectories](results/final_analysis/joint_trajectories.png)','',
         '![Joint frequency response](results/final_analysis/joint_frequency.png)','',
+        '![Weak fast T2 response](results/weak_frequency_v2/fast_T2_complex.png)','',
         '## What can be interpreted physically','',
         'Unequal decay rates are physically plausible because different thermal capacities and conductances produce different eigenmodes. '
         'Their numerical values should not be assigned to particular hardware parts solely from a fitted cascade.','',

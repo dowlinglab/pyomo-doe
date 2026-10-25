@@ -41,7 +41,7 @@ def main():
         ellipse=Ellipse(h*1e4,width*1e4,height*1e4,angle=np.rad2deg(np.arctan2(vec[1],vec[0])),facecolor='#2166ac',alpha=.18,edgecolor='#2166ac')
         ax.add_patch(ellipse);ax.plot(*(h*1e4),'o',color='#2166ac');ax.plot(0,0,'k+');ax.axhline(0,color='.7',lw=.5);ax.axvline(0,color='.7',lw=.5)
         ax.autoscale_view();ax.set_aspect('equal',adjustable='box');ax.set_title('Run '+row['name'].split('_run_')[1].split('.')[0]);ax.set_xlabel('Real gain, 1e-4 C/percent');ax.grid(alpha=.2)
-    axes[0].set_ylabel('Imaginary gain, 1e-4 C/percent');fig.suptitle('Fast T2 response after 450 s; working joint HAC60 ellipses');fig.tight_layout(rect=(0,0,1,.9));fig.savefig(args.output/'fast_T2_complex.png',dpi=160);plt.close(fig)
+    axes[0].set_ylabel('Imaginary gain, 1e-4 C/percent');fig.suptitle('Fast T2 response after 450 s; working joint HAC60 ellipses');fig.tight_layout(rect=(0,0,1,.9));fig.savefig(args.output/'fast_T2_complex.png',dpi=160,bbox_inches='tight');plt.close(fig)
     write_json(args.output/'figure_receipt.json',{'visual_review':'pending','sha256':{'fast_T2_complex.png':hashlib.sha256((args.output/'fast_T2_complex.png').read_bytes()).hexdigest()}})
     print('Joint complex-gain diagnostics complete',flush=True)
 
