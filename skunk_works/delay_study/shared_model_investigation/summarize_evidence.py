@@ -54,6 +54,13 @@ def main():
              'fast_cross_min':diag['fast_input_correlation_range'][0],
              'fast_cross_max':diag['fast_input_correlation_range'][1],
              'innovation_SD_min':diag['SD_range'][0],'innovation_SD_max':diag['SD_range'][1]}
+        if name=='quadratic':
+            row['K']=fit['parameters']['K']
+            row['beta_per_C']=fit['parameters']['beta_per_C']
+        else:
+            row['K']=best['coefficients'][0]
+            row['time_constants_s']=fit['time_constants_s']
+            row['power_curvature']=fit.get('power_curvature')
         if name!='quadratic':
             source='information_mapped' if name.startswith('mapped_') else 'information_final'
             info=read(source+'/'+name+'_information.json')
@@ -70,12 +77,15 @@ def main():
             assert r['numerical_warnings']==0 and r['lower_reference_points']==0
             curves.append({'id':r['id'],'reference_value':r['reference_value'],
                            'nominal_grid_support':r['nominal_support'],'audit':folder+'/audit.json'})
+    beta=read('beta_profiles/profile.json')
+    assert beta['status']=='complete' and len(beta['points'])==7
+    assert not any(r['stationarity_warning'] for r in beta['points'])
     pd.DataFrame(rows).to_csv(args.output/'model_table.csv',index=False)
     table=['| Model | Raw RMSE, C | Negative log likelihood | Parameters |',
            '|---|---:|---:|---:|']
     table += ['| {id} | {RMSE_C:.3f} | {nll:.1f} | {parameter_count} |'.format(**r) for r in rows]
     (args.output/'report_table.md').write_text('\n'.join(table)+'\n')
-    write_json(args.output/'evidence.json',{'status':'passed','models':rows,'profiles':curves,
+    write_json(args.output/'evidence.json',{'status':'passed','models':rows,'profiles':curves,'beta_profile':beta,
         'arithmetic_checks':arithmetic,'consumed_sha256':hashes,
         'scope':'Saved prediction arithmetic, counts, AICc, artifact hashes and audited support. Independent propagation/dense-likelihood audits remain separate. These checks do not establish scientific model adequacy.'})
     plot(args,rows,read)
