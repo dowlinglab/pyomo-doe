@@ -21,12 +21,13 @@ from pooled_models import make_model,audit
 def seeds(model,count):
     rng=np.random.RandomState(20261025+model.order)
     nt=model.nt
-    if model.kind=='transport':
+    if model.kind in ('transport','power_curve'):
         initial=[[137.48,18.37,2.5],[137.48,18.37,0.],[150.,12.,5.],[18.37,137.48,2.5],[130.,30.,8.],[200.,5.,12.]]
         while len(initial)<count:
             initial.append([np.exp(rng.uniform(*model.bounds()[0])),np.exp(rng.uniform(*model.bounds()[1])),rng.uniform(0,15)])
         noise=[[213.87,.0358],[50.,.1],[300.,.02],[30.,.3]]
-        return [np.r_[np.log(t[:2]),t[2],np.log(noise[j%4][0]),noise[j%4][1]] for j,t in enumerate(initial[:count])]
+        return [np.r_[np.log(t[:2]),t[2],([.1,0.,.25,-.1,.5,.7][j%6] if j<6 else rng.uniform(-.8,.8)),np.log(noise[j%4][0]),noise[j%4][1]] if model.kind=='power_curve' else
+                np.r_[np.log(t[:2]),t[2],np.log(noise[j%4][0]),noise[j%4][1]] for j,t in enumerate(initial[:count])]
     if model.kind=='chain':
         initial=[[137.48,18.37],[18.37,137.48],[150.,12.],[130.,30.],[50.,70.],[200.,5.]]
     else:
@@ -44,7 +45,7 @@ def seeds(model,count):
 def main():
     parser=argparse.ArgumentParser()
     parser.add_argument('--output',type=Path,required=True)
-    parser.add_argument('--kind',choices=['chain','flexible_real','transport','unequal_chain'],required=True)
+    parser.add_argument('--kind',choices=['chain','flexible_real','transport','unequal_chain','power_curve'],required=True)
     parser.add_argument('--order',type=int,required=True)
     parser.add_argument('--starts',type=int,default=24)
     parser.add_argument('--maxiter',type=int,default=600)
@@ -54,7 +55,7 @@ def main():
     parser.add_argument('--ambient',choices=['constant','linear'],default='constant')
     args=parser.parse_args()
     write_json(args.output/'forward_audit.json',audit())
-    if args.kind=='transport':
+    if args.kind in ('transport','power_curve'):
         from transport import audit as audit_transport
         write_json(args.output/'transport_audit.json',audit_transport())
     config=json.loads((HERE.parent/'residual_study'/'config.json').read_text())
@@ -126,7 +127,8 @@ def main():
             'ambient_mode':args.ambient,'ambient_width':model.ambient_width,
             'ambient_linear_convention':'Both endpoint offsets within±2C relative to first T1; explicit technical sensitivity, not measured slope bounds' if args.ambient=='linear' else None,
             'warm_start_fit_sha256':hashlib.sha256(args.warm_start.read_bytes()).hexdigest() if args.warm_start else None,
-            'additional_transport_delay_s':float(point[2]) if args.kind=='transport' else None,
+            'additional_transport_delay_s':float(point[2]) if args.kind in ('transport','power_curve') else None,
+            'power_curvature':float(point[3]) if args.kind=='power_curve' else None,
             'best':best,'starts':starts,'nobs':model.count,'parameter_count':pcount,
             'nominal_AICc':2*nll+2*pcount+2*pcount*(pcount+1)/(model.count-pcount-1),
             'RMSE_C':float(np.sqrt(np.mean(residual**2))),'per_run':metrics,'bounds':bounds,

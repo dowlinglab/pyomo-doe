@@ -49,8 +49,10 @@ def main():
         B=W(X[:,model.ninput:])/sigma
         J=J-B@np.linalg.lstsq(B,J,rcond=None)[0]
         U,s,Vh=np.linalg.svd(J,full_matrices=False)
-        names=(['log_tau','log_theta','additional_delay_seconds'] if fit['kind']=='transport' else
+        names=(['log_tau','log_theta','additional_delay_seconds','power_curvature'] if fit['kind']=='power_curve' else
+               (['log_tau','log_theta','additional_delay_seconds'] if fit['kind']=='transport' else
                (['log_tau','log_theta'] if fit['kind']=='chain' else ['log_tau']+['log_lag'+str(k) for k in range(1,model.m)]))
+               )
         names+=['log_K']+['numerator_coefficient'+str(k)+'_scaled_by_K' for k in range(1,model.ninput)]
         info=J.T@J
         eigen=np.linalg.eigvalsh(info)

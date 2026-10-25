@@ -75,6 +75,35 @@ class TransportModel(PooledModel):
         return coefficients[0]*np.exp(-1j*omega*point[2])/((1+1j*omega*tau)*(1+1j*omega*theta))
 
 
+class PowerCurveModel(TransportModel):
+    """Shared monotone command map followed by the positive transport model.
+
+q_eff=q+c*q*(1-q/100), c in[-.8,.8]. The endpoints remain0and100 and the
+map is monotone on the recorded command range. This changes the response
+family; it is not a second constant alpha parameter. Reported frequency
+response is the linear dynamic block, not a global nonlinear transfer function.
+"""
+    def __init__(self,records):
+        super().__init__(records);self.kind='power_curve';self.nt=4
+        if any(np.any((d.input<0)|(d.input>100)) for d in records):raise ValueError('Command outside0..100')
+
+    def bounds(self):return [(np.log(5.),np.log(600.)),(np.log(.01),np.log(200.)),(0.,15.),(-.8,.8),(np.log(.05),np.log(3000.)),(0.,1.)]
+
+    def _design(self,coordinates):
+        tau,theta=np.exp(coordinates[:2]);delay,curvature=coordinates[2:4]
+        X=np.zeros((self.count,1+self.ambient_width*len(self.records)));cursor=0
+        for j,d in enumerate(self.records):
+            count=len(d.time)-1;section=slice(cursor,cursor+count)
+            command=d.input+curvature*d.input*(1-d.input/100)
+            X[section,0]=delayed_unit(d.time,command,tau,theta,delay)[1:]
+            elapsed=d.time[1:]-d.time[0];a=-np.expm1(-elapsed/tau)
+            if self.ambient_width==1:X[section,1+j]=a
+            else:
+                b=(elapsed-tau*a)/(d.time[-1]-d.time[0]);X[section,1+2*j:1+2*j+2]=np.column_stack((a-b,b))
+            cursor+=count
+        return X
+
+
 def audit():
     from data import Experiment
     from mean import unit_response
@@ -102,4 +131,13 @@ def audit():
     error=float(np.max(abs(predicted-expected)))
     if error>2e-8:raise AssertionError(('Transport linear ambient',error))
     rows.append({'ambient_mode':'linear','independent_max_abs':error})
+    for curvature in (-.8,0.,.12,.8):
+        mapped=u+curvature*u*(1-u/100)
+        power=PowerCurveModel([Experiment('synthetic',t,np.full(len(t),22.),u,22.)])
+        point=np.r_[np.log([137.,18.]),2.35,curvature,np.log(200.),.04]
+        predicted=power.trajectories(point,np.array([.71,-1.3]))[0]
+        expected=22+.71*independent_reference(t,mapped,137.,18.,2.35)-1.3*(-np.expm1(-t/137))
+        error=float(np.max(abs(predicted-expected)))
+        if error>2e-8:raise AssertionError(('Power curve',curvature,error))
+        rows.append({'power_curvature':curvature,'independent_max_abs':error})
     return {'status':'passed','cases':rows,'scope':'Exact delayed left-hold events vs independent merged-grid matrix exponential; zero delay legacy, repeated poles, cold prehistory'}

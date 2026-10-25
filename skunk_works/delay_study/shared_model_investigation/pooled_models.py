@@ -139,10 +139,10 @@ class PooledModel:
 
 
 def make_model(records,kind,order,numerator_bound=2.,ambient_mode='constant'):
-    if kind=='transport':
-        from transport import TransportModel
+    if kind in ('transport','power_curve'):
+        from transport import TransportModel,PowerCurveModel
         if order!=1:raise ValueError('Transport extension applies to the n=1 baseline')
-        model=TransportModel(records)
+        model=PowerCurveModel(records) if kind=='power_curve' else TransportModel(records)
     else:model=PooledModel(records,kind,order)
     if numerator_bound<=0:raise ValueError('Positive numerator bound required')
     model.numerator_bound=float(numerator_bound)

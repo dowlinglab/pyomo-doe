@@ -48,7 +48,7 @@ def main():
     best=fit['best'];c=np.array(best['coefficients']);x=np.array(best['point'])
     times=np.array(fit['time_constants_s']);m=len(times)
     nt=len(x)-2
-    physical=np.r_[np.zeros(m-1),c[0]] if fit['kind'] in ('chain','transport','unequal_chain') else np.r_[c[1:m],c[0]-sum(c[1:m])]
+    physical=np.r_[np.zeros(m-1),c[0]] if fit['kind'] in ('chain','transport','unequal_chain','power_curve') else np.r_[c[1:m],c[0]-sum(c[1:m])]
     ninput=fit.get('input_coefficient_count',1 if fit['kind']=='chain' else m)
     width=fit.get('ambient_width',1)
     ell,eta=np.exp(x[nt]),x[nt+1]
@@ -57,9 +57,10 @@ def main():
         d=load(name)
         raw=HERE.parents[2]/d.source
         if hashlib.sha256(raw.read_bytes()).hexdigest()!=source['sha256'][d.source]:raise AssertionError('Raw binding')
-        if fit['kind']=='transport':
+        if fit['kind'] in ('transport','power_curve'):
             from transport import independent_reference
-            predicted=d.temperature[0]+c[0]*independent_reference(d.time,d.input,*times,x[2])
+            command=d.input+x[3]*d.input*(1-d.input/100) if fit['kind']=='power_curve' else d.input
+            predicted=d.temperature[0]+c[0]*independent_reference(d.time,command,*times,x[2])
             elapsed=d.time-d.time[0];a=-np.expm1(-elapsed/times[0])
             ambient=c[ninput+j] if width==1 else c[ninput+2*j:ninput+2*j+2]
             if width==1:predicted+=ambient*a
