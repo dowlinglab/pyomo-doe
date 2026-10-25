@@ -79,11 +79,19 @@ with sufficiently informative two-channel data. Here the fast T2 oscillation
 must first be checked against quantization and harmonic-estimation uncertainty.
 
 Structural recoverability of scale-free parameters follows in the ideal
-common/differential chart. If the normalized modal coefficients are
-(K,a+,b+) and (K/l,a-/l,b+/l), l=1+2*q, then
-rS=(l*(a-/l)-a+)/(l-1), tA=b+/rS, r=(a+-tA)/rS-1.
+common/differential chart. Write G+=kp/(bp*s^2+ap*s+1) and
+G-=km/(bm*s^2+am*s+1). Then K=kp, l=kp/km=1+2*q,
+rS=(l*am-ap)/(l-1), tA=bp/rS and r=(ap-tA)/rS-1.
 This needs nonzero interheater coupling and resolvable modal responses; it is
 not a practical-estimability guarantee for the finite records.
+
+At negligible reciprocal sensor heat loading (r approaching zero), the command
+response contains the common factors 1/(1+rS*s) and 1/(1+L*s). These commute:
+interchanging the sensor and command time constants leaves both command-to-
+temperature transfers unchanged in that limit. Ambient/startup responses can
+break that equivalence under additional assumptions. Even a supported pair of
+unequal lag times therefore does not automatically identify which physical
+component supplies each time constant.
 
 All new results belong in this folder. The earlier completed research goal and
 paused heartbeat stay unchanged. This follow-up does not authorize another
