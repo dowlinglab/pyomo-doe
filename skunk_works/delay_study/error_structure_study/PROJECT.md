@@ -69,12 +69,19 @@ fraction has median 0.02029; both have upper-tail simulation rank 0.0588.
 The plot was inspected. These are fixed-parameter references, not refitted
 diagnostic p-values, model-selection adjustment or proof of IID errors.
 
-Before dismissing cross-channel disturbances, check nonrandomized joint code
-transitions and conditional expected Gaussian-PIT scores. Randomization can
-dilute information in coarse bins, especially T2 plateaus. Reuse the fifty saved
-synthetic observation collections for those references. The full fifty refitted
-recovery draws can also provide fit-aware diagnostic references. Earlier marginal
-pilots reused seeds and are unsuitable for joint cross-channel/run testing.
+The deterministic check joint_b10_nonrandom_diagnostics is now terminal, with
+all fifty saved synthetic observation collections and prefix CDF audits passed.
+It exposes remaining structure: T1 input/score correlation 0.04429 (reference
+97.5% quantile 0.02261), T1 maximum phase projection 0.02983 (0.01971), T2
+maximum ACF 0.04695 (0.04039), and cross-channel maximum 0.04895 (0.02540).
+All four have descriptive upper-tail rank 1/51. No IID claim. The fixed-model
+references do not refit parameters or repeat selection. Its figure was inspected.
+Code-score SDs are not 1 and are not supposed to be Gaussian. Randomized PIT
+jitter can dilute their structure. Cross localization v2 applies matched run
+centering, trends and phase projections to data and references. A constant-input
+correlation NaN caused the first localization export to fail; explicit null
+repairs it and the failed source/exit are retained. Earlier marginal pilots
+reused seeds and are unsuitable for joint cross-channel/run testing.
 
 Sequential Gaussian GLS from an IID mean converged in nine cycles, all block
 solvers successful; nll differs from the saved joint fit by 1.29e-7. The
@@ -109,8 +116,8 @@ mean and bins translate together; nll changes below 1.4e-12. The phase is not
 separate dynamic information under that freedom. Fixed initial states, active
 ambient limits and absolute-temperature radiation need not share it.
 
-The new --condition-initial-code sensitivity is terminal; its independent
-selected-point audit is running. It uses
+The new --condition-initial-code sensitivity and independent selected-point
+audit are terminal and passed. It uses
 p(y0,...,yN)/p(y0), leaves nobs unchanged and subtracts the one-observation
 smoothing score. All mean/noise coordinates, including initial sensor-bin
 coordinates, passed independent conditional-likelihood finite differences.
@@ -118,6 +125,11 @@ Its current fitting/export/profile/audit support is exact under quadrature.
 Stationary simulation and transfer drivers explicitly refuse this mode until
 its conditional truncated-Gaussian initial-state sampler/marginals are supplied.
 Do not silently use a mismatched simulation convention.
+
+Conditioning on the first code changes T1 latent SD/length from 0.5362 C/658.3 s
+to 0.8763 C/1761.9 s; 2*S/ell changes by only about 0.22%, while physical mean
+parameters barely change. This is a working-model initial-state sensitivity,
+not evidence that either stationary SD/length is accurately known.
 
 ## Numerical failures and recovery
 
@@ -143,10 +155,10 @@ without finish timestamps remain terminal with unknown timestamps.
 
 ## Current execution and next unfinished phases
 
-Use the manifest for current identities and controller sessions. At the latest
-dispatch, four long jobs are active: profile_b10_gain,
-joint_b10_information_v2, joint_b10_nonrandom_diagnostics and
-joint_b10_condition_first_code_audit.
+Use the manifest for current identities and controller sessions. The current
+phase includes the gain profile, even-indexed recovery shard, cross-localization
+and continuous-Gaussian disturbance comparisons/audits. Do not infer live state
+from this prose; use fresh process and terminal receipts.
 No duplicate live retry. At most four long numerical processes, one BLAS thread
 each. Short independent arithmetic checks are recorded separately.
 
@@ -155,11 +167,18 @@ loading-curvature gate. Finite differences of mean eigensystems contaminate
 that tiny second derivative. Its scalar step study and failure are retained.
 The replacement uses matrix-exponential Frechet mean derivatives, verified by
 independent block exponentials, full-data trajectory/directional checks and
-the complete joint mean/noise score suite. joint_b10_information_v2 is computing
-the replacement Hessian. Keep the original matrix as a numerical diagnostic;
+the complete joint mean/noise score suite. joint_b10_information_v2 and its
+independent audit passed. Active-face local gain and thermal-time SEs under
+known correlated analogue covariance are 4.55 and 5.83 times the matching IID
+same-marginal-variance values; the short-lag SE is 0.645 times. The full bin
+curvature also estimates noise nuisances. These are conditional local
+comparisons, not calibrated intervals. Keep the original matrix as a numerical diagnostic;
 do not report its tiny centered eigenvalue as a variance. The gain profile
-is still running from its original frozen source. Other profiles and refitted
-recovery are not measured yet. See sensitivity_methods.md.
+is still running from its original frozen source. recovery_b10_even and
+recovery_b10_odd are running complementary shards of the fifty prespecified
+draws. This conditional algorithm check cannot establish real-data noise
+adequacy. Other profiles remain queued. See sensitivity_methods.md and
+uncertainty_interim.md for the source-bound findings and limits.
 uncertainty_config.json declares grids, starts, bounds,
 fifty recovery draws and gain-LR coverage before measurement. Source drivers:
 run_profiles.py, run_information.py, run_recovery.py.
@@ -173,7 +192,7 @@ noise-only hard-nuisance ranges are not total predictive intervals. If profiles
 change the candidate set, extend transfer support explicitly rather than using
 a linear predictor for a radiative or conditioned-initial-state fit.
 
-Still required: completion of nonrandomized cross-channel checks;
+Still required: cross-localization interpretation and disturbance comparisons;
 all pending mean/initial/bin sensitivities and selected-point audits; updated
 frequency/operating diagnostics; supported nuisance profiles; eigendecomposition
 interpretation; fifty refitted recovery/coverage draws with failure denominators;
@@ -184,19 +203,41 @@ updated_diagnostics.py is committed for the audited final mean candidates. It
 compares analogue means and marginal reported-code expectations, matched complex
 frequency responses with working HAC regions, phase-aligned repeats, operating
 groups and conditional reported-code forecasts. Its independent bivariate
-observation-bin forecast and no-future-output-leakage check passed. Dispatch
-after capacity opens. The recovery driver now also saves deterministic
+observation-bin forecast and no-future-output-leakage check passed.
+updated_mean_diagnostics is terminal. Its first full-table audit failed before
+numeric checks because sibling result paths used the frozen source directory;
+the corrected updated_mean_diagnostics_audit_v2 uses the supplied input root
+and passed all 960 QR decomposition rows, code expectations, held-input complex
+responses and aggregates. The phase figure was inspected.
+The recovery driver now also saves deterministic
 diagnostic metrics after each accepted free fit; diagnostic failures remain
 separate from the interval-coverage denominator.
 
+The new coupled_noise.py comparison uses correlated OU Brownian driving noise
+and/or correlated analogue measurement noise, with unequal-time stationary
+cross covariance derived from the OU Lyapunov equation. Dense toy covariance,
+innovation and all-coordinate score checks passed. Its independent Gaussian
+mode reproduces the prior Gaussian objective within 3e-11 under a full-data
+dense audit. The process-correlation fit and full-data dense audit passed;
+its driving correlation is 0.0908 and nll improves 4.3501 versus the independent
+Gaussian fit. Measurement correlation is running; assess the combined case
+after those matched results. These are working correlations, not measured
+airflow or electronics. Their likelihood
+is continuous Gaussian on discrete temperatures, not the
+quantized multichannel likelihood. They cannot establish calibrated bin
+probabilities or identify an environmental cause by themselves. Retain the
+quantized baseline's input/phase failures in uncertainty and transfer discussion.
+
 ## Reporting and continuation
 
-report/main.tex and main.pdf are a four-page work-in-progress layout, not a
+report/main.tex and main.pdf are an earlier four-page work-in-progress layout, not a
 finished report. Initial layout and numeric checks passed; recompile, rerender
 and recheck after each meaningful revision. Geometry is 0.25-inch left and
 3.25-inch right, with 35 college-spaced annotation lines per page. Final evidence,
 figures, uncertainty/transfer and the companion concise Markdown report remain
-pending. Keep no-ai-slop and the user's research practices in the writing check.
+pending. Current nonrandomized and uncertainty findings are in
+uncertainty_interim.md and must be carried into the final report; the earlier
+PDF predates them. Keep no-ai-slop and the user's research practices in the writing check.
 
 The hourly tc-lab-overnight-research heartbeat stays active. Read this file, the
 committed plan and manifest on resume. Freeze committed code/data/configuration
