@@ -36,13 +36,29 @@ not sensor calibration measurements. Initial import failures remain recorded.
 
 Full physical-plus-bin scores passed independent finite-difference checks for
 both conductance and radiative means, with and without run deviations.
-Four three-start joint fits are now running: conductance bands 0/10/20% and
-radiation with a 10% convective band. See run_manifest.json for verified PIDs and
-controller sessions 55866/15102/61547/36440. The 5% case is queued for the first
-available slot; do not exceed four long processes or relaunch an unchanged live
-job. Starts cover the saved dynamics, exchanged sensor/input lags, and low
-analogue measurement noise. Mean and noise are re-estimated together. The source
-matrix is joint_fit_matrix.json; quantized_methods.md owns the score derivation.
+Four three-start joint fits are running: conductance bands 0/10/20% and radiation
+with a 10% convective band. The zero-band first attempt failed a numerical gate:
+a predictive-moment integration range cut off rare T2 posterior mass. Corrected
+component-conditional posterior ranges passed independent rare-bin rectangles,
+12/16-SD support checks, and the full quantizer/smoother/score/hardware regression
+suite. The replacement joint_conductance_b00_v2 is progressing with finite
+likelihoods and no initial failed points. Other live jobs are joint_conductance_b10,
+joint_conductance_b20 and joint_radiation_b10. The 5% case is queued.
+
+Use run_manifest.json and process_check.json for current identities. Controller
+sessions are 28529/15102/61547/36440 in that order. The original zero-band session
+55866 is terminal and must not be resumed/relaunched. Obtain process lists through
+the approved direct pgrep tool: pgrep run inside a Python subprocess is blocked
+by sysmon and returns no list, which is not evidence of no live jobs. Do not
+exceed four long numerical processes.
+
+The three original nonzero-band jobs use earlier frozen posterior-domain code.
+Audit their accepted points against corrected tail-12 and wider tail-16 support
+and finer grids; refine under the current score if needed before interpretation.
+All starts and failed points remain evidence. Source matrix joint_fit_matrix.json
+records the five cases; quantized_methods.md owns the score derivation and
+initial-condition caveats. Warm initial covariance inflation is a heuristic,
+not an independent-uniform quantization assumption in the fitted likelihood.
 
 Earlier marginal PIT pilots reused random seeds. Their joint randomization is
 unsuitable for cross-channel/run tests. The joint fitter uses independent streams

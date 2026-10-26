@@ -86,3 +86,17 @@ use twelve conditional SDs and require wider-support convergence at problematic
 seeds. Initial covariance inflation, when requested, is an initialization
 heuristic based on residual RMS; its use of step-squared/12 is not an assumption
 that quantization error is independent uniform noise in the fitted likelihood.
+
+
+Initial-condition sensitivity remains part of the uncertainty analysis. The
+current working likelihood fixes physical initial sensor states from the first
+reported readings, omits those readings from the score, and starts the residual
+OU process with a stationary prior at the first scored time. That differs from
+conditioning the latent error state on the initial quantized measurement. Test
+initial sensor values within their code bins, consistent with bin phase, and
+assess the residual initial-state convention. Hidden heater offsets alone do
+not represent initial sensor uncertainty. For long correlation lengths,
+a=exp(-dt/ell) approaches 1 and process variance approaches 2*S*dt/ell;
+profiles must check whether the data distinguish S and ell or mainly their
+ratio. A zero-start or integrating-disturbance limit is a possible sensitivity,
+not an established explanation for this device.
