@@ -1175,7 +1175,7 @@
       "source_commit": "e8951c5ae3c6ca4b7dc4252008a3ced464b455b2",
       "source_receipt_sha256": "d7d85c0ef40d029af35f63deb48e9f3e7eb8a8e93a9eb6890147ca3b34a7f028",
       "status": "running_verified",
-      "last_verified_utc": "2026-10-26 21:06:09 UTC"
+      "last_verified_utc": "2026-10-26 21:14:57 UTC"
     },
     {
       "id": "initial_sensor_check",
@@ -2889,7 +2889,7 @@
       "source_commit": "cc9dad7639d2662b88bacc42c864fde2980278c2",
       "source_receipt_sha256": "010097bd36fca5d18ee9b8a323a2eb8b366319dde180d695d6d0d55070e58974",
       "status": "running_verified",
-      "last_verified_utc": "2026-10-26 21:06:09 UTC"
+      "last_verified_utc": "2026-10-26 21:14:57 UTC"
     },
     {
       "id": "quantization_check",
@@ -3300,7 +3300,7 @@
       "source_commit": "7cd61f36763fc5e114416176472bfc26b5b6a277",
       "source_receipt_sha256": "71fc02cd311eae6f6733b98b6f024a8b3dcc942e19c78d07dd4206db4eab2d7d",
       "status": "running_verified",
-      "last_verified_utc": "2026-10-26 21:06:09 UTC"
+      "last_verified_utc": "2026-10-26 21:14:57 UTC"
     },
     {
       "id": "recovery_b10_odd",
@@ -3367,6 +3367,57 @@
       "last_verified_utc": "2026-10-26 20:35:01 UTC",
       "exit_code": 0,
       "finished_utc": "2026-10-26T21:05:31.927655+00:00"
+    },
+    {
+      "id": "recovery_odd25_audit",
+      "process": {
+        "pid": 88178,
+        "parent_pid": 87763,
+        "command": [
+          "/Users/adowling/opt/anaconda3/bin/python",
+          "/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-error-6d91c46e-mekfg9zr/skunk_works/delay_study/error_structure_study/audit_recovery.py",
+          "--output",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/recovery_odd25_audit",
+          "--shards",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/recovery_b10_even",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/recovery_b10_odd_compiled_continuation",
+          "--input",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/joint_conductance_b10_export_v2",
+          "--allow-partial",
+          "--audit-draws",
+          "1",
+          "3",
+          "5",
+          "7",
+          "9",
+          "11",
+          "13",
+          "15",
+          "17",
+          "19",
+          "21",
+          "23",
+          "25",
+          "27",
+          "29",
+          "31",
+          "33",
+          "35",
+          "37",
+          "39",
+          "41",
+          "43",
+          "45",
+          "47",
+          "49"
+        ],
+        "started_utc": "2026-10-26T21:06:16.847179+00:00"
+      },
+      "output": "skunk_works/delay_study/error_structure_study/results/recovery_odd25_audit",
+      "source_commit": "6d91c46e32871389f92c8b4d03e8232551f7908b",
+      "source_receipt_sha256": "7f5346c9221d60173dacfa03f66d958752539c71e84ee922db45df5ab16c80aa",
+      "status": "running_verified",
+      "last_verified_utc": "2026-10-26 21:14:57 UTC"
     },
     {
       "id": "recovery_summary_controller_check",
@@ -5519,10 +5570,11 @@
   "live_jobs": [
     "initial_remaining_b10",
     "profile_remaining_b10",
-    "recovery_b10_even_compiled_continuation"
+    "recovery_b10_even_compiled_continuation",
+    "recovery_odd25_audit"
   ],
   "next_action": "Odd continuation is terminal with twenty-five declared outcomes; recovery_odd25_audit (session 31206) independently audits every odd draw with original terminal even shard as declaration witness. Even continuation is still live. All twenty canonical transfer folds are audited; nineteen full parameter pipelines remain. Initial/bin and remaining-profile queues remain live. On even terminal exit, audit all even indices from both current terminal continuation ledgers, reusing only matching passed point checks; combine both parity audits in a final full fifty-draw audit/summary. Advance remaining full parameter pipelines with the canonical manifest index as slots free. Finish sensitivity synthesis, final Markdown/tablet report, completion audit and push; no email.",
-  "updated_utc": "2026-10-26T21:06:09.527656+00:00",
+  "updated_utc": "2026-10-26T21:14:57.594252+00:00",
   "last_goal_turn_classification": "progress: odd continuation completed all twenty-five outcomes and was reconciled; its parity-complete independent audit launched with strictly verified immutable declaration/data/truth inputs. The original/current even ledgers are not conflated, no live audit input is used, and all fifty final outcomes remain required.",
   "controller_sessions": {
     "joint_conductance_b00": 55866,
@@ -5622,10 +5674,10 @@
   ],
   "process_check": {
     "path": "process_check.json",
-    "checked_utc": "2026-10-26 21:06:09 UTC",
-    "sha256": "5207d25fb7bbb81846a282295cb6d2cc8e428ea2151fe568dd9d1af71f6e4da9",
+    "checked_utc": "2026-10-26 21:14:57 UTC",
+    "sha256": "3fb8c2d60f6e32a6b2a462d55e50f5c9dd9a29184197f6f4bf0e2197ced3f470",
     "method": "Direct approved pgrep -fl tclab-error tool",
-    "snapshot_age_s": 0.527656
+    "snapshot_age_s": 0.594252
   },
   "reconciliation_warnings": {
     "missing_exit_or_matching_process": [],
@@ -5934,6 +5986,7 @@
   "live_worker_slots": [
     "initial_remaining_b10",
     "profile_remaining_b10",
-    "recovery_b10_even_compiled_continuation"
+    "recovery_b10_even_compiled_continuation",
+    "recovery_odd25_audit"
   ]
 }
