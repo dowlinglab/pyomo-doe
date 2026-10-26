@@ -43,12 +43,17 @@ def main():
     records=[lookup[n] for n in fit['record_names']]
     assert not fit.get('condition_initial_code') and not fit.get('dataset')
     arrays=np.load(args.input/'trajectories.npz');means=[arrays['predicted_'+str(j)] for j in range(len(records))]
+    for j,d in enumerate(records):
+        assert fit['raw_sha256'][d['name']]==d['sha256']
+        assert np.array_equal(arrays['time_'+str(j)],d['t']) and np.array_equal(arrays['input_'+str(j)],d['u'])
+        assert np.array_equal(arrays['observed_'+str(j)],d['y'])
     truth=np.array(fit['best']['point']);fit_hash=sha(args.input/'fit.json')
     rows=[];bindings=[];declared=[]
     for directory in args.shards:
         assert (directory/'exit.json').exists(),'Audit an immutable terminal shard only'
         design=json.loads((directory/'design.json').read_text())
         assert design['config']==config and design['fit_sha256']==fit_hash and np.array_equal(design['truth_point'],truth)
+        assert design['arrays_sha256']==sha(args.input/'trajectories.npz')
         declared+=design['indices']
         items=json.loads((directory/'draws.json').read_text())
         assert len(set(r['draw'] for r in items))==len(items)
