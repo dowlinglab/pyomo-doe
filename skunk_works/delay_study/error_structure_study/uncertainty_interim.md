@@ -312,3 +312,24 @@ inspected. Evidence: transfer_shared_protocols, transfer_shared_protocols_audit,
 transfer_shared_protocols_forecasts and
 transfer_protocol_candidates_canonical_summary. The last remains partial:
 twelve primary run forecasts and nineteen parameter pipelines are unfinished.
+
+## Canonical transfer is now complete for all twenty folds
+
+All twenty selected fits and canonical forecast/audit pairs have terminal
+passed evidence. The twelve primary leave-run-out forecasts give pooled
+reported-mean RMSE 1.750/0.754 C, compared with 2.131/0.875 C when an entire
+protocol is omitted. Other repeats of the same protocol remain in training in
+the first comparison. These groups reuse all twelve records and are retrospective.
+
+For the leave-run group, run mean errors account for 84.9/72.5 percent of SSE;
+removing them leaves RMSE 0.680/0.395 C. Nominal-condition noise ranges cover
+46.0/47.6 percent of the scored temperatures, with mean widths 2.093/0.291 C.
+The hard-condition-plus-noise ranges cover 100/99.94 percent, at mean widths
+9.160/5.170 C. Those broad scenario ranges still do not define calibrated
+probabilities for new-run conditions. Offset removal still uses test outcomes.
+
+The twelve new run-forecast figures and the three-group summary were inspected.
+transfer_all_canonical_summary accounts for all twenty folds, with no missing
+fold IDs, but remains **partial** because nineteen parameter pipelines are
+unfinished. The remaining six bin/initial/hidden-heater cases are now running
+in initial_remaining_b10, alongside the remaining profiles and recovery shards.

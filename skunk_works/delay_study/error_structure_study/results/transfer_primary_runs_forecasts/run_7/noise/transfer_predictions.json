@@ -1,0 +1,74 @@
+{
+  "status": "complete",
+  "fit_sha256": "f2a25794ce9ee51f098e9dd81c8df1e2929a45616201041056b2ea011405db7b",
+  "train_names": [
+    "validation_experiment_env_2_sin_50_50_run_1.csv",
+    "validation_experiment_env_2_sin_50_50_run_2.csv",
+    "validation_experiment_env_2_sin_50_50_run_3.csv",
+    "validation_experiment_env_2_sin_2_50_run_1.csv",
+    "validation_experiment_env_2_sin_2_50_run_2.csv",
+    "validation_experiment_env_2_sin_2_50_run_3.csv",
+    "validation_experiment_env_2_sin_5_50_run_2.csv",
+    "validation_experiment_env_2_sin_5_50_run_3.csv",
+    "validation_experiment_env_2_step_50_run_1.csv",
+    "validation_experiment_env_2_step_50_run_2.csv",
+    "validation_experiment_env_2_step_50_run_3.csv"
+  ],
+  "test_names": [
+    "validation_experiment_env_2_sin_5_50_run_1.csv"
+  ],
+  "parameter_draws": null,
+  "nuisance_ratio_bounds": [
+    0.9,
+    1.1
+  ],
+  "reference_transport_sensitivity": false,
+  "per_run": [
+    {
+      "name": "validation_experiment_env_2_sin_5_50_run_1.csv",
+      "raw_sha256": "12abe51379ee107ee593986e1923aa849939aa2254412c551886708c26aa7f6d",
+      "nobs_per_channel": 900,
+      "latent_free_simulation_RMSE_C": [
+        3.216219016038728,
+        1.5730950576345524
+      ],
+      "reported_conditional_mean_RMSE_C": [
+        3.2161983600603583,
+        1.5724122543481882
+      ],
+      "signed_reported_mean_error_C": [
+        3.0621088199943305,
+        1.3836308714439092
+      ],
+      "nominal_mean_noise_only_marginal_coverage": [
+        0.09555555555555556,
+        0.13777777777777778
+      ],
+      "hard_nuisance_plus_noise_outer_coverage": [
+        1.0,
+        1.0
+      ],
+      "scenario_grid_checks": [
+        {
+          "points": 401,
+          "envelope_change_C": 0.0
+        }
+      ],
+      "conditional_bin_scores": [
+        {
+          "channel": 1,
+          "conditional_one_step_bin_nll": 318.2106786673196,
+          "nodes": 128
+        },
+        {
+          "channel": 2,
+          "conditional_one_step_bin_nll": 2076.6386017210298,
+          "nodes": 128
+        }
+      ],
+      "parameter_uncertainty_included": false
+    }
+  ],
+  "elapsed_s": 1.781081083,
+  "notice": "Retrospective transfer: only the first test temperature pair initializes the mean; no later test output fits conductance, ambient or physical parameters. Hard-band/ambient envelopes are numerically converged scenarios, not distributions over nuisance parameters. Noise ranges are marginal and not simultaneous. Parameter-mixture sensitivities inherit the supplied draw approximation/calibration limits; no automatic total-95% claim. Filtered bin scores use past test outputs for the residual state and are distinct from free simulation. All twelve records informed structure selection."
+}
