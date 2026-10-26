@@ -7,6 +7,7 @@ from pathlib import Path
 import platform
 import sys
 HERE=Path(__file__).resolve().parent;STUDY=HERE.parent;DELAY=STUDY.parent
+sys.path.insert(0,str(STUDY))
 sys.path.insert(0,str(DELAY/'coupled_model_study'))
 import numpy as np
 from physical import load_records
