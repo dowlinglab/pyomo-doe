@@ -15,12 +15,21 @@ from run_bounded import stationary,write
 from quantized import filter_ou,randomized_residual
 
 
+def center_seed(seed,bounds,start,count):
+    point=np.clip(np.asarray(seed).copy(),np.array(bounds)[:,0],np.array(bounds)[:,1])
+    ds=point[start:start+count].copy();lo=np.array(bounds)[start:start+count,0];hi=np.array(bounds)[start:start+count,1]
+    shift=brentq(lambda v:float(np.clip(ds-v,lo,hi).sum()),-1.,1.)
+    point[start:start+count]=np.clip(ds-shift,lo,hi)
+    return point
+
+
 def main():
     parser=argparse.ArgumentParser();parser.add_argument('--output',type=Path,required=True)
     parser.add_argument('--warm',type=Path,required=True);parser.add_argument('--noise1',type=Path,required=True);parser.add_argument('--noise2',type=Path,required=True)
     parser.add_argument('--family',choices=['conductance','radiation'],default='conductance');parser.add_argument('--band',type=float,default=.1)
     parser.add_argument('--records',type=int,nargs='+');parser.add_argument('--dataset',type=Path);parser.add_argument('--inflate-initial-noise',action='store_true');parser.add_argument('--phase',type=float,default=-.5);parser.add_argument('--nodes',type=int,default=128)
     parser.add_argument('--startup-band',type=float,default=0.);parser.add_argument('--starts',type=int,default=3)
+    parser.add_argument('--fix-coordinate',nargs=2,action='append',default=[],metavar=('NAME','VALUE'))
     parser.add_argument('--maxiter',type=int,default=300);args=parser.parse_args();begun=time.monotonic()
     if args.starts>3:raise ValueError('Declare additional starts before extending the physical/noise branch comparison')
     records=load_records()
@@ -41,7 +50,9 @@ def main():
         assert len(set(args.records))==len(args.records) and min(args.records)>=0 and max(args.records)<len(records)
         records=[records[j] for j in args.records]
     nr=len(records);warm=json.loads(args.warm.read_text());noise_fits=[json.loads(p.read_text()) for p in [args.noise1,args.noise2]]
-    model=Model(records,args.band,args.phase,args.nodes,args.family,args.startup_band);bounds=model.bounds();scale=2*model.N
+    fixed={name:float(value) for name,value in args.fix_coordinate}
+    if len(fixed)!=len(args.fix_coordinate):raise ValueError('Repeated fixed coordinate')
+    model=Model(records,args.band,args.phase,args.nodes,args.family,args.startup_band,fixed=fixed);bounds=model.bounds();scale=2*model.N
     indices=[warm['record_names'].index(d['name']) for d in records]
     shape=np.asarray(warm['best']['point'][:6]).copy()
     original_delta=np.array(warm['parameters'].get('log_deviations',np.zeros(len(warm['record_names']))))
@@ -79,8 +90,7 @@ def main():
             seed[model.nmean+2]=np.log(.005);seed[model.nmean+5]=np.log(.005);seed[model.nmean+4]=np.log(10.)
         seed=np.clip(seed,np.array(bounds)[:,0],np.array(bounds)[:,1])
         if args.band:
-            start=6 if args.family=='conductance' else 8;ds=seed[start:start+nr].copy();lo,hi=np.log(1-args.band),np.log(1+args.band)
-            shift=brentq(lambda v:float(np.clip(ds-v,lo,hi).sum()),-1.,1.);seed[start:start+nr]=np.clip(ds-shift,lo,hi)
+            seed=center_seed(seed,bounds,6 if args.family=='conductance' else 8,nr)
 
         trace=[]
         # Failed quadrature points are retained as numerical failures and given
@@ -138,6 +148,7 @@ def main():
     parameter_count=sum(lo<hi for lo,hi in bounds)-int(args.band>0)
     result={'model':'joint_quantized_'+args.family,'family':args.family,'kernel':'quantized_ou_nugget','band':args.band,'phase':args.phase,
         'startup_band_C':args.startup_band,'initial_noise_inflation':args.inflate_initial_noise,'dataset':dataset_receipt,'selected_input_indices':args.records,'best':best,'starts':starts,'bounds':bounds,'nmean':model.nmean,'shape_count':model.nmean,
+        'fixed_coordinates':fixed,'coordinate_names':model.coordinate_names(),
         'coefficients':coefficients.tolist(),'noise_parameters':noise_parameters,'record_names':[d['name'] for d in records],
         'raw_sha256':{d['name']:d['sha256'] for d in records},'nobs':2*model.N,'parameter_count':parameter_count,
         'parameters':{'K_common_nominal':float(coefficients[0]),'tA_nominal_s':float(np.exp(shared[0])),'rS_s':float(np.exp(shared[1])),

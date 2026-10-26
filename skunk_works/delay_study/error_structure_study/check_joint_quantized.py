@@ -53,9 +53,24 @@ def main():
             fd=(nll(point+d)-nll(point-d))/(2*h)
             error=abs(fd-gradient[j])/(1+abs(fd));checks.append(error)
         assert max(checks)<2e-3,(family,max(checks))
+        assert len(model.coordinate_names())==len(point) and len(set(model.coordinate_names()))==len(point)
+        gain_index=model.coordinate_names().index('log_K')
+        fixed=Model(generated,band=band,nodes=128,family=family,fixed={'log_K':point[gain_index]})
+        assert fixed.bounds()[gain_index]==(point[gain_index],point[gain_index])
+        assert abs(fixed.objective(point)-model.objective(point))<1e-9
+        from run_bounded import stationary
+        injected=np.zeros(len(point));injected[gain_index]=100.
+        assert stationary(fixed,point,injected)['lagrangian_projected_gradient_max_abs']==0.
+        if band:
+            from run_joint_quantized import center_seed
+            fixed_deviation=Model(generated,band=band,nodes=128,family=family,fixed={'log_Ua_ratio_0':np.log(.9)})
+            seed=center_seed(point,fixed_deviation.bounds(),6 if family=='conductance' else 8,len(records))
+            assert abs(fixed_deviation.centered_constraint(seed))<1e-10
+            assert seed[fixed_deviation.coordinate_names().index('log_Ua_ratio_0')]==np.log(.9)
         rows.append({'family':family,'band':band,'coordinates_checked':len(point),'maximum_scaled_score_error':max(checks),
             'normalization_error':max(r['normalization_error'] for r in model.details(point)),
-            'smoothing_closure_error':max(r['smoothing_closure_error'] for r in model.details(point))})
+            'smoothing_closure_error':max(r['smoothing_closure_error'] for r in model.details(point)),
+            'fixed_gain_score_and_stationarity_gate':'passed'})
     result={'status':'passed','rows':rows,'scope':'All mean and covariance coordinate scores against finite differences of the marginal bin likelihood on three 60-observation synthetic held-input records, for linear-conductance and radiative families. Does not establish full hardware optimum or practical identifiability.'}
     (args.output/'audit.json').write_text(json.dumps(result,indent=2)+'\n');print(json.dumps(result),flush=True)
 

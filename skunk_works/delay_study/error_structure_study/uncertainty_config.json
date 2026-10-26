@@ -1,0 +1,29 @@
+{
+  "scope": "Conditional uncertainty under the selected coupled mean, hard conductance band and quantized observation law; all model selection used these data",
+  "primary_reference": "joint_conductance_b10 after independent selected-point audit",
+  "profile_starts": 2,
+  "profile_maxiter": 300,
+  "profiles": [
+    {"coordinate": "log_K", "physical_values": true, "values_relative_to_selected": [0.94, 0.97, 0.985, 1.0, 1.015, 1.03, 1.06]},
+    {"coordinate": "log_input_lag", "physical_values": true, "values": [1.0, 2.0, 2.7, 4.0, 7.0, 12.0, 15.0, 20.0]},
+    {"coordinate": "log_Us_over_Ua", "physical_values": true, "values": [0.005, 0.01, 0.03, 0.1, 0.3, 1.0]},
+    {"coordinate": "log_Ua_ratio_9", "physical_values": true, "values": [0.9, 0.925, 0.95, 1.0, 1.05]},
+    {"coordinate": "log_ell_T1", "physical_values": true, "values": [100, 300, 600, 1000, 2000, 3000]},
+    {"coordinate": "radiation_gamma", "family": "radiation", "values": [0.0, 0.02, 0.05, 0.1, 0.2, 0.5, 1.0, 2.0, 4.0]}
+  ],
+  "information": {"score_finite_difference_step": 0.0002, "weak_direction_step_check": 0.0006, "active_bound_tolerance": 0.00001},
+  "recovery": {
+    "draws": 50,
+    "seed_base": 611271,
+    "seed_stride": 10000,
+    "free_fit_starts": 2,
+    "free_fit_failed_retry_starts": 3,
+    "fixed_true_gain_fit_starts": 1,
+    "fixed_true_gain_failed_retry_starts": 2,
+    "maxiter": 300,
+    "nominal_gain_LR_cutoff": 3.841458820694124,
+    "coverage_definition": "Refit unconstrained and true-log-K constrained models for each generated record collection; fraction with twice-nll difference <= nominal chi-square-one cutoff. This empirically checks that cutoff with nuisance bounds, conditional on the generating model and design.",
+    "denominators": "Retain every attempted draw, failure, retry and local-basin correction. Report coverage among complete draws, binomial Monte Carlo uncertainty and worst-case bounds counting failed draws either way.",
+    "expansion": "No expansion to 200 until numerical convergence and the 50-draw diagnostic review justify it."
+  }
+}

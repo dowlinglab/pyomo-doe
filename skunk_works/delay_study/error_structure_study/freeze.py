@@ -28,7 +28,7 @@ def main():
                                       '--', str(parent), 'data'], cwd=ROOT, text=True).splitlines()
     selected = [p for p in tracked if (
         (Path(p).parent in {prefix, parent/'residual_study', parent/'shared_model_investigation', parent/'coupled_model_study', parent} and p.endswith('.py')) or
-        (Path(p).parent in {prefix, parent/'residual_study'} and Path(p).name in {'config.json', 'structure_selection.json'}) or
+        (Path(p).parent in {prefix, parent/'residual_study'} and Path(p).name in {'config.json', 'structure_selection.json', 'uncertainty_config.json'}) or
         p == str(parent/'environment.json') or (Path(p).parent == Path('data') and p.endswith('.csv')))]
     if str(prefix/driver) not in selected:
         raise SystemExit('Commit driver before running measurements')

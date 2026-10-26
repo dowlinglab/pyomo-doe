@@ -10,9 +10,10 @@ from smoothing import smooth_ou
 
 
 class Model:
-    def __init__(self,records,band=.1,phase=-.5,nodes=128,family='conductance',startup_band=0.):
+    def __init__(self,records,band=.1,phase=-.5,nodes=128,family='conductance',startup_band=0.,fixed=None):
         self.records=records;self.band=band;self.phase=phase;self.nodes=nodes;self.family=family
         self.nr=len(records);self.N=sum(len(d['t'])-1 for d in records);self.startup_band=startup_band
+        self.fixed=dict(fixed or {})
         self.y=np.concatenate([np.concatenate([d['y'][1:,k] for d in records]) for k in [0,1]])
         if family=='conductance':
             if startup_band:
@@ -34,7 +35,25 @@ class Model:
             low,high=self.mean_model.coefficient_bounds()
             mean=self.mean_model.shape_bounds()+[(np.log(low[0]),np.log(high[0]))]+list(zip(low[1:],high[1:]))
         else:mean=self.mean_model.bounds()[:self.nmean]
-        return mean+[(np.log(.002),np.log(3.)),(np.log(.05),np.log(3000.)),(np.log(.0001),np.log(1.))]*2
+        bounds=mean+[(np.log(.002),np.log(3.)),(np.log(.05),np.log(3000.)),(np.log(.0001),np.log(1.))]*2
+        names=self.coordinate_names()
+        for name,value in self.fixed.items():
+            if name not in names:raise ValueError('Unknown fixed coordinate '+name)
+            j=names.index(name);lo,hi=bounds[j]
+            if not lo<=value<=hi:raise ValueError('Fixed coordinate outside declared bounds '+name)
+            bounds[j]=(float(value),float(value))
+        return bounds
+
+    def coordinate_names(self):
+        shared=['log_tA','log_rS','log_Us_over_Ua','log_Ux_over_Ua','log_input_lag','command_curvature']
+        deviations=['log_Ua_ratio_'+str(j) for j in range(self.nr)]
+        ambient=['ambient_offset_'+str(j) for j in range(self.nr)]
+        if self.family=='conductance':
+            names=shared+(deviations if self.band else [])+['log_K']+ambient
+            if self.startup_band:names+=['initial_H'+str(k+1)+'_offset_'+str(j) for j in range(self.nr) for k in [0,1]]
+        else:names=shared+['log_K','radiation_gamma']+deviations+ambient
+        return names+['log_latent_SD_T1','log_ell_T1','log_measurement_SD_T1',
+                      'log_latent_SD_T2','log_ell_T2','log_measurement_SD_T2']
 
     def centered_constraint(self,p):
         start=6 if self.family=='conductance' else 8
