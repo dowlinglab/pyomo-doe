@@ -75,6 +75,27 @@ uncertainty, retrospective transfer and the checked report. Include sensitivity
 to initial sensor values within their quantization bins, consistent with each
 bin phase; varying only hidden heater initial states does not cover that issue.
 
+Sequential GLS implementation and its independent short-design check are now
+committed. Dense covariance nll agrees within 8.6e-14, noise scores within
+2.6e-10 scaled error, and the constrained mean block decreases its objective.
+The full IID-start and saved-joint-start comparisons wait for numerical capacity;
+see sequential_methods.md for stopping rules and retained iteration limits.
+
+Independent conditional observation integrals verify down/same/up code forecasts
+for nearest and floor bin phases to 1.2e-16. Predictive diagnostics are implemented
+but not yet measured on selected joint fits: 20 independent PIT randomizations,
+50 fixed-model simulation references, ACF/PACF, prespecified Ljung–Box statistics,
+input/phase/operating-bin dependence, cross-channel dependence and nonrandomized
+transition counts. These conditional simulations do not refit parameters and
+must not replace the planned 50 refitted uncertainty/recovery draws.
+
+Use reconcile.py with a fresh direct-tool process_check.json to update job states.
+It never launches jobs or interprets blocked Python process enumeration as an
+empty machine. The selected joint-bin audit checks current corrected score
+stationarity, independent physical trajectories and Gaussian bin rectangles,
+128/256/512-node convergence and 12/16-tail support. Neither the predictive checks
+nor these numerical audits establish a global optimum or physical adequacy.
+
 ## Resume instructions
 
 Read the plan, this file and `run_manifest.json`. Inspect process identities and

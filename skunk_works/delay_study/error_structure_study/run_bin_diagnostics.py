@@ -64,9 +64,9 @@ def main():
     for k,color in [(0,'tab:blue'),(1,'tab:orange')]:
         pooled=np.sort(np.concatenate([r[k] for r in first_z]));theory=norm.ppf((np.arange(len(pooled))+.5)/len(pooled))
         axes[0,0].plot(theory[::20],pooled[::20],'.',ms=2,color=color,label='T'+str(k+1))
-        acf=np.array([r['channels'][k]['acf_lags_1_40'] for r in simulated]);lo,hi=np.quantile(acf,[.025,.975],axis=0)
-        axes[0,1].fill_between(np.arange(1,41),lo,hi,color=color,alpha=.15)
-        axes[0,1].plot(np.arange(1,41),actual[0]['channels'][k]['acf_lags_1_40'],color=color,label='T'+str(k+1))
+        acf=np.array([r['channels'][k]['acf_lags_1_60'] for r in simulated]);lo,hi=np.quantile(acf,[.025,.975],axis=0)
+        axes[0,1].fill_between(np.arange(1,61),lo,hi,color=color,alpha=.15)
+        axes[0,1].plot(np.arange(1,61),actual[0]['channels'][k]['acf_lags_1_60'],color=color,label='T'+str(k+1))
         q=np.array([r['channels'][k]['transition_standardized_discrepancy'] for r in simulated]);lo,hi=np.quantile(q,[.025,.975],axis=0)
         x=np.arange(3)+(.12 if k else -.12);v=np.array(actual[0]['channels'][k]['transition_standardized_discrepancy'])
         axes[1,0].vlines(x,lo,hi,color=color,lw=5,alpha=.35)

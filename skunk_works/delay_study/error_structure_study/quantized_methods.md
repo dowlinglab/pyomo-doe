@@ -105,9 +105,13 @@ not an established explanation for this device.
 
 Use 20 independent randomized-PIT streams, with different recorded seeds for
 each run and channel. Measure within-run serial correlation through sample lag
-40, cross-channel correlation through lags -10 to 10, marginal shape and
+60, per-run PACF through lag 20 and Ljung–Box statistics at 1/5/10/20/60,
+cross-channel correlation through lags -10 to 10, marginal shape and
 correlation with the command held over the preceding interval. Pooled lag
-products never join the end of one experiment to the start of another.
+products never join the end of one experiment to the start of another. Check
+tail fractions, fixed command/temperature bins, and projections on each sine's
+fundamental and first two higher harmonics. Simulated references, rather than
+unadjusted chi-squared p-values, accompany these descriptive statistics.
 
 Also evaluate nonrandomized probabilities that the next reported code decreases,
 stays the same or increases. These integrate the predictive observation mixture
