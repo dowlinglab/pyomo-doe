@@ -238,8 +238,10 @@ measured summary is still pending.
 Both continuations are now terminal with all fifty declared outcomes. Each has
 an accepted free/null fit and saved refitted diagnostics; these are unverified
 recovery outcomes until the full numerical/data audits pass. The odd25 audit
-remains live. The next parity audit checks every even index using both current
-terminal ledgers and reuses only the passed, source/data-bound draw-0 checks.
+is now terminal with all twenty-five odd rows and all fifty selected free/null
+numerical checks passed. Its partial status is retained; this is not the full
+fifty-draw calibration. The even25 audit remains live, using both current
+terminal ledgers and only the passed, source/data-bound draw-0 cache.
 The odd audit's original even declaration witness is not conflated with the
 current complete ledger. The final full audit must consume both current
 complete continuation ledgers and source-bind any reused parity checks. No
