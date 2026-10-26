@@ -121,6 +121,21 @@ def main():
     assert cross['status']=='complete' and cross['successes']==50 and cross['failures']==0
     row=cross['comparisons']['run_trend_and_phase_removed_pooled_cross_max_abs']
     for value in [row['data'],row['reference_q025_q50_q975'][2]]:assert f'{value:.5f}' in text
+    forecasts=root/'updated_mean_diagnostics/forecast_horizons.csv';binding(forecasts)
+    receipt=root/'updated_mean_diagnostics/receipt.json';binding(receipt)
+    audit_path=root/'updated_mean_diagnostics_audit_v2/audit.json';binding(audit_path)
+    check_path=root/'updated_diagnostics_check/check.json';binding(check_path)
+    assert json.loads(audit_path.read_text())['status']=='passed' and json.loads(audit_path.read_text())['receipt_sha256']==sha(receipt)
+    assert json.loads(check_path.read_text())['status']=='passed'
+    forecast_rows=list(csv.DictReader(forecasts.open()))
+    for horizon,expected_n in [(0.,10795),(60.,10072)]:
+        values=[]
+        for channel in [1,2]:
+            chosen=[r for r in forecast_rows if r['model']=='joint_conductance_b10_export_v2' and float(r['cutoff_s'])==0. and float(r['horizon_s'])==horizon and int(r['channel'])==channel]
+            assert len(chosen)==12 and len(set(r['name'] for r in chosen))==12
+            nobs=sum(int(r['nobs']) for r in chosen);assert nobs==expected_n
+            values.append(np.sqrt(sum(float(r['SSE_C2']) for r in chosen)/nobs))
+        assert f'{values[0]:.3f}/{values[1]:.3f}\\C' in text
     for name,coordinates in [('gaussian_process_correlation',[('rho_OU_driving',4)]),
                              ('gaussian_measurement_correlation',[('rho_measurement',5)]),
                              ('gaussian_both_correlations',[('rho_OU_driving',5),('rho_measurement',5)])]:
