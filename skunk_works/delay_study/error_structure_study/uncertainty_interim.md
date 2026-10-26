@@ -159,6 +159,36 @@ The final report will distinguish a useful physical mean, a useful short-term
 predictor and a validated stochastic model. Current evidence does not establish
 all three at once.
 
+## Audited coarse lag profile
+
+All nine fixed-input-lag points passed the independent selected-point audit.
+Each point refits the other mean, per-run nuisance and noise coordinates. The
+grid does not establish a globally optimized continuous profile or confidence
+endpoints.
+
+| Fixed input lag, s | Twice the nll increase from the reference |
+| ---: | ---: |
+| 1 | 455.660 |
+| 2 | 77.879 |
+| 2.7 | 0.119 |
+| 2.73048 (reference) | approximately 0 |
+| 4 | 141.575 |
+| 7 | 552.445 |
+| 12 | 219.869 |
+| 15 | 6.253 |
+| 20 | 775.555 |
+
+At fixed L=15 s, the fitted sensor time is 2.643 s. The second region is
+consistent with the near exchange of input/sensor lag labels, but the coarse
+15 s point does not locate its minimum or exclude it at a calibrated cutoff.
+The declared refinement at the original exact log sensor-time coordinate is
+running from that warm fit. A lower-than-reference result would require an
+unconstrained baseline refinement before interpreting deviances.
+
+Evidence: profile_b10_short_lag_v2, profile_b10_short_lag_audit and the inspected
+profile_gain_lag_summary_v2. The latter also plots the seven audited gain-grid
+points. Plot lines guide the eye; detail panels show only the actual grid.
+
 ## First complete protocol-transfer group
 
 All four primary omitted-protocol fits and their canonical forecasts passed

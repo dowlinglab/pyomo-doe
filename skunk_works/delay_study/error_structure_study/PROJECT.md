@@ -199,11 +199,14 @@ continuation control checks passed before the handoff. The scientific protocol,
 quadrature order, draw count, retry allowance and tolerances are unchanged.
 See compiled_score_methods.md. This conditional algorithm check cannot establish
 real-data noise adequacy. The nine-point short-lag profile is terminal as
-profile_b10_short_lag_v2, with nine successful points. Its independent point
-audit is running; do not interpret a provisional secondary well as a verified
-confidence component. The declared lag-exchange refinement fixes L at the
-original sensor-time coordinate after the whole coarse collection passes,
-then independently audits that point. If it improves the reference nll,
+profile_b10_short_lag_v2, with nine successful points and all nine independent
+point audits passed. Twice the nll increase rises to 552.445 at L=7 s and falls
+again to 6.253 at L=15 s, where the fitted sensor time is 2.643 s. The inspected
+profile_gain_lag_summary_v2 shows this second region and the seven-point gain
+grid without confidence-endpoint interpolation. It does not locate or rule out
+the secondary minimum. The declared lag-exchange refinement is now running at
+the original exact sensor-time coordinate, warming from the audited 15 s fit.
+Independently audit the resulting point. If it improves the reference nll,
 refine the unconstrained baseline before reporting deviances or continuing
 profiles. Its first command used an incorrect coordinate name
 and failed before fitting; that invocation is retained. Remaining profiles are

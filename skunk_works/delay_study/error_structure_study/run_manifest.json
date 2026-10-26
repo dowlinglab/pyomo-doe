@@ -2640,8 +2640,10 @@
       "output": "skunk_works/delay_study/error_structure_study/results/profile_b10_short_lag_audit",
       "source_commit": "5e75eb2f4538504e6ae03617a76012ffd783a117",
       "source_receipt_sha256": "44e087ba40d6dc399a492f8b9be322287036088559f1712386b9f6de461f8bb5",
-      "status": "running_verified",
-      "last_verified_utc": "2026-10-26 16:17:31 UTC"
+      "status": "terminal",
+      "last_verified_utc": "2026-10-26 16:17:31 UTC",
+      "exit_code": 0,
+      "finished_utc": "2026-10-26T16:38:53.255789+00:00"
     },
     {
       "id": "profile_b10_short_lag_v2",
@@ -3119,7 +3121,7 @@
       "source_commit": "7cd61f36763fc5e114416176472bfc26b5b6a277",
       "source_receipt_sha256": "71fc02cd311eae6f6733b98b6f024a8b3dcc942e19c78d07dd4206db4eab2d7d",
       "status": "running_verified",
-      "last_verified_utc": "2026-10-26 16:17:31 UTC"
+      "last_verified_utc": "2026-10-26 16:39:05 UTC"
     },
     {
       "id": "recovery_b10_odd",
@@ -3183,7 +3185,7 @@
       "source_commit": "7cd61f36763fc5e114416176472bfc26b5b6a277",
       "source_receipt_sha256": "caa31c9d75a44f20dc5f7a7662b32c914f55fa375f208f21c1882c5b7014f16d",
       "status": "running_verified",
-      "last_verified_utc": "2026-10-26 16:17:31 UTC"
+      "last_verified_utc": "2026-10-26 16:39:05 UTC"
     },
     {
       "id": "recovery_summary_controller_check",
@@ -3920,7 +3922,7 @@
       "source_commit": "7180ae80658d9f31a5ea3d6d4f0c9ee75f73e552",
       "source_receipt_sha256": "bedb98b6fe79b9606145b6e966dcc90bb59a92dbf3035c82c6d692b4479440ff",
       "status": "running_verified",
-      "last_verified_utc": "2026-10-26 16:17:31 UTC"
+      "last_verified_utc": "2026-10-26 16:39:05 UTC"
     },
     {
       "id": "updated_diagnostics_check",
@@ -4046,14 +4048,13 @@
     }
   ],
   "live_jobs": [
-    "profile_b10_short_lag_audit",
     "recovery_b10_even_compiled_continuation",
     "recovery_b10_odd_compiled_continuation",
     "transfer_primary_runs"
   ],
-  "next_action": "After all nine short-lag point audits pass, run the declared exchanged-lag fixed point from the 15 s warm fit at the original exact log_rS coordinate, independently audit, and refine the unconstrained baseline if better. Keep at most four numerical worker slots. Then start remaining declared profiles/initial-state queue or run_transfer_uncertainty_queue.py on protocol_30s as its first measured pipeline (source frozen; stage_execution_check passed), followed by remaining folds only after checking it. Preserve all canonical forecasts. Complete primary run and shared protocol fits/audits, all 50 recovery draws and final aggregates/reports. No email.",
-  "updated_utc": "2026-10-26T16:17:32.151814+00:00",
-  "last_goal_turn_classification": "progress: reconciled terminal protocol forecasts and coarse lag profile; all four protocol forecasts audited, run-offset SSE decomposition independently checked; staged uncertainty driver committed and real child success/failure/no-overwrite fixtures passed; six-page tablet draft updated and visually/numerically checked.",
+  "next_action": "The nine coarse short-lag points and all independent audits passed. Wait for profile_b10_exchanged_lag_point (session 96933), audit its selected point, and refine the unconstrained baseline if its nll beats the reference by >.001. Then dispatch the first run_transfer_uncertainty_queue.py protocol_30s pipeline with --reuse-noise-index manifest, inspect all approximation gates before later pipelines, and keep remaining prespecified profiles/initial/shared-fold queues moving as slots free. Recovery continuations and twelve primary run folds are still live. Full 50-draw aggregates, parameter transfer and final reports remain required; no email.",
+  "updated_utc": "2026-10-26T16:39:06.235434+00:00",
+  "last_goal_turn_classification": "progress after verified wait: all nine short-lag audits completed and passed; exact declared exchanged-lag refinement launched in the freed fourth slot; audited gain/lag grids summarized and figures inspected without CI interpolation.",
   "controller_sessions": {
     "joint_conductance_b00": 55866,
     "joint_conductance_b10": 15102,
@@ -4124,7 +4125,10 @@
     "transfer_primary_runs": 56639,
     "reference_transport_check": 41527,
     "profile_b10_short_lag_audit": 39550,
-    "stage_execution_check": 15106
+    "stage_execution_check": 15106,
+    "profile_b10_exchanged_lag_point": 96933,
+    "profile_gain_lag_summary": 56274,
+    "profile_gain_lag_summary_v2": 10995
   },
   "queued_jobs": [
     "current_primary_protocol_fits_then_independent_fold_audits",
@@ -4138,10 +4142,10 @@
   ],
   "process_check": {
     "path": "process_check.json",
-    "checked_utc": "2026-10-26 16:17:31 UTC",
-    "sha256": "95f4a4ece276d2e84104a4cf2bc01c3a4f12a366baa6e3ab3d7a0f41fb38d657",
+    "checked_utc": "2026-10-26 16:39:05 UTC",
+    "sha256": "1f20e574e5707dacbaaa1718d0a7030f8d06d8e02b120e6c01a105d1e71e7ff7",
     "method": "Direct approved pgrep -fl tclab-error tool",
-    "snapshot_age_s": 1.151814
+    "snapshot_age_s": 1.235434
   },
   "reconciliation_warnings": {
     "missing_exit_or_matching_process": [],
@@ -4208,7 +4212,6 @@
     }
   ],
   "live_worker_slots": [
-    "profile_b10_short_lag_audit",
     "recovery_b10_even_compiled_continuation",
     "recovery_b10_odd_compiled_continuation",
     "transfer_primary_runs"
