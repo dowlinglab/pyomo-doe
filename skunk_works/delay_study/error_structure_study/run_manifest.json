@@ -2518,8 +2518,33 @@
       "output": "skunk_works/delay_study/error_structure_study/results/profile_b10_exchanged_lag_point",
       "source_commit": "168bf702f4d8ca93e78e443e354eb30db6dbfc52",
       "source_receipt_sha256": "ffb7588d2ed21d8fe7c650f9d356d305e219511ae5c987efd67bc186c94bfa60",
-      "status": "running_verified",
-      "last_verified_utc": "2026-10-26 16:43:24 UTC"
+      "status": "terminal",
+      "last_verified_utc": "2026-10-26 16:43:24 UTC",
+      "exit_code": 0,
+      "finished_utc": "2026-10-26T16:55:12.735696+00:00",
+      "starts_recorded": 2
+    },
+    {
+      "id": "profile_b10_exchanged_lag_point_audit",
+      "process": {
+        "pid": 25352,
+        "parent_pid": 25051,
+        "command": [
+          "/Users/adowling/opt/anaconda3/bin/python",
+          "/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-error-76f218f6-y59q65_p/skunk_works/delay_study/error_structure_study/audit_joint_quantized.py",
+          "--output",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/profile_b10_exchanged_lag_point_audit",
+          "--input",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/profile_b10_exchanged_lag_point"
+        ],
+        "started_utc": "2026-10-26T16:56:08.320270+00:00"
+      },
+      "output": "skunk_works/delay_study/error_structure_study/results/profile_b10_exchanged_lag_point_audit",
+      "source_commit": "76f218f63152c12cb17c436aded0f5d3f9394ba4",
+      "source_receipt_sha256": "7b0a6cd9b6d3719f6735e5a6c0fa8d4d9161c37892913c6c6f41d919e559c84a",
+      "status": "terminal",
+      "exit_code": 0,
+      "finished_utc": "2026-10-26T16:59:24.694626+00:00"
     },
     {
       "id": "profile_b10_gain",
@@ -3211,7 +3236,7 @@
       "source_commit": "7cd61f36763fc5e114416176472bfc26b5b6a277",
       "source_receipt_sha256": "71fc02cd311eae6f6733b98b6f024a8b3dcc942e19c78d07dd4206db4eab2d7d",
       "status": "running_verified",
-      "last_verified_utc": "2026-10-26 16:43:24 UTC"
+      "last_verified_utc": "2026-10-26 16:59:42 UTC"
     },
     {
       "id": "recovery_b10_odd",
@@ -3275,7 +3300,7 @@
       "source_commit": "7cd61f36763fc5e114416176472bfc26b5b6a277",
       "source_receipt_sha256": "caa31c9d75a44f20dc5f7a7662b32c914f55fa375f208f21c1882c5b7014f16d",
       "status": "running_verified",
-      "last_verified_utc": "2026-10-26 16:43:24 UTC"
+      "last_verified_utc": "2026-10-26 16:59:42 UTC"
     },
     {
       "id": "recovery_summary_controller_check",
@@ -4012,7 +4037,7 @@
       "source_commit": "7180ae80658d9f31a5ea3d6d4f0c9ee75f73e552",
       "source_receipt_sha256": "bedb98b6fe79b9606145b6e966dcc90bb59a92dbf3035c82c6d692b4479440ff",
       "status": "running_verified",
-      "last_verified_utc": "2026-10-26 16:43:24 UTC"
+      "last_verified_utc": "2026-10-26 16:59:42 UTC"
     },
     {
       "id": "updated_diagnostics_check",
@@ -4138,14 +4163,13 @@
     }
   ],
   "live_jobs": [
-    "profile_b10_exchanged_lag_point",
     "recovery_b10_even_compiled_continuation",
     "recovery_b10_odd_compiled_continuation",
     "transfer_primary_runs"
   ],
-  "next_action": "The nine coarse short-lag points and all independent audits passed. Wait for profile_b10_exchanged_lag_point (session 96933), audit its selected point, and refine the unconstrained baseline if its nll beats the reference by >.001. Then dispatch the first run_transfer_uncertainty_queue.py protocol_30s pipeline with --reuse-noise-index manifest, inspect all approximation gates before later pipelines, and keep remaining prespecified profiles/initial/shared-fold queues moving as slots free. Recovery continuations and twelve primary run folds are still live. Full 50-draw aggregates, parameter transfer and final reports remain required; no email.",
-  "updated_utc": "2026-10-26T16:43:25.058730+00:00",
-  "last_goal_turn_classification": "progress after verified wait: all nine short-lag audits completed and passed; exact declared exchanged-lag refinement launched in the freed fourth slot; audited gain/lag grids summarized and figures inspected without CI interpolation.",
+  "next_action": "First primary protocol uncertainty pipeline transfer_uncertainty_protocol30 (session 72885) is live: canonical noise forecast reused with source/audit bindings; reference stress forecast and full audit passed; observed information is running. Inspect its information audit/local-draw and 64/256 forecast audits before dispatching the remaining three protocol pipelines. The exchanged-lag fixed point and audit passed at nll 6240.69230385, 2 delta nll 4.78730; it does not beat the reference and does not locate the free secondary minimum. Keep remaining declared profiles, initial-state sensitivities and shared protocol fits queued for freed worker slots; recovery continuations and twelve primary run folds remain active. Full 50-draw/transfer aggregates and final reports remain required; no email.",
+  "updated_utc": "2026-10-26T16:59:43.168780+00:00",
+  "last_goal_turn_classification": "progress: all coarse lag-grid audits passed, exact lag-exchange fixed point independently audited and retained as higher-than-reference; first staged protocol uncertainty pipeline launched, reference forecast/audit passed, observed information active. No new confidence or whitening claim.",
   "controller_sessions": {
     "joint_conductance_b00": 55866,
     "joint_conductance_b10": 15102,
@@ -4219,24 +4243,24 @@
     "stage_execution_check": 15106,
     "profile_b10_exchanged_lag_point": 96933,
     "profile_gain_lag_summary": 56274,
-    "profile_gain_lag_summary_v2": 10995
+    "profile_gain_lag_summary_v2": 10995,
+    "profile_b10_exchanged_lag_point_audit": 99207,
+    "transfer_uncertainty_protocol30": 72885
   },
   "queued_jobs": [
-    "current_primary_protocol_fits_then_independent_fold_audits",
-    "remaining_primary_run_and_shared_protocol_fits",
-    "short_lag_point_audits_after_fit_terminal",
     "remaining_prespecified_profile_queue",
     "initial_floor_buffer_and_hidden_heater_queue",
-    "all_fifty_recovery_and_refitted_diagnostic_aggregation_with_failed_denominators",
-    "per_fold_information_draws_and_transfer_parameter_noise_bin_model_sensitivities",
+    "shared_protocol_fits_and_primary_run_audits_after_parents_terminal",
+    "remaining_protocol_and_run_fold_information_draws_and_parameter_forecasts_after_first_pipeline_review",
+    "all_fifty_recovery_and_refitted_diagnostic_audits_with_failed_denominators",
     "final_report_scientific_numeric_visual_completion_audit_and_push"
   ],
   "process_check": {
     "path": "process_check.json",
-    "checked_utc": "2026-10-26 16:43:24 UTC",
-    "sha256": "cda7a376eded562895ad3d7fba7d72417e0ca7968e0237ac8e6eea59f3ad2a5a",
+    "checked_utc": "2026-10-26 16:59:42 UTC",
+    "sha256": "dde35a09581ae8c09a64392e509e3362e043b082e6d583ebf5de223883abc76d",
     "method": "Direct approved pgrep -fl tclab-error tool",
-    "snapshot_age_s": 1.05873
+    "snapshot_age_s": 1.16878
   },
   "reconciliation_warnings": {
     "missing_exit_or_matching_process": [],
@@ -4303,7 +4327,6 @@
     }
   ],
   "live_worker_slots": [
-    "profile_b10_exchanged_lag_point",
     "recovery_b10_even_compiled_continuation",
     "recovery_b10_odd_compiled_continuation",
     "transfer_primary_runs"

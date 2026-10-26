@@ -204,11 +204,13 @@ point audits passed. Twice the nll increase rises to 552.445 at L=7 s and falls
 again to 6.253 at L=15 s, where the fitted sensor time is 2.643 s. The inspected
 profile_gain_lag_summary_v2 shows this second region and the seven-point gain
 grid without confidence-endpoint interpolation. It does not locate or rule out
-the secondary minimum. The declared lag-exchange refinement is now running at
-the original exact sensor-time coordinate, warming from the audited 15 s fit.
-Independently audit the resulting point. If it improves the reference nll,
-refine the unconstrained baseline before reporting deviances or continuing
-profiles. Its first command used an incorrect coordinate name
+the secondary minimum. The declared lag-exchange fixed-point refinement and
+independent audit are terminal and passed. At L=14.7900558 s it fits sensor
+time 2.7313751 s, nll 6240.69230385 and T1/T2 RMSE 0.615/0.118 C. Twice the nll
+increase is 4.78730, compared with 6.25274 at the original coarse 15 s point.
+Both starts converged to this value. The point does not improve the baseline
+and does not locate the unconstrained secondary minimum or calibrate a cutoff.
+The first profile command used an incorrect coordinate name
 and failed before fitting; that invocation is retained. Remaining profiles are
 queued. See sensitivity_methods.md and
 uncertainty_interim.md for the source-bound findings and limits.

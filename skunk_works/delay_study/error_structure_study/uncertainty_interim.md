@@ -182,8 +182,12 @@ At fixed L=15 s, the fitted sensor time is 2.643 s. The second region is
 consistent with the near exchange of input/sensor lag labels, but the coarse
 15 s point does not locate its minimum or exclude it at a calibrated cutoff.
 The declared refinement at the original exact log sensor-time coordinate is
-running from that warm fit. A lower-than-reference result would require an
-unconstrained baseline refinement before interpreting deviances.
+now terminal and independently audited. At L=14.7900558 s it fits sensor time
+2.7313751 s, with nll 6240.69230385 and T1/T2 RMSE 0.615/0.118 C. Both starts
+converged. Twice the nll increase is 4.78730, smaller than the coarse 15 s value
+but still above the reference. This fixed point does not locate the free
+secondary minimum or establish a calibrated exclusion of the lag assignment.
+The existing baseline therefore remains the reference.
 
 Evidence: profile_b10_short_lag_v2, profile_b10_short_lag_audit and the inspected
 profile_gain_lag_summary_v2. The latter also plots the seven audited gain-grid
