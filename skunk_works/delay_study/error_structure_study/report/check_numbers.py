@@ -103,6 +103,12 @@ def main():
         for key in ['IID_known_analogue_variance_SE','correlated_known_analogue_covariance_SE','bin_observed_mean_and_noise_nuisance_SE']:
             assert f'{row[key]:.7f}' in text
     assert f"{ia['diffusion'][0]['conditional_log_SD_log_length_correlation']:.4f}" in text
+    ratios={r['coordinate']:r['correlated_to_IID_analogue_SE_ratio'] for r in ia['local_comparison']}
+    for name,places in [('log_K',2),('log_tA',2),('log_input_lag',3)]:assert f'{ratios[name]:.{places}f}' in text
+    before=2*joint['noise_parameters'][0]['latent_SD_C']**2/joint['noise_parameters'][0]['ell_s']
+    after=2*condition['noise_parameters'][0]['latent_SD_C']**2/condition['noise_parameters'][0]['ell_s']
+    assert f'{100*abs(after/before-1):.2f}\\%' in text
+    assert initial['nmean']-joint['nmean']==24 and 'adds 24' in text
     path=root/'joint_b10_nonrandom_diagnostics/comparison.json';binding(path);nr=json.loads(path.read_text())
     assert nr['status']=='complete' and nr['successes']==50 and nr['failures']==0
     for key in ['T1_score_input_correlation_abs','T1_score_maximum_phase_projection_fraction',
