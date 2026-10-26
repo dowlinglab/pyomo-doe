@@ -20,37 +20,44 @@ audits. Affine ambient gives 0.728/0.111 C. Hidden starting offsets bounded by
 within 0.35 C. This supports cold starts as a reasonable working assumption;
 absolute run timestamps and between-run recovery times remain unknown.
 
-The radiative implementation passed independent balances, time-step, derivative
-and synthetic recovery checks. Its zero-radiation limit matches all saved
-baseline trajectories within 4.4e-8 C. The original four-start free-radiation
-solver ended without an accepted converged result; all four attempts and scores
-are preserved. A scaled-objective recovery is running in radiation_free_scaled
-(controller 11817). The original linear-command/radiation fit is terminal and
-independently audited. No process was killed: both original jobs ended naturally
-before the approved stop retry found no such process.
+The radiative implementation and full-record nesting passed independent audits.
+The scaled free-radiation recovery has four accepted starts and is terminal;
+T1/T2 RMSE is 0.633/0.115 C and normalized radiation coefficient is 0.0344.
+Its Gaussian nll improves by only 1.285 over the zero-radiation 10% band. This
+is conditional evidence, not a measured emissivity or a calibrated significance
+test. Linear-command radiation gives 0.924/0.119 C and does not replace the
+empirical command curve in this comparison. Original failed/unreliable starts
+and the natural terminal exits are retained; no process was terminated.
 
-Fixed-mean bin-likelihood covariance estimates passed 512-node full-record checks
-and independent trivariate Gaussian rectangle integrals for every run prefix.
-T1 analogue measurement SD is 0.0255 C and correlation length 725 s; T2 is
-0.0325 C and 54.8 s. These are conditional model parameters, not reference-sensor
-calibrations. The initial import failures and corrected v2 runs are preserved.
-Medians/normality alone do not establish independence or physical adequacy.
+Fixed-mean bin covariance estimates passed 512-node full-record checks and
+independent trivariate rectangles. T1 analogue measurement SD is 0.0255 C and
+length 725 s; T2 is 0.0325 C and 54.8 s. These are conditional model parameters,
+not sensor calibration measurements. Initial import failures remain recorded.
 
-Backward quadrature smoothing and Fisher-identity scores passed independent
-posterior-moment and derivative checks. The full physical-plus-bin score check
-is running in joint_score_check (controller 66603). After it passes, implement
-and run joint mean/noise optimization. See quantized_methods.md for the derivation.
-Earlier marginal PIT pilots reused random seeds; joint/cross-channel diagnostics
-must be regenerated using independent streams by channel and run. Do not infer
-joint independence from those pilot arrays.
+Full physical-plus-bin scores passed independent finite-difference checks for
+both conductance and radiative means, with and without run deviations.
+Four three-start joint fits are now running: conductance bands 0/10/20% and
+radiation with a 10% convective band. See run_manifest.json for verified PIDs and
+controller sessions 55866/15102/61547/36440. The 5% case is queued for the first
+available slot; do not exceed four long processes or relaunch an unchanged live
+job. Starts cover the saved dynamics, exchanged sensor/input lags, and low
+analogue measurement noise. Mean and noise are re-estimated together. The source
+matrix is joint_fit_matrix.json; quantized_methods.md owns the score derivation.
+
+Earlier marginal PIT pilots reused random seeds. Their joint randomization is
+unsuitable for cross-channel/run tests. The joint fitter uses independent streams
+by channel and run; repeated randomizations and model-based reference checks are
+still required. Gaussian marginal appearance alone is not adequate whitening.
 
 Operating-point, heating/cooling, common/differential and Gaussian forecast
 horizon tables are in operating_first; independent conditional-Gaussian and RMSE
 checks passed. Noise-only conditional forecasts use earlier temperatures and are
 not free simulation or independent validation. All twelve records informed
-selection. Remaining work includes updated frequency diagnostics, sequential
-GLS, joint quantized fits, cross-channel checks, profiles/eigendecompositions,
-simulation uncertainty, retrospective transfer and the checked report.
+selection. Remaining work includes updated frequency diagnostics, sequential GLS, terminal
+joint-fit audits, cross-channel checks, profiles/eigendecompositions, simulation
+uncertainty, retrospective transfer and the checked report. Include sensitivity
+to initial sensor values within their quantization bins, consistent with each
+bin phase; varying only hidden heater initial states does not cover that issue.
 
 ## Resume instructions
 

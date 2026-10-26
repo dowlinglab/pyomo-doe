@@ -106,3 +106,23 @@ The existing pilots used repeated seeds within channels/runs, so their marginal
 illustrations should not be pooled to claim cross-channel or cross-run
 independence. Simulated references and nonrandomized bin-transition diagnostics
 remain necessary even when randomized residuals look Gaussian.
+
+
+The scaled free-radiation comparison now has four accepted starts, independent
+adaptive-ODE/dense-likelihood verification and a step-halving check. Its T1/T2
+RMSE is 0.633/0.115 C versus 0.639/0.115 C without radiation at the same 10%
+band. Gaussian nll improves by 1.285 for one additional parameter. The normalized
+differential radiation coefficient at 50 C is 0.0344 relative to nominal
+convection. This is a small, conditional improvement; boundary profiles and the
+quantized observation comparison remain necessary before interpreting support.
+It does not identify emissivity or area. With a linear command law, radiation
+alone gives 0.924/0.119 C and a worse Gaussian likelihood than the empirical
+command-curve model. Both comparisons refit convection and gain.
+
+Joint physical-plus-bin scores passed coordinate finite-difference checks for
+the conductive and radiative families at positive and zero conductance bands.
+The maximum scaled derivative discrepancy was 5.7e-7. Full-data joint fits are
+now running; none has been selected yet. Their starts also test the possible
+exchange of sensor and input time constants. The shared mean, bounded per-run
+conductance and observation distribution must be considered together before
+final uncertainty or new-experiment prediction claims.
