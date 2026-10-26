@@ -1,0 +1,40 @@
+{
+  "purpose": "Joint physical and bin-observation likelihood comparison after score verification",
+  "phase": -0.5,
+  "nodes": 128,
+  "starts": 3,
+  "start_branches": [
+    "saved physical and fitted noise",
+    "sensor/input time constants swapped",
+    "low analogue noise and shorter T2 correlation"
+  ],
+  "maxiter": 300,
+  "cases": [
+    {
+      "id": "joint_conductance_b00",
+      "family": "conductance",
+      "band": 0
+    },
+    {
+      "id": "joint_conductance_b05",
+      "family": "conductance",
+      "band": 0.05
+    },
+    {
+      "id": "joint_conductance_b10",
+      "family": "conductance",
+      "band": 0.1
+    },
+    {
+      "id": "joint_conductance_b20",
+      "family": "conductance",
+      "band": 0.2
+    },
+    {
+      "id": "joint_radiation_b10",
+      "family": "radiation",
+      "band": 0.1
+    }
+  ],
+  "dispatch": "At most four long numerical processes total; the 5% case waits for the first available slot. Source/data frozen per job; no duplicate live retry."
+}

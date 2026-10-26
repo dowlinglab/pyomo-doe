@@ -19,27 +19,56 @@ def main():
     parser=argparse.ArgumentParser();parser.add_argument('--output',type=Path,required=True)
     parser.add_argument('--warm',type=Path,required=True);parser.add_argument('--noise1',type=Path,required=True);parser.add_argument('--noise2',type=Path,required=True)
     parser.add_argument('--family',choices=['conductance','radiation'],default='conductance');parser.add_argument('--band',type=float,default=.1)
-    parser.add_argument('--phase',type=float,default=-.5);parser.add_argument('--nodes',type=int,default=128)
-    parser.add_argument('--startup-band',type=float,default=0.);parser.add_argument('--starts',type=int,default=2)
+    parser.add_argument('--records',type=int,nargs='+');parser.add_argument('--dataset',type=Path);parser.add_argument('--phase',type=float,default=-.5);parser.add_argument('--nodes',type=int,default=128)
+    parser.add_argument('--startup-band',type=float,default=0.);parser.add_argument('--starts',type=int,default=3)
     parser.add_argument('--maxiter',type=int,default=300);args=parser.parse_args();begun=time.monotonic()
-    if args.starts>2:raise ValueError('Declare additional starts before extending the two branch comparison')
-    records=load_records();nr=len(records);warm=json.loads(args.warm.read_text());noise_fits=[json.loads(p.read_text()) for p in [args.noise1,args.noise2]]
+    if args.starts>3:raise ValueError('Declare additional starts before extending the physical/noise branch comparison')
+    records=load_records()
+    dataset_receipt=None
+    if args.dataset:
+        data=np.load(args.dataset,allow_pickle=False)
+        names=data['record_names'].tolist()
+        assert names==[d['name'] for d in records]
+        replaced=[]
+        for j,d in enumerate(records):
+            assert np.array_equal(data['time_'+str(j)],d['t']) and np.array_equal(data['input_'+str(j)],d['u'])
+            v=dict(d);v['y']=data['observed_'+str(j)].copy()
+            assert v['y'].shape==d['y'].shape and np.array_equal(v['y'][0],d['y'][0]) and np.isfinite(v['y']).all()
+            replaced.append(v)
+        records=replaced
+        dataset_receipt={'path':str(args.dataset),'sha256':hashlib.sha256(args.dataset.read_bytes()).hexdigest(),'type':'synthetic conditional observations with unchanged commands/times/first readings'}
+    if args.records is not None:
+        assert len(set(args.records))==len(args.records) and min(args.records)>=0 and max(args.records)<len(records)
+        records=[records[j] for j in args.records]
+    nr=len(records);warm=json.loads(args.warm.read_text());noise_fits=[json.loads(p.read_text()) for p in [args.noise1,args.noise2]]
     model=Model(records,args.band,args.phase,args.nodes,args.family,args.startup_band);bounds=model.bounds();scale=2*model.N
-    shape=np.asarray(warm['best']['point'][:6]);delta=np.array(warm['parameters'].get('log_deviations',np.zeros(nr)));coef=np.array(warm['coefficients'])
+    indices=[warm['record_names'].index(d['name']) for d in records]
+    shape=np.asarray(warm['best']['point'][:6]).copy()
+    original_delta=np.array(warm['parameters'].get('log_deviations',np.zeros(len(warm['record_names']))))
+    delta=original_delta[indices].copy();center=float(delta.mean()) if args.band else 0.
+    delta-=center
+    shape[[0,2,3]]-=center
+    oldcoef=np.array(warm['coefficients']);coef=np.r_[oldcoef[0]*np.exp(-center),oldcoef[1:1+len(warm['record_names'])][indices]]
     if args.family=='conductance':
-        extra=np.array(warm.get('startup_offsets_C') or np.zeros((nr,2))).ravel() if args.startup_band else np.zeros(0)
-        initial_mean=np.r_[shape,delta if args.band else np.zeros(0),np.log(coef[0]),coef[1:1+nr],extra]
+        extra=np.array(warm.get('startup_offsets_C') or np.zeros((len(warm['record_names']),2)))[indices].ravel() if args.startup_band else np.zeros(0)
+        initial_mean=np.r_[shape,delta if args.band else np.zeros(0),np.log(coef[0]),coef[1:],extra]
     else:
-        if warm.get('model')=='convection_ambient_radiation':initial_mean=np.array(warm['best']['point'][:model.nmean])
-        else:initial_mean=np.r_[shape,np.log(coef[0]),0.,delta,coef[1:1+nr]]
+        gamma=warm['parameters'].get('gamma_differential_50C_over_Ua') or 0.
+        initial_mean=np.r_[shape,np.log(coef[0]),gamma*np.exp(-center),delta,coef[1:]]
     noise=[]
-    for f in noise_fits:
-        p=f['parameters'];sigma=p['sigma_total_analogue_C'];eta=p['independent_variance_fraction']
-        noise.extend(np.log([sigma*np.sqrt(1-eta),p['ell_s'],max(sigma*np.sqrt(eta),.0001)]))
+    for channel,f in enumerate(noise_fits):
+        if warm.get('kernel')=='quantized_ou_nugget':
+            p=warm['noise_parameters'][channel]
+            noise.extend(np.log([p['latent_SD_C'],p['ell_s'],p['measurement_SD_C']]))
+        else:
+            p=f['parameters'];sigma=p['sigma_total_analogue_C'];eta=p['independent_variance_fraction']
+            noise.extend(np.log([sigma*np.sqrt(1-eta),p['ell_s'],max(sigma*np.sqrt(eta),.0001)]))
     initial=np.r_[initial_mean,noise];starts=[];evaluation_count=0;numerical_failures=[]
     for j in range(args.starts):
         seed=initial.copy()
-        if j:seed[1],seed[4]=seed[4],seed[1]
+        if j==1:seed[1],seed[4]=seed[4],seed[1]
+        if j==2:
+            seed[model.nmean+2]=np.log(.005);seed[model.nmean+5]=np.log(.005);seed[model.nmean+4]=np.log(10.)
         seed=np.clip(seed,np.array(bounds)[:,0],np.array(bounds)[:,1])
         if args.band:
             start=6 if args.family=='conductance' else 8;ds=seed[start:start+nr].copy();lo,hi=np.log(1-args.band),np.log(1+args.band)
@@ -71,7 +100,7 @@ def main():
                 constraints=[{'type':'eq','fun':model.centered_constraint,'jac':model.centered_jacobian}] if args.band else [],
                 options={'maxiter':args.maxiter,'ftol':1e-12})
             nll=model.objective(fit.x);stat=stationary(model,fit.x,model.gradient(fit.x))
-            row={'start':j,'branch_seed':'sensor/input lag swapped' if j else 'saved branch','seed':seed.tolist(),'point':fit.x.tolist(),
+            row={'start':j,'branch_seed':['saved branch','sensor/input lag swapped','low analogue noise'][j],'seed':seed.tolist(),'point':fit.x.tolist(),
                  'nll':float(nll),'solver_success':bool(fit.success),'message':str(fit.message),'stationarity':stat,
                  'success':bool(fit.success and abs(stat['equality_residual'])<1e-7 and stat['lagrangian_projected_gradient_max_abs']<.05)}
         except Exception as exc:row={'start':j,'seed':seed.tolist(),'success':False,'exception':repr(exc)}
@@ -100,7 +129,7 @@ def main():
         per_run.append({'name':d['name'],'RMSE_by_channel_C':np.sqrt(np.mean((d['y'][1:]-pred[1:])**2,axis=0)).tolist()});cursor+=n
     parameter_count=sum(lo<hi for lo,hi in bounds)-int(args.band>0)
     result={'model':'joint_quantized_'+args.family,'family':args.family,'kernel':'quantized_ou_nugget','band':args.band,'phase':args.phase,
-        'startup_band_C':args.startup_band,'best':best,'starts':starts,'bounds':bounds,'nmean':model.nmean,'shape_count':model.nmean,
+        'startup_band_C':args.startup_band,'dataset':dataset_receipt,'selected_input_indices':args.records,'best':best,'starts':starts,'bounds':bounds,'nmean':model.nmean,'shape_count':model.nmean,
         'coefficients':coefficients.tolist(),'noise_parameters':noise_parameters,'record_names':[d['name'] for d in records],
         'raw_sha256':{d['name']:d['sha256'] for d in records},'nobs':2*model.N,'parameter_count':parameter_count,
         'parameters':{'K_common_nominal':float(coefficients[0]),'tA_nominal_s':float(np.exp(shared[0])),'rS_s':float(np.exp(shared[1])),
@@ -112,7 +141,7 @@ def main():
         'per_run':per_run,'selected_quadrature':model.details(p),'diagnostic_streams':diagnostics,
         'source_inputs_sha256':{str(v):hashlib.sha256(v.read_bytes()).hexdigest() for v in [args.warm,args.noise1,args.noise2]},
         'elapsed_s':time.monotonic()-begun,'numerical_failures':len(numerical_failures),
-        'notice':'Mean and both independent-channel OU/analogue-noise models re-estimated under conditional bin probabilities. Discrete likelihood and assumed bin phase; no cross-channel noise component, uncertainty calibration or external validation claimed. All twelve records reused. Observed information and boundary profiles remain necessary.'}
+        'notice':'Mean and both independent-channel OU/analogue-noise models re-estimated under conditional bin probabilities. raw_sha256 binds original experimental design files; dataset identifies any synthetic observation override. Discrete likelihood and assumed bin phase; no cross-channel noise component, uncertainty calibration or external validation claimed. All twelve records reused. Observed information and boundary profiles remain necessary.'}
     write(args.output/'fit.json',result);np.savez_compressed(args.output/'trajectories.npz',**arrays)
     print(json.dumps({'status':'complete','family':args.family,'bin_nll':best['nll'],'RMSE':result['RMSE_by_channel_C'],'parameters':result['parameters'],'noise':noise_parameters}),flush=True)
 
