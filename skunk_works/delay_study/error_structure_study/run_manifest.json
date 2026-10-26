@@ -2661,7 +2661,7 @@
       "source_commit": "ccf9362c6544497e906b2c0b4115860cfadf8e8c",
       "source_receipt_sha256": "91f79bb4a821086c98e1197858195a21c2ee40153fd32a8fd385385224f5447e",
       "status": "running_verified",
-      "last_verified_utc": "2026-10-26 14:10:24 UTC"
+      "last_verified_utc": "2026-10-26 14:14:11 UTC"
     },
     {
       "id": "profile_chart_check",
@@ -3016,7 +3016,7 @@
       "source_commit": "7cd61f36763fc5e114416176472bfc26b5b6a277",
       "source_receipt_sha256": "71fc02cd311eae6f6733b98b6f024a8b3dcc942e19c78d07dd4206db4eab2d7d",
       "status": "running_verified",
-      "last_verified_utc": "2026-10-26 14:10:24 UTC"
+      "last_verified_utc": "2026-10-26 14:14:11 UTC"
     },
     {
       "id": "recovery_b10_odd",
@@ -3080,7 +3080,7 @@
       "source_commit": "7cd61f36763fc5e114416176472bfc26b5b6a277",
       "source_receipt_sha256": "caa31c9d75a44f20dc5f7a7662b32c914f55fa375f208f21c1882c5b7014f16d",
       "status": "running_verified",
-      "last_verified_utc": "2026-10-26 14:10:24 UTC"
+      "last_verified_utc": "2026-10-26 14:14:11 UTC"
     },
     {
       "id": "sequential_b10_iid",
@@ -3275,6 +3275,40 @@
       "finished_utc": "2026-10-26T01:18:46.452708+00:00"
     },
     {
+      "id": "transfer_primary_protocols",
+      "process": {
+        "pid": 77624,
+        "parent_pid": 77329,
+        "command": [
+          "/Users/adowling/opt/anaconda3/bin/python",
+          "/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-error-fdef9fb4-eqny8ut6/skunk_works/delay_study/error_structure_study/run_transfer_fit.py",
+          "--output",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_primary_protocols",
+          "--input",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/joint_conductance_b10_export_v2",
+          "--noise1",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/bin_noise_band10_T1_v2/observation_fit.json",
+          "--noise2",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/bin_noise_band10_T2_v2/observation_fit.json",
+          "--candidate",
+          "primary",
+          "--folds",
+          "protocol_30s",
+          "protocol_120s",
+          "protocol_300s",
+          "protocol_step",
+          "--score-backend",
+          "compiled"
+        ],
+        "started_utc": "2026-10-26T14:10:33.722898+00:00"
+      },
+      "output": "skunk_works/delay_study/error_structure_study/results/transfer_primary_protocols",
+      "source_commit": "fdef9fb43dde1984500066ccbaa3f9b28c4d50a0",
+      "source_receipt_sha256": "dceb80521f7bba5d0d7f99f83228f25af3d3fb14e1e141cf73b3f873b147688c",
+      "status": "running_verified",
+      "last_verified_utc": "2026-10-26 14:14:11 UTC"
+    },
+    {
       "id": "updated_diagnostics_check",
       "process": {
         "pid": 64305,
@@ -3400,10 +3434,11 @@
   "live_jobs": [
     "profile_b10_short_lag_v2",
     "recovery_b10_even_compiled_continuation",
-    "recovery_b10_odd_compiled_continuation"
+    "recovery_b10_odd_compiled_continuation",
+    "transfer_primary_protocols"
   ],
   "next_action": "Reconcile four live jobs. As capacity frees, finish short-lag profile plus point audits; dispatch run_profile_queue.py for log_Us_over_Ua, log_Ua_ratio_9, log_ell_T1 and radiation_gamma. Audit primary protocol folds and start leave-run primary/shared-protocol folds. Continue all fifty recovery draws; final audit_recovery.py can reuse passed draw0 pilot numerical checks. Dispatch run_initial_queue.py floor/buffer/hidden-heater sensitivities. Complete parameter/noise/bin/model-form transfer, final Markdown/LaTeX/PDF and requirement audit. No email.",
-  "updated_utc": "2026-10-26T14:10:25.362336+00:00",
+  "updated_utc": "2026-10-26T14:14:12.148277+00:00",
   "last_goal_turn_classification": "progress: coherent audited uncertainty, code-score dependence, updated physical-mean/forecast diagnostics, initial-condition and bounded-conductance sensitivities committed; matched Gaussian cross-channel comparison implemented/audited, both complementary coverage shards dispatched; all current scientific claims source-bound and whitening remains explicitly unresolved",
   "controller_sessions": {
     "joint_conductance_b00": 55866,
@@ -3473,10 +3508,10 @@
   ],
   "process_check": {
     "path": "process_check.json",
-    "checked_utc": "2026-10-26 14:10:24 UTC",
-    "sha256": "c25fc140f8133c4e99adbd820162a6c04fa1f51f7578a57dcb69abcff7e25b59",
+    "checked_utc": "2026-10-26 14:14:11 UTC",
+    "sha256": "60a4d849fd89ab9c3cbc6637004b74a44fcc5fb332c1df332815724035995b12",
     "method": "Direct approved pgrep -fl tclab-error tool",
-    "snapshot_age_s": 1.362336
+    "snapshot_age_s": 1.148277
   },
   "reconciliation_warnings": {
     "missing_exit_or_matching_process": [],
