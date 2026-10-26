@@ -13,10 +13,6 @@ def inverse_logcdf(logp):
     return float(brentq(lambda x:float(log_ndtr(x))-logp,-max(50.,2*np.sqrt(-2*logp)),0.))
 
 
-def log_complement(logp):
-    return float(np.log(-np.expm1(logp)))
-
-
 def expected_gaussian_pit(filtered):
     """E[Phi^-1(U) | reported code, past], no auxiliary randomization.
 
@@ -31,8 +27,10 @@ def expected_gaussian_pit(filtered):
             left=np.logaddexp(ll,np.log(.5)+lp);right=np.logaddexp(rs,np.log(.5)+lp)
             z=inverse_logcdf(left) if left<np.log(.5) else -inverse_logcdf(right)
             answer.append(z);thin+=1;continue
-        a=inverse_logcdf(ll) if ll<=np.log(.5) else -inverse_logcdf(log_complement(ll))
-        b=-inverse_logcdf(rs) if rs<=np.log(.5) else inverse_logcdf(log_complement(rs))
+        # Reconstruct the opposite endpoint tails from disjoint bin+tail
+        # probabilities. Complementing a CDF rounded to 1 loses far tails.
+        a=inverse_logcdf(ll) if ll<=np.log(.5) else -inverse_logcdf(np.logaddexp(rs,lp))
+        b=-inverse_logcdf(rs) if rs<=np.log(.5) else inverse_logcdf(np.logaddexp(ll,lp))
         if a==-np.inf and b==np.inf:value=0.
         elif a==-np.inf:value=-np.exp(-.5*b*b-.5*LOG2PI-lp)
         elif b==np.inf:value=np.exp(-.5*a*a-.5*LOG2PI-lp)
