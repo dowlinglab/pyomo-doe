@@ -242,8 +242,10 @@ expectation/quantile, mixture and fold-separation checks passed. All four primar
 leave-protocol-out fits and canonical noise/scenario forecasts passed full
 independent audits. transfer_primary_runs is now terminal with all twelve
 primary leave-run-out fits successful. Their independent selected-point audits
-and forecasts remain pending. The four shared-model protocol fits are running
-in transfer_shared_protocols; no result is claimed from that live sweep.
+and forecasts remain pending. The four shared-model protocol fits are also
+terminal with four numerical successes. Their independent selected-point
+audit is running in transfer_shared_protocols_audit. No forecast comparison is
+claimed before those audits and the actual forecast audits pass.
 Parameter-draw propagation must inherit a validated approximation;
 noise-only hard-nuisance ranges are not total predictive intervals. If profiles
 change the candidate set, extend transfer support explicitly rather than using

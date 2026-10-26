@@ -2857,7 +2857,7 @@
       "source_commit": "cc9dad7639d2662b88bacc42c864fde2980278c2",
       "source_receipt_sha256": "010097bd36fca5d18ee9b8a323a2eb8b366319dde180d695d6d0d55070e58974",
       "status": "running_verified",
-      "last_verified_utc": "2026-10-26 18:47:16 UTC"
+      "last_verified_utc": "2026-10-26 19:31:23 UTC"
     },
     {
       "id": "quantization_check",
@@ -3268,7 +3268,7 @@
       "source_commit": "7cd61f36763fc5e114416176472bfc26b5b6a277",
       "source_receipt_sha256": "71fc02cd311eae6f6733b98b6f024a8b3dcc942e19c78d07dd4206db4eab2d7d",
       "status": "running_verified",
-      "last_verified_utc": "2026-10-26 18:47:16 UTC"
+      "last_verified_utc": "2026-10-26 19:31:23 UTC"
     },
     {
       "id": "recovery_b10_odd",
@@ -3332,7 +3332,7 @@
       "source_commit": "7cd61f36763fc5e114416176472bfc26b5b6a277",
       "source_receipt_sha256": "caa31c9d75a44f20dc5f7a7662b32c914f55fa375f208f21c1882c5b7014f16d",
       "status": "running_verified",
-      "last_verified_utc": "2026-10-26 18:47:16 UTC"
+      "last_verified_utc": "2026-10-26 19:31:23 UTC"
     },
     {
       "id": "recovery_summary_controller_check",
@@ -4127,8 +4127,10 @@
       "output": "skunk_works/delay_study/error_structure_study/results/transfer_shared_protocols",
       "source_commit": "e4d3b8bb73037817fa9285faa6e2a6b134cdcee2",
       "source_receipt_sha256": "d65e3e1a4b87d1326cc5c258fa0cffe09bdfba1545d304537a8d100496fda0ad",
-      "status": "running_verified",
-      "last_verified_utc": "2026-10-26 18:47:16 UTC"
+      "status": "terminal",
+      "last_verified_utc": "2026-10-26 18:47:16 UTC",
+      "exit_code": 0,
+      "finished_utc": "2026-10-26T19:30:41.682480+00:00"
     },
     {
       "id": "transfer_uncertainty_protocol30",
@@ -4520,12 +4522,11 @@
   "live_jobs": [
     "profile_remaining_b10",
     "recovery_b10_even_compiled_continuation",
-    "recovery_b10_odd_compiled_continuation",
-    "transfer_shared_protocols"
+    "recovery_b10_odd_compiled_continuation"
   ],
-  "next_action": "Twelve primary leave-run fits are terminal and successful in transfer_primary_runs, but independent selected-point audits/forecasts remain pending. Four shared protocol fits now run in transfer_shared_protocols (session 83314), occupying the freed worker slot. When that parent is terminal, independently audit all twelve primary and four shared selected fits before their uncertainty pipelines. Remaining four full-data profiles and complementary recovery continuations remain live. Queue the six initial/bin/hidden-start sensitivities, remaining nineteen fold pipelines and all 50 recovery audits/aggregates as slots free. Final report/Markdown/completion audit and push remain required; no email.",
-  "updated_utc": "2026-10-26T18:47:16.678614+00:00",
-  "last_goal_turn_classification": "progress: first full parameter protocol pipeline passed and was committed; remaining four profiles dispatched; verified waits tracked continuing draws and run folds; all twelve primary run fits completed successfully, preserved as pending independent audits; shared-model protocol comparison launched in the freed fourth slot.",
+  "next_action": "All twenty declared training fits are numerically complete: twelve primary run, four primary protocol and four shared protocol. The primary protocol selected fits/forecasts are independently audited; twelve primary-run selected audits are pending and four shared-protocol selected audits are live in transfer_shared_protocols_audit (session 37887). After shared audits pass, run the committed --forecast-only queue for its four shared protocol folds to compare the two complete protocol groups; parameter gates remain mandatory and explicitly pending. Then audit twelve primary run fits and generate their audited canonical forecasts. Finish six initial/bin/hidden-start sensitivities, nineteen remaining full parameter pipelines, four-profile queue and all 50 recovery outcomes/audits/aggregates. Final Markdown/tablet report, completion audit and push remain required; no email.",
+  "updated_utc": "2026-10-26T19:31:23.531527+00:00",
+  "last_goal_turn_classification": "progress after verified waits: all four shared-model protocol fits completed successfully; their full selected-point audit dispatched in the freed slot. Forecast-only ordering is committed to expose canonical comparisons before longer information stages, while all nineteen remaining parameter pipelines and completion gates remain unchanged.",
   "controller_sessions": {
     "joint_conductance_b00": 55866,
     "joint_conductance_b10": 15102,
@@ -4604,7 +4605,8 @@
     "transfer_uncertainty_protocol30": 72885,
     "profile_remaining_b10": 14054,
     "transfer_first_protocol_parameter_summary": 26081,
-    "transfer_shared_protocols": 83314
+    "transfer_shared_protocols": 83314,
+    "transfer_shared_protocols_audit": 37887
   },
   "queued_jobs": [
     "remaining_prespecified_profile_queue",
@@ -4616,10 +4618,10 @@
   ],
   "process_check": {
     "path": "process_check.json",
-    "checked_utc": "2026-10-26 18:47:16 UTC",
-    "sha256": "acb6ba258e063bf7a31f105c9d34d6d1bee8fd78563e1638570c1ec575489e5f",
+    "checked_utc": "2026-10-26 19:31:23 UTC",
+    "sha256": "8998a91a262dda5003423596e0f30a18581a15f53cd25306d0b3a3c9e764e58a",
     "method": "Direct approved pgrep -fl tclab-error tool",
-    "snapshot_age_s": 0.678614
+    "snapshot_age_s": 0.531527
   },
   "reconciliation_warnings": {
     "missing_exit_or_matching_process": [],
@@ -4704,7 +4706,6 @@
   "live_worker_slots": [
     "profile_remaining_b10",
     "recovery_b10_even_compiled_continuation",
-    "recovery_b10_odd_compiled_continuation",
-    "transfer_shared_protocols"
+    "recovery_b10_odd_compiled_continuation"
   ]
 }

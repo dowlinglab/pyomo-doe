@@ -1,0 +1,299 @@
+{
+  "status": "complete",
+  "candidate": "shared",
+  "reference_fit_sha256": "cfd674b6c2c3211df29a302dcb1d34f4102ca1c7b4d70e473bee2e3ee0300f73",
+  "config": {
+    "purpose": "Retrospective transfer after all twelve records informed structure selection; no untouched-holdout claim",
+    "candidates": {
+      "primary": {
+        "family": "conductance",
+        "band": 0.1,
+        "fold_types": [
+          "leave_run_out",
+          "leave_protocol_out"
+        ]
+      },
+      "shared": {
+        "family": "conductance",
+        "band": 0.0,
+        "fold_types": [
+          "leave_protocol_out"
+        ]
+      }
+    },
+    "leave_run_out": {
+      "run_indices": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ]
+    },
+    "leave_protocol_out": [
+      {
+        "id": "protocol_30s",
+        "test_indices": [
+          0,
+          1,
+          2
+        ]
+      },
+      {
+        "id": "protocol_120s",
+        "test_indices": [
+          3,
+          4,
+          5
+        ]
+      },
+      {
+        "id": "protocol_300s",
+        "test_indices": [
+          6,
+          7,
+          8
+        ]
+      },
+      {
+        "id": "protocol_step",
+        "test_indices": [
+          9,
+          10,
+          11
+        ]
+      }
+    ],
+    "starts": 2,
+    "failed_retry_starts": 3,
+    "maxiter": 300,
+    "unknown_run": {
+      "ambient_offset_bounds_C": [
+        -2.0,
+        2.0
+      ],
+      "initial_state": "Cold heater/sensor pairs conditioned on the first reported reading in each channel; no later test outputs fitted",
+      "conductance": "Unknown ratio within the candidate hard band around the regressed training nominal; no population distribution inferred"
+    },
+    "nuisance_scenario_grid": {
+      "coarse_points": 201,
+      "fine_points": 401,
+      "refinement_points": 801,
+      "maximum_envelope_change_C": 0.0001
+    },
+    "prediction": "Show free simulation and stationary marginal quantized-noise ranges separately from filtered one-step bin scores. Hard-nuisance envelopes are scenario ranges, not probability intervals over ambient/conductance. Parameter and model-form uncertainty remain explicit additional components.",
+    "reference_transport_sensitivity": {
+      "enabled": true,
+      "added_after": "Four primary protocol fits and canonical noise/scenario forecasts passed independent audits; nominal reference changes were identified when interpreting the omitted-protocol results.",
+      "scope": "Primary leave-protocol-out folds only; an additional noise/scenario forecast, preserving all canonical forecasts and every training fit.",
+      "formula": "For a hypothetical original centered N=12 cohort with deltas in [log(1-b),log(1+b)], the omitted run's ratio to the retained m-run geometric nominal lies in [(1-b)^(N/m),(1+b)^(N/m)] when both extreme assignments are feasible.",
+      "limitations": "Forecast stress check with no fitted test nuisance values. Original training constraints stay unchanged, so this is not a transported cohort likelihood or a corrected coverage calibration. The all-data fit is only an explicitly retrospective reference diagnostic; it does not choose these bounds."
+    },
+    "parameter_mixture_sensitivity": {
+      "method": "Independently audited observed-bin Hessian, local normal on the selected active-bound face, truncated by remaining box bounds; profile/model/initial sensitivities reported separately",
+      "draws": 256,
+      "coarse_draws": 64,
+      "seed": 931771,
+      "calibration": "No automatic total 95% or posterior interpretation. Active coordinates are fixed, disconnected profiles excluded; require a positive audited face Hessian and source-bound draw receipt. Compare coarse/fine propagated ranges and report their numerical change before interpreting them."
+    }
+  },
+  "folds": [
+    {
+      "id": "protocol_30s",
+      "test_indices": [
+        0,
+        1,
+        2
+      ],
+      "type": "leave_protocol_out",
+      "train_indices": [
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ],
+      "success": true,
+      "attempts": [
+        {
+          "success": true,
+          "output": "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_shared_protocols/protocol_30s",
+          "nll": 4657.131792469179,
+          "elapsed_s": 683.154278583,
+          "finished_utc": "2026-10-26T18:57:36.093268+00:00"
+        }
+      ],
+      "selected_output": "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_shared_protocols/protocol_30s",
+      "train_names": [
+        "validation_experiment_env_2_sin_2_50_run_1.csv",
+        "validation_experiment_env_2_sin_2_50_run_2.csv",
+        "validation_experiment_env_2_sin_2_50_run_3.csv",
+        "validation_experiment_env_2_sin_5_50_run_1.csv",
+        "validation_experiment_env_2_sin_5_50_run_2.csv",
+        "validation_experiment_env_2_sin_5_50_run_3.csv",
+        "validation_experiment_env_2_step_50_run_1.csv",
+        "validation_experiment_env_2_step_50_run_2.csv",
+        "validation_experiment_env_2_step_50_run_3.csv"
+      ],
+      "test_names": [
+        "validation_experiment_env_2_sin_50_50_run_1.csv",
+        "validation_experiment_env_2_sin_50_50_run_2.csv",
+        "validation_experiment_env_2_sin_50_50_run_3.csv"
+      ]
+    },
+    {
+      "id": "protocol_120s",
+      "test_indices": [
+        3,
+        4,
+        5
+      ],
+      "type": "leave_protocol_out",
+      "train_indices": [
+        0,
+        1,
+        2,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ],
+      "success": true,
+      "attempts": [
+        {
+          "success": true,
+          "output": "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_shared_protocols/protocol_120s",
+          "nll": 4688.625472554896,
+          "elapsed_s": 653.9753000829999,
+          "finished_utc": "2026-10-26T19:08:30.069644+00:00"
+        }
+      ],
+      "selected_output": "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_shared_protocols/protocol_120s",
+      "train_names": [
+        "validation_experiment_env_2_sin_50_50_run_1.csv",
+        "validation_experiment_env_2_sin_50_50_run_2.csv",
+        "validation_experiment_env_2_sin_50_50_run_3.csv",
+        "validation_experiment_env_2_sin_5_50_run_1.csv",
+        "validation_experiment_env_2_sin_5_50_run_2.csv",
+        "validation_experiment_env_2_sin_5_50_run_3.csv",
+        "validation_experiment_env_2_step_50_run_1.csv",
+        "validation_experiment_env_2_step_50_run_2.csv",
+        "validation_experiment_env_2_step_50_run_3.csv"
+      ],
+      "test_names": [
+        "validation_experiment_env_2_sin_2_50_run_1.csv",
+        "validation_experiment_env_2_sin_2_50_run_2.csv",
+        "validation_experiment_env_2_sin_2_50_run_3.csv"
+      ]
+    },
+    {
+      "id": "protocol_300s",
+      "test_indices": [
+        6,
+        7,
+        8
+      ],
+      "type": "leave_protocol_out",
+      "train_indices": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        9,
+        10,
+        11
+      ],
+      "success": true,
+      "attempts": [
+        {
+          "success": true,
+          "output": "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_shared_protocols/protocol_300s",
+          "nll": 4783.556183509297,
+          "elapsed_s": 672.6438631660001,
+          "finished_utc": "2026-10-26T19:19:42.714731+00:00"
+        }
+      ],
+      "selected_output": "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_shared_protocols/protocol_300s",
+      "train_names": [
+        "validation_experiment_env_2_sin_50_50_run_1.csv",
+        "validation_experiment_env_2_sin_50_50_run_2.csv",
+        "validation_experiment_env_2_sin_50_50_run_3.csv",
+        "validation_experiment_env_2_sin_2_50_run_1.csv",
+        "validation_experiment_env_2_sin_2_50_run_2.csv",
+        "validation_experiment_env_2_sin_2_50_run_3.csv",
+        "validation_experiment_env_2_step_50_run_1.csv",
+        "validation_experiment_env_2_step_50_run_2.csv",
+        "validation_experiment_env_2_step_50_run_3.csv"
+      ],
+      "test_names": [
+        "validation_experiment_env_2_sin_5_50_run_1.csv",
+        "validation_experiment_env_2_sin_5_50_run_2.csv",
+        "validation_experiment_env_2_sin_5_50_run_3.csv"
+      ]
+    },
+    {
+      "id": "protocol_step",
+      "test_indices": [
+        9,
+        10,
+        11
+      ],
+      "type": "leave_protocol_out",
+      "train_indices": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "success": true,
+      "attempts": [
+        {
+          "success": true,
+          "output": "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_shared_protocols/protocol_step",
+          "nll": 4843.34988896582,
+          "elapsed_s": 658.7873480000001,
+          "finished_utc": "2026-10-26T19:30:41.503702+00:00"
+        }
+      ],
+      "selected_output": "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_shared_protocols/protocol_step",
+      "train_names": [
+        "validation_experiment_env_2_sin_50_50_run_1.csv",
+        "validation_experiment_env_2_sin_50_50_run_2.csv",
+        "validation_experiment_env_2_sin_50_50_run_3.csv",
+        "validation_experiment_env_2_sin_2_50_run_1.csv",
+        "validation_experiment_env_2_sin_2_50_run_2.csv",
+        "validation_experiment_env_2_sin_2_50_run_3.csv",
+        "validation_experiment_env_2_sin_5_50_run_1.csv",
+        "validation_experiment_env_2_sin_5_50_run_2.csv",
+        "validation_experiment_env_2_sin_5_50_run_3.csv"
+      ],
+      "test_names": [
+        "validation_experiment_env_2_step_50_run_1.csv",
+        "validation_experiment_env_2_step_50_run_2.csv",
+        "validation_experiment_env_2_step_50_run_3.csv"
+      ]
+    }
+  ],
+  "elapsed_s": 2668.603586666,
+  "notice": "Internal leave-run/protocol-out refits; all records informed structure selection. Full-data parameters are warm starts only. Test future outputs do not enter the training objective, covariance, nuisance fitting or centering. Numerical fit audits and parameter-inclusive prediction analysis remain separate."
+}
