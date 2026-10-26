@@ -32,7 +32,7 @@ def main():
                 f=filter_ou(d['t'][1:],mean[s],d['y'][1:,k],np.sqrt(S+R),noise['ell_s'],R/(S+R),fit['phase'],256,12.)
                 assert np.max(abs(f['posterior_normalization_ratio']-1))<1e-6
                 nll+=f['nll'];cursor+=n
-        value,score,_=m.evaluate(tuple(q));model_mean,_=m.mean(q,False)
+        value,score,_=m.evaluate(tuple(q));model_mean=m.mean(q,False)
         row={'step':h,'dimensional_forward_nll_256':float(nll),'model_nll_128':float(value),
              'loading_score_128':float(score[2]),'dimensional_mean_max_error_C':float(np.max(abs(mean-model_mean)))}
         rows.append(row);write(args.output/'evaluations.json',rows);print(json.dumps(row),flush=True)
