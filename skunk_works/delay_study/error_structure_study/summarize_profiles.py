@@ -55,9 +55,9 @@ def main():
         rows=[r for r in profile['points'] if r['success']]
         x=[r['physical_value'] for r in rows];y=[r['twice_nll_minus_reference'] for r in rows]
         for k in [0,1]:
-            ax=axes[k,j];ax.plot(x,y,'o-',ms=4,lw=.8,label='Audited grid; lines guide the eye')
+            ax=axes[k,j];ax.plot(x,y,'o-' if k==0 else 'o',ms=4,lw=.8,label='Audited grid; lines guide the eye')
             ax.axvline(profile['reference_physical_value'],color='0.5',ls=':',lw=.8,label='Reference fitted coordinate')
-            if profile['physical_is_positive_log_chart']:ax.set_xscale('log')
+            if profile['physical_is_positive_log_chart'] and max(x)/min(x)>4:ax.set_xscale('log')
             ax.set_xlabel(labels.get(profile['coordinate'],profile['coordinate']))
             ax.set_ylabel('2 x (nll - reference nll)');ax.grid(alpha=.2)
             if k==0:ax.set_title('Full grid');ax.legend(fontsize=7)
