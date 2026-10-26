@@ -31,6 +31,8 @@ def independent(d,fit):
     state=np.zeros(m+3);state[2:4]=d['y'][0,1]-d['y'][0,0];state[a]=offsets[0];state[one]=1
     if fit.get('startup_offsets_C'):
         state[0]+=fit['startup_offsets_C'][j][0];state[2]+=fit['startup_offsets_C'][j][1]
+    if fit.get('initial_sensor_offsets_C'):
+        state[:2]+=fit['initial_sensor_offsets_C'][j][0];state[2:4]+=fit['initial_sensor_offsets_C'][j][1]
     result=[state[[1,3]]+d['y'][0,0]];cache={}
     for k,step in enumerate(np.diff(d['t'])):
         if float(step) not in cache:cache[float(step)]=expm(A*step)

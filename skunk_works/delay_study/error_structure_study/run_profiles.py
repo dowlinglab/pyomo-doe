@@ -21,7 +21,7 @@ def main():
     parser.add_argument('--physical-values',action='store_true');parser.add_argument('--starts',type=int,default=2)
     parser.add_argument('--maxiter',type=int,default=300);args=parser.parse_args();begun=time.monotonic()
     fit=json.loads((args.input/'fit.json').read_text());assert fit['kernel']=='quantized_ou_nugget' and not fit.get('fixed_coordinates')
-    if fit.get('dataset') or fit.get('startup_band_C'):raise ValueError('Declare separate synthetic/startup profile setup')
+    if fit.get('dataset') or fit.get('startup_band_C') or fit.get('initial_sensor_bins'):raise ValueError('Declare separate synthetic/startup profile setup')
     lookup={d['name']:d for d in load_records()};records=[lookup[n] for n in fit['record_names']]
     model=Model(records,fit['band'],fit['phase'],128,fit['family']);names=model.coordinate_names();index=names.index(args.coordinate)
     point=np.array(fit['best']['point']);values=np.array(args.values,dtype=float)

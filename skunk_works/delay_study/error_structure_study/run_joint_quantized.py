@@ -30,6 +30,7 @@ def main():
     parser.add_argument('--records',type=int,nargs='+');parser.add_argument('--dataset',type=Path);parser.add_argument('--inflate-initial-noise',action='store_true');parser.add_argument('--phase',type=float,default=-.5);parser.add_argument('--nodes',type=int,default=128)
     parser.add_argument('--startup-band',type=float,default=0.);parser.add_argument('--starts',type=int,default=3)
     parser.add_argument('--fix-coordinate',nargs=2,action='append',default=[],metavar=('NAME','VALUE'))
+    parser.add_argument('--initial-sensor-bins',action='store_true');parser.add_argument('--initial-noise-buffer',type=float,default=0.)
     parser.add_argument('--maxiter',type=int,default=300);args=parser.parse_args();begun=time.monotonic()
     if args.starts>3:raise ValueError('Declare additional starts before extending the physical/noise branch comparison')
     records=load_records()
@@ -52,7 +53,8 @@ def main():
     nr=len(records);warm=json.loads(args.warm.read_text());noise_fits=[json.loads(p.read_text()) for p in [args.noise1,args.noise2]]
     fixed={name:float(value) for name,value in args.fix_coordinate}
     if len(fixed)!=len(args.fix_coordinate):raise ValueError('Repeated fixed coordinate')
-    model=Model(records,args.band,args.phase,args.nodes,args.family,args.startup_band,fixed=fixed);bounds=model.bounds();scale=2*model.N
+    model=Model(records,args.band,args.phase,args.nodes,args.family,args.startup_band,fixed=fixed,
+                initial_sensor_bins=args.initial_sensor_bins,initial_noise_buffer=args.initial_noise_buffer);bounds=model.bounds();scale=2*model.N
     indices=[warm['record_names'].index(d['name']) for d in records]
     shape=np.asarray(warm['best']['point'][:6]).copy()
     original_delta=np.array(warm['parameters'].get('log_deviations',np.zeros(len(warm['record_names']))))
@@ -62,6 +64,7 @@ def main():
     oldcoef=np.array(warm['coefficients']);coef=np.r_[oldcoef[0]*np.exp(-center),oldcoef[1:1+len(warm['record_names'])][indices]]
     if args.family=='conductance':
         extra=np.array(warm.get('startup_offsets_C') or np.zeros((len(warm['record_names']),2)))[indices].ravel() if args.startup_band else np.zeros(0)
+        if args.initial_sensor_bins:extra=np.array(warm.get('initial_sensor_offsets_C') or np.zeros((len(warm['record_names']),2)))[indices].ravel()
         initial_mean=np.r_[shape,delta if args.band else np.zeros(0),np.log(coef[0]),coef[1:],extra]
     else:
         gamma=warm['parameters'].get('gamma_differential_50C_over_Ua') or 0.
@@ -136,6 +139,7 @@ def main():
         noise_parameters.append({'latent_SD_C':float(latent),'ell_s':float(ell),'measurement_SD_C':float(measurement)})
     for j,d in enumerate(records):
         n=len(d['t'])-1;pred=d['y'].copy()
+        if args.initial_sensor_bins:pred[0]+=coefficients[1+nr:].reshape(nr,2)[j]
         for channel in [0,1]:
             section=slice(channel*model.N+cursor,channel*model.N+cursor+n);pred[1:,channel]=mean[section]
             cov=noise_parameters[channel];latent=cov['latent_SD_C'];ell=cov['ell_s'];measurement=cov['measurement_SD_C']
@@ -149,6 +153,9 @@ def main():
     result={'model':'joint_quantized_'+args.family,'family':args.family,'kernel':'quantized_ou_nugget','band':args.band,'phase':args.phase,
         'startup_band_C':args.startup_band,'initial_noise_inflation':args.inflate_initial_noise,'dataset':dataset_receipt,'selected_input_indices':args.records,'best':best,'starts':starts,'bounds':bounds,'nmean':model.nmean,'shape_count':model.nmean,
         'fixed_coordinates':fixed,'coordinate_names':model.coordinate_names(),
+        'initial_sensor_bins':args.initial_sensor_bins,'initial_noise_buffer_C':args.initial_noise_buffer,
+        'initial_sensor_offsets_C':coefficients[1+nr:].reshape(nr,2).tolist() if args.initial_sensor_bins else None,
+        'startup_offsets_C':coefficients[1+nr:].reshape(nr,2).tolist() if args.startup_band else None,
         'coefficients':coefficients.tolist(),'noise_parameters':noise_parameters,'record_names':[d['name'] for d in records],
         'raw_sha256':{d['name']:d['sha256'] for d in records},'nobs':2*model.N,'parameter_count':parameter_count,
         'parameters':{'K_common_nominal':float(coefficients[0]),'tA_nominal_s':float(np.exp(shared[0])),'rS_s':float(np.exp(shared[1])),

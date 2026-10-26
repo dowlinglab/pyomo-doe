@@ -135,3 +135,21 @@ Validate down/same/up probabilities against an independent conditional
 bivariate Gaussian observation integral for both declared bin phases. Gaussian
 PIT appearance can hide coarse-bin discrepancies, so serial, cross-channel and
 nonrandomized checks must be reported together.
+
+## Physical initial sensor-bin sensitivity
+
+In a separate cold-start sensitivity, add two bounded initial-state coordinates
+per run. Each moves the heater and its sensor together from the first reported
+temperature, preserving H_i(0)=S_i(0). The bounds are the first code's analogue
+interval under the same phase used for all subsequent observations. An optional
+0.1 C buffer widens each endpoint to assess dependence on treating the initial
+reading as a noise-free code for the physical state. It is a scenario buffer,
+not a simultaneous confidence interval or calibrated sensor-noise limit.
+
+These initial departures propagate through the exact homogeneous thermal
+solution. They do not shift ambient temperature: its reference remains the first
+reported T1 and its fitted offset retains the original ±2 C bounds. Initial
+sensor shifts and hidden heater-only shifts are separate comparisons. The first
+reading is omitted from the score and the OU state still starts stationary at
+the first scored time. This sensitivity does not integrate a joint physical-state
+and initial-measurement posterior; that distinction must stay visible.

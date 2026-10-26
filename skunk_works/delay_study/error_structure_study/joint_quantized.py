@@ -10,13 +10,19 @@ from smoothing import smooth_ou
 
 
 class Model:
-    def __init__(self,records,band=.1,phase=-.5,nodes=128,family='conductance',startup_band=0.,fixed=None):
+    def __init__(self,records,band=.1,phase=-.5,nodes=128,family='conductance',startup_band=0.,fixed=None,initial_sensor_bins=False,initial_noise_buffer=0.):
         self.records=records;self.band=band;self.phase=phase;self.nodes=nodes;self.family=family
         self.nr=len(records);self.N=sum(len(d['t'])-1 for d in records);self.startup_band=startup_band
         self.fixed=dict(fixed or {})
+        self.initial_sensor_bins=initial_sensor_bins;self.initial_noise_buffer=initial_noise_buffer
+        if initial_noise_buffer and not initial_sensor_bins:raise ValueError('An initial-noise buffer requires sensor-bin sensitivity')
         self.y=np.concatenate([np.concatenate([d['y'][1:,k] for d in records]) for k in [0,1]])
         if family=='conductance':
-            if startup_band:
+            if initial_sensor_bins:
+                if startup_band:raise ValueError('Declare a separate combined hidden-heater/sensor-start sensitivity')
+                from initial_sensor import Model as InitialSensorModel
+                self.mean_model=InitialSensorModel(records,band,phase,initial_noise_buffer)
+            elif startup_band:
                 from effects import Model as StartupModel
                 self.mean_model=StartupModel(records,band,startup_band)
             else:self.mean_model=MeanModel(records,band)
@@ -24,7 +30,7 @@ class Model:
             self.ncoef=len(self.mean_model.coefficient_bounds()[0]);self.nmean=self.nshape+self.ncoef
             self.reference=np.concatenate([np.concatenate([np.repeat(d['y'][0,0],len(d['t'])-1) for d in records]) for k in [0,1]])
         elif family=='radiation':
-            if startup_band:raise ValueError('Declare and audit combined radiation/startup chart before using it')
+            if startup_band or initial_sensor_bins:raise ValueError('Declare and audit combined radiation/startup chart before using it')
             from radiative import Model as RadiationModel
             self.mean_model=RadiationModel(records,band);self.nmean=self.mean_model.nmean;self.nshape=None;self.ncoef=None
         else:raise ValueError('Unknown physical family')
@@ -51,6 +57,7 @@ class Model:
         if self.family=='conductance':
             names=shared+(deviations if self.band else [])+['log_K']+ambient
             if self.startup_band:names+=['initial_H'+str(k+1)+'_offset_'+str(j) for j in range(self.nr) for k in [0,1]]
+            if self.initial_sensor_bins:names+=['initial_sensor'+str(k+1)+'_offset_'+str(j) for j in range(self.nr) for k in [0,1]]
         else:names=shared+['log_K','radiation_gamma']+deviations+ambient
         return names+['log_latent_SD_T1','log_ell_T1','log_measurement_SD_T1',
                       'log_latent_SD_T2','log_ell_T2','log_measurement_SD_T2']
