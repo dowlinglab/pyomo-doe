@@ -36,11 +36,13 @@ stationarity audits:
 | Case | Audited export | T1/T2 RMSE, C | Bin nll |
 | --- | --- | --- | --- |
 | Shared, no run deviations | joint_conductance_b00_export_v3 | 1.010 / 0.239 | 6359.91818 |
+| 5% conductance band | joint_conductance_b05_export_v2 | 0.637 / 0.153 | 6279.42504 |
 | 10% conductance band | joint_conductance_b10_export_v2 | 0.605 / 0.118 | 6238.29865 |
 | 20% conductance band | joint_conductance_b20_export_v2 | 0.606 / 0.118 | 6238.21668 |
 | Radiation, 10% convective band | joint_radiation_b10_export_v2 | 0.590 / 0.119 | 6234.48899 |
 
-The 5% joint fit is still running. A wider band cannot be selected from training
+The 5% joint fit and selected-point audit are terminal and passed.
+A wider band cannot be selected from training
 likelihood alone. Radiation's bin-likelihood improvement is 3.810, larger than
 in the Gaussian approximation, but its boundary/nuisance profile and transfer
 remain necessary. Convective and effective total loss are different quantities.
@@ -76,8 +78,10 @@ pilots reused seeds and are unsuitable for joint cross-channel/run testing.
 
 Sequential Gaussian GLS from an IID mean converged in nine cycles, all block
 solvers successful; nll differs from the saved joint fit by 1.29e-7. The
-saved-joint initialization is also terminal. Both need the full independent
-dense/trajectory and trace audit before final reporting. See sequential_methods.md.
+saved-joint initialization is also terminal. Both independent full-data
+dense/trajectory and trace audits passed. The initial IID mean stage holds
+the relative channel SD fixed; later covariance blocks estimate it. This is
+not an initial joint IID variance-component MLE. See sequential_methods.md.
 The short synthetic dense nll/score and constrained-mean checks passed.
 
 ## Identifiability and initial conditions
@@ -88,7 +92,10 @@ in zero-loading forced transfers. At the Gaussian boundary Us/Ua=0.005, swapping
 0.00430/0.00185 C. Unequal starts and ambient forcing can break this exchange.
 This is not a hardware zero-capacity claim or an absolute quantization-resolution
 limit. The lower positive loading bound 0.0001 is a declared three-start refit
-sensitivity, now running.
+sensitivity, now terminal and independently audited. Loading again reaches the
+lower bound; nll improves only 0.01291, while K and the two fitted time scales
+barely change. This supports weak loading information, not physical zero
+capacity. See lag_identifiability.md for the restricted structural argument.
 
 Initial sensor-bin coordinates move each cold heater/sensor pair together,
 preserve the original ambient reference/bounds and are separate from hidden
@@ -102,7 +109,8 @@ mean and bins translate together; nll changes below 1.4e-12. The phase is not
 separate dynamic information under that freedom. Fixed initial states, active
 ambient limits and absolute-temperature radiation need not share it.
 
-The new --condition-initial-code sensitivity is running. It uses
+The new --condition-initial-code sensitivity is terminal; its independent
+selected-point audit is running. It uses
 p(y0,...,yN)/p(y0), leaves nobs unchanged and subtracts the one-observation
 smoothing score. All mean/noise coordinates, including initial sensor-bin
 coordinates, passed independent conditional-likelihood finite differences.
@@ -123,8 +131,9 @@ Commit 6e9e654 casts it to a Python int and adds --resume-starts. The exported
 directories above re-evaluate those saved points under the current score and
 do not repeat optimization. Original exits, failed trial points and solver
 traces remain evidence. Recovery receipts bind the old saved starts/source.
-The still-running 5% job uses a pre-fix frozen snapshot; if it reaches the same
-export failure, recover its saved starts instead of launching another fit.
+The 5% job also reached that export failure. joint_conductance_b05_export_v2
+recovers the saved starts without re-optimization; joint_conductance_b05_audit
+passed. Original failure/exit/source evidence is retained.
 
 Use direct pgrep -fl tclab-error. Python subprocess process enumeration is blocked
 by macOS sysmon and an empty result is not process absence. reconcile.py consumes
@@ -135,18 +144,22 @@ without finish timestamps remain terminal with unknown timestamps.
 ## Current execution and next unfinished phases
 
 Use the manifest for current identities and controller sessions. At the latest
-dispatch, four long jobs are active: joint_conductance_b05,
-profile_b10_gain, joint_b10_loading_lower and joint_b10_condition_first_code.
+dispatch, four long jobs are active: profile_b10_gain,
+joint_b10_information_v2, joint_b10_nonrandom_diagnostics and
+joint_b10_condition_first_code_audit.
 No duplicate live retry. At most four long numerical processes, one BLAS thread
 each. Short independent arithmetic checks are recorded separately.
 
-The information job is terminal: its full bin-score Hessian is positive on the
-centered tangent at the selected point, with a weak loading direction and a
-variance/length tradeoff. Relative asymmetry is 1.30e-6; three weak active-face
-directions agree with direct two-step-size curvature checks to about 1.3e-4.
-It still needs an independent matrix/information audit; do not interpret the
-tiny boundary-loading eigenvalue as a regular Wald variance. The gain profile
-is now running. Other profiles and refitted recovery are not measured yet.
+The original information job is terminal but failed its independent scalar
+loading-curvature gate. Finite differences of mean eigensystems contaminate
+that tiny second derivative. Its scalar step study and failure are retained.
+The replacement uses matrix-exponential Frechet mean derivatives, verified by
+independent block exponentials, full-data trajectory/directional checks and
+the complete joint mean/noise score suite. joint_b10_information_v2 is computing
+the replacement Hessian. Keep the original matrix as a numerical diagnostic;
+do not report its tiny centered eigenvalue as a variance. The gain profile
+is still running from its original frozen source. Other profiles and refitted
+recovery are not measured yet. See sensitivity_methods.md.
 uncertainty_config.json declares grids, starts, bounds,
 fifty recovery draws and gain-LR coverage before measurement. Source drivers:
 run_profiles.py, run_information.py, run_recovery.py.
@@ -160,12 +173,21 @@ noise-only hard-nuisance ranges are not total predictive intervals. If profiles
 change the candidate set, extend transfer support explicitly rather than using
 a linear predictor for a radiative or conditioned-initial-state fit.
 
-Still required: nonrandomized cross-channel checks; full sequential audits;
+Still required: completion of nonrandomized cross-channel checks;
 all pending mean/initial/bin sensitivities and selected-point audits; updated
 frequency/operating diagnostics; supported nuisance profiles; eigendecomposition
 interpretation; fifty refitted recovery/coverage draws with failure denominators;
 retrospective run/protocol transfer with parameter/noise/bin/model-form limits;
 and the final report and requirement-by-requirement completion audit.
+
+updated_diagnostics.py is committed for the audited final mean candidates. It
+compares analogue means and marginal reported-code expectations, matched complex
+frequency responses with working HAC regions, phase-aligned repeats, operating
+groups and conditional reported-code forecasts. Its independent bivariate
+observation-bin forecast and no-future-output-leakage check passed. Dispatch
+after capacity opens. The recovery driver now also saves deterministic
+diagnostic metrics after each accepted free fit; diagnostic failures remain
+separate from the interval-coverage denominator.
 
 ## Reporting and continuation
 
