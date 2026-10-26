@@ -11,7 +11,8 @@ import numpy as np
 from scipy.stats import beta
 from physical import load_records
 from joint_quantized import Model
-from bin_diagnostics import sample_observations
+from bin_diagnostics import sample_observations,filter_records
+from nonrandom import summaries as deterministic_summaries
 from fit_task import run
 from run_bounded import write
 
@@ -73,6 +74,20 @@ def main():
         except Exception as exc:row['exception']=repr(exc)
         if row['free_fit_success']:
             row['recovered_point']=ff['best']['point'];row['recovered_parameters']=ff['parameters'];row['recovered_noise']=ff['noise_parameters']
+            # A diagnostic failure must not erase a completed coverage draw.
+            # Use the selected free-fit mean/noise on exactly this generated
+            # record collection; these references account for refitting within
+            # the fixed chosen family, but do not repeat structure selection.
+            try:
+                selected=Path(row.get('selected_free_output',free['output']))
+                fa=np.load(selected/'trajectories.npz')
+                fitted_means=[fa['predicted_'+str(j)] for j in range(len(synthetic))]
+                filtered=filter_records(synthetic,fitted_means,ff['noise_parameters'],ff['phase'])
+                diagnostic=deterministic_summaries(synthetic,filtered);del filtered
+                write(directory/'refitted_nonrandom_diagnostics.json',diagnostic)
+                row['refitted_diagnostic_metrics']=diagnostic['metrics'];row['refitted_diagnostic_success']=True
+            except Exception as exc:
+                row['refitted_diagnostic_success']=False;row['refitted_diagnostic_exception']=repr(exc)
         rows.append(row);write(directory/'recovery.json',row);write(args.output/'draws.json',rows)
         write(args.output/'progress.json',{'attempted':len(rows),'declared_in_shard':len(indices),
             'accepted_free_fits':sum(r['free_fit_success'] for r in rows),

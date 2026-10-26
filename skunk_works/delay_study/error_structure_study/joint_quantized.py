@@ -80,19 +80,12 @@ class Model:
 
     def mean(self,p,jacobian=True):
         if self.family=='conductance':
+            if jacobian:
+                from sensitivity import mean_and_jacobian
+                return mean_and_jacobian(self,p)
             shape=p[:self.nshape];coef=np.r_[np.exp(p[self.nshape]),p[self.nshape+1:self.nmean]]
             X,_,initial=self.mean_model.design(tuple(shape));m=self.reference+initial+X@coef
-            if not jacobian:return m
-            J=np.zeros((2*self.N,self.nmean));bounds=self.bounds();h=2e-5
-            for j in range(self.nshape):
-                d=np.zeros(self.nshape);d[j]=h;lo,hi=bounds[j]
-                def prediction(q):
-                    x,_,i=self.mean_model.design(tuple(q));return self.reference+i+x@coef
-                if shape[j]-lo>=h and hi-shape[j]>=h:J[:,j]=(prediction(shape+d)-prediction(shape-d))/(2*h)
-                elif hi-shape[j]<h:J[:,j]=(3*m-4*prediction(shape-d)+prediction(shape-2*d))/(2*h)
-                else:J[:,j]=(-3*m+4*prediction(shape+d)-prediction(shape+2*d))/(2*h)
-            J[:,self.nshape]=X[:,0]*coef[0];J[:,self.nshape+1:]=X[:,1:]
-            return m,J
+            return m
         m=self.mean_model.prediction(p[:self.nmean])
         if not jacobian:return m
         from radiative import forward
