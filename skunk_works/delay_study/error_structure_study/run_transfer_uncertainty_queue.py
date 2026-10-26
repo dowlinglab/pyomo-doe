@@ -11,6 +11,7 @@ from pathlib import Path
 import time
 from stage_execution import run_stage
 from run_bounded import write
+from summarize_transfer import prediction as checked_prediction
 
 HERE=Path(__file__).resolve().parent
 
@@ -22,6 +23,7 @@ def main():
     parser=argparse.ArgumentParser();parser.add_argument('--output',type=Path,required=True)
     parser.add_argument('--input',type=Path,required=True);parser.add_argument('--fit-audit',type=Path,required=True)
     parser.add_argument('--folds',nargs='+',required=True)
+    parser.add_argument('--reuse-noise-index',type=Path)
     args=parser.parse_args();begun=time.monotonic()
     collection=json.loads((args.input/'transfer_fits.json').read_text())
     audit=json.loads((args.fit_audit/'audit.json').read_text())
@@ -30,6 +32,13 @@ def main():
     assert audit['status']=='passed' and audit['kind']=='transfer'
     assert audit['source_sha256']==sha(args.input/'transfer_fits.json')
     config=json.loads((HERE/'transfer_config.json').read_text());mix=config['parameter_mixture_sensitivity']
+    reusable={}
+    if args.reuse_noise_index:
+        content=args.reuse_noise_index.read_bytes();index=json.loads(content)['transfer_analysis']
+        keys=[(r['candidate'],r['fold_id']) for r in index];assert len(set(keys))==len(keys)
+        reusable={key:r for key,r in zip(keys,index) if 'noise' in r.get('predictions',{})}
+        write(args.output/'canonical_index_snapshot.json',{'source':str(args.reuse_noise_index),
+            'source_sha256':hashlib.sha256(content).hexdigest(),'transfer_analysis':index})
     assert mix['draws']==256 and mix['coarse_draws']==64
     folds={r['id']:(j,r) for j,r in enumerate(collection['folds'])}
     assert len(set(args.folds))==len(args.folds) and set(args.folds)<=set(folds)
@@ -47,6 +56,17 @@ def main():
             write(args.output/'current_stage.json',{'fold_id':name,'stage':label,'started_elapsed_s':time.monotonic()-begun})
             return run_stage(args.output,driver,root/label,arguments)
         try:
+            key=(collection['candidate'],name)
+            if key in reusable:
+                entry=reusable[key];assert Path(entry['fit_directory'])==fit
+                checked_prediction(entry['predictions']['noise'],sha(fit/'fit.json'),fold['test_names'])
+                row['noise']=entry['predictions']['noise']
+                row['canonical_noise_reused']=True
+            else:
+                prediction=stage('run_transfer_predict.py','noise',['--input',fit])
+                checked=stage('audit_transfer_prediction.py','noise_audit',['--input',prediction,'--fit',fit,'--fit-audit',check])
+                row['noise']={'directory':str(prediction),'audit':str(checked/'audit.json')}
+                row['canonical_noise_reused']=False
             if collection['candidate']=='primary' and fold['type']=='leave_protocol_out' and config['reference_transport_sensitivity']['enabled']:
                 prediction=stage('run_transfer_predict.py','reference_transport',['--input',fit,'--reference-transport'])
                 checked=stage('audit_transfer_prediction.py','reference_transport_audit',['--input',prediction,'--fit',fit,'--fit-audit',check])

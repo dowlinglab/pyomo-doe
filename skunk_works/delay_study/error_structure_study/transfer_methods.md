@@ -83,7 +83,8 @@ forecast claim. audit_transfer_prediction.py checks full nominal dimensional
 trajectories, reported-code expectations, every saved RMSE/coverage count,
 quantile CDF brackets, nuisance endpoints and refined conditional bin scores.
 Independent Gaussian prefix rectangles check the observation probability.
-Full measured-fold use of this new auditor is still pending.
+The four primary omitted-protocol canonical forecasts have passed this full
+audit. Parameter-mixture forecasts and the other folds remain unfinished.
 
 Parameter files must bind to the draw receipt and its information audit.
 Prediction output saves component means/noise at nine evenly spaced sample
@@ -101,3 +102,33 @@ new validation replication. It also reports changes from 64 to 256 local draws,
 using the same declared random prefix, before interpreting mixture coverage.
 Missing or failed folds stay visible. A complete numeric accounting table is
 still not a calibration result or an untouched-validation result.
+
+## Sequential uncertainty execution
+
+The committed run_transfer_uncertainty_queue.py runs one fold at a time. Each
+fold needs a terminal fit collection and its passed full selected-point audit.
+The queue reuses a canonical forecast only through a snapshotted manifest index
+with matching fit, prediction and independent-audit hashes. Otherwise it creates
+and audits that forecast. It then runs the declared reference stress check for
+primary protocol folds, observed information, independent information audit,
+local parameter draws and the 64/256-draw forecast/audit pair. Failed curvature,
+sampling or prediction checks stop the queue and retain the failing stage.
+The queue does not modify the manifest; the controller reviews its completed
+outputs before adding those paths to transfer_analysis.
+
+For the first measured pipeline, freeze this driver with --input pointing to
+results/transfer_primary_protocols, --fit-audit pointing to
+results/transfer_primary_protocols_audit, --folds protocol_30s and
+--reuse-noise-index pointing to the absolute run_manifest.json. Use a new
+absolute output directory. Inspect its actual information/draw audits before
+dispatching the other three protocol folds. For the later run/shared groups,
+the same driver creates any canonical forecasts not present in that index.
+
+stage_execution.py launches each stage as a real child of the frozen queue,
+with its own immutable-source receipt, PID/command, log and actual child exit.
+It rejects existing output directories. The queue waits for one stage at a
+time, so it and its one numerical child occupy one of the four worker slots.
+reconcile.py includes nested receipts and reports live_worker_slots separately
+from all live process identities. The stage_execution_check control passed
+real successful/invalid-CLI exits and no-overwrite checks; it is not a scientific
+uncertainty result.
