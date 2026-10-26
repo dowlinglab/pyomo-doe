@@ -22,6 +22,7 @@ def main():
     parser.add_argument('--input',type=Path,required=True);parser.add_argument('--noise1',type=Path,required=True);parser.add_argument('--noise2',type=Path,required=True)
     parser.add_argument('--first',type=int,default=0);parser.add_argument('--stride',type=int,default=1)
     parser.add_argument('--purpose',choices=['coverage','pilot'],default='coverage');parser.add_argument('--limit',type=int)
+    parser.add_argument('--score-backend',choices=['reference','compiled'],default='reference')
     args=parser.parse_args();begun=time.monotonic();config=json.loads((HERE/'uncertainty_config.json').read_text())['recovery']
     if args.stride<1 or not 0<=args.first<config['draws']:raise ValueError('Invalid shard')
     if args.limit is not None and args.purpose!='pilot':raise ValueError('A coverage shard must finish its declared draw indices')
@@ -50,7 +51,7 @@ def main():
             row['dataset_sha256']=hashlib.sha256(dataset.read_bytes()).hexdigest()
             common={'noise1':args.noise1,'noise2':args.noise2,'family':fit['family'],'band':fit['band'],
                     'phase':fit['phase'],'dataset':dataset,'maxiter':config['maxiter'],
-                    'minimum_sensor_loading':fit.get('minimum_sensor_loading',.005)}
+                    'minimum_sensor_loading':fit.get('minimum_sensor_loading',.005),'score_backend':args.score_backend}
             free=run(directory/'free',args.input/'fit.json',starts=config['free_fit_starts'],**common);row['attempts'].append(free)
             if not free['success']:
                 free=run(directory/'free_retry',args.input/'fit.json',starts=config['free_fit_failed_retry_starts'],**common);row['attempts'].append(free)

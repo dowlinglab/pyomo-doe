@@ -35,6 +35,7 @@ def main():
     parser.add_argument('--minimum-sensor-loading',type=float,default=.005)
     parser.add_argument('--resume-starts',type=Path,help='Re-evaluate saved terminal start points and export; does not repeat optimization')
     parser.add_argument('--condition-initial-code',action='store_true')
+    parser.add_argument('--score-backend',choices=['reference','compiled'],default='reference')
     parser.add_argument('--maxiter',type=int,default=300);args=parser.parse_args();begun=time.monotonic()
     if args.starts>3:raise ValueError('Declare additional starts before extending the physical/noise branch comparison')
     records=load_records()
@@ -59,7 +60,7 @@ def main():
     if len(fixed)!=len(args.fix_coordinate):raise ValueError('Repeated fixed coordinate')
     model=Model(records,args.band,args.phase,args.nodes,args.family,args.startup_band,fixed=fixed,
                 initial_sensor_bins=args.initial_sensor_bins,initial_noise_buffer=args.initial_noise_buffer,
-                minimum_sensor_loading=args.minimum_sensor_loading,condition_initial_code=args.condition_initial_code);bounds=model.bounds();scale=2*model.N
+                minimum_sensor_loading=args.minimum_sensor_loading,condition_initial_code=args.condition_initial_code,score_backend=args.score_backend);bounds=model.bounds();scale=2*model.N
     indices=[warm['record_names'].index(d['name']) for d in records]
     shape=np.asarray(warm['best']['point'][:6]).copy()
     original_delta=np.array(warm['parameters'].get('log_deviations',np.zeros(len(warm['record_names']))))
@@ -121,6 +122,14 @@ def main():
             except Exception:value=None
             trace.append({'iteration':len(trace),'nll':value,'elapsed_s':time.monotonic()-begun})
             write(args.output/('trace_start_'+str(j)+'.json'),trace)
+            # A compact atomic point checkpoint supports future interruption
+            # without expanding every historical trace row by all coordinates.
+            checkpoint=args.output/('checkpoint_start_'+str(j)+'.json')
+            temporary=checkpoint.with_suffix('.tmp')
+            write(temporary,{'start':j,'completed_callback_iterations':len(trace),
+                'point':np.asarray(p).tolist(),'nll':value,'score_backend':args.score_backend,
+                'elapsed_s':time.monotonic()-begun})
+            temporary.replace(checkpoint)
         try:
             fit=minimize(evaluate,seed,jac=True,method='SLSQP',bounds=bounds,callback=callback,
                 constraints=[{'type':'eq','fun':model.centered_constraint,'jac':model.centered_jacobian}] if args.band else [],
@@ -180,7 +189,7 @@ def main():
         'initial_sensor_bins':args.initial_sensor_bins,'initial_noise_buffer_C':args.initial_noise_buffer,
         'minimum_sensor_loading':args.minimum_sensor_loading,
         'resumed_starts':str(args.resume_starts) if args.resume_starts else None,
-        'condition_initial_code':args.condition_initial_code,
+        'condition_initial_code':args.condition_initial_code,'score_backend':args.score_backend,
         'initial_sensor_offsets_C':coefficients[1+nr:].reshape(nr,2).tolist() if args.initial_sensor_bins else None,
         'startup_offsets_C':coefficients[1+nr:].reshape(nr,2).tolist() if args.startup_band else None,
         'coefficients':coefficients.tolist(),'noise_parameters':noise_parameters,'record_names':[d['name'] for d in records],

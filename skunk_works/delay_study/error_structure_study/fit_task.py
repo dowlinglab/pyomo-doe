@@ -9,13 +9,14 @@ from run_bounded import write
 
 
 def run(output,warm,noise1,noise2,family,band,phase,nodes=128,starts=2,maxiter=300,
-        fixed=None,dataset=None,records=None,minimum_sensor_loading=.005,condition_initial_code=False):
+        fixed=None,dataset=None,records=None,minimum_sensor_loading=.005,condition_initial_code=False,score_backend='reference'):
     import run_joint_quantized
     output=Path(output);output.mkdir(parents=True,exist_ok=False)
     argv=['run_joint_quantized.py','--output',str(output),'--warm',str(warm),
         '--noise1',str(noise1),'--noise2',str(noise2),'--family',family,'--band',str(band),
         '--phase',str(phase),'--nodes',str(nodes),'--starts',str(starts),'--maxiter',str(maxiter)]
     argv+=['--minimum-sensor-loading',str(minimum_sensor_loading)]
+    argv+=['--score-backend',score_backend]
     if condition_initial_code:argv+=['--condition-initial-code']
     for name,value in (fixed or {}).items():argv+=['--fix-coordinate',name,str(value)]
     if dataset is not None:argv+=['--dataset',str(dataset)]

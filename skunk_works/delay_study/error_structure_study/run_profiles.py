@@ -19,7 +19,7 @@ def main():
     parser.add_argument('--input',type=Path,required=True);parser.add_argument('--noise1',type=Path,required=True);parser.add_argument('--noise2',type=Path,required=True)
     parser.add_argument('--coordinate',required=True);parser.add_argument('--values',type=float,nargs='+',required=True)
     parser.add_argument('--physical-values',action='store_true');parser.add_argument('--starts',type=int,default=2)
-    parser.add_argument('--maxiter',type=int,default=300);args=parser.parse_args();begun=time.monotonic()
+    parser.add_argument('--maxiter',type=int,default=300);parser.add_argument('--score-backend',choices=['reference','compiled'],default='reference');args=parser.parse_args();begun=time.monotonic()
     fit=json.loads((args.input/'fit.json').read_text());assert fit['kernel']=='quantized_ou_nugget' and not fit.get('fixed_coordinates')
     if fit.get('dataset') or fit.get('startup_band_C') or fit.get('initial_sensor_bins'):raise ValueError('Declare separate synthetic/startup profile setup')
     lookup={d['name']:d for d in load_records()};records=[lookup[n] for n in fit['record_names']]
@@ -43,7 +43,7 @@ def main():
         warm=args.input/'fit.json'
         if successful:warm=Path(min(successful,key=lambda r:abs(r['coordinate_value']-value))['output'])/'fit.json'
         row=run(args.output/('point_'+str(j)),warm,args.noise1,args.noise2,fit['family'],fit['band'],fit['phase'],
-            starts=args.starts,maxiter=args.maxiter,fixed={args.coordinate:float(value)},minimum_sensor_loading=fit.get('minimum_sensor_loading',.005),condition_initial_code=fit.get('condition_initial_code',False))
+            starts=args.starts,maxiter=args.maxiter,fixed={args.coordinate:float(value)},minimum_sensor_loading=fit.get('minimum_sensor_loading',.005),condition_initial_code=fit.get('condition_initial_code',False),score_backend=args.score_backend)
         row['coordinate_value']=float(value);row['physical_value']=float(np.exp(value)) if args.coordinate.startswith('log_') else float(value)
         if row['success']:
             row['twice_nll_minus_reference']=float(2*(row['nll']-fit['best']['nll']));successful.append(row)
@@ -54,7 +54,7 @@ def main():
         'reference_nll':fit['best']['nll'],'reference_coordinate':float(point[index]),'profile_bounds':[lo,hi],
         'fit_sha256':hashlib.sha256((args.input/'fit.json').read_bytes()).hexdigest(),'points':sorted(rows,key=lambda r:r['coordinate_value']),
         'lower_nll_than_reference':any(r['success'] and r['nll']<fit['best']['nll']-1e-3 for r in rows),
-        'elapsed_s':time.monotonic()-begun,
+        'elapsed_s':time.monotonic()-begun,'score_backend':args.score_backend,
         'notice':'Every fixed coordinate refits all other permitted mean, ambient, conductance and noise coordinates. Two declared starts and nearest successful warm points do not prove global profiles. Negative deviances require baseline refinement. Active-bound and disconnected profiles preclude routine Wald claims; chi-squared cutoffs require simulation calibration.'})
     if not successful:raise RuntimeError('No profile point converged; retain failures')
 

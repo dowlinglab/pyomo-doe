@@ -26,6 +26,7 @@ def main():
     parser=argparse.ArgumentParser();parser.add_argument('--output',type=Path,required=True)
     parser.add_argument('--input',type=Path,required=True);parser.add_argument('--noise1',type=Path,required=True);parser.add_argument('--noise2',type=Path,required=True)
     parser.add_argument('--candidate',choices=['primary','shared'],required=True);parser.add_argument('--folds',nargs='+')
+    parser.add_argument('--score-backend',choices=['reference','compiled'],default='reference')
     args=parser.parse_args();begun=time.monotonic();config=json.loads((HERE/'transfer_config.json').read_text())
     fit=json.loads((args.input/'fit.json').read_text());candidate=config['candidates'][args.candidate]
     assert fit['kernel']=='quantized_ou_nugget' and fit['family']==candidate['family'] and fit['band']==candidate['band']
@@ -40,7 +41,7 @@ def main():
     for fold in chosen:
         common={'noise1':args.noise1,'noise2':args.noise2,'family':fit['family'],'band':fit['band'],
                 'phase':fit['phase'],'maxiter':config['maxiter'],'records':fold['train_indices'],
-                'minimum_sensor_loading':fit.get('minimum_sensor_loading',.005)}
+                'minimum_sensor_loading':fit.get('minimum_sensor_loading',.005),'score_backend':args.score_backend}
         attempt=run(args.output/fold['id'],args.input/'fit.json',starts=config['starts'],**common);attempts=[attempt]
         if not attempt['success']:
             attempt=run(args.output/(fold['id']+'_retry'),args.input/'fit.json',starts=config['failed_retry_starts'],**common);attempts.append(attempt)
