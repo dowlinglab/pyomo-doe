@@ -49,6 +49,7 @@ def main():
     try:
         original=args.output/'original';result=run(original,warm,**common);assert result['success'],result
         starts=json.loads((original/'starts.json').read_text());assert len(starts)==2 and all(r['success'] for r in starts)
+        assert json.loads((original/'fit.json').read_text())['parameter_count']==0
         fixture=args.output/'interrupted_fixture';fixture.mkdir()
         (fixture/'task_request.json').write_bytes((original/'task_request.json').read_bytes())
         write(fixture/'starts.json',starts[:1]);write(fixture/'test_fixture.json',{'purpose':'Simulated interruption after first genuinely evaluated all-fixed start; no inference or real process claim'})

@@ -218,7 +218,9 @@ def main():
                                 'normalization_error':float(np.max(abs(f['posterior_normalization_ratio']-1)))})
         arrays.update({'time_'+str(j):d['t'],'observed_'+str(j):d['y'],'predicted_'+str(j):pred,'input_'+str(j):d['u']})
         per_run.append({'name':d['name'],'RMSE_by_channel_C':np.sqrt(np.mean((d['y'][1:]-pred[1:])**2,axis=0)).tolist()});cursor+=n
-    parameter_count=int(sum(bool(lo<hi) for lo,hi in bounds)-int(args.band>0))
+    free_coordinates=np.array([lo<hi for lo,hi in bounds])
+    centering_has_free_coordinate=bool(np.any(free_coordinates&(model.centered_jacobian(p)!=0)))
+    parameter_count=int(np.sum(free_coordinates)-int(centering_has_free_coordinate))
     result={'model':'joint_quantized_'+args.family,'family':args.family,'kernel':'quantized_ou_nugget','band':args.band,'phase':args.phase,
         'startup_band_C':args.startup_band,'initial_noise_inflation':args.inflate_initial_noise,'dataset':dataset_receipt,'selected_input_indices':args.records,'best':best,'starts':starts,'bounds':bounds,'nmean':model.nmean,'shape_count':model.nmean,
         'fixed_coordinates':fixed,'coordinate_names':model.coordinate_names(),
