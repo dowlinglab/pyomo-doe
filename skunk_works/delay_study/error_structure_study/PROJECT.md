@@ -215,6 +215,15 @@ clarifies the denominator of one and later source corrects the labels. Its
 two passed numerical point checks can be reused by the final fifty-draw audit
 only with matching numerical auditor and fit/array/dataset hashes.
 
+Recovery accounting and cached-audit controller checks are terminal and passed.
+They validate failed/missing denominators, exact old free-point selection,
+numerical dependency bindings and independent binomial-tail/quantile agreement.
+The corrected one-draw summary-controller figure was inspected; it is not a
+sampling or coverage result. summarize_recovery.py requires all fifty audited
+draws for its final mode, binds refitted diagnostic definitions, and compares
+their sampling spread with generating-point active-face information. Its final
+measured summary is still pending.
+
 transfer_config.json declares sixteen primary folds (twelve runs + four
 protocols) and four shared-model protocol folds. Training/prediction code is
 committed; independent dimensional, no-future-output-leakage, reported-code
@@ -225,6 +234,15 @@ Parameter-draw propagation must inherit a validated approximation;
 noise-only hard-nuisance ranges are not total predictive intervals. If profiles
 change the candidate set, extend transfer support explicitly rather than using
 a linear predictor for a radiative or conditioned-initial-state fit.
+
+The manifest's transfer_analysis index owns selected fit/prediction paths;
+recorded solver fits still await independent audits. New prediction output binds
+parameter files to draw receipts and stores sparse component witnesses.
+audit_transfer_prediction.py checks complete nominal means/metrics and selected
+mixture witnesses; full measured-fold validation is pending.
+summarize_transfer.py keeps the three declared comparison groups separate and
+checks 64/256-draw changes. Its weighted-SSE, duplicate-record and failed-fold
+accounting fixture passed. Do not treat controller checks as transfer results.
 
 Still required: cross-localization interpretation and disturbance comparisons;
 all pending mean/initial/bin sensitivities and selected-point audits; updated
