@@ -1,0 +1,20 @@
+{
+  "purpose": "Retrospective transfer after all twelve records informed structure selection; no untouched-holdout claim",
+  "candidates": {
+    "primary": {"family": "conductance", "band": 0.1, "fold_types": ["leave_run_out", "leave_protocol_out"]},
+    "shared": {"family": "conductance", "band": 0.0, "fold_types": ["leave_protocol_out"]}
+  },
+  "leave_run_out": {"run_indices": [0,1,2,3,4,5,6,7,8,9,10,11]},
+  "leave_protocol_out": [
+    {"id": "protocol_30s", "test_indices": [0,1,2]},
+    {"id": "protocol_120s", "test_indices": [3,4,5]},
+    {"id": "protocol_300s", "test_indices": [6,7,8]},
+    {"id": "protocol_step", "test_indices": [9,10,11]}
+  ],
+  "starts": 2,
+  "failed_retry_starts": 3,
+  "maxiter": 300,
+  "unknown_run": {"ambient_offset_bounds_C": [-2.0,2.0], "initial_state": "Cold heater/sensor pairs conditioned on the first reported reading in each channel; no later test outputs fitted", "conductance": "Unknown ratio within the candidate hard band around the regressed training nominal; no population distribution inferred"},
+  "nuisance_scenario_grid": {"coarse_points": 201, "fine_points": 401, "refinement_points": 801, "maximum_envelope_change_C": 0.0001},
+  "prediction": "Show free simulation and stationary marginal quantized-noise ranges separately from filtered one-step bin scores. Hard-nuisance envelopes are scenario ranges, not probability intervals over ambient/conductance. Parameter and model-form uncertainty remain explicit additional components."
+}
