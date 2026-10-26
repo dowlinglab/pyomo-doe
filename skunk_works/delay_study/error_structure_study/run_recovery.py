@@ -14,6 +14,7 @@ from joint_quantized import Model
 from bin_diagnostics import sample_observations,filter_records
 from nonrandom import summaries as deterministic_summaries
 from fit_task import run
+from continuation import run_task,sha
 from run_bounded import write
 
 
@@ -23,6 +24,7 @@ def main():
     parser.add_argument('--first',type=int,default=0);parser.add_argument('--stride',type=int,default=1)
     parser.add_argument('--purpose',choices=['coverage','pilot'],default='coverage');parser.add_argument('--limit',type=int)
     parser.add_argument('--score-backend',choices=['reference','compiled'],default='reference')
+    parser.add_argument('--continue-shard',type=Path)
     args=parser.parse_args();begun=time.monotonic();config=json.loads((HERE/'uncertainty_config.json').read_text())['recovery']
     if args.stride<1 or not 0<=args.first<config['draws']:raise ValueError('Invalid shard')
     if args.limit is not None and args.purpose!='pilot':raise ValueError('A coverage shard must finish its declared draw indices')
@@ -36,35 +38,71 @@ def main():
     for j,d in enumerate(records):assert d['sha256']==fit['raw_sha256'][d['name']] and np.array_equal(d['y'],arrays['observed_'+str(j)])
     indices=list(range(args.first,config['draws'],args.stride))
     if args.limit is not None:indices=indices[:args.limit]
+    previous_rows={};previous_binding=None
+    if args.continue_shard:
+        old=args.continue_shard
+        if not (old/'exit.json').exists():raise ValueError('Previous recovery parent must be terminal before continuation')
+        previous_design=json.loads((old/'design.json').read_text())
+        assert previous_design['indices']==indices and previous_design['config']==config
+        assert previous_design['fit_sha256']==hashlib.sha256((args.input/'fit.json').read_bytes()).hexdigest()
+        assert np.array_equal(previous_design['truth_point'],truth)
+        if json.loads((old/'exit.json').read_text())['exit_code']!=0:
+            assert (old/'superseded.json').exists(),'An interrupted parent needs its explicit reason/provenance receipt'
+        if (old/'draws.json').exists():
+            saved=json.loads((old/'draws.json').read_text());assert len(set(r['draw'] for r in saved))==len(saved)
+            previous_rows={r['draw']:r for r in saved};assert set(previous_rows)<=set(indices)
+        previous_binding={'path':str(old),'design_sha256':sha(old/'design.json'),'source_sha256':sha(old/'source_snapshot.json'),
+            'exit_sha256':sha(old/'exit.json'),'draws_sha256':sha(old/'draws.json') if (old/'draws.json').exists() else None,
+            'superseded_sha256':sha(old/'superseded.json') if (old/'superseded.json').exists() else None,
+            'notice':'All completed draws, including failed draws, keep their outcome. Incomplete tasks retain completed starts or atomic checkpoints, with any cold restart of an unrecorded iterate explicitly disclosed. Seed, data and scientific solver protocol remain fixed.'}
     write(args.output/'design.json',{'purpose':args.purpose,'indices':indices,'total_declared_draws':config['draws'],
         'fit_sha256':hashlib.sha256((args.input/'fit.json').read_bytes()).hexdigest(),
         'arrays_sha256':hashlib.sha256((args.input/'trajectories.npz').read_bytes()).hexdigest(),
-        'truth_point':truth.tolist(),'coordinate_names':m.coordinate_names(),'config':config})
+        'truth_point':truth.tolist(),'coordinate_names':m.coordinate_names(),'config':config,
+        'score_backend':args.score_backend,'previous_shard':previous_binding})
     rows=[]
     for index in indices:
         directory=args.output/('draw_'+str(index));directory.mkdir();seed=config['seed_base']+config['seed_stride']*index
+        if index in previous_rows:
+            # Reusing failures as well as successes avoids data-dependent extra
+            # attempts after a numerical performance migration.
+            row=dict(previous_rows[index]);assert row['seed']==seed
+            row['reused_completed_draw']={'path':str(args.continue_shard/('draw_'+str(index))/'recovery.json'),
+                'sha256':sha(args.continue_shard/('draw_'+str(index))/'recovery.json')}
+            rows.append(row);write(directory/'recovery.json',row);write(args.output/'draws.json',rows)
+            continue
         row={'draw':index,'seed':seed,'attempts':[],'free_fit_success':False,'coverage_complete':False}
         try:
             synthetic=sample_observations(records,means,fit['noise_parameters'],fit['phase'],seed);data={}
             for j,d in enumerate(synthetic):data.update({'time_'+str(j):d['t'],'input_'+str(j):d['u'],'observed_'+str(j):d['y']})
-            dataset=directory/'observations.npz';np.savez_compressed(dataset,record_names=np.array([d['name'] for d in records]),**data)
+            dataset=directory/'observations.npz';previous_draw=args.continue_shard/('draw_'+str(index)) if args.continue_shard else None
+            if previous_draw and (previous_draw/'observations.npz').exists():
+                previous_data=np.load(previous_draw/'observations.npz',allow_pickle=False)
+                assert previous_data['record_names'].tolist()==[d['name'] for d in records]
+                assert all(np.array_equal(previous_data[key],value) for key,value in data.items()),'Regenerated observations differ'
+                dataset.write_bytes((previous_draw/'observations.npz').read_bytes())
+                row['reused_observation_data']={'path':str(previous_draw/'observations.npz'),'sha256':sha(dataset)}
+            else:np.savez_compressed(dataset,record_names=np.array([d['name'] for d in records]),**data)
             row['dataset_sha256']=hashlib.sha256(dataset.read_bytes()).hexdigest()
             common={'noise1':args.noise1,'noise2':args.noise2,'family':fit['family'],'band':fit['band'],
                     'phase':fit['phase'],'dataset':dataset,'maxiter':config['maxiter'],
                     'minimum_sensor_loading':fit.get('minimum_sensor_loading',.005),'score_backend':args.score_backend}
-            free=run(directory/'free',args.input/'fit.json',starts=config['free_fit_starts'],**common);row['attempts'].append(free)
+            def execute(label,warm,starts,**extra):
+                previous=previous_draw/label if previous_draw else None
+                return run_task(directory/label,warm,previous=previous,starts=starts,**extra,**common)
+            free=execute('free',args.input/'fit.json',config['free_fit_starts']);row['attempts'].append(free)
             if not free['success']:
-                free=run(directory/'free_retry',args.input/'fit.json',starts=config['free_fit_failed_retry_starts'],**common);row['attempts'].append(free)
+                free=execute('free_retry',args.input/'fit.json',config['free_fit_failed_retry_starts']);row['attempts'].append(free)
             if not free['success']:raise RuntimeError('No accepted free fit after declared retry')
             ff=json.loads((Path(free['output'])/'fit.json').read_text());row['free_fit_success']=True
-            null=run(directory/'true_gain',Path(free['output'])/'fit.json',starts=config['fixed_true_gain_fit_starts'],
-                     fixed={'log_K':float(truth[gain_index])},**common);row['attempts'].append(null)
+            null=execute('true_gain',Path(free['output'])/'fit.json',config['fixed_true_gain_fit_starts'],
+                     fixed={'log_K':float(truth[gain_index])});row['attempts'].append(null)
             if not null['success']:
-                null=run(directory/'true_gain_retry',Path(free['output'])/'fit.json',starts=config['fixed_true_gain_failed_retry_starts'],
-                         fixed={'log_K':float(truth[gain_index])},**common);row['attempts'].append(null)
+                null=execute('true_gain_retry',Path(free['output'])/'fit.json',config['fixed_true_gain_failed_retry_starts'],
+                         fixed={'log_K':float(truth[gain_index])});row['attempts'].append(null)
             if not null['success']:raise RuntimeError('No accepted true-gain constrained fit after declared retry')
             if null['nll']<free['nll']-1e-3:
-                correction=run(directory/'free_basin_correction',Path(null['output'])/'fit.json',starts=2,**common);row['attempts'].append(correction)
+                correction=execute('free_basin_correction',Path(null['output'])/'fit.json',2);row['attempts'].append(correction)
                 if correction['success'] and correction['nll']<free['nll']:
                     free=correction;ff=json.loads((Path(free['output'])/'fit.json').read_text())
             raw_lr=float(2*(null['nll']-free['nll']))

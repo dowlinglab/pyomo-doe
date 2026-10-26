@@ -36,8 +36,10 @@ def main():
     parser.add_argument('--resume-starts',type=Path,help='Re-evaluate saved terminal start points and export; does not repeat optimization')
     parser.add_argument('--condition-initial-code',action='store_true')
     parser.add_argument('--score-backend',choices=['reference','compiled'],default='reference')
+    parser.add_argument('--continue-task',type=Path,help='Continue a terminal parent task with bound inputs; retain completed starts and any atomic point checkpoint')
     parser.add_argument('--maxiter',type=int,default=300);args=parser.parse_args();begun=time.monotonic()
     if args.starts>3:raise ValueError('Declare additional starts before extending the physical/noise branch comparison')
+    if args.continue_task and args.resume_starts:raise ValueError('Choose continuation or export-only saved starts')
     records=load_records()
     dataset_receipt=None
     if args.dataset:
@@ -91,8 +93,20 @@ def main():
             measurement=np.exp(initial[model.nmean+3*channel+2])
             latent=np.sqrt(max(rms*rms-.3223**2/12-measurement*measurement,.002**2))
             initial[model.nmean+3*channel]=max(initial[model.nmean+3*channel],np.log(latent))
-    starts=[];evaluation_count=0;numerical_failures=[]
+    starts=[];evaluation_count=0;numerical_failures=[];continued={};continuation_receipt=None
+    if args.continue_task:
+        from continuation import validate_request,saved_rows,recheck_row,parent_receipt,sha
+        continuation_receipt=validate_request(args.continue_task,sys.argv)
+        continuation_receipt['frozen_parent']=parent_receipt(args.continue_task,require_terminal=True)
+        prior=saved_rows(args.continue_task,args.starts)
+        continued={r['start']:recheck_row(model,r) for r in prior}
+        continuation_receipt.update({'completed_starts_sha256':sha(args.continue_task/'starts.json') if prior else None,
+            'completed_start_indices':list(continued),'unfinished_start_handling':{},
+            'notice':'Completed failed/successful starts keep their status; successful points pass current likelihood and stationarity. Remaining branches retain original seeds/protocol unless an atomic point checkpoint supports continuation. Old traces without points cannot recover an unfinished iterate and are explicitly recorded as an abandoned partial attempt.'})
+        write(args.output/'continuation_receipt.json',continuation_receipt)
     for j in range(0 if args.resume_starts else args.starts):
+        if j in continued:
+            starts.append(continued[j]);write(args.output/'starts.json',starts);continue
         seed=initial.copy()
         if j==1:seed[1],seed[4]=seed[4],seed[1]
         if j==2:
@@ -100,6 +114,28 @@ def main():
         seed=np.clip(seed,np.array(bounds)[:,0],np.array(bounds)[:,1])
         if args.band:
             seed=center_seed(seed,bounds,6 if args.family=='conductance' else 8,nr)
+
+        previous_iterations=0;remaining_iterations=args.maxiter
+        if args.continue_task:
+            cp=args.continue_task/('checkpoint_start_'+str(j)+'.json')
+            oldtrace=args.continue_task/('trace_start_'+str(j)+'.json')
+            handling={'original_seed_retained':True,'unrecoverable_partial_callback_iterations':len(json.loads(oldtrace.read_text())) if oldtrace.exists() else 0}
+            if cp.exists():
+                state=json.loads(cp.read_text());assert state['start']==j
+                candidate=np.array(state['point']);bb=np.array(bounds)
+                assert candidate.shape==seed.shape and np.all(candidate>=bb[:,0]-1e-7) and np.all(candidate<=bb[:,1]+1e-7)
+                assert abs(model.centered_constraint(candidate))<1e-7
+                value=model.objective(candidate)
+                if state.get('nll') is not None:assert abs(value-state['nll'])<1e-3
+                seed=candidate;previous_iterations=int(state['completed_callback_iterations']);remaining_iterations-=previous_iterations
+                handling={'checkpoint_sha256':sha(cp),'continued_callback_iterations':previous_iterations,
+                    'remaining_original_iteration_budget':max(0,remaining_iterations),'checkpoint_nll':float(value)}
+            continuation_receipt['unfinished_start_handling'][str(j)]=handling
+            write(args.output/'continuation_receipt.json',continuation_receipt)
+            if remaining_iterations<=0:
+                starts.append({'start':j,'seed':seed.tolist(),'point':seed.tolist(),'success':False,
+                    'message':'Original iteration budget exhausted without a terminal solver result; not promoted by checkpoint stationarity'})
+                write(args.output/'starts.json',starts);continue
 
         trace=[]
         # Failed quadrature points are retained as numerical failures and given
@@ -126,14 +162,14 @@ def main():
             # without expanding every historical trace row by all coordinates.
             checkpoint=args.output/('checkpoint_start_'+str(j)+'.json')
             temporary=checkpoint.with_suffix('.tmp')
-            write(temporary,{'start':j,'completed_callback_iterations':len(trace),
+            write(temporary,{'start':j,'completed_callback_iterations':previous_iterations+len(trace),
                 'point':np.asarray(p).tolist(),'nll':value,'score_backend':args.score_backend,
                 'elapsed_s':time.monotonic()-begun})
             temporary.replace(checkpoint)
         try:
             fit=minimize(evaluate,seed,jac=True,method='SLSQP',bounds=bounds,callback=callback,
                 constraints=[{'type':'eq','fun':model.centered_constraint,'jac':model.centered_jacobian}] if args.band else [],
-                options={'maxiter':args.maxiter,'ftol':1e-12})
+                options={'maxiter':remaining_iterations,'ftol':1e-12})
             nll=model.objective(fit.x);stat=stationary(model,fit.x,model.gradient(fit.x))
             row={'start':j,'branch_seed':['saved branch','sensor/input lag swapped','low analogue noise'][j],'seed':seed.tolist(),'point':fit.x.tolist(),
                  'nll':float(nll),'solver_success':bool(fit.success),'message':str(fit.message),'stationarity':stat,
@@ -190,6 +226,7 @@ def main():
         'minimum_sensor_loading':args.minimum_sensor_loading,
         'resumed_starts':str(args.resume_starts) if args.resume_starts else None,
         'condition_initial_code':args.condition_initial_code,'score_backend':args.score_backend,
+        'continued_task':str(args.continue_task) if args.continue_task else None,
         'initial_sensor_offsets_C':coefficients[1+nr:].reshape(nr,2).tolist() if args.initial_sensor_bins else None,
         'startup_offsets_C':coefficients[1+nr:].reshape(nr,2).tolist() if args.startup_band else None,
         'coefficients':coefficients.tolist(),'noise_parameters':noise_parameters,'record_names':[d['name'] for d in records],
