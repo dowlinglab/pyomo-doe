@@ -13,7 +13,7 @@ from joint_quantized import Model
 
 def main():
     parser=argparse.ArgumentParser();parser.add_argument('--output',type=Path,required=True)
-    parser.add_argument('--warm',type=Path,required=True);args=parser.parse_args()
+    parser.add_argument('--warm',type=Path,required=True);parser.add_argument('--backend',choices=['reference','compiled'],default='reference');args=parser.parse_args()
     fit=json.loads(args.warm.read_text());rng=np.random.RandomState(813331);rows=[]
     cases=[('conductance',.1,.005,False,False),('radiation',.1,.005,False,False),
         ('conductance',0.,.005,False,False),('radiation',0.,.005,False,False),
@@ -26,7 +26,7 @@ def main():
             for name in ['t','u','y']:v[name]=d[name][:61].copy()
             records.append(v)
         settings={'band':band,'nodes':128,'family':family,'minimum_sensor_loading':minimum,
-                  'condition_initial_code':condition,'initial_sensor_bins':sensor}
+                  'condition_initial_code':condition,'initial_sensor_bins':sensor,'score_backend':args.backend}
         m=Model(records,**settings);shape=np.asarray(fit['best']['point'][:6]).copy();shape[2]=np.log(.03 if minimum==.005 else .0002)
         if family=='conductance':mean=np.r_[shape,[-.02,0.,.02] if band else np.zeros(0),np.log(.85),[.3,-.5,.7]]
         else:mean=np.r_[shape,np.log(.85),.5,[-.02,0.,.02] if band else np.zeros(3),[.3,-.5,.7]]
@@ -86,6 +86,7 @@ def main():
             'smoothing_closure_error':max(r['smoothing_closure_error'] for r in model.details(point)),
             'fixed_gain_score_and_stationarity_gate':'passed'})
     result={'status':'passed','rows':rows,'scope':'All mean and covariance coordinate scores against finite differences of the marginal bin likelihood on three 60-observation synthetic held-input records, for linear-conductance and radiative families. Does not establish full hardware optimum or practical identifiability.'}
+    result['backend']=args.backend
     (args.output/'audit.json').write_text(json.dumps(result,indent=2)+'\n');print(json.dumps(result),flush=True)
 
 
