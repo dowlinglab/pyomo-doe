@@ -65,7 +65,7 @@ def filter_ou(time,mean,observed,sigma,ell,eta,phase=-.5,nodes=128,tail_sd=9.,ke
             lp=float(log_probability(low[k]/sigma,high[k]/sigma))
             cdflo.append(float(ndtr(low[k]/sigma)));cdfhi.append(float(ndtr(high[k]/sigma)))
             logcdf.append(float(log_ndtr(low[k]/sigma)));logsf.append(float(log_ndtr(-high[k]/sigma)))
-            centers=np.array([0.]);mix=np.array([1.]);variance=slow
+            centers=np.array([0.]);mix=np.array([1.]);variance=slow;component_log_weight=np.array([0.])
         else:
             alpha=np.exp(-(time[k]-time[k-1])/ell)
             variance=slow*(-np.expm1(-2*(time[k]-time[k-1])/ell))
@@ -73,21 +73,22 @@ def filter_ou(time,mean,observed,sigma,ell,eta,phase=-.5,nodes=128,tail_sd=9.,ke
             total_sd=np.sqrt(variance+measurement*measurement)
             probabilities=log_probability((low[k]-centers)/total_sd,(high[k]-centers)/total_sd)
             lp=float(logsumexp(np.log(mix)+probabilities))
+            component_log_weight=np.log(mix)+probabilities-lp
             cdflo.append(float(mix@ndtr((low[k]-centers)/total_sd)))
             cdfhi.append(float(mix@ndtr((high[k]-centers)/total_sd)))
             logcdf.append(float(logsumexp(np.log(mix)+log_ndtr((low[k]-centers)/total_sd))))
             logsf.append(float(logsumexp(np.log(mix)+log_ndtr((centers-high[k])/total_sd))))
-        # At eta=0 the latent posterior is confined exactly to the observation
-        # interval; eta>0 is truncated in measurement-noise SD units, then
-        # checked by integrating back against the predictive-bin probability.
-        lower=low[k]-tail_sd*measurement;upper=high[k]+tail_sd*measurement
-        center=float(mix@centers)
-        spread=np.sqrt(variance+mix@((centers-center)**2))
-        plower=center-tail_sd*spread;pupper=center+tail_sd*spread
-        if max(lower,plower)<min(upper,pupper):
-            lower=max(lower,plower);upper=min(upper,pupper)
-        elif measurement:
-            lower=min(lower,plower);upper=max(upper,pupper)
+        # Conditional on a mixture component and an analogue observation z,
+        # X|z is Gaussian with a mean affine in z and variance q*R/(q+R).
+        # Letting z range over its observed bin bounds a posterior region even
+        # when that bin was unlikely under the predictive distribution. A
+        # predictive mean +/- 9 SD intersection can cut off a rare posterior.
+        active=component_log_weight>-40.
+        gain=variance/(variance+measurement*measurement)
+        conditional_sd=np.sqrt(variance*measurement*measurement/(variance+measurement*measurement))
+        current_centers=centers[active]
+        lower=float(np.min(current_centers+gain*(low[k]-current_centers))-tail_sd*conditional_sd)
+        upper=float(np.max(current_centers+gain*(high[k]-current_centers))+tail_sd*conditional_sd)
         x=(upper+lower)/2+(upper-lower)/2*points
         qw=weights*(upper-lower)/2
         lpredict=logsumexp(np.log(mix)[None,:]-.5*((x[:,None]-centers[None,:])**2/variance+np.log(variance)+LOG2PI),axis=1)

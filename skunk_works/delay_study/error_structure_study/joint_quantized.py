@@ -83,7 +83,9 @@ class Model:
                     f=smooth_ou(d['t'][1:],mean[section],d['y'][1:,channel],latent,ell,measurement,self.phase,nodes)
                     error=float(np.max(abs(f['posterior_normalization_ratio']-1)))
                     if error<1e-6 and f['smoothing_closure_error']<1e-6:break
-                    if nodes>=512:raise FloatingPointError('Joint score posterior quadrature did not normalize through 512 nodes')
+                    if nodes>=512:
+                        bad=int(np.argmax(abs(f['posterior_normalization_ratio']-1)))
+                        raise FloatingPointError('Joint posterior integration failed: '+str({'name':d['name'],'channel':channel+1,'nodes':nodes,'normalization_error':error,'smoothing_closure':f['smoothing_closure_error'],'time':float(d['t'][bad+1]),'log_bin_mass':float(f['log_bin_probability'][bad])}))
                     nodes*=2
                 nll+=f['nll'];mean_score[section]=f['mean_nll_gradient'];noise_score+=f['noise_nll_gradient_logsd_logell_logsd']
                 details.append({'name':d['name'],'channel':channel+1,'nodes':nodes,'nll':f['nll'],

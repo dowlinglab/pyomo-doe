@@ -74,3 +74,15 @@ cross-channel or cross-run dependence. Regenerate those joint diagnostics with
 independent recorded streams. Inspect bin-transition and predictive checks as
 well as randomized Gaussian residuals, since coarse-bin randomization can
 obscure a mean discrepancy.
+
+
+Posterior-domain correction: a predictive mean-plus/minus-SD window can omit a
+material fraction of the posterior for a rare observed bin. Increasing node
+count does not repair that domain error. The corrected grid uses the Gaussian
+conditional state distribution for each mixture component and each analogue
+value within the observed bin. Component conditional means at the bin endpoints,
+plus conditional SD tails, bound the integration region. Joint score calculations
+use twelve conditional SDs and require wider-support convergence at problematic
+seeds. Initial covariance inflation, when requested, is an initialization
+heuristic based on residual RMS; its use of step-squared/12 is not an assumption
+that quantization error is independent uniform noise in the fitted likelihood.

@@ -19,7 +19,7 @@ def main():
     parser=argparse.ArgumentParser();parser.add_argument('--output',type=Path,required=True)
     parser.add_argument('--warm',type=Path,required=True);parser.add_argument('--noise1',type=Path,required=True);parser.add_argument('--noise2',type=Path,required=True)
     parser.add_argument('--family',choices=['conductance','radiation'],default='conductance');parser.add_argument('--band',type=float,default=.1)
-    parser.add_argument('--records',type=int,nargs='+');parser.add_argument('--dataset',type=Path);parser.add_argument('--phase',type=float,default=-.5);parser.add_argument('--nodes',type=int,default=128)
+    parser.add_argument('--records',type=int,nargs='+');parser.add_argument('--dataset',type=Path);parser.add_argument('--inflate-initial-noise',action='store_true');parser.add_argument('--phase',type=float,default=-.5);parser.add_argument('--nodes',type=int,default=128)
     parser.add_argument('--startup-band',type=float,default=0.);parser.add_argument('--starts',type=int,default=3)
     parser.add_argument('--maxiter',type=int,default=300);args=parser.parse_args();begun=time.monotonic()
     if args.starts>3:raise ValueError('Declare additional starts before extending the physical/noise branch comparison')
@@ -63,7 +63,15 @@ def main():
         else:
             p=f['parameters'];sigma=p['sigma_total_analogue_C'];eta=p['independent_variance_fraction']
             noise.extend(np.log([sigma*np.sqrt(1-eta),p['ell_s'],max(sigma*np.sqrt(eta),.0001)]))
-    initial=np.r_[initial_mean,noise];starts=[];evaluation_count=0;numerical_failures=[]
+    initial=np.r_[initial_mean,noise]
+    if args.inflate_initial_noise:
+        residual=model.y-model.mean(initial,False)
+        for channel in [0,1]:
+            rms=float(np.sqrt(np.mean(residual[channel*model.N:(channel+1)*model.N]**2)))
+            measurement=np.exp(initial[model.nmean+3*channel+2])
+            latent=np.sqrt(max(rms*rms-.3223**2/12-measurement*measurement,.002**2))
+            initial[model.nmean+3*channel]=max(initial[model.nmean+3*channel],np.log(latent))
+    starts=[];evaluation_count=0;numerical_failures=[]
     for j in range(args.starts):
         seed=initial.copy()
         if j==1:seed[1],seed[4]=seed[4],seed[1]
@@ -121,7 +129,7 @@ def main():
         for channel in [0,1]:
             section=slice(channel*model.N+cursor,channel*model.N+cursor+n);pred[1:,channel]=mean[section]
             cov=noise_parameters[channel];latent=cov['latent_SD_C'];ell=cov['ell_s'];measurement=cov['measurement_SD_C']
-            f=filter_ou(d['t'][1:],mean[section],d['y'][1:,channel],np.hypot(latent,measurement),ell,measurement**2/(latent**2+measurement**2),args.phase,nodes=256)
+            f=filter_ou(d['t'][1:],mean[section],d['y'][1:,channel],np.hypot(latent,measurement),ell,measurement**2/(latent**2+measurement**2),args.phase,nodes=256,tail_sd=12.)
             stream=10371+100000*channel+1000*j;arrays['PIT_'+str(j)+'_'+str(channel)]=randomized_residual(f,stream)
             diagnostics.append({'name':d['name'],'channel':channel+1,'seed':stream,'bin_nll_256':f['nll'],
                                 'normalization_error':float(np.max(abs(f['posterior_normalization_ratio']-1)))})
@@ -129,7 +137,7 @@ def main():
         per_run.append({'name':d['name'],'RMSE_by_channel_C':np.sqrt(np.mean((d['y'][1:]-pred[1:])**2,axis=0)).tolist()});cursor+=n
     parameter_count=sum(lo<hi for lo,hi in bounds)-int(args.band>0)
     result={'model':'joint_quantized_'+args.family,'family':args.family,'kernel':'quantized_ou_nugget','band':args.band,'phase':args.phase,
-        'startup_band_C':args.startup_band,'dataset':dataset_receipt,'selected_input_indices':args.records,'best':best,'starts':starts,'bounds':bounds,'nmean':model.nmean,'shape_count':model.nmean,
+        'startup_band_C':args.startup_band,'initial_noise_inflation':args.inflate_initial_noise,'dataset':dataset_receipt,'selected_input_indices':args.records,'best':best,'starts':starts,'bounds':bounds,'nmean':model.nmean,'shape_count':model.nmean,
         'coefficients':coefficients.tolist(),'noise_parameters':noise_parameters,'record_names':[d['name'] for d in records],
         'raw_sha256':{d['name']:d['sha256'] for d in records},'nobs':2*model.N,'parameter_count':parameter_count,
         'parameters':{'K_common_nominal':float(coefficients[0]),'tA_nominal_s':float(np.exp(shared[0])),'rS_s':float(np.exp(shared[1])),

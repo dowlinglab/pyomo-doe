@@ -4,10 +4,10 @@ from scipy.special import logsumexp
 from quantized import filter_ou,LOG2PI
 
 
-def smooth_ou(time,mean,observed,latent_sd,ell,measurement_sd,phase=-.5,nodes=128):
+def smooth_ou(time,mean,observed,latent_sd,ell,measurement_sd,phase=-.5,nodes=128,tail_sd=12.):
     if min(latent_sd,ell,measurement_sd)<=0:raise ValueError('Positive latent and measurement variances required for smooth scores')
     S=latent_sd*latent_sd;R=measurement_sd*measurement_sd
-    f=filter_ou(time,mean,observed,np.sqrt(S+R),ell,R/(S+R),phase,nodes=nodes,keep_history=True)
+    f=filter_ou(time,mean,observed,np.sqrt(S+R),ell,R/(S+R),phase,nodes=nodes,tail_sd=tail_sd,keep_history=True)
     h=f.pop('history');n=len(h);weights=[None]*n;weights[-1]=h[-1]['weight'].copy();cross=np.empty(n-1);closure=0.
     for k in range(n-2,-1,-1):
         a=np.exp(-(time[k+1]-time[k])/ell);q=S*(-np.expm1(-2*(time[k+1]-time[k])/ell))
