@@ -10,9 +10,12 @@ from smoothing import smooth_ou
 
 
 def main():
-    parser=argparse.ArgumentParser();parser.add_argument('--output',type=Path,required=True);args=parser.parse_args()
+    parser=argparse.ArgumentParser();parser.add_argument('--output',type=Path,required=True);parser.add_argument('--backend',choices=['reference','compiled'],default='reference');args=parser.parse_args()
+    smoother=smooth_ou
+    if args.backend=='compiled':
+        from fast_smoothing import smooth_ou as smoother
     t=np.array([0.,2.3]);mean=np.array([25.,25.2]);y=report([25.05,25.28]);latent=.3;measurement=.05;ell=7.
-    f=smooth_ou(t,mean,y,latent,ell,measurement,nodes=128)
+    f=smoother(t,mean,y,latent,ell,measurement,nodes=128)
     S=latent*latent*np.exp(-abs(t[:,None]-t[None,:])/ell);C=S+measurement**2*np.eye(2)
     B=S@np.linalg.inv(C);conditional=S-B@S;density=multivariate_normal(cov=C)
     lo,hi=bins(y);lo-=mean;hi-=mean
@@ -48,7 +51,7 @@ def main():
     for k in range(1,len(t)):
         a=np.exp(-(t[k]-t[k-1])/ell);x[k]=a*x[k-1]+rng.normal(0,latent*np.sqrt(1-a*a))
     observed=report(mu+x+rng.normal(0,measurement,len(t)))
-    g=smooth_ou(t,mu,observed,latent,ell,measurement,nodes=128)
+    g=smoother(t,mu,observed,latent,ell,measurement,nodes=128)
     assert g['smoothing_closure_error']<1e-9
     assert np.all(g['smoothed_latent_second']>=g['smoothed_latent_mean']**2-1e-10)
     # A directional perturbation avoids mirroring a single-coordinate check.
@@ -58,7 +61,7 @@ def main():
         vals.append(filter_ou(t,mu,observed,np.sqrt(s*s+v*v),l,v*v/(s*s+v*v),nodes=128)['nll'])
     directional=abs((vals[1]-vals[0])/(2*h)-d@g['noise_nll_gradient_logsd_logell_logsd'])
     assert directional<2e-4,directional
-    result={'status':'passed','independent_posterior_moment_max_error':max(errors),
+    result={'status':'passed','backend':args.backend,'independent_posterior_moment_max_error':max(errors),
         'mean_score_FD_error':mean_error,'noise_score_FD_error':noise_error,
         'long_sequence_directional_score_error':directional,'smoothing_closure_error':g['smoothing_closure_error'],
         'scope':'Independent bivariate Gaussian posterior moments integrated over quantization bins, mean/covariance score derivatives and a 120-point dependent sequence. No claim of hardware adequacy or all-parameter recovery.'}

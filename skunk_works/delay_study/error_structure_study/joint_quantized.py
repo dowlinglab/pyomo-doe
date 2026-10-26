@@ -11,7 +11,7 @@ from conditional_initial import smooth_record
 
 
 class Model:
-    def __init__(self,records,band=.1,phase=-.5,nodes=128,family='conductance',startup_band=0.,fixed=None,initial_sensor_bins=False,initial_noise_buffer=0.,minimum_sensor_loading=.005,condition_initial_code=False):
+    def __init__(self,records,band=.1,phase=-.5,nodes=128,family='conductance',startup_band=0.,fixed=None,initial_sensor_bins=False,initial_noise_buffer=0.,minimum_sensor_loading=.005,condition_initial_code=False,score_backend='reference'):
         self.records=records;self.band=band;self.phase=phase;self.nodes=nodes;self.family=family
         self.nr=len(records);self.N=sum(len(d['t'])-1 for d in records);self.startup_band=startup_band
         self.fixed=dict(fixed or {})
@@ -19,6 +19,8 @@ class Model:
         if not 0<minimum_sensor_loading<30:raise ValueError('Positive sensor loading minimum below 30 required')
         self.minimum_sensor_loading=minimum_sensor_loading
         self.condition_initial_code=condition_initial_code
+        if score_backend not in ['reference','compiled']:raise ValueError('Unknown score backend')
+        self.score_backend=score_backend
         if initial_noise_buffer and not initial_sensor_bins:raise ValueError('An initial-noise buffer requires sensor-bin sensitivity')
         self.y=np.concatenate([np.concatenate([d['y'][1:,k] for d in records]) for k in [0,1]])
         if family=='conductance':
@@ -103,6 +105,9 @@ class Model:
 
     def _evaluate(self,key):
         p=np.asarray(key);mean,J=self.mean(p)
+        if self.score_backend=='compiled':
+            from fast_smoothing import smooth_record as score_record
+        else:score_record=smooth_record
         mean_score=np.zeros(2*self.N);gradient=np.zeros(len(p));initial_score=np.zeros(self.nmean);nll=0.;details=[]
         for channel in [0,1]:
             latent,ell,measurement=np.exp(p[self.nmean+3*channel:self.nmean+3*channel+3]);cursor=0
@@ -111,7 +116,7 @@ class Model:
                 n=len(d['t'])-1;section=slice(channel*self.N+cursor,channel*self.N+cursor+n);nodes=self.nodes
                 first,first_index=self.initial_mean_and_index(p,j,channel);full_mean=np.r_[first,mean[section]]
                 while True:
-                    f=smooth_record(d,full_mean,channel,latent,ell,measurement,self.phase,nodes,self.condition_initial_code)
+                    f=score_record(d,full_mean,channel,latent,ell,measurement,self.phase,nodes,self.condition_initial_code)
                     error=float(np.max(abs(f['posterior_normalization_ratio']-1)))
                     if error<1e-6 and f['smoothing_closure_error']<1e-6:break
                     if nodes>=512:
