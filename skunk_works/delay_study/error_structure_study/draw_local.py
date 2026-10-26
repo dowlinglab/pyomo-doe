@@ -49,11 +49,15 @@ def main():
     assert all(abs(m.centered_constraint(p))<1e-7 for p in points)
     notice=('Local-normal mixing on the selected active-bound face, truncated by inactive box limits, in explicit optimization coordinates. Conditions on the selected likelihood basin and fixes active loading/deviation bounds; excludes released-bound/profile branches, model selection and initial/bin convention uncertainty. Not calibrated simultaneous confidence or a posterior distribution. Combine with hard unknown-run nuisance ranges and separately reported model/initial/profile sensitivities; empirical gain-LR recovery tests do not validate this whole mixture.')
     method='observed-bin-Hessian active-face local normal, box truncated'
+    files={}
     for count in sorted(set([min(64,args.draws),args.draws])):
-        np.savez_compressed(args.output/('parameter_draws_'+str(count)+'.npz'),points=points[:count],fit_sha256=np.array(fitsha),method=np.array(method),calibration_notice=np.array(notice))
+        destination=args.output/('parameter_draws_'+str(count)+'.npz')
+        np.savez_compressed(destination,points=points[:count],fit_sha256=np.array(fitsha),method=np.array(method),calibration_notice=np.array(notice))
+        files[destination.name]=hashlib.sha256(destination.read_bytes()).hexdigest()
     write(args.output/'draw_receipt.json',{'status':'complete','fit_sha256':fitsha,'information_matrix_sha256':matrixsha,
         'information_audit_sha256':hashlib.sha256((args.audit/'audit.json').read_bytes()).hexdigest(),
         'seed':args.seed,'draws':args.draws,'proposals':proposals,'acceptance_fraction':args.draws/proposals,
+        'parameter_files_sha256':files,'information_path':str(args.information),'information_audit_path':str(args.audit),
         'fixed_active_coordinates':information['active_coordinates'],'method':method,'calibration_notice':notice})
     print(json.dumps({'status':'complete','draws':args.draws,'proposals':proposals}),flush=True)
 

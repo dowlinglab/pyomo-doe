@@ -31,11 +31,16 @@ def main():
     points=None;draw_metadata=None
     if args.parameter_draws:
         a=np.load(args.parameter_draws,allow_pickle=False);assert a['fit_sha256'].item()==hashlib.sha256((args.input/'fit.json').read_bytes()).hexdigest()
+        receipt_path=args.parameter_draws.parent/'draw_receipt.json';receipt=json.loads(receipt_path.read_text())
+        assert receipt['status']=='complete' and receipt['fit_sha256']==a['fit_sha256'].item()
+        assert receipt['parameter_files_sha256'][args.parameter_draws.name]==hashlib.sha256(args.parameter_draws.read_bytes()).hexdigest()
+        assert json.loads((args.parameter_draws.parent/'exit.json').read_text())['exit_code']==0
         points=a['points'];assert points.ndim==2 and points.shape[1]==len(model.bounds()) and np.isfinite(points).all()
         bounds=np.array(model.bounds());assert np.all(points>=bounds[:,0]-1e-7) and np.all(points<=bounds[:,1]+1e-7)
         assert all(abs(model.centered_constraint(p))<1e-7 for p in points)
         draw_metadata={'path':str(args.parameter_draws),'sha256':hashlib.sha256(args.parameter_draws.read_bytes()).hexdigest(),
-            'draws':len(points),'method':str(a['method'].item()),'calibration_notice':str(a['calibration_notice'].item())}
+            'draws':len(points),'method':str(a['method'].item()),'calibration_notice':str(a['calibration_notice'].item()),
+            'draw_receipt_path':str(receipt_path),'draw_receipt_sha256':hashlib.sha256(receipt_path.read_bytes()).hexdigest()}
     result=[];arrays={}
     for j,d in enumerate(test):
         scenarios=checked_scenarios(d,np.asarray(fit['best']['point'][:6]),fit['parameters']['K_common_nominal'],fit['band'],config['nuisance_scenario_grid'])
@@ -71,7 +76,15 @@ def main():
                 pl[:,k]=report(mixture_quantile(low[:,:,k],sds[:,k],.025),fit['phase'])
                 pu[:,k]=report(mixture_quantile(high[:,:,k],sds[:,k],.975),fit['phase'])
             row['parameter_mixture_hard_nuisance_noise_outer_coverage']=np.mean((y>=pl)&(y<=pu),axis=0).tolist()
-            arrays.update({'parameter_mixture_reported_low_'+str(j):pl,'parameter_mixture_reported_high_'+str(j):pu})
+            # Sparse component witnesses permit independent discrete-quantile
+            # CDF checks without storing hundreds of complete trajectories.
+            witness=np.unique(np.r_[np.linspace(0,len(y)-1,9).astype(int),
+                [int(np.argmin(abs(d['t'][1:]-t))) for t in [60.,180.,450.]]])
+            arrays.update({'parameter_mixture_reported_low_'+str(j):pl,'parameter_mixture_reported_high_'+str(j):pu,
+                'parameter_component_witness_indices_'+str(j):witness,
+                'parameter_component_witness_low_'+str(j):low[:,witness,:],
+                'parameter_component_witness_high_'+str(j):high[:,witness,:],
+                'parameter_component_SD_'+str(j):sds})
         arrays.update({'time_'+str(j):d['t'],'observed_'+str(j):d['y'],'input_'+str(j):d['u'],
             'latent_nominal_'+str(j):predicted,'reported_mean_'+str(j):obsmean,
             'nuisance_mean_low_'+str(j):scenarios['lower'],'nuisance_mean_high_'+str(j):scenarios['upper'],
