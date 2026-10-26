@@ -11,7 +11,7 @@
     "3_bounded_conductance": "Gaussian bands and all joint bin 0/5/10/20 percent selected fits independently audited; no population variability claim.",
     "4_physical_extensions": "Gaussian affine/startup and joint bin-radiation/lower-loading/conditional-initial/nearest-sensor-bin fits audited. Floor/buffer and quantized hidden-start sensitivities pending.",
     "5_observation_model": "Sequential GLS and joint fits audited; deterministic 50 fixed-model and cross-localization references expose remaining input/phase/cross dependence. Gaussian independent/process/measurement/both fits audited; not a quantized correlated-channel law. Refitted reference completion pending.",
-    "6_uncertainty_transfer": "Four canonical protocol forecasts fully audited. First protocol_30s information/local-draw/64-256/reference forecasts and audits complete, figures inspected, manifest indexed. Remaining four full-data profiles running in profile_remaining_b10. Primary twelve run fits and complementary recovery continuations live. Other fold pipelines, 50-draw final audits/aggregates and initial-state queue still pending.",
+    "6_uncertainty_transfer": "All twelve primary run fits and four primary protocol fits numerically complete; only primary protocol selected fits/canonical forecasts are fully independently audited so far. protocol_30s parameter/reference/64-256 pipeline fully audited and visually checked. Four shared protocol fits now active, remaining full-data profiles and complementary recovery continuations active. Primary-run/shared audits and nineteen further uncertainty pipelines plus 50-draw aggregate pending.",
     "7_report": "Six-page WIP tablet report includes audited canonical protocol-transfer/offset decomposition. 122-file numeric check, all six rendered pages and geometry passed. Final uncertainty/full-fold results, figures, concise final Markdown and completion audit pending."
   },
   "jobs": [
@@ -2857,7 +2857,7 @@
       "source_commit": "cc9dad7639d2662b88bacc42c864fde2980278c2",
       "source_receipt_sha256": "010097bd36fca5d18ee9b8a323a2eb8b366319dde180d695d6d0d55070e58974",
       "status": "running_verified",
-      "last_verified_utc": "2026-10-26 17:33:39 UTC"
+      "last_verified_utc": "2026-10-26 18:45:57 UTC"
     },
     {
       "id": "quantization_check",
@@ -3268,7 +3268,7 @@
       "source_commit": "7cd61f36763fc5e114416176472bfc26b5b6a277",
       "source_receipt_sha256": "71fc02cd311eae6f6733b98b6f024a8b3dcc942e19c78d07dd4206db4eab2d7d",
       "status": "running_verified",
-      "last_verified_utc": "2026-10-26 17:33:39 UTC"
+      "last_verified_utc": "2026-10-26 18:45:57 UTC"
     },
     {
       "id": "recovery_b10_odd",
@@ -3332,7 +3332,7 @@
       "source_commit": "7cd61f36763fc5e114416176472bfc26b5b6a277",
       "source_receipt_sha256": "caa31c9d75a44f20dc5f7a7662b32c914f55fa375f208f21c1882c5b7014f16d",
       "status": "running_verified",
-      "last_verified_utc": "2026-10-26 17:33:39 UTC"
+      "last_verified_utc": "2026-10-26 18:45:57 UTC"
     },
     {
       "id": "recovery_summary_controller_check",
@@ -4091,8 +4091,10 @@
       "output": "skunk_works/delay_study/error_structure_study/results/transfer_primary_runs",
       "source_commit": "7180ae80658d9f31a5ea3d6d4f0c9ee75f73e552",
       "source_receipt_sha256": "bedb98b6fe79b9606145b6e966dcc90bb59a92dbf3035c82c6d692b4479440ff",
-      "status": "running_verified",
-      "last_verified_utc": "2026-10-26 17:33:39 UTC"
+      "status": "terminal",
+      "last_verified_utc": "2026-10-26 17:33:39 UTC",
+      "exit_code": 0,
+      "finished_utc": "2026-10-26T18:44:42.475733+00:00"
     },
     {
       "id": "transfer_uncertainty_protocol30",
@@ -4484,12 +4486,11 @@
   "live_jobs": [
     "profile_remaining_b10",
     "recovery_b10_even_compiled_continuation",
-    "recovery_b10_odd_compiled_continuation",
-    "transfer_primary_runs"
+    "recovery_b10_odd_compiled_continuation"
   ],
-  "next_action": "profile_remaining_b10 (session 14054) is now the fourth long worker: remaining loading/deviation/noise-length/radiation grids and independent point audits. The first protocol_30s parameter pipeline completed and passed every approximation/forecast audit; its nine figures were inspected and all components indexed. When another slot frees, reconcile before dispatch: finish shared protocol fits, primary-run selected audits, six initial-state sensitivities, remaining three protocol and twelve run plus four shared uncertainty pipelines. Recovery continuations still require all 50 outcomes and full source-bound audits/aggregates. Final Markdown/tablet PDF and completion audit remain required; no email.",
-  "updated_utc": "2026-10-26T17:33:39.516801+00:00",
-  "last_goal_turn_classification": "progress: first complete parameter-inclusive protocol pipeline passed all source-bound information, draw and forecast audits; all nine figures inspected; 64/256 endpoint and envelope-width changes quantified; remaining four profile coordinates launched in the freed worker slot.",
+  "next_action": "Twelve primary leave-run fits are terminal and successful in transfer_primary_runs, but independent selected-point audits/forecasts remain pending. Four shared protocol fits now run in transfer_shared_protocols (session 83314), occupying the freed worker slot. When that parent is terminal, independently audit all twelve primary and four shared selected fits before their uncertainty pipelines. Remaining four full-data profiles and complementary recovery continuations remain live. Queue the six initial/bin/hidden-start sensitivities, remaining nineteen fold pipelines and all 50 recovery audits/aggregates as slots free. Final report/Markdown/completion audit and push remain required; no email.",
+  "updated_utc": "2026-10-26T18:45:58.504276+00:00",
+  "last_goal_turn_classification": "progress: first full parameter protocol pipeline passed and was committed; remaining four profiles dispatched; verified waits tracked continuing draws and run folds; all twelve primary run fits completed successfully, preserved as pending independent audits; shared-model protocol comparison launched in the freed fourth slot.",
   "controller_sessions": {
     "joint_conductance_b00": 55866,
     "joint_conductance_b10": 15102,
@@ -4567,7 +4568,8 @@
     "profile_b10_exchanged_lag_point_audit": 99207,
     "transfer_uncertainty_protocol30": 72885,
     "profile_remaining_b10": 14054,
-    "transfer_first_protocol_parameter_summary": 26081
+    "transfer_first_protocol_parameter_summary": 26081,
+    "transfer_shared_protocols": 83314
   },
   "queued_jobs": [
     "remaining_prespecified_profile_queue",
@@ -4579,10 +4581,10 @@
   ],
   "process_check": {
     "path": "process_check.json",
-    "checked_utc": "2026-10-26 17:33:39 UTC",
-    "sha256": "156c35cc1c1e7927fe349700de33f511d8975e996d2a0a8032796194803baade",
+    "checked_utc": "2026-10-26 18:45:57 UTC",
+    "sha256": "f3913cea60cc9b6ebb03791ca1eab4848212aa297c63169503f44f0ce101cea8",
     "method": "Direct approved pgrep -fl tclab-error tool",
-    "snapshot_age_s": 0.516801
+    "snapshot_age_s": 1.504276
   },
   "reconciliation_warnings": {
     "missing_exit_or_matching_process": [],
@@ -4667,7 +4669,6 @@
   "live_worker_slots": [
     "profile_remaining_b10",
     "recovery_b10_even_compiled_continuation",
-    "recovery_b10_odd_compiled_continuation",
-    "transfer_primary_runs"
+    "recovery_b10_odd_compiled_continuation"
   ]
 }

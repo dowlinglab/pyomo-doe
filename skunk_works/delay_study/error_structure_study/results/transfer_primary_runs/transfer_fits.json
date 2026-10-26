@@ -1,0 +1,668 @@
+{
+  "status": "complete",
+  "candidate": "primary",
+  "reference_fit_sha256": "5a5884af0f2603d5889b7865f8b475ec4b192e115cf6d052af1a61371a5fdfa5",
+  "config": {
+    "purpose": "Retrospective transfer after all twelve records informed structure selection; no untouched-holdout claim",
+    "candidates": {
+      "primary": {
+        "family": "conductance",
+        "band": 0.1,
+        "fold_types": [
+          "leave_run_out",
+          "leave_protocol_out"
+        ]
+      },
+      "shared": {
+        "family": "conductance",
+        "band": 0.0,
+        "fold_types": [
+          "leave_protocol_out"
+        ]
+      }
+    },
+    "leave_run_out": {
+      "run_indices": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ]
+    },
+    "leave_protocol_out": [
+      {
+        "id": "protocol_30s",
+        "test_indices": [
+          0,
+          1,
+          2
+        ]
+      },
+      {
+        "id": "protocol_120s",
+        "test_indices": [
+          3,
+          4,
+          5
+        ]
+      },
+      {
+        "id": "protocol_300s",
+        "test_indices": [
+          6,
+          7,
+          8
+        ]
+      },
+      {
+        "id": "protocol_step",
+        "test_indices": [
+          9,
+          10,
+          11
+        ]
+      }
+    ],
+    "starts": 2,
+    "failed_retry_starts": 3,
+    "maxiter": 300,
+    "unknown_run": {
+      "ambient_offset_bounds_C": [
+        -2.0,
+        2.0
+      ],
+      "initial_state": "Cold heater/sensor pairs conditioned on the first reported reading in each channel; no later test outputs fitted",
+      "conductance": "Unknown ratio within the candidate hard band around the regressed training nominal; no population distribution inferred"
+    },
+    "nuisance_scenario_grid": {
+      "coarse_points": 201,
+      "fine_points": 401,
+      "refinement_points": 801,
+      "maximum_envelope_change_C": 0.0001
+    },
+    "prediction": "Show free simulation and stationary marginal quantized-noise ranges separately from filtered one-step bin scores. Hard-nuisance envelopes are scenario ranges, not probability intervals over ambient/conductance. Parameter and model-form uncertainty remain explicit additional components.",
+    "parameter_mixture_sensitivity": {
+      "method": "Independently audited observed-bin Hessian, local normal on the selected active-bound face, truncated by remaining box bounds; profile/model/initial sensitivities reported separately",
+      "draws": 256,
+      "coarse_draws": 64,
+      "seed": 931771,
+      "calibration": "No automatic total 95% or posterior interpretation. Active coordinates are fixed, disconnected profiles excluded; require a positive audited face Hessian and source-bound draw receipt. Compare coarse/fine propagated ranges and report their numerical change before interpreting them."
+    }
+  },
+  "folds": [
+    {
+      "id": "run_1",
+      "test_indices": [
+        0
+      ],
+      "type": "leave_run_out",
+      "train_indices": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ],
+      "success": true,
+      "attempts": [
+        {
+          "success": true,
+          "output": "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_primary_runs/run_1",
+          "nll": 5723.600126767057,
+          "elapsed_s": 939.568566917,
+          "finished_utc": "2026-10-26T15:55:45.677583+00:00"
+        }
+      ],
+      "selected_output": "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_primary_runs/run_1",
+      "train_names": [
+        "validation_experiment_env_2_sin_50_50_run_2.csv",
+        "validation_experiment_env_2_sin_50_50_run_3.csv",
+        "validation_experiment_env_2_sin_2_50_run_1.csv",
+        "validation_experiment_env_2_sin_2_50_run_2.csv",
+        "validation_experiment_env_2_sin_2_50_run_3.csv",
+        "validation_experiment_env_2_sin_5_50_run_1.csv",
+        "validation_experiment_env_2_sin_5_50_run_2.csv",
+        "validation_experiment_env_2_sin_5_50_run_3.csv",
+        "validation_experiment_env_2_step_50_run_1.csv",
+        "validation_experiment_env_2_step_50_run_2.csv",
+        "validation_experiment_env_2_step_50_run_3.csv"
+      ],
+      "test_names": [
+        "validation_experiment_env_2_sin_50_50_run_1.csv"
+      ]
+    },
+    {
+      "id": "run_2",
+      "test_indices": [
+        1
+      ],
+      "type": "leave_run_out",
+      "train_indices": [
+        0,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ],
+      "success": true,
+      "attempts": [
+        {
+          "success": true,
+          "output": "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_primary_runs/run_2",
+          "nll": 5691.620920645596,
+          "elapsed_s": 1016.921777834,
+          "finished_utc": "2026-10-26T16:12:42.600326+00:00"
+        }
+      ],
+      "selected_output": "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_primary_runs/run_2",
+      "train_names": [
+        "validation_experiment_env_2_sin_50_50_run_1.csv",
+        "validation_experiment_env_2_sin_50_50_run_3.csv",
+        "validation_experiment_env_2_sin_2_50_run_1.csv",
+        "validation_experiment_env_2_sin_2_50_run_2.csv",
+        "validation_experiment_env_2_sin_2_50_run_3.csv",
+        "validation_experiment_env_2_sin_5_50_run_1.csv",
+        "validation_experiment_env_2_sin_5_50_run_2.csv",
+        "validation_experiment_env_2_sin_5_50_run_3.csv",
+        "validation_experiment_env_2_step_50_run_1.csv",
+        "validation_experiment_env_2_step_50_run_2.csv",
+        "validation_experiment_env_2_step_50_run_3.csv"
+      ],
+      "test_names": [
+        "validation_experiment_env_2_sin_50_50_run_2.csv"
+      ]
+    },
+    {
+      "id": "run_3",
+      "test_indices": [
+        2
+      ],
+      "type": "leave_run_out",
+      "train_indices": [
+        0,
+        1,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ],
+      "success": true,
+      "attempts": [
+        {
+          "success": true,
+          "output": "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_primary_runs/run_3",
+          "nll": 5666.498086205388,
+          "elapsed_s": 943.8394837500002,
+          "finished_utc": "2026-10-26T16:28:26.441757+00:00"
+        }
+      ],
+      "selected_output": "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_primary_runs/run_3",
+      "train_names": [
+        "validation_experiment_env_2_sin_50_50_run_1.csv",
+        "validation_experiment_env_2_sin_50_50_run_2.csv",
+        "validation_experiment_env_2_sin_2_50_run_1.csv",
+        "validation_experiment_env_2_sin_2_50_run_2.csv",
+        "validation_experiment_env_2_sin_2_50_run_3.csv",
+        "validation_experiment_env_2_sin_5_50_run_1.csv",
+        "validation_experiment_env_2_sin_5_50_run_2.csv",
+        "validation_experiment_env_2_sin_5_50_run_3.csv",
+        "validation_experiment_env_2_step_50_run_1.csv",
+        "validation_experiment_env_2_step_50_run_2.csv",
+        "validation_experiment_env_2_step_50_run_3.csv"
+      ],
+      "test_names": [
+        "validation_experiment_env_2_sin_50_50_run_3.csv"
+      ]
+    },
+    {
+      "id": "run_4",
+      "test_indices": [
+        3
+      ],
+      "type": "leave_run_out",
+      "train_indices": [
+        0,
+        1,
+        2,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ],
+      "success": true,
+      "attempts": [
+        {
+          "success": true,
+          "output": "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_primary_runs/run_4",
+          "nll": 5642.182961462708,
+          "elapsed_s": 913.7411891249999,
+          "finished_utc": "2026-10-26T16:43:40.188027+00:00"
+        }
+      ],
+      "selected_output": "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_primary_runs/run_4",
+      "train_names": [
+        "validation_experiment_env_2_sin_50_50_run_1.csv",
+        "validation_experiment_env_2_sin_50_50_run_2.csv",
+        "validation_experiment_env_2_sin_50_50_run_3.csv",
+        "validation_experiment_env_2_sin_2_50_run_2.csv",
+        "validation_experiment_env_2_sin_2_50_run_3.csv",
+        "validation_experiment_env_2_sin_5_50_run_1.csv",
+        "validation_experiment_env_2_sin_5_50_run_2.csv",
+        "validation_experiment_env_2_sin_5_50_run_3.csv",
+        "validation_experiment_env_2_step_50_run_1.csv",
+        "validation_experiment_env_2_step_50_run_2.csv",
+        "validation_experiment_env_2_step_50_run_3.csv"
+      ],
+      "test_names": [
+        "validation_experiment_env_2_sin_2_50_run_1.csv"
+      ]
+    },
+    {
+      "id": "run_5",
+      "test_indices": [
+        4
+      ],
+      "type": "leave_run_out",
+      "train_indices": [
+        0,
+        1,
+        2,
+        3,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ],
+      "success": true,
+      "attempts": [
+        {
+          "success": true,
+          "output": "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_primary_runs/run_5",
+          "nll": 5711.990658907782,
+          "elapsed_s": 905.549855666,
+          "finished_utc": "2026-10-26T16:58:45.739099+00:00"
+        }
+      ],
+      "selected_output": "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_primary_runs/run_5",
+      "train_names": [
+        "validation_experiment_env_2_sin_50_50_run_1.csv",
+        "validation_experiment_env_2_sin_50_50_run_2.csv",
+        "validation_experiment_env_2_sin_50_50_run_3.csv",
+        "validation_experiment_env_2_sin_2_50_run_1.csv",
+        "validation_experiment_env_2_sin_2_50_run_3.csv",
+        "validation_experiment_env_2_sin_5_50_run_1.csv",
+        "validation_experiment_env_2_sin_5_50_run_2.csv",
+        "validation_experiment_env_2_sin_5_50_run_3.csv",
+        "validation_experiment_env_2_step_50_run_1.csv",
+        "validation_experiment_env_2_step_50_run_2.csv",
+        "validation_experiment_env_2_step_50_run_3.csv"
+      ],
+      "test_names": [
+        "validation_experiment_env_2_sin_2_50_run_2.csv"
+      ]
+    },
+    {
+      "id": "run_6",
+      "test_indices": [
+        5
+      ],
+      "type": "leave_run_out",
+      "train_indices": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ],
+      "success": true,
+      "attempts": [
+        {
+          "success": true,
+          "output": "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_primary_runs/run_6",
+          "nll": 5734.82095821181,
+          "elapsed_s": 821.1975120830002,
+          "finished_utc": "2026-10-26T17:12:26.939041+00:00"
+        }
+      ],
+      "selected_output": "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_primary_runs/run_6",
+      "train_names": [
+        "validation_experiment_env_2_sin_50_50_run_1.csv",
+        "validation_experiment_env_2_sin_50_50_run_2.csv",
+        "validation_experiment_env_2_sin_50_50_run_3.csv",
+        "validation_experiment_env_2_sin_2_50_run_1.csv",
+        "validation_experiment_env_2_sin_2_50_run_2.csv",
+        "validation_experiment_env_2_sin_5_50_run_1.csv",
+        "validation_experiment_env_2_sin_5_50_run_2.csv",
+        "validation_experiment_env_2_sin_5_50_run_3.csv",
+        "validation_experiment_env_2_step_50_run_1.csv",
+        "validation_experiment_env_2_step_50_run_2.csv",
+        "validation_experiment_env_2_step_50_run_3.csv"
+      ],
+      "test_names": [
+        "validation_experiment_env_2_sin_2_50_run_3.csv"
+      ]
+    },
+    {
+      "id": "run_7",
+      "test_indices": [
+        6
+      ],
+      "type": "leave_run_out",
+      "train_indices": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        7,
+        8,
+        9,
+        10,
+        11
+      ],
+      "success": true,
+      "attempts": [
+        {
+          "success": true,
+          "output": "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_primary_runs/run_7",
+          "nll": 5731.123568994208,
+          "elapsed_s": 911.7472621670004,
+          "finished_utc": "2026-10-26T17:27:38.688063+00:00"
+        }
+      ],
+      "selected_output": "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_primary_runs/run_7",
+      "train_names": [
+        "validation_experiment_env_2_sin_50_50_run_1.csv",
+        "validation_experiment_env_2_sin_50_50_run_2.csv",
+        "validation_experiment_env_2_sin_50_50_run_3.csv",
+        "validation_experiment_env_2_sin_2_50_run_1.csv",
+        "validation_experiment_env_2_sin_2_50_run_2.csv",
+        "validation_experiment_env_2_sin_2_50_run_3.csv",
+        "validation_experiment_env_2_sin_5_50_run_2.csv",
+        "validation_experiment_env_2_sin_5_50_run_3.csv",
+        "validation_experiment_env_2_step_50_run_1.csv",
+        "validation_experiment_env_2_step_50_run_2.csv",
+        "validation_experiment_env_2_step_50_run_3.csv"
+      ],
+      "test_names": [
+        "validation_experiment_env_2_sin_5_50_run_1.csv"
+      ]
+    },
+    {
+      "id": "run_8",
+      "test_indices": [
+        7
+      ],
+      "type": "leave_run_out",
+      "train_indices": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        8,
+        9,
+        10,
+        11
+      ],
+      "success": true,
+      "attempts": [
+        {
+          "success": true,
+          "output": "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_primary_runs/run_8",
+          "nll": 5678.679190751061,
+          "elapsed_s": 908.2305500000002,
+          "finished_utc": "2026-10-26T17:42:46.920789+00:00"
+        }
+      ],
+      "selected_output": "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_primary_runs/run_8",
+      "train_names": [
+        "validation_experiment_env_2_sin_50_50_run_1.csv",
+        "validation_experiment_env_2_sin_50_50_run_2.csv",
+        "validation_experiment_env_2_sin_50_50_run_3.csv",
+        "validation_experiment_env_2_sin_2_50_run_1.csv",
+        "validation_experiment_env_2_sin_2_50_run_2.csv",
+        "validation_experiment_env_2_sin_2_50_run_3.csv",
+        "validation_experiment_env_2_sin_5_50_run_1.csv",
+        "validation_experiment_env_2_sin_5_50_run_3.csv",
+        "validation_experiment_env_2_step_50_run_1.csv",
+        "validation_experiment_env_2_step_50_run_2.csv",
+        "validation_experiment_env_2_step_50_run_3.csv"
+      ],
+      "test_names": [
+        "validation_experiment_env_2_sin_5_50_run_2.csv"
+      ]
+    },
+    {
+      "id": "run_9",
+      "test_indices": [
+        8
+      ],
+      "type": "leave_run_out",
+      "train_indices": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        9,
+        10,
+        11
+      ],
+      "success": true,
+      "attempts": [
+        {
+          "success": true,
+          "output": "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_primary_runs/run_9",
+          "nll": 5768.761022546602,
+          "elapsed_s": 924.5776614999995,
+          "finished_utc": "2026-10-26T17:58:11.500642+00:00"
+        }
+      ],
+      "selected_output": "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_primary_runs/run_9",
+      "train_names": [
+        "validation_experiment_env_2_sin_50_50_run_1.csv",
+        "validation_experiment_env_2_sin_50_50_run_2.csv",
+        "validation_experiment_env_2_sin_50_50_run_3.csv",
+        "validation_experiment_env_2_sin_2_50_run_1.csv",
+        "validation_experiment_env_2_sin_2_50_run_2.csv",
+        "validation_experiment_env_2_sin_2_50_run_3.csv",
+        "validation_experiment_env_2_sin_5_50_run_1.csv",
+        "validation_experiment_env_2_sin_5_50_run_2.csv",
+        "validation_experiment_env_2_step_50_run_1.csv",
+        "validation_experiment_env_2_step_50_run_2.csv",
+        "validation_experiment_env_2_step_50_run_3.csv"
+      ],
+      "test_names": [
+        "validation_experiment_env_2_sin_5_50_run_3.csv"
+      ]
+    },
+    {
+      "id": "run_10",
+      "test_indices": [
+        9
+      ],
+      "type": "leave_run_out",
+      "train_indices": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        10,
+        11
+      ],
+      "success": true,
+      "attempts": [
+        {
+          "success": true,
+          "output": "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_primary_runs/run_10",
+          "nll": 5726.138184907377,
+          "elapsed_s": 924.8067332499995,
+          "finished_utc": "2026-10-26T18:13:36.308977+00:00"
+        }
+      ],
+      "selected_output": "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_primary_runs/run_10",
+      "train_names": [
+        "validation_experiment_env_2_sin_50_50_run_1.csv",
+        "validation_experiment_env_2_sin_50_50_run_2.csv",
+        "validation_experiment_env_2_sin_50_50_run_3.csv",
+        "validation_experiment_env_2_sin_2_50_run_1.csv",
+        "validation_experiment_env_2_sin_2_50_run_2.csv",
+        "validation_experiment_env_2_sin_2_50_run_3.csv",
+        "validation_experiment_env_2_sin_5_50_run_1.csv",
+        "validation_experiment_env_2_sin_5_50_run_2.csv",
+        "validation_experiment_env_2_sin_5_50_run_3.csv",
+        "validation_experiment_env_2_step_50_run_2.csv",
+        "validation_experiment_env_2_step_50_run_3.csv"
+      ],
+      "test_names": [
+        "validation_experiment_env_2_step_50_run_1.csv"
+      ]
+    },
+    {
+      "id": "run_11",
+      "test_indices": [
+        10
+      ],
+      "type": "leave_run_out",
+      "train_indices": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        11
+      ],
+      "success": true,
+      "attempts": [
+        {
+          "success": true,
+          "output": "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_primary_runs/run_11",
+          "nll": 5791.538671300203,
+          "elapsed_s": 900.2105008749986,
+          "finished_utc": "2026-10-26T18:28:36.521106+00:00"
+        }
+      ],
+      "selected_output": "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_primary_runs/run_11",
+      "train_names": [
+        "validation_experiment_env_2_sin_50_50_run_1.csv",
+        "validation_experiment_env_2_sin_50_50_run_2.csv",
+        "validation_experiment_env_2_sin_50_50_run_3.csv",
+        "validation_experiment_env_2_sin_2_50_run_1.csv",
+        "validation_experiment_env_2_sin_2_50_run_2.csv",
+        "validation_experiment_env_2_sin_2_50_run_3.csv",
+        "validation_experiment_env_2_sin_5_50_run_1.csv",
+        "validation_experiment_env_2_sin_5_50_run_2.csv",
+        "validation_experiment_env_2_sin_5_50_run_3.csv",
+        "validation_experiment_env_2_step_50_run_1.csv",
+        "validation_experiment_env_2_step_50_run_3.csv"
+      ],
+      "test_names": [
+        "validation_experiment_env_2_step_50_run_2.csv"
+      ]
+    },
+    {
+      "id": "run_12",
+      "test_indices": [
+        11
+      ],
+      "type": "leave_run_out",
+      "train_indices": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "success": true,
+      "attempts": [
+        {
+          "success": true,
+          "output": "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_primary_runs/run_12",
+          "nll": 5734.281376015086,
+          "elapsed_s": 965.7238406669985,
+          "finished_utc": "2026-10-26T18:44:42.247354+00:00"
+        }
+      ],
+      "selected_output": "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_primary_runs/run_12",
+      "train_names": [
+        "validation_experiment_env_2_sin_50_50_run_1.csv",
+        "validation_experiment_env_2_sin_50_50_run_2.csv",
+        "validation_experiment_env_2_sin_50_50_run_3.csv",
+        "validation_experiment_env_2_sin_2_50_run_1.csv",
+        "validation_experiment_env_2_sin_2_50_run_2.csv",
+        "validation_experiment_env_2_sin_2_50_run_3.csv",
+        "validation_experiment_env_2_sin_5_50_run_1.csv",
+        "validation_experiment_env_2_sin_5_50_run_2.csv",
+        "validation_experiment_env_2_sin_5_50_run_3.csv",
+        "validation_experiment_env_2_step_50_run_1.csv",
+        "validation_experiment_env_2_step_50_run_2.csv"
+      ],
+      "test_names": [
+        "validation_experiment_env_2_step_50_run_3.csv"
+      ]
+    }
+  ],
+  "elapsed_s": 11076.169876125,
+  "notice": "Internal leave-run/protocol-out refits; all records informed structure selection. Full-data parameters are warm starts only. Test future outputs do not enter the training objective, covariance, nuisance fitting or centering. Numerical fit audits and parameter-inclusive prediction analysis remain separate."
+}
