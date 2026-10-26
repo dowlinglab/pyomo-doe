@@ -38,6 +38,32 @@ def prediction(entry,fit_hash,expected_names):
         'prediction_sha256':audit['prediction_sha256'],'arrays_sha256':audit['arrays_sha256']}
 
 
+def aggregate_groups(rows,expected,record_names,partial=False):
+    group_rows=[]
+    for candidate,kind in [('primary','leave_run_out'),('primary','leave_protocol_out'),('shared','leave_protocol_out')]:
+        selected=[r for r in rows if r['candidate']==candidate and r['fold_type']==kind and r['status']=='audited']
+        runs=[d for r in selected for d in r['per_run']];run_names=[d['name'] for d in runs]
+        assert len(set(run_names))==len(run_names),'A record was double-counted within a transfer group'
+        required=[f for f in expected.values() if f['candidate']==candidate and f['type']==kind]
+        if not partial and len(selected)==len(required):assert set(run_names)==set(record_names)
+        count=sum(r['nobs_per_channel'] for r in runs)
+        group={'candidate':candidate,'fold_type':kind,'declared_folds':len(required),'audited_folds':len(selected),
+            'unique_test_records':len(run_names),'nobs_per_channel':count}
+        if count:
+            for prefix in ['latent','reported']:
+                group[prefix+'_RMSE_by_channel_C']=np.sqrt(np.sum([r[prefix+'_SSE_by_channel_C2'] for r in runs],axis=0)/count).tolist()
+            group['reported_signed_mean_error_C']=(np.sum([r['reported_signed_error_sum_C'] for r in runs],axis=0)/count).tolist()
+            for variant in ['noise_only','hard_nuisance_noise','parameter_64','parameter_256']:
+                if all(variant+'_covered_counts' in r for r in runs):
+                    group[variant+'_marginal_coverage']=(np.sum([r[variant+'_covered_counts'] for r in runs],axis=0)/count).tolist()
+                    group[variant+'_mean_width_C']=(np.sum([r[variant+'_width_sum_C'] for r in runs],axis=0)/count).tolist()
+            if all('parameter_64_to_256_max_bound_change_C' in r for r in runs):
+                group['parameter_64_to_256_max_bound_change_C']=np.max([r['parameter_64_to_256_max_bound_change_C'] for r in runs],axis=0).tolist()
+                group['parameter_64_to_256_changed_bound_fraction']=(np.sum([r['parameter_64_to_256_changed_bound_counts'] for r in runs],axis=0)/(2*count)).tolist()
+        group_rows.append(group)
+    return group_rows
+
+
 def main():
     parser=argparse.ArgumentParser();parser.add_argument('--output',type=Path,required=True)
     parser.add_argument('--manifest',type=Path,required=True);parser.add_argument('--allow-partial',action='store_true')
@@ -111,28 +137,7 @@ def main():
         except Exception as exc:
             if not args.allow_partial:raise
             rows.append(dict(identity,status='not_ready',exception=repr(exc)));missing.append(key)
-    group_rows=[]
-    for candidate,kind in [('primary','leave_run_out'),('primary','leave_protocol_out'),('shared','leave_protocol_out')]:
-        selected=[r for r in rows if r['candidate']==candidate and r['fold_type']==kind and r['status']=='audited']
-        runs=[d for r in selected for d in r['per_run']];run_names=[d['name'] for d in runs]
-        assert len(set(run_names))==len(run_names),'A record was double-counted within a transfer group'
-        required=[f for f in expected.values() if f['candidate']==candidate and f['type']==kind]
-        if not args.allow_partial and len(selected)==len(required):assert set(run_names)==set(d['name'] for d in records)
-        count=sum(r['nobs_per_channel'] for r in runs)
-        group={'candidate':candidate,'fold_type':kind,'declared_folds':len(required),'audited_folds':len(selected),
-            'unique_test_records':len(run_names),'nobs_per_channel':count}
-        if count:
-            for prefix in ['latent','reported']:
-                group[prefix+'_RMSE_by_channel_C']=np.sqrt(np.sum([r[prefix+'_SSE_by_channel_C2'] for r in runs],axis=0)/count).tolist()
-            group['reported_signed_mean_error_C']=(np.sum([r['reported_signed_error_sum_C'] for r in runs],axis=0)/count).tolist()
-            for variant in ['noise_only','hard_nuisance_noise','parameter_64','parameter_256']:
-                if all(variant+'_covered_counts' in r for r in runs):
-                    group[variant+'_marginal_coverage']=(np.sum([r[variant+'_covered_counts'] for r in runs],axis=0)/count).tolist()
-                    group[variant+'_mean_width_C']=(np.sum([r[variant+'_width_sum_C'] for r in runs],axis=0)/count).tolist()
-            if all('parameter_64_to_256_max_bound_change_C' in r for r in runs):
-                group['parameter_64_to_256_max_bound_change_C']=np.max([r['parameter_64_to_256_max_bound_change_C'] for r in runs],axis=0).tolist()
-                group['parameter_64_to_256_changed_bound_fraction']=(np.sum([r['parameter_64_to_256_changed_bound_counts'] for r in runs],axis=0)/(2*count)).tolist()
-        group_rows.append(group)
+    group_rows=aggregate_groups(rows,expected,[d['name'] for d in records],args.allow_partial)
     accounted=len(rows)==len(expected) and all(r['status'] in ['audited','failed'] for r in rows)
     complete=accounted and all(r['status']=='audited' for r in rows)
     result={'status':'complete' if complete else ('complete_with_failures' if accounted else 'partial'),
