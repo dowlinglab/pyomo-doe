@@ -138,10 +138,10 @@ def main():
         'available_draws':len(available_indices),'draws_audited_in_this_run':len(rows),
         'available_but_not_selected_for_audit':sorted(set(available_indices)-set(indices)),
         'declared_draws':config['draws'],'missing_draws':sorted(set(range(config['draws']))-set(indices)),
-        'rows':audited,'complete_audited_coverage_draws':n,'failed_or_unaudited_available_draws':failed,
+        'rows':audited,'complete_audited_coverage_draws':n,'failed_or_incomplete_selected_draws':failed,
         'covered_audited_draws':k,'coverage_among_audited_complete':k/n if n else None,
         'binomial_95_Monte_Carlo_interval':interval(k,n),
-        'failure_worst_case_bounds_among_available':[k/len(rows),(k+failed)/len(rows)] if rows else None,
+        'failure_worst_case_bounds_among_selected':[k/len(rows),(k+failed)/len(rows)] if rows else None,
         'elapsed_s':time.monotonic()-begun,
         'notice':'Conditional parametric recovery with all failures retained; not a real-data model-adequacy test. Partial output is not a fifty-draw coverage result. Each accepted LR pair is independently audited and observations are regenerated from the declared seed.'}
     write(args.output/'audit.json',final)

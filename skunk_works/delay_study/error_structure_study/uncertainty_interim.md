@@ -2,9 +2,9 @@
 
 This is a progress note, not the completed report. The goal remains active.
 The selected mean/bin fits and information results below have terminal
-independent audits. The gain profile's numerical audit, remaining nuisance
-profiles, refitted coverage, retrospective transfer and several initialization
-sensitivities remain unfinished.
+independent audits. The gain profile and all seven point audits are complete;
+remaining nuisance profiles, refitted coverage, retrospective transfer and
+several initialization sensitivities remain unfinished.
 
 ## The run band and loading boundary
 
@@ -23,6 +23,16 @@ The structural separation argument and its zero-loading exception are in
 lag_identifiability.md; practical profiles still matter.
 
 ## Correlation changes uncertainty differently in different directions
+
+The gain profile refits all other permitted mean/noise nuisances. Fixing K
+1.5% below/above 0.873222 C/% raises twice nll by 18.674/18.022. All seven
+sampled points passed dimensional, rectangle, quadrature/support and stationarity
+audits; none improves the reference. This is conditional precision under the
+chosen model. The coarse grid does not resolve interval endpoints, and the
+nominal scalar cutoff still needs the fifty-draw recovery check. Evidence:
+profile_b10_gain and profile_b10_gain_audit_v2. The first collection's two
+missing output folders caused saved-check failures, retained separately;
+those calculations were repeated rather than declared successful from memory.
 
 The corrected information matrix passed its independent dimensional,
 dense-covariance, basis/eigenpair and scalar-curvature audit. The old finite-

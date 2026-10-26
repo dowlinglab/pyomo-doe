@@ -183,7 +183,11 @@ curvature also estimates noise nuisances. These are conditional local
 comparisons, not calibrated intervals. Keep the original matrix as a numerical diagnostic;
 do not report its tiny centered eigenvalue as a variance. The original gain
 profile completed naturally with seven successful points and no point below
-the reference. Its full collection audit is running. Each original recovery
+the reference. Its corrected collection audit is terminal and passed for all
+seven points. The first collection omitted per-point output folders, losing
+two calculated-but-unsaved checks; that failed run remains intact. Five saved
+checks were reused with identical numerical source/config/data and fit/array
+hashes, and the two missing checks were recomputed. Each original recovery
 shard retained seven completed draws before approved termination (exit -15).
 The gain profile exited 0 before that termination request was executed.
 The compiled continuation shards retain all fourteen completed outcomes and
@@ -203,11 +207,21 @@ uncertainty_config.json declares grids, starts, bounds,
 fifty recovery draws and gain-LR coverage before measurement. Source drivers:
 run_profiles.py, run_information.py, run_recovery.py.
 
+The generated-data auditor pilot checks draw 0 only. Its free and true-gain
+fits both passed full independent selected-point audits, exact seed/observation
+regeneration and LR arithmetic. It is not a coverage estimate. A metadata label
+in that frozen pilot refers to available rather than selected draws; its README
+clarifies the denominator of one and later source corrects the labels. Its
+two passed numerical point checks can be reused by the final fifty-draw audit
+only with matching numerical auditor and fit/array/dataset hashes.
+
 transfer_config.json declares sixteen primary folds (twelve runs + four
 protocols) and four shared-model protocol folds. Training/prediction code is
 committed; independent dimensional, no-future-output-leakage, reported-code
-expectation/quantile, mixture and fold-separation checks passed. No fold fit is
-measured yet. Parameter-draw propagation must inherit a validated approximation;
+expectation/quantile, mixture and fold-separation checks passed. The four primary
+leave-protocol-out fits are now running in transfer_primary_protocols. The
+twelve primary leave-run-out and four shared-model protocol fits remain queued.
+Parameter-draw propagation must inherit a validated approximation;
 noise-only hard-nuisance ranges are not total predictive intervals. If profiles
 change the candidate set, extend transfer support explicitly rather than using
 a linear predictor for a radiative or conditioned-initial-state fit.

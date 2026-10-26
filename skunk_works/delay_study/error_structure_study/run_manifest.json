@@ -11,8 +11,8 @@
     "3_bounded_conductance": "Gaussian bands and all joint bin 0/5/10/20 percent selected fits independently audited; no population variability claim.",
     "4_physical_extensions": "Gaussian affine/startup and joint bin-radiation/lower-loading/conditional-initial/nearest-sensor-bin fits audited. Floor/buffer and quantized hidden-start sensitivities pending.",
     "5_observation_model": "Sequential GLS and joint fits audited; deterministic 50 fixed-model and cross-localization references expose remaining input/phase/cross dependence. Gaussian independent/process/measurement/both fits audited; not a quantized correlated-channel law. Refitted reference completion pending.",
-    "6_uncertainty_transfer": "Information v2 and local active-face draws audited. Seven-point gain profile complete, collection audit running; short-lag profile running. Fourteen original recovery draws retained in two source-bound compiled continuations. Remaining profiles, final 50-draw audit and all retrospective fold fits/predictions pending.",
-    "7_report": "Four-page work-in-progress LaTeX/PDF compiled; 52-file numeric bindings, geometry and latest visual checks passed. Final content/figures, companion Markdown, scientific completion audit and final push pending."
+    "6_uncertainty_transfer": "Information v2/local active-face draws audited. Seven-point gain profile and all point audits passed after source-bound writer repair. Short-lag profile, complementary recovery continuations and first four primary protocol fold fits are running. One generated-data free/null LR pair independently audited with exact seed/data regeneration; pilot is not fifty-draw calibration. Remaining profiles, 50-draw aggregate and full transfer prediction/parameter analysis pending.",
+    "7_report": "Five-page WIP tablet PDF updated with nonrandom whitening failures, information comparisons and initial-bin sensitivity. 91-file numeric audit, all five rendered pages and geometry checks passed. Final figures, profiles/recovery/transfer, concise final Markdown and completion audit pending."
   },
   "jobs": [
     {
@@ -2545,8 +2545,36 @@
       "output": "skunk_works/delay_study/error_structure_study/results/profile_b10_gain_audit",
       "source_commit": "e793b56e0839c65cb82ff24ead106b9d2f8ffb53",
       "source_receipt_sha256": "f2307f60c395fc7d94793cd3a7e1d95b17d64984277d400f88feba77c8e108a0",
-      "status": "running_verified",
-      "last_verified_utc": "2026-10-26 13:31:35 UTC"
+      "status": "terminal",
+      "last_verified_utc": "2026-10-26 13:31:35 UTC",
+      "exit_code": 1,
+      "finished_utc": "2026-10-26T13:49:34.656552+00:00"
+    },
+    {
+      "id": "profile_b10_gain_audit_v2",
+      "process": {
+        "pid": 70311,
+        "parent_pid": 69872,
+        "command": [
+          "/Users/adowling/opt/anaconda3/bin/python",
+          "/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-error-231a6175-edszwrx7/skunk_works/delay_study/error_structure_study/audit_collection.py",
+          "--output",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/profile_b10_gain_audit_v2",
+          "--input",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/profile_b10_gain",
+          "--kind",
+          "profile",
+          "--reuse-collection",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/profile_b10_gain_audit"
+        ],
+        "started_utc": "2026-10-26T13:51:02.321274+00:00"
+      },
+      "output": "skunk_works/delay_study/error_structure_study/results/profile_b10_gain_audit_v2",
+      "source_commit": "231a61753bee7d804e0a28782c92ece8a7b51c54",
+      "source_receipt_sha256": "14f93e408e79572c64498e5c1d51b807ec8c329c71e91ae33b5e4facfdbbe4c6",
+      "status": "terminal",
+      "exit_code": 0,
+      "finished_utc": "2026-10-26T13:58:23.353805+00:00"
     },
     {
       "id": "profile_b10_short_lag",
@@ -2633,7 +2661,7 @@
       "source_commit": "ccf9362c6544497e906b2c0b4115860cfadf8e8c",
       "source_receipt_sha256": "91f79bb4a821086c98e1197858195a21c2ee40153fd32a8fd385385224f5447e",
       "status": "running_verified",
-      "last_verified_utc": "2026-10-26 13:31:35 UTC"
+      "last_verified_utc": "2026-10-26 14:10:24 UTC"
     },
     {
       "id": "profile_chart_check",
@@ -2899,6 +2927,34 @@
       "finished_utc": "2026-10-26T00:20:22.476944+00:00"
     },
     {
+      "id": "recovery_audit_draw0_pilot",
+      "process": {
+        "pid": 74805,
+        "parent_pid": 74482,
+        "command": [
+          "/Users/adowling/opt/anaconda3/bin/python",
+          "/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-error-d726561a-82c2bm92/skunk_works/delay_study/error_structure_study/audit_recovery.py",
+          "--output",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/recovery_audit_draw0_pilot",
+          "--input",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/joint_conductance_b10_export_v2",
+          "--shards",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/recovery_b10_even",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/recovery_b10_odd",
+          "--allow-partial",
+          "--audit-draws",
+          "0"
+        ],
+        "started_utc": "2026-10-26T14:00:03.569798+00:00"
+      },
+      "output": "skunk_works/delay_study/error_structure_study/results/recovery_audit_draw0_pilot",
+      "source_commit": "d726561adfec8412be05fadb4d283046420dde22",
+      "source_receipt_sha256": "ec025c59bf1ead78165292a57c2fd2cdb224de21642c852cfbf6ad0da8407c51",
+      "status": "terminal",
+      "exit_code": 0,
+      "finished_utc": "2026-10-26T14:07:43.123464+00:00"
+    },
+    {
       "id": "recovery_b10_even",
       "process": {
         "pid": 68044,
@@ -2960,7 +3016,7 @@
       "source_commit": "7cd61f36763fc5e114416176472bfc26b5b6a277",
       "source_receipt_sha256": "71fc02cd311eae6f6733b98b6f024a8b3dcc942e19c78d07dd4206db4eab2d7d",
       "status": "running_verified",
-      "last_verified_utc": "2026-10-26 13:31:35 UTC"
+      "last_verified_utc": "2026-10-26 14:10:24 UTC"
     },
     {
       "id": "recovery_b10_odd",
@@ -3024,7 +3080,7 @@
       "source_commit": "7cd61f36763fc5e114416176472bfc26b5b6a277",
       "source_receipt_sha256": "caa31c9d75a44f20dc5f7a7662b32c914f55fa375f208f21c1882c5b7014f16d",
       "status": "running_verified",
-      "last_verified_utc": "2026-10-26 13:31:35 UTC"
+      "last_verified_utc": "2026-10-26 14:10:24 UTC"
     },
     {
       "id": "sequential_b10_iid",
@@ -3342,13 +3398,12 @@
     }
   ],
   "live_jobs": [
-    "profile_b10_gain_audit",
     "profile_b10_short_lag_v2",
     "recovery_b10_even_compiled_continuation",
     "recovery_b10_odd_compiled_continuation"
   ],
-  "next_action": "Respect four live numerical slots. Audit gain profile and first generated-data fit when capacity frees; launch first retrospective protocol folds. Finish remaining profile queue, phase/buffer/start sensitivities and 50 recovery draws; audit every required result, then transfer parameter/noise/bin sensitivities and final report. No email.",
-  "updated_utc": "2026-10-26T13:31:35.836841+00:00",
+  "next_action": "Reconcile four live jobs. As capacity frees, finish short-lag profile plus point audits; dispatch run_profile_queue.py for log_Us_over_Ua, log_Ua_ratio_9, log_ell_T1 and radiation_gamma. Audit primary protocol folds and start leave-run primary/shared-protocol folds. Continue all fifty recovery draws; final audit_recovery.py can reuse passed draw0 pilot numerical checks. Dispatch run_initial_queue.py floor/buffer/hidden-heater sensitivities. Complete parameter/noise/bin/model-form transfer, final Markdown/LaTeX/PDF and requirement audit. No email.",
+  "updated_utc": "2026-10-26T14:10:25.362336+00:00",
   "last_goal_turn_classification": "progress: coherent audited uncertainty, code-score dependence, updated physical-mean/forecast diagnostics, initial-condition and bounded-conductance sensitivities committed; matched Gaussian cross-channel comparison implemented/audited, both complementary coverage shards dispatched; all current scientific claims source-bound and whitening remains explicitly unresolved",
   "controller_sessions": {
     "joint_conductance_b00": 55866,
@@ -3401,32 +3456,34 @@
     "joint_b10_initial_sensor_bins_audit": 36269,
     "profile_b10_short_lag": 69570,
     "profile_b10_short_lag_v2": 17643,
-    "profile_b10_gain_audit": 81290
+    "profile_b10_gain_audit": 81290,
+    "profile_b10_gain_audit_v2": 1106,
+    "recovery_audit_draw0_pilot": 41504,
+    "transfer_primary_protocols": 98386
   },
   "queued_jobs": [
-    "gain_profile_collection_audit_running",
-    "first_generated_dataset_independent_audit_then_partial_recovery_audit",
-    "retrospective_primary_protocol_fits_then_run_folds_and_shared_protocols",
-    "remaining_profile_queue_using_uncertainty_config",
-    "fixed_initial_floor_and_sensor_bin_floor_buffer_sensitivities",
-    "quantized_hidden_start_sensitivities_if_supported",
-    "fifty_recovery_completion_and_full_aggregate_audit",
-    "transfer_information_parameter_noise_bin_model_sensitivities",
-    "final_markdown_latex_pdf_audits_and_completion_push"
+    "current_primary_protocol_fits_then_independent_fold_audits",
+    "remaining_primary_run_and_shared_protocol_fits",
+    "short_lag_point_audits_after_fit_terminal",
+    "remaining_prespecified_profile_queue",
+    "initial_floor_buffer_and_hidden_heater_queue",
+    "all_fifty_recovery_and_refitted_diagnostic_aggregation_with_failed_denominators",
+    "per_fold_information_draws_and_transfer_parameter_noise_bin_model_sensitivities",
+    "final_report_scientific_numeric_visual_completion_audit_and_push"
   ],
   "process_check": {
     "path": "process_check.json",
-    "checked_utc": "2026-10-26 13:31:35 UTC",
-    "sha256": "3756c828799728f21bf1fb2a222b37c61c9719f0d2d4cb5e311308df70d9a109",
+    "checked_utc": "2026-10-26 14:10:24 UTC",
+    "sha256": "c25fc140f8133c4e99adbd820162a6c04fa1f51f7578a57dcb69abcff7e25b59",
     "method": "Direct approved pgrep -fl tclab-error tool",
-    "snapshot_age_s": 0.836841
+    "snapshot_age_s": 1.362336
   },
   "reconciliation_warnings": {
     "missing_exit_or_matching_process": [],
     "unbound_process_pids": []
   },
   "app_goal_state_observed": {
-    "status": "blocked",
-    "checked_context": "get_goal after the former process-control approval was granted; no present scientific or execution blocker. Current user heartbeat explicitly authorizes continued work, and the existing heartbeat remains the continuation mechanism. Tool cannot set active status."
+    "status": "active",
+    "checked_context": "User goal continuation and get_goal at 2026-10-26 14:07 UTC; former process-control wait resolved."
   }
 }
