@@ -277,8 +277,9 @@ with their full audits. A failed approximation stops the queue for review.
 stage_execution.py gives every sequential child its actual process, frozen
 source, log and exit. Its success/failure/no-overwrite fixture passed. A waiting
 queue and its one numerical child share one of the four worker slots; reconcile
-the nested process receipts as well as the top-level parent. No queue is yet a
-completed parameter-uncertainty result by itself. The first measured pipeline,
+the nested process receipts as well as the top-level parent. Passing the
+queue-control fixture alone does not establish parameter uncertainty.
+The first measured pipeline,
 transfer_uncertainty_protocol30, is now terminal with every stage passed:
 information, independent curvature audit, local draws, reference stress and
 64/256 forecasts with full independent audits. All nine new figures were
@@ -291,10 +292,10 @@ keeps this one completed fold separate from the nineteen unfinished pipelines.
 The remaining four profile coordinates are running in profile_remaining_b10,
 which stops if a point improves the reference or fails a numerical audit.
 
-Still required: cross-localization interpretation and disturbance comparisons;
-all pending mean/initial/bin sensitivities and selected-point audits; updated
-frequency/operating diagnostics; supported nuisance profiles; eigendecomposition
-interpretation; fifty refitted recovery/coverage draws with failure denominators;
+Still required: synthesize the completed cross-localization, disturbance,
+frequency/operating and information/eigenvector findings in the final report;
+finish pending initial/bin sensitivities, their selected-point audits and the
+remaining nuisance profiles; finish fifty refitted recovery/coverage draws with failure denominators;
 retrospective run/protocol transfer with parameter/noise/bin/model-form limits;
 and the final report and requirement-by-requirement completion audit.
 
