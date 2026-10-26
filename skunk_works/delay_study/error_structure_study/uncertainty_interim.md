@@ -281,3 +281,34 @@ Evidence: transfer_uncertainty_protocol30 and the manifest-indexed
 transfer_first_protocol_parameter_summary. The four remaining profile
 coordinates are running in profile_remaining_b10; other initial-state,
 recovery and retrospective-transfer gates remain open.
+
+## Matched protocol comparison: shared versus bounded conductance
+
+The four shared-conductance selected fits and all four canonical forecast/audit
+pairs are terminal and passed. Each protocol group predicts the same twelve
+records once (10,795 scored readings per channel). These groups reuse the same
+observations and are retrospective because structure selection used all runs.
+
+| Pooled reported-temperature quantity | Shared Ua, T1/T2 | 10% Ua band, T1/T2 |
+| --- | ---: | ---: |
+| Nominal RMSE, C | 2.171 / 0.894 | 2.131 / 0.875 |
+| RMSE after removing each run's mean error, C | 0.815 / 0.453 | 0.806 / 0.453 |
+| Noise-only marginal coverage | 50.3% / 53.5% | 32.1% / 36.7% |
+| Noise-only mean width, C | 3.606 / 0.811 | 2.010 / 0.303 |
+| Hard conditions plus noise coverage | 94.01% / 99.81% | 99.57% / 99.95% |
+| Hard conditions plus noise mean width, C | 6.769 / 3.969 | 9.072 / 5.173 |
+
+The all-data fitting improvement from allowing Ua variation has little
+counterpart in nominal omitted-protocol RMSE. Both nominal forecasts still
+set new-run ambient offset to zero and conductance to the training nominal.
+The broader band model's higher outer-envelope coverage includes an additional
+unknown-conductance range; it is not evidence of calibrated 95% probabilities
+or a causal measurement of airflow. The shared model estimates larger residual
+variance, so its noise-only ranges are broader despite similar nominal errors.
+Removing run mean errors is descriptive and cannot be used as a blind correction.
+
+All twelve new shared-model forecast figures and the two-group summary were
+inspected. Evidence: transfer_shared_protocols, transfer_shared_protocols_audit,
+transfer_shared_protocols_forecasts and
+transfer_protocol_candidates_canonical_summary. The last remains partial:
+twelve primary run forecasts and nineteen parameter pipelines are unfinished.

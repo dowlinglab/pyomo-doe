@@ -242,10 +242,17 @@ expectation/quantile, mixture and fold-separation checks passed. All four primar
 leave-protocol-out fits and canonical noise/scenario forecasts passed full
 independent audits. transfer_primary_runs is now terminal with all twelve
 primary leave-run-out fits successful. Their independent selected-point audits
-and forecasts remain pending. The four shared-model protocol fits are also
-terminal with four numerical successes. Their independent selected-point
-audit is running in transfer_shared_protocols_audit. No forecast comparison is
-claimed before those audits and the actual forecast audits pass.
+and forecasts remain pending. The four shared-model protocol fits, independent
+selected-point audits and canonical forecast/audit pairs are now terminal and
+passed. Their twelve figures and the two-candidate protocol summary were
+inspected. Shared versus bounded-conductance nominal protocol RMSE is
+2.171/0.894 versus 2.131/0.875 C. The large all-data fitting improvement gives
+little improvement in these nominal omitted-protocol predictions. The shared
+model's larger fitted residual variance gives broader noise-only ranges;
+the bounded model's additional unknown-conductance scenarios give broader
+outer ranges. Neither establishes calibrated total-95-percent predictions.
+Evidence: transfer_protocol_candidates_canonical_summary (still partial while
+twelve run forecasts and nineteen full parameter pipelines remain unfinished).
 Parameter-draw propagation must inherit a validated approximation;
 noise-only hard-nuisance ranges are not total predictive intervals. If profiles
 change the candidate set, extend transfer support explicitly rather than using
