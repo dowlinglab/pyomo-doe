@@ -34,7 +34,10 @@ def main():
     # Visit outward from the selected point and retain all failed/disconnected
     # points. Nearest successful profile warms the next point; a second basin
     # swaps sensor and input times. The unconstrained reference is always saved.
-    values=np.unique(np.r_[np.clip(values,lo,hi),point[index]])
+    values=np.clip(values,lo,hi)
+    # exp/log round trips can differ by an ulp; do not spend a second complete
+    # nuisance refit on a numerically identical reference grid point.
+    values=np.unique(np.r_[values[abs(values-point[index])>1e-10],point[index]])
     ordered=sorted(values,key=lambda x:abs(x-point[index]));rows=[];successful=[]
     for j,value in enumerate(ordered):
         warm=args.input/'fit.json'
