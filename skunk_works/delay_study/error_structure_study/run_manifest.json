@@ -2484,6 +2484,44 @@
       "finished_utc": "2026-10-26T00:24:05.710729+00:00"
     },
     {
+      "id": "profile_b10_exchanged_lag_point",
+      "process": {
+        "pid": 19997,
+        "parent_pid": 19705,
+        "command": [
+          "/Users/adowling/opt/anaconda3/bin/python",
+          "/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-error-168bf702-u8xgbfq0/skunk_works/delay_study/error_structure_study/run_joint_quantized.py",
+          "--output",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/profile_b10_exchanged_lag_point",
+          "--warm",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/profile_b10_short_lag_v2/point_7/fit.json",
+          "--noise1",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/bin_noise_band10_T1_v2/observation_fit.json",
+          "--noise2",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/bin_noise_band10_T2_v2/observation_fit.json",
+          "--band",
+          ".1",
+          "--phase",
+          "-.5",
+          "--starts",
+          "2",
+          "--maxiter",
+          "300",
+          "--fix-coordinate",
+          "log_input_lag",
+          "2.6939550504434266",
+          "--score-backend",
+          "compiled"
+        ],
+        "started_utc": "2026-10-26T16:39:13.823184+00:00"
+      },
+      "output": "skunk_works/delay_study/error_structure_study/results/profile_b10_exchanged_lag_point",
+      "source_commit": "168bf702f4d8ca93e78e443e354eb30db6dbfc52",
+      "source_receipt_sha256": "ffb7588d2ed21d8fe7c650f9d356d305e219511ae5c987efd67bc186c94bfa60",
+      "status": "running_verified",
+      "last_verified_utc": "2026-10-26 16:43:24 UTC"
+    },
+    {
       "id": "profile_b10_gain",
       "process": {
         "pid": 49571,
@@ -2711,6 +2749,58 @@
       "status": "terminal",
       "exit_code": 0,
       "finished_utc": "2026-10-26T00:54:49.232541+00:00"
+    },
+    {
+      "id": "profile_gain_lag_summary",
+      "process": {
+        "pid": 20776,
+        "parent_pid": 20448,
+        "command": [
+          "/Users/adowling/opt/anaconda3/bin/python",
+          "/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-error-87932032-2lqmzfj9/skunk_works/delay_study/error_structure_study/summarize_profiles.py",
+          "--output",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/profile_gain_lag_summary",
+          "--profile",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/profile_b10_gain",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/profile_b10_gain_audit_v2",
+          "--profile",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/profile_b10_short_lag_v2",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/profile_b10_short_lag_audit"
+        ],
+        "started_utc": "2026-10-26T16:40:51.071010+00:00"
+      },
+      "output": "skunk_works/delay_study/error_structure_study/results/profile_gain_lag_summary",
+      "source_commit": "87932032800a6e0124392cd3b566072757595cd8",
+      "source_receipt_sha256": "ee6bd39ac5ba4efda8f8ca6d843d912e6e0fdf67ea86ad5686cb91cde7d59e93",
+      "status": "terminal",
+      "exit_code": 0,
+      "finished_utc": "2026-10-26T16:40:54.506878+00:00"
+    },
+    {
+      "id": "profile_gain_lag_summary_v2",
+      "process": {
+        "pid": 21288,
+        "parent_pid": 20955,
+        "command": [
+          "/Users/adowling/opt/anaconda3/bin/python",
+          "/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-error-76eab2ae-ym_tt8pp/skunk_works/delay_study/error_structure_study/summarize_profiles.py",
+          "--output",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/profile_gain_lag_summary_v2",
+          "--profile",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/profile_b10_gain",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/profile_b10_gain_audit_v2",
+          "--profile",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/profile_b10_short_lag_v2",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/profile_b10_short_lag_audit"
+        ],
+        "started_utc": "2026-10-26T16:41:36.914614+00:00"
+      },
+      "output": "skunk_works/delay_study/error_structure_study/results/profile_gain_lag_summary_v2",
+      "source_commit": "76eab2aee21cb068900cc94ad82f720933862801",
+      "source_receipt_sha256": "a7db8736b0e9fac7ae7b57392b71ec8093a6f89334b9e44666222a8a69592085",
+      "status": "terminal",
+      "exit_code": 0,
+      "finished_utc": "2026-10-26T16:41:38.868127+00:00"
     },
     {
       "id": "quantization_check",
@@ -3121,7 +3211,7 @@
       "source_commit": "7cd61f36763fc5e114416176472bfc26b5b6a277",
       "source_receipt_sha256": "71fc02cd311eae6f6733b98b6f024a8b3dcc942e19c78d07dd4206db4eab2d7d",
       "status": "running_verified",
-      "last_verified_utc": "2026-10-26 16:39:05 UTC"
+      "last_verified_utc": "2026-10-26 16:43:24 UTC"
     },
     {
       "id": "recovery_b10_odd",
@@ -3185,7 +3275,7 @@
       "source_commit": "7cd61f36763fc5e114416176472bfc26b5b6a277",
       "source_receipt_sha256": "caa31c9d75a44f20dc5f7a7662b32c914f55fa375f208f21c1882c5b7014f16d",
       "status": "running_verified",
-      "last_verified_utc": "2026-10-26 16:39:05 UTC"
+      "last_verified_utc": "2026-10-26 16:43:24 UTC"
     },
     {
       "id": "recovery_summary_controller_check",
@@ -3922,7 +4012,7 @@
       "source_commit": "7180ae80658d9f31a5ea3d6d4f0c9ee75f73e552",
       "source_receipt_sha256": "bedb98b6fe79b9606145b6e966dcc90bb59a92dbf3035c82c6d692b4479440ff",
       "status": "running_verified",
-      "last_verified_utc": "2026-10-26 16:39:05 UTC"
+      "last_verified_utc": "2026-10-26 16:43:24 UTC"
     },
     {
       "id": "updated_diagnostics_check",
@@ -4048,12 +4138,13 @@
     }
   ],
   "live_jobs": [
+    "profile_b10_exchanged_lag_point",
     "recovery_b10_even_compiled_continuation",
     "recovery_b10_odd_compiled_continuation",
     "transfer_primary_runs"
   ],
   "next_action": "The nine coarse short-lag points and all independent audits passed. Wait for profile_b10_exchanged_lag_point (session 96933), audit its selected point, and refine the unconstrained baseline if its nll beats the reference by >.001. Then dispatch the first run_transfer_uncertainty_queue.py protocol_30s pipeline with --reuse-noise-index manifest, inspect all approximation gates before later pipelines, and keep remaining prespecified profiles/initial/shared-fold queues moving as slots free. Recovery continuations and twelve primary run folds are still live. Full 50-draw aggregates, parameter transfer and final reports remain required; no email.",
-  "updated_utc": "2026-10-26T16:39:06.235434+00:00",
+  "updated_utc": "2026-10-26T16:43:25.058730+00:00",
   "last_goal_turn_classification": "progress after verified wait: all nine short-lag audits completed and passed; exact declared exchanged-lag refinement launched in the freed fourth slot; audited gain/lag grids summarized and figures inspected without CI interpolation.",
   "controller_sessions": {
     "joint_conductance_b00": 55866,
@@ -4142,10 +4233,10 @@
   ],
   "process_check": {
     "path": "process_check.json",
-    "checked_utc": "2026-10-26 16:39:05 UTC",
-    "sha256": "1f20e574e5707dacbaaa1718d0a7030f8d06d8e02b120e6c01a105d1e71e7ff7",
+    "checked_utc": "2026-10-26 16:43:24 UTC",
+    "sha256": "cda7a376eded562895ad3d7fba7d72417e0ca7968e0237ac8e6eea59f3ad2a5a",
     "method": "Direct approved pgrep -fl tclab-error tool",
-    "snapshot_age_s": 1.235434
+    "snapshot_age_s": 1.05873
   },
   "reconciliation_warnings": {
     "missing_exit_or_matching_process": [],
@@ -4212,6 +4303,7 @@
     }
   ],
   "live_worker_slots": [
+    "profile_b10_exchanged_lag_point",
     "recovery_b10_even_compiled_continuation",
     "recovery_b10_odd_compiled_continuation",
     "transfer_primary_runs"
