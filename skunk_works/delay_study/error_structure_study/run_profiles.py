@@ -11,6 +11,7 @@ import numpy as np
 from physical import load_records
 from joint_quantized import Model
 from fit_task import run
+from continuation import run_task,arguments,sha
 from run_bounded import write
 
 
@@ -19,7 +20,8 @@ def main():
     parser.add_argument('--input',type=Path,required=True);parser.add_argument('--noise1',type=Path,required=True);parser.add_argument('--noise2',type=Path,required=True)
     parser.add_argument('--coordinate',required=True);parser.add_argument('--values',type=float,nargs='+',required=True)
     parser.add_argument('--physical-values',action='store_true');parser.add_argument('--starts',type=int,default=2)
-    parser.add_argument('--maxiter',type=int,default=300);parser.add_argument('--score-backend',choices=['reference','compiled'],default='reference');args=parser.parse_args();begun=time.monotonic()
+    parser.add_argument('--maxiter',type=int,default=300);parser.add_argument('--score-backend',choices=['reference','compiled'],default='reference')
+    parser.add_argument('--continue-profile',type=Path);args=parser.parse_args();begun=time.monotonic()
     fit=json.loads((args.input/'fit.json').read_text());assert fit['kernel']=='quantized_ou_nugget' and not fit.get('fixed_coordinates')
     if fit.get('dataset') or fit.get('startup_band_C') or fit.get('initial_sensor_bins'):raise ValueError('Declare separate synthetic/startup profile setup')
     lookup={d['name']:d for d in load_records()};records=[lookup[n] for n in fit['record_names']]
@@ -39,10 +41,29 @@ def main():
     # nuisance refit on a numerically identical reference grid point.
     values=np.unique(np.r_[values[abs(values-point[index])>1e-10],point[index]])
     ordered=sorted(values,key=lambda x:abs(x-point[index]));rows=[];successful=[]
+    previous_binding=None
+    if args.continue_profile:
+        old=args.continue_profile
+        assert (old/'exit.json').exists(),'Previous profile parent must be terminal'
+        if json.loads((old/'exit.json').read_text())['exit_code']!=0:assert (old/'superseded.json').exists()
+        before=arguments(json.loads((old/'source_snapshot.json').read_text())['command'][1:]);after=arguments(sys.argv)
+        for command in [before,after]:
+            for flag in ['--output','--score-backend','--continue-profile']:command.pop(flag,None)
+        assert before==after,'Profile grid, source paths or solver protocol changed'
+        prior_rows=json.loads((old/'points.json').read_text()) if (old/'points.json').exists() else []
+        assert len(prior_rows)<=len(ordered) and all(abs(r['coordinate_value']-v)<1e-12 for r,v in zip(prior_rows,ordered))
+        previous_binding={'path':str(old),'source_sha256':sha(old/'source_snapshot.json'),'exit_sha256':sha(old/'exit.json'),
+            'points_sha256':sha(old/'points.json') if (old/'points.json').exists() else None,
+            'notice':'Grid and protocol are unchanged. Terminal successful/failed point tasks are retained with current selected-point checks; only incomplete/future tasks are solved.'}
+    write(args.output/'design.json',{'coordinate':args.coordinate,'ordered_values':ordered,
+        'fit_sha256':sha(args.input/'fit.json'),'starts':args.starts,'maxiter':args.maxiter,
+        'score_backend':args.score_backend,'previous_profile':previous_binding})
     for j,value in enumerate(ordered):
         warm=args.input/'fit.json'
         if successful:warm=Path(min(successful,key=lambda r:abs(r['coordinate_value']-value))['output'])/'fit.json'
-        row=run(args.output/('point_'+str(j)),warm,args.noise1,args.noise2,fit['family'],fit['band'],fit['phase'],
+        row=run_task(args.output/('point_'+str(j)),warm,
+            previous=args.continue_profile/('point_'+str(j)) if args.continue_profile else None,
+            noise1=args.noise1,noise2=args.noise2,family=fit['family'],band=fit['band'],phase=fit['phase'],
             starts=args.starts,maxiter=args.maxiter,fixed={args.coordinate:float(value)},minimum_sensor_loading=fit.get('minimum_sensor_loading',.005),condition_initial_code=fit.get('condition_initial_code',False),score_backend=args.score_backend)
         row['coordinate_value']=float(value);row['physical_value']=float(np.exp(value)) if args.coordinate.startswith('log_') else float(value)
         if row['success']:
@@ -54,7 +75,7 @@ def main():
         'reference_nll':fit['best']['nll'],'reference_coordinate':float(point[index]),'profile_bounds':[lo,hi],
         'fit_sha256':hashlib.sha256((args.input/'fit.json').read_bytes()).hexdigest(),'points':sorted(rows,key=lambda r:r['coordinate_value']),
         'lower_nll_than_reference':any(r['success'] and r['nll']<fit['best']['nll']-1e-3 for r in rows),
-        'elapsed_s':time.monotonic()-begun,'score_backend':args.score_backend,
+        'elapsed_s':time.monotonic()-begun,'score_backend':args.score_backend,'previous_profile':previous_binding,
         'notice':'Every fixed coordinate refits all other permitted mean, ambient, conductance and noise coordinates. Two declared starts and nearest successful warm points do not prove global profiles. Negative deviances require baseline refinement. Active-bound and disconnected profiles preclude routine Wald claims; chi-squared cutoffs require simulation calibration.'})
     if not successful:raise RuntimeError('No profile point converged; retain failures')
 
