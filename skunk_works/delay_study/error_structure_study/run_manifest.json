@@ -1146,6 +1146,38 @@
       "finished_utc": "2026-10-26T03:55:45.767534+00:00"
     },
     {
+      "id": "initial_remaining_b10",
+      "process": {
+        "pid": 78534,
+        "parent_pid": 77979,
+        "command": [
+          "/Users/adowling/opt/anaconda3/bin/python",
+          "/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-error-e8951c5a-fmrtufk8/skunk_works/delay_study/error_structure_study/run_initial_queue.py",
+          "--output",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/initial_remaining_b10",
+          "--input",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/joint_conductance_b10_export_v2",
+          "--noise1",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/bin_noise_band10_T1_v2/observation_fit.json",
+          "--noise2",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/bin_noise_band10_T2_v2/observation_fit.json",
+          "--cases",
+          "fixed_floor",
+          "bins_floor",
+          "bins_buffer_nearest",
+          "bins_buffer_floor",
+          "hidden_heater_2C",
+          "hidden_heater_5C"
+        ],
+        "started_utc": "2026-10-26T20:26:08.317730+00:00"
+      },
+      "output": "skunk_works/delay_study/error_structure_study/results/initial_remaining_b10",
+      "source_commit": "e8951c5ae3c6ca4b7dc4252008a3ced464b455b2",
+      "source_receipt_sha256": "d7d85c0ef40d029af35f63deb48e9f3e7eb8a8e93a9eb6890147ca3b34a7f028",
+      "status": "running_verified",
+      "last_verified_utc": "2026-10-26 20:35:01 UTC"
+    },
+    {
       "id": "initial_sensor_check",
       "process": {
         "pid": 8491,
@@ -2857,7 +2889,7 @@
       "source_commit": "cc9dad7639d2662b88bacc42c864fde2980278c2",
       "source_receipt_sha256": "010097bd36fca5d18ee9b8a323a2eb8b366319dde180d695d6d0d55070e58974",
       "status": "running_verified",
-      "last_verified_utc": "2026-10-26 20:26:00 UTC"
+      "last_verified_utc": "2026-10-26 20:35:01 UTC"
     },
     {
       "id": "quantization_check",
@@ -3268,7 +3300,7 @@
       "source_commit": "7cd61f36763fc5e114416176472bfc26b5b6a277",
       "source_receipt_sha256": "71fc02cd311eae6f6733b98b6f024a8b3dcc942e19c78d07dd4206db4eab2d7d",
       "status": "running_verified",
-      "last_verified_utc": "2026-10-26 20:26:00 UTC"
+      "last_verified_utc": "2026-10-26 20:35:01 UTC"
     },
     {
       "id": "recovery_b10_odd",
@@ -3332,7 +3364,7 @@
       "source_commit": "7cd61f36763fc5e114416176472bfc26b5b6a277",
       "source_receipt_sha256": "caa31c9d75a44f20dc5f7a7662b32c914f55fa375f208f21c1882c5b7014f16d",
       "status": "running_verified",
-      "last_verified_utc": "2026-10-26 20:26:00 UTC"
+      "last_verified_utc": "2026-10-26 20:35:01 UTC"
     },
     {
       "id": "recovery_summary_controller_check",
@@ -3708,6 +3740,29 @@
       "status": "terminal",
       "exit_code": 0,
       "finished_utc": "2026-10-26T16:04:22.545332+00:00"
+    },
+    {
+      "id": "transfer_all_canonical_summary",
+      "process": {
+        "pid": 78581,
+        "parent_pid": 78014,
+        "command": [
+          "/Users/adowling/opt/anaconda3/bin/python",
+          "/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-error-e8951c5a-r78w9pr4/skunk_works/delay_study/error_structure_study/summarize_transfer.py",
+          "--output",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_all_canonical_summary",
+          "--manifest",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/run_manifest.json",
+          "--allow-partial"
+        ],
+        "started_utc": "2026-10-26T20:26:09.263010+00:00"
+      },
+      "output": "skunk_works/delay_study/error_structure_study/results/transfer_all_canonical_summary",
+      "source_commit": "e8951c5ae3c6ca4b7dc4252008a3ced464b455b2",
+      "source_receipt_sha256": "4c008bf4905f275eca342c04af0781939d74c0956e751c961e298ee3db62f50a",
+      "status": "terminal",
+      "exit_code": 0,
+      "finished_utc": "2026-10-26T20:26:10.957755+00:00"
     },
     {
       "id": "transfer_check",
@@ -5460,12 +5515,13 @@
     }
   ],
   "live_jobs": [
+    "initial_remaining_b10",
     "profile_remaining_b10",
     "recovery_b10_even_compiled_continuation",
     "recovery_b10_odd_compiled_continuation"
   ],
   "next_action": "All twenty canonical selected-fit and forecast audits passed, figures inspected, all twenty folds indexed in transfer_all_canonical_summary. Global transfer remains partial because nineteen full parameter pipelines are pending. initial_remaining_b10 (session 93534) is now the fourth long worker, running six declared bin/floor/buffer/hidden-heater sensitivities with full audits. Remaining full-data profiles and complementary recovery continuations remain live. Reconcile as slots free; audit terminal recovery shards (all fifty outcomes with failed denominators) and dispatch remaining three primary protocol, twelve primary run and four shared full parameter pipelines with --reuse-noise-index manifest. Final refitted diagnostic/coverage aggregates, sensitivity synthesis, Markdown/tablet report, requirement audit and push remain required; no email.",
-  "updated_utc": "2026-10-26T20:26:01.279023+00:00",
+  "updated_utc": "2026-10-26T20:35:01.673775+00:00",
   "last_goal_turn_classification": "progress after verified waits: all twelve primary-run selected audits and canonical forecasts passed; all twenty canonical folds now source-bound, figures inspected and compared without treating reused observations as independent. Six initial/bin/hidden-start cases launched in the freed fourth slot. Parameter/coverage/final report gates remain intact.",
   "controller_sessions": {
     "joint_conductance_b00": 55866,
@@ -5564,10 +5620,10 @@
   ],
   "process_check": {
     "path": "process_check.json",
-    "checked_utc": "2026-10-26 20:26:00 UTC",
-    "sha256": "6cab2f3231743217ea316b10c655986d6ff03378bfaa10ee90acb6116f7377a1",
+    "checked_utc": "2026-10-26 20:35:01 UTC",
+    "sha256": "68bde70e8eb686b8b6251312c6da6fc19c1d2b5d8af17b0402f5149e81652494",
     "method": "Direct approved pgrep -fl tclab-error tool",
-    "snapshot_age_s": 1.279023
+    "snapshot_age_s": 0.673775
   },
   "reconciliation_warnings": {
     "missing_exit_or_matching_process": [],
@@ -5874,6 +5930,7 @@
     }
   ],
   "live_worker_slots": [
+    "initial_remaining_b10",
     "profile_remaining_b10",
     "recovery_b10_even_compiled_continuation",
     "recovery_b10_odd_compiled_continuation"
