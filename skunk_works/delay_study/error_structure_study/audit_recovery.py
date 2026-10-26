@@ -98,8 +98,9 @@ def main():
                     assert task['arrays_sha256']==sha(directory/'trajectories.npz') and task['dataset_binding']['sha256']==sha(dataset)
                     numerical=dict(task,reused_audit={'path':str(parent),'audit_sha256':sha(parent/'audit.json')})
                 else:
+                    destination=args.output/('draw_'+str(row['draw']));destination.mkdir(parents=True,exist_ok=True)
                     numerical=audit(SimpleNamespace(input=directory))
-                    write(args.output/('draw_'+str(row['draw']))/(label+'.json'),numerical)
+                    write(destination/(label+'.json'),numerical)
                 result['numerical_audits'].append(dict(numerical,role=label))
                 if numerical['status']!='passed':result['failures'].append([label,numerical['failures']])
             if row['coverage_complete']:
