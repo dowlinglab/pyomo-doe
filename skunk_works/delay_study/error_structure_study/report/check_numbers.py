@@ -20,6 +20,33 @@ def main():
     parser=argparse.ArgumentParser();parser.add_argument('--output',type=Path,required=True);args=parser.parse_args()
     text=(HERE/'main.tex').read_text();bindings={};checked=[];records=load_records()
     def binding(path):bindings[str(path.relative_to(DELAY))]=sha(path)
+    # Historical T1-only benchmark: reuse its independently audited fit, bind
+    # unchanged raw data, and recompute the scalar SSE without ranking unlike
+    # single-/two-output likelihoods or ambient definitions.
+    prior=DELAY/'shared_model_investigation/results'
+    directory=prior/'mapped_unequal3';historical=json.loads((directory/'fit.json').read_text())
+    audit_path=prior/'mapped_unequal_audit/mapped_unequal3_audit/audit.json'
+    historical_audit=json.loads(audit_path.read_text())
+    assert historical_audit['status']=='passed' and historical_audit['fit_sha256']==sha(directory/'fit.json')
+    assert json.loads((directory/'exit.json').read_text())['exit_code']==0
+    assert json.loads((prior/'mapped_unequal_audit/exit.json').read_text())['exit_code']==0
+    assert historical['kind']=='mapped_unequal' and historical['state_count']==3
+    assert historical['ambient_mode']=='linear' and historical['ambient_width']==2
+    assert historical['record_names']==[d['name'] for d in records]
+    source=json.loads((directory/'source_snapshot.json').read_text())
+    arrays=np.load(directory/'trajectories.npz');sse=0.;nobs=0
+    for j,d in enumerate(records):
+        assert source['sha256']['data/'+d['name']]==d['sha256']
+        assert np.array_equal(arrays['time_'+str(j)],d['t'])
+        assert np.array_equal(arrays['input_'+str(j)],d['u'])
+        assert np.array_equal(arrays['observed_'+str(j)],d['y'][:,0])
+        error=d['y'][1:,0]-arrays['predicted_'+str(j)][1:];sse+=float(error@error);nobs+=len(error)
+    benchmark_rmse=float(np.sqrt(sse/nobs));assert nobs==historical['nobs']==10795
+    benchmark_nobs=nobs
+    assert abs(benchmark_rmse-historical['RMSE_C'])<1e-12
+    assert f'{benchmark_rmse:.3f}\\C' in text
+    for p in [directory/'fit.json',directory/'trajectories.npz',directory/'source_snapshot.json',
+        directory/'exit.json',audit_path,prior/'mapped_unequal_audit/exit.json']:binding(p)
     def audited(root,name,audit_name=None):
         directory=root/name;f=json.loads((directory/'fit.json').read_text());a=root/(audit_name or name+'_audit')
         assert json.loads((directory/'exit.json').read_text())['exit_code']==0
@@ -249,6 +276,7 @@ def main():
     # Check the concise Markdown companion against the same independently
     # pooled arrays, not by comparing its text with the LaTeX transcription.
     markdown=(STUDY/'report.md').read_text()
+    assert f'{benchmark_rmse:.3f} C' in markdown
     md_fits=[('Shared conductance','joint_conductance_b00_export_v3','joint_conductance_b00_audit'),
         ('5% run band','joint_conductance_b05_export_v2','joint_conductance_b05_audit'),
         ('10% run band','joint_conductance_b10_export_v2','joint_conductance_b10_audit'),
@@ -304,6 +332,8 @@ def main():
         'checker_source_sha256':sha(Path(__file__)),
         'python':platform.python_version(),'data_count_including_initial_readings':count,'Gaussian_table':checked,
         'Gaussian_radiation_nll_improvement':radiation_delta,'joint_bin_RMSE_C':jr.tolist(),
+        'historical_T1_only_benchmark':{'RMSE_C':benchmark_rmse,'nobs':benchmark_nobs,
+            'notice':'Different output set and affine ambient; no matched likelihood or AIC comparison.'},
         'source_bindings_sha256':bindings,
         'scope':'Intermediate numeric values, raw observation/fit/audit bindings, direct RMSE arithmetic and displayed rounding. Does not certify pending scientific gates, complete-goal status, writing interpretation or PDF layout.'},indent=2)+'\n')
     print(json.dumps({'status':'passed','table_rows':len(table),'bound_files':len(bindings),'raw_temperature_count':count}))

@@ -55,6 +55,13 @@ beyond 10%. Protocol-aligned fitted deviations could reflect several model
 discrepancies; they are not airflow measurements. Training likelihood alone
 does not choose the band width.
 
+The earlier T1-only positive three-pole benchmark, with command curvature and
+affine ambient, reached 0.374 C RMSE. Its different output set and ambient
+formulation prevent a matched likelihood or AIC comparison with these joint
+fits. It remains historical prediction context, without a unique physical
+assignment of its three poles. See the
+[completed single-output study](../shared_model_investigation/report.md).
+
 The old model's roughly 1 C T1 error was total RMSE. Orthogonal projections
 assign 74.6% of its squared error to run offsets and another 19.3% to trends;
 the additional fundamental sine term accounts for only 0.64%. Describing the
