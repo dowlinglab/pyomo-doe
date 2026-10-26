@@ -1175,7 +1175,7 @@
       "source_commit": "e8951c5ae3c6ca4b7dc4252008a3ced464b455b2",
       "source_receipt_sha256": "d7d85c0ef40d029af35f63deb48e9f3e7eb8a8e93a9eb6890147ca3b34a7f028",
       "status": "running_verified",
-      "last_verified_utc": "2026-10-26 20:35:01 UTC"
+      "last_verified_utc": "2026-10-26 21:06:09 UTC"
     },
     {
       "id": "initial_sensor_check",
@@ -2889,7 +2889,7 @@
       "source_commit": "cc9dad7639d2662b88bacc42c864fde2980278c2",
       "source_receipt_sha256": "010097bd36fca5d18ee9b8a323a2eb8b366319dde180d695d6d0d55070e58974",
       "status": "running_verified",
-      "last_verified_utc": "2026-10-26 20:35:01 UTC"
+      "last_verified_utc": "2026-10-26 21:06:09 UTC"
     },
     {
       "id": "quantization_check",
@@ -3300,7 +3300,7 @@
       "source_commit": "7cd61f36763fc5e114416176472bfc26b5b6a277",
       "source_receipt_sha256": "71fc02cd311eae6f6733b98b6f024a8b3dcc942e19c78d07dd4206db4eab2d7d",
       "status": "running_verified",
-      "last_verified_utc": "2026-10-26 20:35:01 UTC"
+      "last_verified_utc": "2026-10-26 21:06:09 UTC"
     },
     {
       "id": "recovery_b10_odd",
@@ -3363,8 +3363,10 @@
       "output": "skunk_works/delay_study/error_structure_study/results/recovery_b10_odd_compiled_continuation",
       "source_commit": "7cd61f36763fc5e114416176472bfc26b5b6a277",
       "source_receipt_sha256": "caa31c9d75a44f20dc5f7a7662b32c914f55fa375f208f21c1882c5b7014f16d",
-      "status": "running_verified",
-      "last_verified_utc": "2026-10-26 20:35:01 UTC"
+      "status": "terminal",
+      "last_verified_utc": "2026-10-26 20:35:01 UTC",
+      "exit_code": 0,
+      "finished_utc": "2026-10-26T21:05:31.927655+00:00"
     },
     {
       "id": "recovery_summary_controller_check",
@@ -5517,12 +5519,11 @@
   "live_jobs": [
     "initial_remaining_b10",
     "profile_remaining_b10",
-    "recovery_b10_even_compiled_continuation",
-    "recovery_b10_odd_compiled_continuation"
+    "recovery_b10_even_compiled_continuation"
   ],
-  "next_action": "All twenty canonical fits/forecasts are audited and indexed; nineteen full parameter pipelines remain. Four long workers are live: initial_remaining_b10, profile_remaining_b10 and both complementary recovery continuations. On the first recovery continuation terminal exit, audit its twenty-five parity indices using --allow-partial and the opposite original terminal shard as the full-design declaration witness (see uncertainty_methods.md); never supply a live shard. After both current continuations finish, audit/reuse every one of all fifty outcomes from their complete ledgers. Dispatch remaining full protocol/run/shared parameter pipelines as slots free. Finish initialization/profile sensitivities, refitted recovery/coverage summaries, final Markdown/tablet PDF, requirement audit and push; no email.",
-  "updated_utc": "2026-10-26T20:35:01.673775+00:00",
-  "last_goal_turn_classification": "progress: confirmed all four current processes live; verified strict old/continued recovery truth/config/design equality and committed a parity-only audit execution order that preserves all fifty final outcomes. No live shard is treated as terminal and no coverage result is claimed from a partial audit.",
+  "next_action": "Odd continuation is terminal with twenty-five declared outcomes; recovery_odd25_audit (session 31206) independently audits every odd draw with original terminal even shard as declaration witness. Even continuation is still live. All twenty canonical transfer folds are audited; nineteen full parameter pipelines remain. Initial/bin and remaining-profile queues remain live. On even terminal exit, audit all even indices from both current terminal continuation ledgers, reusing only matching passed point checks; combine both parity audits in a final full fifty-draw audit/summary. Advance remaining full parameter pipelines with the canonical manifest index as slots free. Finish sensitivity synthesis, final Markdown/tablet report, completion audit and push; no email.",
+  "updated_utc": "2026-10-26T21:06:09.527656+00:00",
+  "last_goal_turn_classification": "progress: odd continuation completed all twenty-five outcomes and was reconciled; its parity-complete independent audit launched with strictly verified immutable declaration/data/truth inputs. The original/current even ledgers are not conflated, no live audit input is used, and all fifty final outcomes remain required.",
   "controller_sessions": {
     "joint_conductance_b00": 55866,
     "joint_conductance_b10": 15102,
@@ -5608,7 +5609,8 @@
     "transfer_primary_runs_audit": 80678,
     "transfer_primary_runs_forecasts": 71762,
     "transfer_all_canonical_summary": 13978,
-    "initial_remaining_b10": 93534
+    "initial_remaining_b10": 93534,
+    "recovery_odd25_audit": 31206
   },
   "queued_jobs": [
     "remaining_prespecified_profile_queue",
@@ -5620,10 +5622,10 @@
   ],
   "process_check": {
     "path": "process_check.json",
-    "checked_utc": "2026-10-26 20:35:01 UTC",
-    "sha256": "68bde70e8eb686b8b6251312c6da6fc19c1d2b5d8af17b0402f5149e81652494",
+    "checked_utc": "2026-10-26 21:06:09 UTC",
+    "sha256": "5207d25fb7bbb81846a282295cb6d2cc8e428ea2151fe568dd9d1af71f6e4da9",
     "method": "Direct approved pgrep -fl tclab-error tool",
-    "snapshot_age_s": 0.673775
+    "snapshot_age_s": 0.527656
   },
   "reconciliation_warnings": {
     "missing_exit_or_matching_process": [],
@@ -5932,7 +5934,6 @@
   "live_worker_slots": [
     "initial_remaining_b10",
     "profile_remaining_b10",
-    "recovery_b10_even_compiled_continuation",
-    "recovery_b10_odd_compiled_continuation"
+    "recovery_b10_even_compiled_continuation"
   ]
 }
