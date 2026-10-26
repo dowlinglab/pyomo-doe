@@ -2,6 +2,7 @@
 import argparse
 import copy
 import json
+from math import isfinite
 from pathlib import Path
 import tempfile
 from scipy.optimize import brentq
@@ -28,8 +29,11 @@ def main():
     for k,n in [(0,50),(1,50),(25,50),(49,50),(50,50),(1,2)]:
         expected=[brentq(lambda p:binom.sf(k-1,n,p)-.025,0.,1.,xtol=1e-14) if k else 0.,
                   brentq(lambda p:binom.cdf(k,n,p)-.025,0.,1.,xtol=1e-14) if k<n else 1.]
-        actual=interval(k,n);error=max(abs(a-b) for a,b in zip(actual,expected));assert error<1e-11
-        checks.append({'covered':k,'complete':n,'beta_quantile_vs_binomial_tail_root_error':error})
+        actual=interval(k,n);assert all(isfinite(v) for v in actual+expected)
+        assert 0<=actual[0]<=actual[1]<=1
+        error=max(abs(a-b) for a,b in zip(actual,expected));assert error<1e-11
+        checks.append({'covered':k,'complete':n,'beta_quantile_interval':actual,
+            'independent_binomial_tail_interval':expected,'beta_quantile_vs_binomial_tail_root_error':error})
     row=json.loads((args.draw/'recovery.json').read_text());original=free_output(row)
     older=dict(row);older.pop('selected_free_output',None)
     assert free_output(older)==original
