@@ -28,7 +28,10 @@ def main():
             'source_receipt_sha256':hashlib.sha256((directory/'source_snapshot.json').read_bytes()).hexdigest()})
         if (directory/'exit.json').exists():
             exit=json.loads((directory/'exit.json').read_text());row['status']='terminal';row['exit_code']=exit['exit_code']
-            row['finished_utc']=exit['finished_utc']
+            # A few retained early receipts predate the timestamp field. Their
+            # exit code is terminal evidence; never reconstruct a finish time
+            # from file metadata or from this controller's observation time.
+            row['finished_utc']=exit.get('finished_utc')
         elif processes.get(process['pid'])==' '.join(process['command']):
             row['status']='running_verified';live.append(directory.name);bound_pids.append(process['pid'])
             row['last_verified_utc']=snapshot['checked_utc']

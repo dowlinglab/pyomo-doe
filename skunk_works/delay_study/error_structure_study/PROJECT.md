@@ -96,6 +96,23 @@ stationarity, independent physical trajectories and Gaussian bin rectangles,
 128/256/512-node convergence and 12/16-tail support. Neither the predictive checks
 nor these numerical audits establish a global optimum or physical adequacy.
 
+The profile/refitting charts passed full coordinate-score checks, including
+fixed-gain stationarity and centering with a fixed run deviation. The largest
+scaled score discrepancy remains 5.7e-7. uncertainty_config.json declares profile
+grids, Hessian step checks and fifty refitted gain-LR coverage draws before that
+work is measured. run_profiles.py, run_information.py and run_recovery.py are
+committed. Their measured runs remain pending selected-fit audits and capacity.
+freeze.py now includes uncertainty_config.json in each frozen source receipt.
+
+Phase-consistent initial sensor-bin sensitivities passed independent dimensional
+propagation (2.2e-14 C error) and initial-coordinate score checks (5.7e-9 scaled
+error). The new driver options are --initial-sensor-bins and
+--initial-noise-buffer 0.1. These move each cold heater/sensor pair together,
+leave the original ambient reference/bounds intact and do not integrate an
+initial-measurement posterior. The existing hidden-heater-only comparisons remain
+separate. Start with nearest bins/no buffer, compare a 0.1 C scenario buffer and
+floor bins consistently; do not label these bounds calibrated confidence limits.
+
 ## Resume instructions
 
 Read the plan, this file and `run_manifest.json`. Inspect process identities and
