@@ -359,7 +359,7 @@ quantized baseline's input/phase failures in uncertainty and transfer discussion
 ## Reporting and continuation
 
 report/main.tex and main.pdf are a seven-page work-in-progress report, not a
-finished study. Current numeric checks bind 259 source files and independently check the concise
+finished study. Current numeric checks bind 265 source files and independently check the concise
 Markdown companion as well as the LaTeX values; all seven rendered pages and the requested geometry were inspected. Recompile, rerender
 and recheck after each meaningful revision. Geometry is 0.25-inch left and
 3.25-inch right, with 35 college-spaced annotation lines per page. Final evidence,
@@ -388,3 +388,9 @@ identifiability or whitening honestly. Then pause the heartbeat for Alex's revie
 The requirement register in completion_audit.md maps every scientific, execution
 and delivery gate to evidence and explicit remaining work. It is not a completion
 claim. Reinspect all rows against terminal artifacts at the final checkpoint.
+
+The historical T1-only positive three-pole/curved-command/affine-ambient benchmark
+is retained in both report drafts at 0.374 C RMSE. Its old producer/independent
+audit exits, fit/trajectory/source hashes, all raw T1/time/input arrays and
+10,795-point scalar SSE were rechecked. Different outputs and ambient definitions
+prevent a matched likelihood/AIC ranking with the current two-output fits.
