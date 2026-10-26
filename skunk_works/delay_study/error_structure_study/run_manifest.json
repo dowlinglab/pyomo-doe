@@ -16,6 +16,50 @@
   },
   "jobs": [
     {
+      "id": "Frechet_joint_score_check",
+      "process": {
+        "pid": 61771,
+        "parent_pid": 61464,
+        "command": [
+          "/Users/adowling/opt/anaconda3/bin/python",
+          "/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-error-11e04ad7-o8yfxysq/skunk_works/delay_study/error_structure_study/check_joint_quantized.py",
+          "--output",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/Frechet_joint_score_check",
+          "--warm",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/band_10_constant/fit.json"
+        ],
+        "started_utc": "2026-10-26T03:19:32.164151+00:00"
+      },
+      "output": "skunk_works/delay_study/error_structure_study/results/Frechet_joint_score_check",
+      "source_commit": "11e04ad7c2b3c514b80eeb770b7430d1a9dab91e",
+      "source_receipt_sha256": "7b313a81399e28aa2c164313c1e68122c6cefa27a62f013f2047a665b1ce8c34",
+      "status": "terminal",
+      "exit_code": 0,
+      "finished_utc": "2026-10-26T03:20:09.456192+00:00"
+    },
+    {
+      "id": "Frechet_sensitivity_check",
+      "process": {
+        "pid": 61249,
+        "parent_pid": 60970,
+        "command": [
+          "/Users/adowling/opt/anaconda3/bin/python",
+          "/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-error-5d8877b9-kywks6a5/skunk_works/delay_study/error_structure_study/check_sensitivity.py",
+          "--output",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/Frechet_sensitivity_check",
+          "--input",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/joint_conductance_b10_export_v2"
+        ],
+        "started_utc": "2026-10-26T03:18:25.951647+00:00"
+      },
+      "output": "skunk_works/delay_study/error_structure_study/results/Frechet_sensitivity_check",
+      "source_commit": "5d8877b9c558ec1833516ab93dcc5ff9d07fcc06",
+      "source_receipt_sha256": "504dcc597520bbb82ef585adb7f0372fe7e24c24c453596eff7ede12bc9d8fcc",
+      "status": "terminal",
+      "exit_code": 0,
+      "finished_utc": "2026-10-26T03:18:29.014847+00:00"
+    },
+    {
       "id": "band_05_constant",
       "status": "terminal",
       "source_commit": "97d074ba0182543c0110e8cb69a7625068b9f847",
@@ -628,6 +672,28 @@
       "finished_utc": "2026-10-26T01:59:21.415738+00:00"
     },
     {
+      "id": "coupled_noise_check",
+      "process": {
+        "pid": 68652,
+        "parent_pid": 68368,
+        "command": [
+          "/Users/adowling/opt/anaconda3/bin/python",
+          "/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-error-c671825d-zqu7viqo/skunk_works/delay_study/error_structure_study/check_coupled_noise.py",
+          "--output",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/coupled_noise_check",
+          "--warm",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/band_10_constant/fit.json"
+        ],
+        "started_utc": "2026-10-26T03:39:35.672617+00:00"
+      },
+      "output": "skunk_works/delay_study/error_structure_study/results/coupled_noise_check",
+      "source_commit": "c671825deefb41d0c2174ee580bb6d3d013c727b",
+      "source_receipt_sha256": "86479c46de7f15d905949febe2c7bed0883d960934b76c749a519829fb16579e",
+      "status": "terminal",
+      "exit_code": 0,
+      "finished_utc": "2026-10-26T03:39:39.254483+00:00"
+    },
+    {
       "id": "decomposition",
       "status": "terminal",
       "source_commit": "c40710779c77beb5db254905c81829b0246138a1",
@@ -670,6 +736,136 @@
       "source_receipt_sha256": "49d50e003dcdbc174262985dcd307d4f57b3f2b66e8626ed5aafd41cba27a5ef",
       "exit_code": 0,
       "finished_utc": null
+    },
+    {
+      "id": "gaussian_independent_noise",
+      "process": {
+        "pid": 69430,
+        "parent_pid": 68923,
+        "command": [
+          "/Users/adowling/opt/anaconda3/bin/python",
+          "/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-error-7dbdd7eb-51k5_ffq/skunk_works/delay_study/error_structure_study/run_coupled_noise.py",
+          "--output",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/gaussian_independent_noise",
+          "--gaussian",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/band_10_constant/fit.json",
+          "--quantized",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/joint_conductance_b10_export_v2/fit.json",
+          "--mode",
+          "independent"
+        ],
+        "started_utc": "2026-10-26T03:41:55.348972+00:00"
+      },
+      "output": "skunk_works/delay_study/error_structure_study/results/gaussian_independent_noise",
+      "source_commit": "7dbdd7ebba14ad7cc6743166bbc0b53018bfb2d2",
+      "source_receipt_sha256": "409dc1d7f329615c7c64749a461b61915daafc43e12d20ba7474929a588e83bc",
+      "status": "terminal",
+      "exit_code": 0,
+      "finished_utc": "2026-10-26T03:44:17.519295+00:00",
+      "starts_recorded": 3
+    },
+    {
+      "id": "gaussian_independent_noise_audit",
+      "process": {
+        "pid": 70375,
+        "parent_pid": 69881,
+        "command": [
+          "/Users/adowling/opt/anaconda3/bin/python",
+          "/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-error-814404f5-85_d5feb/skunk_works/delay_study/error_structure_study/audit_coupled_noise.py",
+          "--output",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/gaussian_independent_noise_audit",
+          "--input",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/gaussian_independent_noise",
+          "--baseline",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/band_10_constant/fit.json"
+        ],
+        "started_utc": "2026-10-26T03:45:17.909733+00:00"
+      },
+      "output": "skunk_works/delay_study/error_structure_study/results/gaussian_independent_noise_audit",
+      "source_commit": "814404f571989b412ca2d9cd972efbd75b376adf",
+      "source_receipt_sha256": "b78263c3a8df5a71c2231bf5f875a7b4399aed87800d730f6374e44643518a98",
+      "status": "terminal",
+      "exit_code": 0,
+      "finished_utc": "2026-10-26T03:45:21.753523+00:00"
+    },
+    {
+      "id": "gaussian_measurement_correlation",
+      "process": {
+        "pid": 74162,
+        "parent_pid": 73654,
+        "command": [
+          "/Users/adowling/opt/anaconda3/bin/python",
+          "/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-error-47243b07-ls2a_ylm/skunk_works/delay_study/error_structure_study/run_coupled_noise.py",
+          "--output",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/gaussian_measurement_correlation",
+          "--gaussian",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/band_10_constant/fit.json",
+          "--quantized",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/joint_conductance_b10_export_v2/fit.json",
+          "--mode",
+          "measurement"
+        ],
+        "started_utc": "2026-10-26T03:56:07.075102+00:00"
+      },
+      "output": "skunk_works/delay_study/error_structure_study/results/gaussian_measurement_correlation",
+      "source_commit": "47243b0781ff27142051f14b8e4e55a791ca7ae2",
+      "source_receipt_sha256": "852f0dc9871e0b0a0ac9a64326a2b9ee0ddc09d705c39ead5c490336b24e4375",
+      "status": "terminal",
+      "exit_code": 0,
+      "finished_utc": "2026-10-26T04:00:11.019126+00:00",
+      "starts_recorded": 3
+    },
+    {
+      "id": "gaussian_process_correlation",
+      "process": {
+        "pid": 70794,
+        "parent_pid": 70522,
+        "command": [
+          "/Users/adowling/opt/anaconda3/bin/python",
+          "/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-error-814404f5-7_1fpi16/skunk_works/delay_study/error_structure_study/run_coupled_noise.py",
+          "--output",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/gaussian_process_correlation",
+          "--gaussian",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/band_10_constant/fit.json",
+          "--quantized",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/joint_conductance_b10_export_v2/fit.json",
+          "--mode",
+          "process"
+        ],
+        "started_utc": "2026-10-26T03:46:40.521615+00:00"
+      },
+      "output": "skunk_works/delay_study/error_structure_study/results/gaussian_process_correlation",
+      "source_commit": "814404f571989b412ca2d9cd972efbd75b376adf",
+      "source_receipt_sha256": "49e638e72a2a7ab370ad9249d68f01ba807428af6235730b0679111d9d530b12",
+      "status": "terminal",
+      "last_verified_utc": "2026-10-26 03:51:01 UTC",
+      "starts_recorded": 3,
+      "exit_code": 0,
+      "finished_utc": "2026-10-26T03:52:42.983990+00:00"
+    },
+    {
+      "id": "gaussian_process_correlation_audit",
+      "process": {
+        "pid": 73612,
+        "parent_pid": 73091,
+        "command": [
+          "/Users/adowling/opt/anaconda3/bin/python",
+          "/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-error-47243b07-2_v5vbn_/skunk_works/delay_study/error_structure_study/audit_coupled_noise.py",
+          "--output",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/gaussian_process_correlation_audit",
+          "--input",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/gaussian_process_correlation",
+          "--baseline",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/band_10_constant/fit.json"
+        ],
+        "started_utc": "2026-10-26T03:55:41.878893+00:00"
+      },
+      "output": "skunk_works/delay_study/error_structure_study/results/gaussian_process_correlation_audit",
+      "source_commit": "47243b0781ff27142051f14b8e4e55a791ca7ae2",
+      "source_receipt_sha256": "96d4557ad627129d778f734acf74861b5a9e8429900f8ec62375a20e6da05944",
+      "status": "terminal",
+      "exit_code": 0,
+      "finished_utc": "2026-10-26T03:55:45.767534+00:00"
     },
     {
       "id": "initial_sensor_check",
@@ -728,9 +924,82 @@
       "output": "skunk_works/delay_study/error_structure_study/results/joint_b10_condition_first_code",
       "source_commit": "ff32b5acf24be271561d71c2a8edc0d7adedae36",
       "source_receipt_sha256": "5f2a0ab4a09dae02a9efb9648684c3e0658f4b3e5de62e49503d2a437d87dec0",
-      "status": "running_verified",
-      "last_verified_utc": "2026-10-26 02:35:26 UTC",
-      "starts_recorded": 1
+      "status": "terminal",
+      "last_verified_utc": "2026-10-26 03:29:24 UTC",
+      "starts_recorded": 3,
+      "exit_code": 0,
+      "finished_utc": "2026-10-26T03:30:51.623052+00:00"
+    },
+    {
+      "id": "joint_b10_condition_first_code_audit",
+      "process": {
+        "pid": 66735,
+        "parent_pid": 66459,
+        "command": [
+          "/Users/adowling/opt/anaconda3/bin/python",
+          "/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-error-0d00d906-teoygqw3/skunk_works/delay_study/error_structure_study/audit_joint_quantized.py",
+          "--output",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/joint_b10_condition_first_code_audit",
+          "--input",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/joint_b10_condition_first_code"
+        ],
+        "started_utc": "2026-10-26T03:33:09.137945+00:00"
+      },
+      "output": "skunk_works/delay_study/error_structure_study/results/joint_b10_condition_first_code_audit",
+      "source_commit": "0d00d90613aa5dc79d90734a07698273a39e7f1c",
+      "source_receipt_sha256": "260788432aa3df9d59efee99476fcfc1c3e54efb47e5e405c771b2d163062a47",
+      "status": "terminal",
+      "exit_code": 0,
+      "finished_utc": "2026-10-26T03:36:26.206715+00:00"
+    },
+    {
+      "id": "joint_b10_cross_localization",
+      "process": {
+        "pid": 70427,
+        "parent_pid": 69917,
+        "command": [
+          "/Users/adowling/opt/anaconda3/bin/python",
+          "/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-error-814404f5-3o2v_oul/skunk_works/delay_study/error_structure_study/localize_nonrandom.py",
+          "--output",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/joint_b10_cross_localization",
+          "--input",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/joint_conductance_b10_export_v2",
+          "--references",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/joint_b10_predictive_diagnostics"
+        ],
+        "started_utc": "2026-10-26T03:45:19.006513+00:00"
+      },
+      "output": "skunk_works/delay_study/error_structure_study/results/joint_b10_cross_localization",
+      "source_commit": "814404f571989b412ca2d9cd972efbd75b376adf",
+      "source_receipt_sha256": "54a02adbe3b421c67f40a8c654df73adf24d72bf66eb7e0826f51e3b821fbe01",
+      "status": "terminal",
+      "exit_code": 1,
+      "finished_utc": "2026-10-26T03:45:28.078014+00:00"
+    },
+    {
+      "id": "joint_b10_cross_localization_v2",
+      "process": {
+        "pid": 71096,
+        "parent_pid": 70815,
+        "command": [
+          "/Users/adowling/opt/anaconda3/bin/python",
+          "/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-error-cad058f3-ep4o6ucr/skunk_works/delay_study/error_structure_study/localize_nonrandom.py",
+          "--output",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/joint_b10_cross_localization_v2",
+          "--input",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/joint_conductance_b10_export_v2",
+          "--references",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/joint_b10_predictive_diagnostics"
+        ],
+        "started_utc": "2026-10-26T03:47:00.536698+00:00"
+      },
+      "output": "skunk_works/delay_study/error_structure_study/results/joint_b10_cross_localization_v2",
+      "source_commit": "cad058f381df7a3a6561969ea27c1705698b5157",
+      "source_receipt_sha256": "fce8a6d080f3b9d544d6ae091d35f16dd024ab55bf5614700a57c8e4d876318c",
+      "status": "terminal",
+      "last_verified_utc": "2026-10-26 03:51:01 UTC",
+      "exit_code": 0,
+      "finished_utc": "2026-10-26T03:53:20.873603+00:00"
     },
     {
       "id": "joint_b10_information",
@@ -758,6 +1027,126 @@
       "exit_code": 0,
       "finished_utc": "2026-10-26T02:13:19.535044+00:00",
       "independent_audit_status": "pending"
+    },
+    {
+      "id": "joint_b10_information_audit",
+      "process": {
+        "pid": 57113,
+        "parent_pid": 56832,
+        "command": [
+          "/Users/adowling/opt/anaconda3/bin/python",
+          "/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-error-6d461008-qqu0icwm/skunk_works/delay_study/error_structure_study/audit_information.py",
+          "--output",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/joint_b10_information_audit",
+          "--input",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/joint_b10_information",
+          "--fit",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/joint_conductance_b10_export_v2"
+        ],
+        "started_utc": "2026-10-26T03:06:28.453716+00:00"
+      },
+      "output": "skunk_works/delay_study/error_structure_study/results/joint_b10_information_audit",
+      "source_commit": "6d4610084eb7a0796abf4343e513d491588febba",
+      "source_receipt_sha256": "09dbe4e12a10b98e4423b569eb2f0937f29e86749ba9efdac77f5d40ed08433c",
+      "status": "terminal",
+      "exit_code": 1,
+      "finished_utc": "2026-10-26T03:07:29.247108+00:00"
+    },
+    {
+      "id": "joint_b10_information_v2",
+      "process": {
+        "pid": 62587,
+        "parent_pid": 62060,
+        "command": [
+          "/Users/adowling/opt/anaconda3/bin/python",
+          "/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-error-1510a021-pay8rhg8/skunk_works/delay_study/error_structure_study/run_information.py",
+          "--output",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/joint_b10_information_v2",
+          "--input",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/joint_conductance_b10_export_v2"
+        ],
+        "started_utc": "2026-10-26T03:20:56.665836+00:00"
+      },
+      "output": "skunk_works/delay_study/error_structure_study/results/joint_b10_information_v2",
+      "source_commit": "1510a02140d58722733bfe80f54f06ab4c2895d9",
+      "source_receipt_sha256": "f1074a64743def322390817fa47ee0c48669bf2e855121dfe36d64f9bfa1f979",
+      "status": "terminal",
+      "last_verified_utc": "2026-10-26 03:29:24 UTC",
+      "exit_code": 0,
+      "finished_utc": "2026-10-26T03:38:39.361114+00:00"
+    },
+    {
+      "id": "joint_b10_information_v2_audit",
+      "process": {
+        "pid": 69380,
+        "parent_pid": 68888,
+        "command": [
+          "/Users/adowling/opt/anaconda3/bin/python",
+          "/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-error-7dbdd7eb-rqni3yi2/skunk_works/delay_study/error_structure_study/audit_information.py",
+          "--output",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/joint_b10_information_v2_audit",
+          "--input",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/joint_b10_information_v2",
+          "--fit",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/joint_conductance_b10_export_v2"
+        ],
+        "started_utc": "2026-10-26T03:41:54.336314+00:00"
+      },
+      "output": "skunk_works/delay_study/error_structure_study/results/joint_b10_information_v2_audit",
+      "source_commit": "7dbdd7ebba14ad7cc6743166bbc0b53018bfb2d2",
+      "source_receipt_sha256": "c5f4a23d68a9b37efcb2bf2324cfac29caf432a972badb4f04c785ca4e92a6c7",
+      "status": "terminal",
+      "exit_code": 0,
+      "finished_utc": "2026-10-26T03:43:38.628583+00:00"
+    },
+    {
+      "id": "joint_b10_loading_curvature_diagnosis",
+      "process": {
+        "pid": 59252,
+        "parent_pid": 58959,
+        "command": [
+          "/Users/adowling/opt/anaconda3/bin/python",
+          "/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-error-67df1d3a-424so8q_/skunk_works/delay_study/error_structure_study/diagnose_information_loading.py",
+          "--output",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/joint_b10_loading_curvature_diagnosis",
+          "--input",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/joint_conductance_b10_export_v2",
+          "--information",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/joint_b10_information"
+        ],
+        "started_utc": "2026-10-26T03:12:26.914684+00:00"
+      },
+      "output": "skunk_works/delay_study/error_structure_study/results/joint_b10_loading_curvature_diagnosis",
+      "source_commit": "67df1d3a95acf81388c03140ddb69ddedb9fc5c3",
+      "source_receipt_sha256": "60d2e7e9690d321d9aadcca29e022a42add161596e673e4ad3182281131810a7",
+      "status": "terminal",
+      "last_verified_utc": "2026-10-26 03:15:20 UTC",
+      "exit_code": 1,
+      "finished_utc": "2026-10-26T03:19:45.123373+00:00"
+    },
+    {
+      "id": "joint_b10_loading_curvature_summary",
+      "process": {
+        "pid": 63044,
+        "parent_pid": 62772,
+        "command": [
+          "/Users/adowling/opt/anaconda3/bin/python",
+          "/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-error-ce76bda7-0o6x0iec/skunk_works/delay_study/error_structure_study/summarize_curvature.py",
+          "--output",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/joint_b10_loading_curvature_summary",
+          "--input",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/joint_b10_loading_curvature_diagnosis",
+          "--information",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/joint_b10_information"
+        ],
+        "started_utc": "2026-10-26T03:21:46.648014+00:00"
+      },
+      "output": "skunk_works/delay_study/error_structure_study/results/joint_b10_loading_curvature_summary",
+      "source_commit": "ce76bda79e9e82897fc0f7c383d24f7f94af0a51",
+      "source_receipt_sha256": "58d7d6095218fde291235b9a21dfad64c2bd992e4e0173b4d1ab9501b2003cbf",
+      "status": "terminal",
+      "exit_code": 0,
+      "finished_utc": "2026-10-26T03:21:47.611564+00:00"
     },
     {
       "id": "joint_b10_loading_lower",
@@ -795,9 +1184,109 @@
       "output": "skunk_works/delay_study/error_structure_study/results/joint_b10_loading_lower",
       "source_commit": "ff32b5acf24be271561d71c2a8edc0d7adedae36",
       "source_receipt_sha256": "58db4fdbe7a31105298f0b53f03363bc2be10b79b7a0db549e6a0e658a0624bb",
-      "status": "running_verified",
-      "last_verified_utc": "2026-10-26 02:35:26 UTC",
-      "starts_recorded": 2
+      "status": "terminal",
+      "last_verified_utc": "2026-10-26 03:15:20 UTC",
+      "starts_recorded": 3,
+      "exit_code": 0,
+      "finished_utc": "2026-10-26T03:17:31.512695+00:00"
+    },
+    {
+      "id": "joint_b10_loading_lower_audit",
+      "process": {
+        "pid": 63553,
+        "parent_pid": 63284,
+        "command": [
+          "/Users/adowling/opt/anaconda3/bin/python",
+          "/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-error-8eb68908-ezi7zi__/skunk_works/delay_study/error_structure_study/audit_joint_quantized.py",
+          "--output",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/joint_b10_loading_lower_audit",
+          "--input",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/joint_b10_loading_lower"
+        ],
+        "started_utc": "2026-10-26T03:24:37.758646+00:00"
+      },
+      "output": "skunk_works/delay_study/error_structure_study/results/joint_b10_loading_lower_audit",
+      "source_commit": "8eb689089e5ec628958f3a37acd46536e29727be",
+      "source_receipt_sha256": "a8c846a605794405749db9d4d030c61a73d2327f29608967f7417463485cf8f3",
+      "status": "terminal",
+      "exit_code": 0,
+      "finished_utc": "2026-10-26T03:27:52.426718+00:00"
+    },
+    {
+      "id": "joint_b10_local_parameter_draws",
+      "process": {
+        "pid": 75353,
+        "parent_pid": 75008,
+        "command": [
+          "/Users/adowling/opt/anaconda3/bin/python",
+          "/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-error-3efed4f2-d_hq9ea7/skunk_works/delay_study/error_structure_study/draw_local.py",
+          "--output",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/joint_b10_local_parameter_draws",
+          "--input",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/joint_conductance_b10_export_v2",
+          "--information",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/joint_b10_information_v2",
+          "--audit",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/joint_b10_information_v2_audit"
+        ],
+        "started_utc": "2026-10-26T03:58:40.226388+00:00"
+      },
+      "output": "skunk_works/delay_study/error_structure_study/results/joint_b10_local_parameter_draws",
+      "source_commit": "3efed4f2313940f74cb1dec1f6323f4775796394",
+      "source_receipt_sha256": "7d5717f9d2a9e247d6c6b9e3e6a8bc17de6514d7c6a7bc7d49afffcd95517ec9",
+      "status": "terminal",
+      "exit_code": 0,
+      "finished_utc": "2026-10-26T03:58:41.575445+00:00"
+    },
+    {
+      "id": "joint_b10_nonrandom_diagnostics",
+      "process": {
+        "pid": 64975,
+        "parent_pid": 64709,
+        "command": [
+          "/Users/adowling/opt/anaconda3/bin/python",
+          "/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-error-0d00d906-917oyv7f/skunk_works/delay_study/error_structure_study/run_nonrandom.py",
+          "--output",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/joint_b10_nonrandom_diagnostics",
+          "--input",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/joint_conductance_b10_export_v2",
+          "--references",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/joint_b10_predictive_diagnostics"
+        ],
+        "started_utc": "2026-10-26T03:29:41.608189+00:00"
+      },
+      "output": "skunk_works/delay_study/error_structure_study/results/joint_b10_nonrandom_diagnostics",
+      "source_commit": "0d00d90613aa5dc79d90734a07698273a39e7f1c",
+      "source_receipt_sha256": "b184f1be5ac9be98441d4e6bf1db476ec04aacf055aaa943f0dcee89d28cbd94",
+      "status": "terminal",
+      "exit_code": 0,
+      "finished_utc": "2026-10-26T03:36:16.460733+00:00"
+    },
+    {
+      "id": "joint_b10_nonrandom_figures_v2",
+      "process": {
+        "pid": 74585,
+        "parent_pid": 74296,
+        "command": [
+          "/Users/adowling/opt/anaconda3/bin/python",
+          "/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-error-3efed4f2-67izhmv8/skunk_works/delay_study/error_structure_study/run_nonrandom.py",
+          "--output",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/joint_b10_nonrandom_figures_v2",
+          "--input",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/joint_conductance_b10_export_v2",
+          "--references",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/joint_b10_predictive_diagnostics",
+          "--render-from",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/joint_b10_nonrandom_diagnostics"
+        ],
+        "started_utc": "2026-10-26T03:57:11.006757+00:00"
+      },
+      "output": "skunk_works/delay_study/error_structure_study/results/joint_b10_nonrandom_figures_v2",
+      "source_commit": "3efed4f2313940f74cb1dec1f6323f4775796394",
+      "source_receipt_sha256": "8a414cc3c181ab02f50b28a4fc40c663d072cfc64e5576ee8ce1d82d7d5af4b2",
+      "status": "terminal",
+      "exit_code": 0,
+      "finished_utc": "2026-10-26T03:57:13.740308+00:00"
     },
     {
       "id": "joint_b10_predictive_diagnostics",
@@ -1017,9 +1506,75 @@
       "output": "skunk_works/delay_study/error_structure_study/results/joint_conductance_b05",
       "source_commit": "3d9352b9471f7bda4f247fe8f80ab4563046b92e",
       "source_receipt_sha256": "d2ae10959f27f5f77ef0cdb7e9807c89c7add4b71bc7c343a4601274629bff60",
-      "status": "running_verified",
+      "status": "terminal",
       "last_verified_utc": "2026-10-26 02:35:26 UTC",
-      "starts_recorded": 2
+      "starts_recorded": 3,
+      "exit_code": 1,
+      "finished_utc": "2026-10-26T02:54:40.341933+00:00"
+    },
+    {
+      "id": "joint_conductance_b05_audit",
+      "process": {
+        "pid": 62655,
+        "parent_pid": 62111,
+        "command": [
+          "/Users/adowling/opt/anaconda3/bin/python",
+          "/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-error-1510a021-6ycb3aao/skunk_works/delay_study/error_structure_study/audit_joint_quantized.py",
+          "--output",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/joint_conductance_b05_audit",
+          "--input",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/joint_conductance_b05_export_v2"
+        ],
+        "started_utc": "2026-10-26T03:20:57.782090+00:00"
+      },
+      "output": "skunk_works/delay_study/error_structure_study/results/joint_conductance_b05_audit",
+      "source_commit": "1510a02140d58722733bfe80f54f06ab4c2895d9",
+      "source_receipt_sha256": "874bc1a5d6aa6aa2843f991c47b7f06e3c18049f294e451452e9c5bbc204bf0e",
+      "status": "terminal",
+      "exit_code": 0,
+      "finished_utc": "2026-10-26T03:24:11.351736+00:00"
+    },
+    {
+      "id": "joint_conductance_b05_export_v2",
+      "process": {
+        "pid": 55533,
+        "parent_pid": 55262,
+        "command": [
+          "/Users/adowling/opt/anaconda3/bin/python",
+          "/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-error-6d461008-9y0642ue/skunk_works/delay_study/error_structure_study/run_joint_quantized.py",
+          "--output",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/joint_conductance_b05_export_v2",
+          "--warm",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/band_05_constant/fit.json",
+          "--noise1",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/bin_noise_band10_T1_v2/observation_fit.json",
+          "--noise2",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/bin_noise_band10_T2_v2/observation_fit.json",
+          "--family",
+          "conductance",
+          "--band",
+          "0.05",
+          "--phase",
+          "-0.5",
+          "--nodes",
+          "128",
+          "--starts",
+          "3",
+          "--maxiter",
+          "300",
+          "--inflate-initial-noise",
+          "--resume-starts",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/joint_conductance_b05/starts.json"
+        ],
+        "started_utc": "2026-10-26T03:00:15.320516+00:00"
+      },
+      "output": "skunk_works/delay_study/error_structure_study/results/joint_conductance_b05_export_v2",
+      "source_commit": "6d4610084eb7a0796abf4343e513d491588febba",
+      "source_receipt_sha256": "4a57383ff5db82cdfc0f70d029a1dd1645477019ef3c0aa293daac0a4e38d90a",
+      "status": "terminal",
+      "exit_code": 0,
+      "finished_utc": "2026-10-26T03:01:21.858083+00:00",
+      "starts_recorded": 3
     },
     {
       "id": "joint_conductance_b10",
@@ -1403,6 +1958,26 @@
       "finished_utc": "2026-10-26T01:06:58.217423+00:00"
     },
     {
+      "id": "local_parameter_draw_check",
+      "process": {
+        "pid": 67151,
+        "parent_pid": 66871,
+        "command": [
+          "/Users/adowling/opt/anaconda3/bin/python",
+          "/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-error-cbac0ae3-l5r7n131/skunk_works/delay_study/error_structure_study/check_local_draws.py",
+          "--output",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/local_parameter_draw_check"
+        ],
+        "started_utc": "2026-10-26T03:34:49.620134+00:00"
+      },
+      "output": "skunk_works/delay_study/error_structure_study/results/local_parameter_draw_check",
+      "source_commit": "cbac0ae37ba32e38e114068315077d3a77801c3c",
+      "source_receipt_sha256": "9fb05f5aa677f025609eb7b39beaa3fc324744daf06a6ccb77e8dc3b6234f7ab",
+      "status": "terminal",
+      "exit_code": 0,
+      "finished_utc": "2026-10-26T03:34:51.478158+00:00"
+    },
+    {
       "id": "lower_loading_score_check",
       "process": {
         "pid": 15794,
@@ -1423,6 +1998,46 @@
       "status": "terminal",
       "exit_code": 0,
       "finished_utc": "2026-10-26T01:07:46.842084+00:00"
+    },
+    {
+      "id": "nonrandom_arithmetic_check",
+      "process": {
+        "pid": 59922,
+        "parent_pid": 59651,
+        "command": [
+          "/Users/adowling/opt/anaconda3/bin/python",
+          "/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-error-d76cff0d-e81gu0z5/skunk_works/delay_study/error_structure_study/check_nonrandom.py",
+          "--output",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/nonrandom_arithmetic_check"
+        ],
+        "started_utc": "2026-10-26T03:15:14.878770+00:00"
+      },
+      "output": "skunk_works/delay_study/error_structure_study/results/nonrandom_arithmetic_check",
+      "source_commit": "d76cff0d5e4c1dade1040989d124eb12628af85e",
+      "source_receipt_sha256": "b9ce1b6d084170a8f629b2d78ea17b6d281e2a23fd3bfd6da7d790b0965e3710",
+      "status": "terminal",
+      "exit_code": 1,
+      "finished_utc": "2026-10-26T03:15:15.823272+00:00"
+    },
+    {
+      "id": "nonrandom_arithmetic_check_v2",
+      "process": {
+        "pid": 60391,
+        "parent_pid": 60100,
+        "command": [
+          "/Users/adowling/opt/anaconda3/bin/python",
+          "/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-error-d8cf27ce-56068_al/skunk_works/delay_study/error_structure_study/check_nonrandom.py",
+          "--output",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/nonrandom_arithmetic_check_v2"
+        ],
+        "started_utc": "2026-10-26T03:15:52.706729+00:00"
+      },
+      "output": "skunk_works/delay_study/error_structure_study/results/nonrandom_arithmetic_check_v2",
+      "source_commit": "d8cf27ce8363c3beece77c08bf9aec48f98708f4",
+      "source_receipt_sha256": "18137242f71d3a39edfa74038d7c943f2eccd7e26d65542e045afd34d2ca7556",
+      "status": "terminal",
+      "exit_code": 0,
+      "finished_utc": "2026-10-26T03:15:53.672624+00:00"
     },
     {
       "id": "operating_first",
@@ -1564,7 +2179,7 @@
       "source_commit": "477ddcaa2779bb3b73b8f7a81c2e0b4740233436",
       "source_receipt_sha256": "18441a7a24ad744e296e714187d5b70c1c81ec3794de4664e2faa85063a0aae2",
       "status": "running_verified",
-      "last_verified_utc": "2026-10-26 02:35:26 UTC"
+      "last_verified_utc": "2026-10-26 04:02:30 UTC"
     },
     {
       "id": "profile_chart_check",
@@ -1830,6 +2445,64 @@
       "finished_utc": "2026-10-26T00:20:22.476944+00:00"
     },
     {
+      "id": "recovery_b10_even",
+      "process": {
+        "pid": 68044,
+        "parent_pid": 67553,
+        "command": [
+          "/Users/adowling/opt/anaconda3/bin/python",
+          "/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-error-cbac0ae3-62sj22n7/skunk_works/delay_study/error_structure_study/run_recovery.py",
+          "--output",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/recovery_b10_even",
+          "--input",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/joint_conductance_b10_export_v2",
+          "--noise1",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/bin_noise_band10_T1_v2/observation_fit.json",
+          "--noise2",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/bin_noise_band10_T2_v2/observation_fit.json",
+          "--first",
+          "0",
+          "--stride",
+          "2"
+        ],
+        "started_utc": "2026-10-26T03:37:34.797708+00:00"
+      },
+      "output": "skunk_works/delay_study/error_structure_study/results/recovery_b10_even",
+      "source_commit": "cbac0ae37ba32e38e114068315077d3a77801c3c",
+      "source_receipt_sha256": "332f5f7f74d7b094321c19d9c0c47ed3584078bddefc27ec737be668f1e0e676",
+      "status": "running_verified",
+      "last_verified_utc": "2026-10-26 04:02:30 UTC"
+    },
+    {
+      "id": "recovery_b10_odd",
+      "process": {
+        "pid": 74210,
+        "parent_pid": 73689,
+        "command": [
+          "/Users/adowling/opt/anaconda3/bin/python",
+          "/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-error-47243b07-4svuo2rw/skunk_works/delay_study/error_structure_study/run_recovery.py",
+          "--output",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/recovery_b10_odd",
+          "--input",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/joint_conductance_b10_export_v2",
+          "--noise1",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/bin_noise_band10_T1_v2/observation_fit.json",
+          "--noise2",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/bin_noise_band10_T2_v2/observation_fit.json",
+          "--first",
+          "1",
+          "--stride",
+          "2"
+        ],
+        "started_utc": "2026-10-26T03:56:08.036608+00:00"
+      },
+      "output": "skunk_works/delay_study/error_structure_study/results/recovery_b10_odd",
+      "source_commit": "47243b0781ff27142051f14b8e4e55a791ca7ae2",
+      "source_receipt_sha256": "7c20dbb8caaad43246afc0a9cb077d646093acebc3dbe88872a95dd38529b1bc",
+      "status": "running_verified",
+      "last_verified_utc": "2026-10-26 04:02:30 UTC"
+    },
+    {
       "id": "sequential_b10_iid",
       "process": {
         "pid": 41773,
@@ -1859,6 +2532,30 @@
       "independent_audit_status": "pending"
     },
     {
+      "id": "sequential_b10_iid_audit",
+      "process": {
+        "pid": 58815,
+        "parent_pid": 58494,
+        "command": [
+          "/Users/adowling/opt/anaconda3/bin/python",
+          "/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-error-6d461008-l_ygkuwa/skunk_works/delay_study/error_structure_study/audit_sequential.py",
+          "--output",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/sequential_b10_iid_audit",
+          "--input",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/sequential_b10_iid",
+          "--reference",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/band_10_constant/fit.json"
+        ],
+        "started_utc": "2026-10-26T03:11:30.828497+00:00"
+      },
+      "output": "skunk_works/delay_study/error_structure_study/results/sequential_b10_iid_audit",
+      "source_commit": "6d4610084eb7a0796abf4343e513d491588febba",
+      "source_receipt_sha256": "d2b4b9032ad8c03dffbb597c30518a34b14ffce229f289f32ac75dd4912a8c58",
+      "status": "terminal",
+      "exit_code": 0,
+      "finished_utc": "2026-10-26T03:11:35.522409+00:00"
+    },
+    {
       "id": "sequential_b10_joint",
       "process": {
         "pid": 44058,
@@ -1886,6 +2583,30 @@
       "exit_code": 0,
       "finished_utc": "2026-10-26T02:00:47.159880+00:00",
       "independent_audit_status": "pending"
+    },
+    {
+      "id": "sequential_b10_joint_audit",
+      "process": {
+        "pid": 64675,
+        "parent_pid": 64405,
+        "command": [
+          "/Users/adowling/opt/anaconda3/bin/python",
+          "/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-error-6b6f43f2-zp_8806p/skunk_works/delay_study/error_structure_study/audit_sequential.py",
+          "--output",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/sequential_b10_joint_audit",
+          "--input",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/sequential_b10_joint",
+          "--reference",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/band_10_constant/fit.json"
+        ],
+        "started_utc": "2026-10-26T03:29:11.290028+00:00"
+      },
+      "output": "skunk_works/delay_study/error_structure_study/results/sequential_b10_joint_audit",
+      "source_commit": "6b6f43f22e4983cabcc04a91d80b14d0e862308b",
+      "source_receipt_sha256": "7c703ea3db72ce27c260df00f81a4b643797b9552e7c80d65ef332e76c279d57",
+      "status": "terminal",
+      "exit_code": 0,
+      "finished_utc": "2026-10-26T03:29:14.529118+00:00"
     },
     {
       "id": "sequential_check",
@@ -1974,6 +2695,104 @@
       "finished_utc": "2026-10-26T01:18:46.452708+00:00"
     },
     {
+      "id": "updated_diagnostics_check",
+      "process": {
+        "pid": 64305,
+        "parent_pid": 64040,
+        "command": [
+          "/Users/adowling/opt/anaconda3/bin/python",
+          "/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-error-6b6f43f2-dx6nhokx/skunk_works/delay_study/error_structure_study/check_updated_diagnostics.py",
+          "--output",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/updated_diagnostics_check"
+        ],
+        "started_utc": "2026-10-26T03:28:03.748081+00:00"
+      },
+      "output": "skunk_works/delay_study/error_structure_study/results/updated_diagnostics_check",
+      "source_commit": "6b6f43f22e4983cabcc04a91d80b14d0e862308b",
+      "source_receipt_sha256": "77476af19abcc682a7f4d613a4596f7947ec044d9609c10a01aa057b73f9ca12",
+      "status": "terminal",
+      "exit_code": 0,
+      "finished_utc": "2026-10-26T03:28:06.175044+00:00"
+    },
+    {
+      "id": "updated_mean_diagnostics",
+      "process": {
+        "pid": 68097,
+        "parent_pid": 67589,
+        "command": [
+          "/Users/adowling/opt/anaconda3/bin/python",
+          "/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-error-cbac0ae3-h15ewtlm/skunk_works/delay_study/error_structure_study/updated_diagnostics.py",
+          "--output",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/updated_mean_diagnostics",
+          "--fits",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/joint_conductance_b00_export_v3",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/joint_conductance_b05_export_v2",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/joint_conductance_b10_export_v2",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/joint_conductance_b20_export_v2",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/joint_radiation_b10_export_v2",
+          "--audits",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/joint_conductance_b00_audit",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/joint_conductance_b05_audit",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/joint_conductance_b10_audit",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/joint_conductance_b20_audit",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/joint_radiation_b10_audit",
+          "--forecast-fit",
+          "joint_conductance_b10_export_v2"
+        ],
+        "started_utc": "2026-10-26T03:37:35.821186+00:00"
+      },
+      "output": "skunk_works/delay_study/error_structure_study/results/updated_mean_diagnostics",
+      "source_commit": "cbac0ae37ba32e38e114068315077d3a77801c3c",
+      "source_receipt_sha256": "bc7707546401413e19c7787578352ae46a2f4e6509360aa0efe2a12c192ac25c",
+      "status": "terminal",
+      "exit_code": 0,
+      "finished_utc": "2026-10-26T03:38:04.094586+00:00"
+    },
+    {
+      "id": "updated_mean_diagnostics_audit",
+      "process": {
+        "pid": 72271,
+        "parent_pid": 71998,
+        "command": [
+          "/Users/adowling/opt/anaconda3/bin/python",
+          "/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-error-c182185d-2fn8cuip/skunk_works/delay_study/error_structure_study/audit_updated_diagnostics.py",
+          "--output",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/updated_mean_diagnostics_audit",
+          "--input",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/updated_mean_diagnostics"
+        ],
+        "started_utc": "2026-10-26T03:53:18.975709+00:00"
+      },
+      "output": "skunk_works/delay_study/error_structure_study/results/updated_mean_diagnostics_audit",
+      "source_commit": "c182185dc603d2ba782455947d1dd4f29790a324",
+      "source_receipt_sha256": "29616a4b6b2d6db996f22562ac78c78a025cd82e6c020cc752d0fac43214bd64",
+      "status": "terminal",
+      "exit_code": 1,
+      "finished_utc": "2026-10-26T03:53:20.196468+00:00"
+    },
+    {
+      "id": "updated_mean_diagnostics_audit_v2",
+      "process": {
+        "pid": 73565,
+        "parent_pid": 73055,
+        "command": [
+          "/Users/adowling/opt/anaconda3/bin/python",
+          "/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-error-47243b07-udu39zyy/skunk_works/delay_study/error_structure_study/audit_updated_diagnostics.py",
+          "--output",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/updated_mean_diagnostics_audit_v2",
+          "--input",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/updated_mean_diagnostics"
+        ],
+        "started_utc": "2026-10-26T03:55:40.902362+00:00"
+      },
+      "output": "skunk_works/delay_study/error_structure_study/results/updated_mean_diagnostics_audit_v2",
+      "source_commit": "47243b0781ff27142051f14b8e4e55a791ca7ae2",
+      "source_receipt_sha256": "80f5cbbded11987fbd4ab05357b65ee98fc286426fd1df6a2c144639639dbdea",
+      "status": "terminal",
+      "exit_code": 0,
+      "finished_utc": "2026-10-26T03:55:43.150941+00:00"
+    },
+    {
       "id": "zero_band_diagnosis",
       "status": "terminal",
       "source_commit": "249fa500bc9138eab82bea78ad4a8b3148bf0592",
@@ -1999,14 +2818,13 @@
     }
   ],
   "live_jobs": [
-    "joint_b10_condition_first_code",
-    "joint_b10_loading_lower",
-    "joint_conductance_b05",
-    "profile_b10_gain"
+    "profile_b10_gain",
+    "recovery_b10_even",
+    "recovery_b10_odd"
   ],
-  "next_action": "Reconcile four long processes: 5% joint fit, lower-loading sensitivity, conditional-first-code sensitivity and gain profile. No duplicate live job. Source-3d9352b 5% job has the known JSON export bug: preserve its converged starts and recover with --resume-starts if export fails; no optimizer rerun just for serialization. Joint 0/10/20 and radiation exports/audits passed. Next independent work: full dense/physical and trace audits for both sequential fits; audit/interpret the completed information matrices including weak boundary-loading curvature and covariance nuisances; verify nonrandomized joint code transitions and conditional expected PIT-score cross-dependence using the fifty saved synthetic collections, because jitter can dilute coarse-bin dependence. Then other profiles and startup/bin/initial sensitivities, fifty nuisance-refitted coverage draws (distinct from fixed-model references), retrospective folds with parameter/noise/bin/model-form uncertainty, final Markdown and checked tablet PDF. New conditional-first-code fits require their own conditional sampler and marginals before simulation/transfer; existing drivers reject mismatched use. Keep full goal active; no hardware, DoE or email.",
-  "updated_utc": "2026-10-26T02:35:26.343722+00:00",
-  "last_goal_turn_classification": "progress: recovered four terminal joint fits without re-optimization and independently audited them; completed 50 fixed-model references; sequential GLS converged from two initializations; full information completed; conditional-initial score checks passed; additional sensitivities and gain profile dispatched; draft report numerically/layout/visually checked",
+  "next_action": "Reconcile the four live jobs before dispatch: gain profile, complementary 50-draw recovery shards, measurement-correlation Gaussian refit. All covered raw data and prior results unchanged. No duplicate live retries. Updated mean diagnostics passed full 960-cell QR/code/held-input audit; phase, nonrandomized and cross-localization figures inspected. Information v2 and full audit passed; local parameter sampler check and 256-draw primary sensitivity passed. Conditional-first-code fit, lower-loading and all conductance fits have selected-point audits. Fifty nonrandomized references expose remaining T1 input/phase, T2 serial and cross dependence; localization survives trend/harmonic projection, no IID claim. Gaussian independent reproduces prior objective and process-correlation fit/dense audit passed; audit measurement fit when terminal, then compare combined correlations if justified. Still pending: initial sensor-bin/full phase sensitivities, remaining nuisance/radiation/lag profiles, all 50 refitted recovery results/audits and refitted diagnostic references, retrospective folds with parameter/noise/bin/model-form limits, final Markdown/LaTeX/PDF and full completion audit. Existing four-page PDF predates current findings; uncertainty_interim.md is the current concise evidence note. No hardware, DoE or email.",
+  "updated_utc": "2026-10-26T04:02:30.580761+00:00",
+  "last_goal_turn_classification": "progress: coherent audited uncertainty, code-score dependence, updated physical-mean/forecast diagnostics, initial-condition and bounded-conductance sensitivities committed; matched Gaussian cross-channel comparison implemented/audited, both complementary coverage shards dispatched; all current scientific claims source-bound and whitening remains explicitly unresolved",
   "controller_sessions": {
     "joint_conductance_b00": 55866,
     "joint_conductance_b10": 15102,
@@ -2029,24 +2847,43 @@
     "conditional_initial_score_check": 33952,
     "joint_b10_loading_lower": 45152,
     "joint_b10_condition_first_code": 13573,
-    "profile_b10_gain": 88556
+    "profile_b10_gain": 88556,
+    "joint_b10_information_v2": 90409,
+    "joint_b10_information_v2_audit": 10086,
+    "sequential_b10_iid_audit": 33733,
+    "sequential_b10_joint_audit": 19749,
+    "joint_conductance_b05_export_v2": 89996,
+    "joint_conductance_b05_audit": 44253,
+    "joint_b10_loading_lower_audit": 36993,
+    "joint_b10_condition_first_code_audit": 75434,
+    "joint_b10_nonrandom_diagnostics": 93756,
+    "updated_mean_diagnostics": 39971,
+    "recovery_b10_even": 91698,
+    "gaussian_independent_noise": 51706,
+    "gaussian_independent_noise_audit": 55845,
+    "gaussian_process_correlation": 78527,
+    "joint_b10_cross_localization_v2": 6665,
+    "gaussian_measurement_correlation": 98155,
+    "recovery_b10_odd": 6809,
+    "gaussian_process_correlation_audit": 97068,
+    "updated_mean_diagnostics_audit_v2": 51165,
+    "joint_b10_nonrandom_figures_v2": 84834,
+    "joint_b10_local_parameter_draws": 76726
   },
   "queued_jobs": [
-    "independent_sequential_audits",
-    "independent_information_audit",
-    "nonrandomized_joint_code_cross_checks",
-    "initial_sensor_bin_full_fits",
+    "measurement_correlation_audit_then_combined_comparison",
+    "initial_sensor_bin_and_fixed_initial_phase_sensitivities",
     "remaining_profiles",
-    "refitted_recovery_50",
-    "retrospective_transfer_folds",
+    "recovery_50_completion_and_aggregate_audit",
+    "retrospective_transfer_folds_and_parameter_sensitivities",
     "final_report_and_completion_audit"
   ],
   "process_check": {
     "path": "process_check.json",
-    "checked_utc": "2026-10-26 02:35:26 UTC",
-    "sha256": "b3f8d51b25d11c8732d265c39bf6567da8361931f0e5871d2d881a046e5cbb0e",
+    "checked_utc": "2026-10-26 04:02:30 UTC",
+    "sha256": "6807c7d2d210fbb7271e217b8ee0afe6329f4834453ea4f3de9c31f0c99272aa",
     "method": "Direct approved pgrep -fl tclab-error tool",
-    "snapshot_age_s": 0.343722
+    "snapshot_age_s": 0.580761
   },
   "reconciliation_warnings": {
     "missing_exit_or_matching_process": [],
