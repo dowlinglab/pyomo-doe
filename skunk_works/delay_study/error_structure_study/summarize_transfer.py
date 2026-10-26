@@ -64,6 +64,14 @@ def aggregate_groups(rows,expected,record_names,partial=False):
     return group_rows
 
 
+def completion_state(rows,declared):
+    indexed=len(rows)==declared and all(r['status'] in ['audited','failed'] for r in rows)
+    components=indexed and all(r['status']=='failed' or r.get('parameter_sensitivity_complete',False) for r in rows)
+    complete=components and all(r['status']=='audited' for r in rows)
+    return {'status':'complete' if complete else ('complete_with_failures' if components else 'partial'),
+        'all_declared_folds_accounted':indexed,'all_required_uncertainty_components_accounted':components}
+
+
 def main():
     parser=argparse.ArgumentParser();parser.add_argument('--output',type=Path,required=True)
     parser.add_argument('--manifest',type=Path,required=True);parser.add_argument('--allow-partial',action='store_true')
@@ -132,7 +140,8 @@ def main():
                     item['parameter_64_to_256_compared_bound_counts_per_channel']=2*n
                 run_rows.append(item)
             row=dict(identity,status='audited',fit_directory=str(fitroot),fit_sha256=sha(fitpath),
-                fit_audit_sha256=sha(fit_audit),per_run=run_rows)
+                fit_audit_sha256=sha(fit_audit),per_run=run_rows,
+                parameter_sensitivity_complete={'parameter_64','parameter_256'}<=set(variants))
             parameters=fit['parameters'];ta=parameters['tA_nominal_s']
             row['reference_invariant_parameters']={
                 'beta_over_CH_C_per_percent_per_s':parameters['K_common_nominal']/ta,
@@ -145,10 +154,8 @@ def main():
             if not args.allow_partial:raise
             rows.append(dict(identity,status='not_ready',exception=repr(exc)));missing.append(key)
     group_rows=aggregate_groups(rows,expected,[d['name'] for d in records],args.allow_partial)
-    accounted=len(rows)==len(expected) and all(r['status'] in ['audited','failed'] for r in rows)
-    complete=accounted and all(r['status']=='audited' for r in rows)
-    result={'status':'complete' if complete else ('complete_with_failures' if accounted else 'partial'),
-        'declared_folds':len(expected),'indexed_folds':len(registry),'all_declared_folds_accounted':accounted,
+    state=completion_state(rows,len(expected));complete=state['status']=='complete'
+    result={**state,'declared_folds':len(expected),'indexed_folds':len(registry),
         'missing_fold_ids':[list(k) for k in sorted(set(expected)-set(keys))],
         'rows':rows,'groups':group_rows,'source_bindings':bindings,
         'notice':'Each candidate/fold-type group contains each omitted record once; groups reuse the same hardware observations and are not independent replicates. Pointwise marginal coverage and unknown-run hard-scenario envelopes are descriptive, not simultaneous or automatically calibrated total-95% ranges. Local parameter mixtures condition on an audited active face and selected basin. All twelve records informed structure selection and warm starts; transfer is retrospective.'}

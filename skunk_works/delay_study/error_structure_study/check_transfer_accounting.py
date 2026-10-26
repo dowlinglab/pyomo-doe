@@ -2,7 +2,7 @@
 import argparse
 import copy
 import math
-from summarize_transfer import aggregate_groups
+from summarize_transfer import aggregate_groups,completion_state
 from run_bounded import write
 
 
@@ -34,9 +34,17 @@ def main():
     try:aggregate_groups(duplicate,expected,['r1','r2'])
     except AssertionError:rejected=True
     assert rejected
+    noise_only=[{'status':'audited','parameter_sensitivity_complete':False} for _ in range(20)]
+    assert completion_state(noise_only,20)['status']=='partial'
+    complete=[dict(r,parameter_sensitivity_complete=True) for r in noise_only]
+    assert completion_state(complete,20)['status']=='complete'
+    assert completion_state(complete[:-1],20)['status']=='partial'
+    complete[-1]={'status':'failed'}
+    assert completion_state(complete,20)['status']=='complete_with_failures'
     write(Path(args.output)/'check.json',{'status':'passed','groups':result,
         'weighted_SSE_not_mean_RMSE':True,'record_reuse_between_groups_kept_separate':True,
         'within_group_duplicate_rejected':True,'failed_fold_preserved':True,
+        'twenty_noise_only_folds_cannot_be_complete':True,'missing_fold_cannot_be_complete':True,
         'notice':'Generated arithmetic fixtures, not measured transfer performance or predictive calibration.'})
 
 

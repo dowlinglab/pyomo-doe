@@ -100,7 +100,9 @@ def main():
             'refitted_reference_q025_q50_q975':np.quantile(values,[.025,.5,.975]).tolist() if len(values) else None,
             'descriptive_upper_tail_rank':float((1+np.sum(values>=value))/(len(values)+1)) if len(values) else None,
             'fixed_parameter_reference':comparison['comparisons'][name]}
-    status='complete' if len(rows)==declared and source['status']=='passed' else 'partial'
+    full=len(rows)==declared and source['status']=='passed' and information_binding is not None
+    failures=count['failed_or_incomplete_audited'] or diagnostic_failures or len(diagnostic_rows)<declared
+    status=('complete_with_failures' if failures else 'complete') if full else 'partial'
     result={'status':status,'fit_sha256':source['fit_sha256'],'recovery_audit_sha256':sha(args.audit/'audit.json'),
         'hardware_diagnostics_sha256':sha(data_path),'fixed_reference_sha256':sha(diagnostic_source),
         'coverage':count,'accepted_audited_free_fits':len(parameter_rows),'parameter_sampling_summary':table,
