@@ -816,6 +816,30 @@
       "starts_recorded": 3
     },
     {
+      "id": "gaussian_measurement_correlation_audit",
+      "process": {
+        "pid": 77199,
+        "parent_pid": 76715,
+        "command": [
+          "/Users/adowling/opt/anaconda3/bin/python",
+          "/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-error-59faf43e-8bk5xwf4/skunk_works/delay_study/error_structure_study/audit_coupled_noise.py",
+          "--output",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/gaussian_measurement_correlation_audit",
+          "--input",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/gaussian_measurement_correlation",
+          "--baseline",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/band_10_constant/fit.json"
+        ],
+        "started_utc": "2026-10-26T04:03:08.320483+00:00"
+      },
+      "output": "skunk_works/delay_study/error_structure_study/results/gaussian_measurement_correlation_audit",
+      "source_commit": "59faf43e8048d060b37e08fbb33130164dfdd11c",
+      "source_receipt_sha256": "85a816704ff54e0012040782c102f30d903d91cc34eabe3cc2998431bf49017a",
+      "status": "terminal",
+      "exit_code": 0,
+      "finished_utc": "2026-10-26T04:03:12.680407+00:00"
+    },
+    {
       "id": "gaussian_process_correlation",
       "process": {
         "pid": 70794,
@@ -2179,7 +2203,7 @@
       "source_commit": "477ddcaa2779bb3b73b8f7a81c2e0b4740233436",
       "source_receipt_sha256": "18441a7a24ad744e296e714187d5b70c1c81ec3794de4664e2faa85063a0aae2",
       "status": "running_verified",
-      "last_verified_utc": "2026-10-26 04:02:30 UTC"
+      "last_verified_utc": "2026-10-26 04:04:48 UTC"
     },
     {
       "id": "profile_chart_check",
@@ -2471,7 +2495,7 @@
       "source_commit": "cbac0ae37ba32e38e114068315077d3a77801c3c",
       "source_receipt_sha256": "332f5f7f74d7b094321c19d9c0c47ed3584078bddefc27ec737be668f1e0e676",
       "status": "running_verified",
-      "last_verified_utc": "2026-10-26 04:02:30 UTC"
+      "last_verified_utc": "2026-10-26 04:04:48 UTC"
     },
     {
       "id": "recovery_b10_odd",
@@ -2500,7 +2524,7 @@
       "source_commit": "47243b0781ff27142051f14b8e4e55a791ca7ae2",
       "source_receipt_sha256": "7c20dbb8caaad43246afc0a9cb077d646093acebc3dbe88872a95dd38529b1bc",
       "status": "running_verified",
-      "last_verified_utc": "2026-10-26 04:02:30 UTC"
+      "last_verified_utc": "2026-10-26 04:04:48 UTC"
     },
     {
       "id": "sequential_b10_iid",
@@ -2822,8 +2846,8 @@
     "recovery_b10_even",
     "recovery_b10_odd"
   ],
-  "next_action": "Reconcile the four live jobs before dispatch: gain profile, complementary 50-draw recovery shards, measurement-correlation Gaussian refit. All covered raw data and prior results unchanged. No duplicate live retries. Updated mean diagnostics passed full 960-cell QR/code/held-input audit; phase, nonrandomized and cross-localization figures inspected. Information v2 and full audit passed; local parameter sampler check and 256-draw primary sensitivity passed. Conditional-first-code fit, lower-loading and all conductance fits have selected-point audits. Fifty nonrandomized references expose remaining T1 input/phase, T2 serial and cross dependence; localization survives trend/harmonic projection, no IID claim. Gaussian independent reproduces prior objective and process-correlation fit/dense audit passed; audit measurement fit when terminal, then compare combined correlations if justified. Still pending: initial sensor-bin/full phase sensitivities, remaining nuisance/radiation/lag profiles, all 50 refitted recovery results/audits and refitted diagnostic references, retrospective folds with parameter/noise/bin/model-form limits, final Markdown/LaTeX/PDF and full completion audit. Existing four-page PDF predates current findings; uncertainty_interim.md is the current concise evidence note. No hardware, DoE or email.",
-  "updated_utc": "2026-10-26T04:02:30.580761+00:00",
+  "next_action": "Reconcile currently saved jobs before dispatch; measurement-correlation refit is terminal and its audit was dispatched (controller 96185), alongside gain profile and complementary recovery shards. Do not duplicate live jobs or overwrite outputs. If measurement audit passes, retain its weak improvement against the independently audited process-correlation result and run the combined covariance sensitivity if useful. Initial sensor-bin/fixed-initial phase fits, remaining profiles and retrospective transfer remain pending. Both recovery shards must finish all 50 declared indices with failure denominators; their diagnostic reference statistics require aggregation/audit. Information v2, all 960 updated mean diagnostic cells and fixed-model nonrandomized/localization results have passed their listed numerical gates; inspected figure receipts and concise uncertainty_interim.md are committed. Remaining input/phase/cross structure means no IID claim; Gaussian covariance comparisons are not quantized joint likelihoods. The older four-page PDF predates these findings. Complete the full Markdown/LaTeX/PDF, number/layout/visual and requirement audit before goal completion. No hardware, DoE or email.",
+  "updated_utc": "2026-10-26T04:04:48.598959+00:00",
   "last_goal_turn_classification": "progress: coherent audited uncertainty, code-score dependence, updated physical-mean/forecast diagnostics, initial-condition and bounded-conductance sensitivities committed; matched Gaussian cross-channel comparison implemented/audited, both complementary coverage shards dispatched; all current scientific claims source-bound and whitening remains explicitly unresolved",
   "controller_sessions": {
     "joint_conductance_b00": 55866,
@@ -2868,7 +2892,8 @@
     "gaussian_process_correlation_audit": 97068,
     "updated_mean_diagnostics_audit_v2": 51165,
     "joint_b10_nonrandom_figures_v2": 84834,
-    "joint_b10_local_parameter_draws": 76726
+    "joint_b10_local_parameter_draws": 76726,
+    "gaussian_measurement_correlation_audit": 96185
   },
   "queued_jobs": [
     "measurement_correlation_audit_then_combined_comparison",
@@ -2880,10 +2905,10 @@
   ],
   "process_check": {
     "path": "process_check.json",
-    "checked_utc": "2026-10-26 04:02:30 UTC",
-    "sha256": "6807c7d2d210fbb7271e217b8ee0afe6329f4834453ea4f3de9c31f0c99272aa",
+    "checked_utc": "2026-10-26 04:04:48 UTC",
+    "sha256": "84a2fa6e83f5976c61f2c6482191645e789353ed09b06e284e6bdb558b046223",
     "method": "Direct approved pgrep -fl tclab-error tool",
-    "snapshot_age_s": 0.580761
+    "snapshot_age_s": 0.598959
   },
   "reconciliation_warnings": {
     "missing_exit_or_matching_process": [],
