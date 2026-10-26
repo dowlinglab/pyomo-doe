@@ -103,7 +103,10 @@ def main():
             ax.plot(t,y[:,k],'k.',ms=1,label='Reported temperature');ax.plot(t,obsmean[:,k],color='tab:blue',lw=1,label='Nominal reported mean')
             if points is not None:ax.plot(t,pl[:,k],color='tab:orange',lw=.7);ax.plot(t,pu[:,k],color='tab:orange',lw=.7,label='Parameter-mixture sensitivity')
             ax.set_ylabel('T'+str(k+1)+' (C)');ax.grid(alpha=.15)
-        axes[0].legend(fontsize=7);axes[-1].set_xlabel('Time (s)');fig.suptitle(d['name'].replace('validation_experiment_env_2_','').replace('.csv',''))
+        axes[0].legend(fontsize=7);axes[-1].set_xlabel('Time (s)')
+        title=d['name'].replace('validation_experiment_env_2_','').replace('.csv','')
+        if args.reference_transport:title+='\nReference stress: g=['+str(round(ratio_bounds[0],3))+','+str(round(ratio_bounds[1],3))+']; fit unchanged'
+        fig.suptitle(title)
         fig.tight_layout();fig.savefig(args.output/('transfer_'+str(j)+'.png'),dpi=150);plt.close(fig)
     write(args.output/'transfer_predictions.json',{'status':'complete','fit_sha256':hashlib.sha256((args.input/'fit.json').read_bytes()).hexdigest(),
         'train_names':fit['record_names'],'test_names':[d['name'] for d in test],'parameter_draws':draw_metadata,

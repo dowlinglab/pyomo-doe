@@ -53,6 +53,11 @@ def aggregate_groups(rows,expected,record_names,partial=False):
             for prefix in ['latent','reported']:
                 group[prefix+'_RMSE_by_channel_C']=np.sqrt(np.sum([r[prefix+'_SSE_by_channel_C2'] for r in runs],axis=0)/count).tolist()
             group['reported_signed_mean_error_C']=(np.sum([r['reported_signed_error_sum_C'] for r in runs],axis=0)/count).tolist()
+            offsets=np.sum([r['reported_run_offset_SSE_C2'] for r in runs],axis=0)
+            total=np.sum([r['reported_SSE_by_channel_C2'] for r in runs],axis=0);centered=total-offsets
+            assert np.all(centered>=-1e-7)
+            group['reported_run_offset_SSE_fraction']=(offsets/total).tolist()
+            group['reported_per_run_centered_RMSE_C']=np.sqrt(np.maximum(centered,0.)/count).tolist()
             for variant in ['noise_only','hard_nuisance_noise','parameter_64','parameter_256','reference_transport']:
                 if all(variant+'_covered_counts' in r for r in runs):
                     group[variant+'_marginal_coverage']=(np.sum([r[variant+'_covered_counts'] for r in runs],axis=0)/count).tolist()
@@ -120,7 +125,8 @@ def main():
                 reported=arrays['reported_mean_'+str(j)];n=len(y)
                 item={'name':dname,'nobs_per_channel':n,'latent_SSE_by_channel_C2':np.sum((y-latent)**2,axis=0).tolist(),
                     'reported_SSE_by_channel_C2':np.sum((y-reported)**2,axis=0).tolist(),
-                    'reported_signed_error_sum_C':np.sum(y-reported,axis=0).tolist()}
+                    'reported_signed_error_sum_C':np.sum(y-reported,axis=0).tolist(),
+                    'reported_run_offset_SSE_C2':(np.sum(y-reported,axis=0)**2/n).tolist()}
                 for prefix,label in [('noise_only','noise_only'),('nuisance_noise','hard_nuisance_noise')]:
                     lo=arrays[prefix+'_reported_low_'+str(j)];hi=arrays[prefix+'_reported_high_'+str(j)]
                     item[label+'_covered_counts']=np.sum((y>=lo)&(y<=hi),axis=0).tolist()

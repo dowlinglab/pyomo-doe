@@ -11,9 +11,11 @@ def main():
     args=parser.parse_args();from pathlib import Path
     a={'name':'r1','nobs_per_channel':1,'latent_SSE_by_channel_C2':[1.,4.],
         'reported_SSE_by_channel_C2':[1.,4.],'reported_signed_error_sum_C':[1.,2.],
+        'reported_run_offset_SSE_C2':[1.,4.],
         'noise_only_covered_counts':[0,1],'noise_only_width_sum_C':[1.,2.]}
     b={'name':'r2','nobs_per_channel':3,'latent_SSE_by_channel_C2':[27.,48.],
         'reported_SSE_by_channel_C2':[27.,48.],'reported_signed_error_sum_C':[9.,12.],
+        'reported_run_offset_SSE_C2':[27.,48.],
         'noise_only_covered_counts':[3,1],'noise_only_width_sum_C':[12.,15.]}
     rows=[{'candidate':'primary','fold_type':'leave_run_out','status':'audited','per_run':[a]},
           {'candidate':'primary','fold_type':'leave_run_out','status':'audited','per_run':[b]},
@@ -29,6 +31,7 @@ def main():
         assert max(abs(a-b) for a,b in zip(row['reported_RMSE_by_channel_C'],[math.sqrt(7),math.sqrt(13)]))<1e-12
         assert row['noise_only_marginal_coverage']==[.75,.5]
         assert row['noise_only_mean_width_C']==[3.25,4.25]
+        assert row['reported_run_offset_SSE_fraction']==[1.,1.] and row['reported_per_run_centered_RMSE_C']==[0.,0.]
     assert result[2]['declared_folds']==1 and result[2]['audited_folds']==0 and result[2]['nobs_per_channel']==0
     duplicate=copy.deepcopy(rows);duplicate[1]['per_run']=[a];rejected=False
     try:aggregate_groups(duplicate,expected,['r1','r2'])
