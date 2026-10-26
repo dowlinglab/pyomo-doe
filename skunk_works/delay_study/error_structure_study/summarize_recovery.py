@@ -33,6 +33,7 @@ def main():
     parser=argparse.ArgumentParser();parser.add_argument('--output',type=Path,required=True)
     parser.add_argument('--audit',type=Path,required=True);parser.add_argument('--input',type=Path,required=True)
     parser.add_argument('--data-diagnostics',type=Path,required=True);parser.add_argument('--allow-partial',action='store_true')
+    parser.add_argument('--information-audit',type=Path)
     args=parser.parse_args();begun=time.monotonic()
     source=json.loads((args.audit/'audit.json').read_text());fit=json.loads((args.input/'fit.json').read_text())
     assert json.loads((args.audit/'exit.json').read_text())['exit_code']==0
@@ -41,7 +42,9 @@ def main():
     assert source['diagnostic_implementation_binding']==diagnostic_binding(args.output)
     rows=source['rows'];declared=source['declared_draws'];indices=[r['draw'] for r in rows]
     assert len(set(indices))==len(rows) and set(indices)<=set(range(declared))
-    if not args.allow_partial:assert source['status']=='passed' and sorted(indices)==list(range(declared))
+    if not args.allow_partial:
+        assert source['status']=='passed' and sorted(indices)==list(range(declared))
+        assert args.information_audit,'Final recovery summary must compare sampling spread with the proposed local approximation'
     else:assert source['status'] in ['passed','partial']
     count=coverage(rows,declared)
     assert count['complete']==source['complete_audited_coverage_draws'] and count['covered']==source['covered_audited_draws']
@@ -62,6 +65,21 @@ def main():
                 'physical_q025_q50_q975':np.quantile(physical,[.025,.5,.975]).tolist(),
                 'lower_bound_fraction':float(np.mean(values-bounds[j,0]<1e-5)),
                 'upper_bound_fraction':float(np.mean(bounds[j,1]-values<1e-5))})
+    local_comparison=[];information_binding=None
+    if args.information_audit:
+        path=args.information_audit/'audit.json';information=json.loads(path.read_text())
+        assert information['status']=='passed' and information['fit_sha256']==source['fit_sha256']
+        assert json.loads((args.information_audit/'exit.json').read_text())['exit_code']==0
+        information_binding={'path':str(path),'sha256':sha(path)}
+        lookup={r['coordinate']:r for r in table}
+        for row in information['local_comparison']:
+            empirical=lookup.get(row['coordinate']);se=row['bin_observed_mean_and_noise_nuisance_SE']
+            if empirical is None:continue
+            spread=empirical['coordinate_sampling_SD']
+            local_comparison.append({'coordinate':row['coordinate'],'generating_point_active_face_SE':se,
+                'refitted_sampling_SD':spread,'sampling_SD_to_active_face_SE':spread/se if spread is not None else None,
+                'mean_bias_to_active_face_SE':empirical['mean_coordinate_bias']/se,
+                'notice':'Refits can change the active face or lag basin; this spread comparison is not coverage calibration for every local mixture or retrospective training design.'})
     diagnostic_source=args.data_diagnostics/'comparison.json';comparison=json.loads(diagnostic_source.read_text())
     assert comparison['status']=='complete' and comparison['fit_sha256']==source['fit_sha256']
     data_path=args.data_diagnostics/'data_diagnostics.json';data=json.loads(data_path.read_text())['metrics']
@@ -86,6 +104,7 @@ def main():
     result={'status':status,'fit_sha256':source['fit_sha256'],'recovery_audit_sha256':sha(args.audit/'audit.json'),
         'hardware_diagnostics_sha256':sha(data_path),'fixed_reference_sha256':sha(diagnostic_source),
         'coverage':count,'accepted_audited_free_fits':len(parameter_rows),'parameter_sampling_summary':table,
+        'local_information_audit_binding':information_binding,'sampling_vs_local_active_face':local_comparison,
         'refitted_diagnostic_successes':len(diagnostic_rows),'refitted_diagnostic_failures':diagnostic_failures,
         'refitted_diagnostic_unavailable_all_declared':declared-len(diagnostic_rows),
         'diagnostic_source_bindings':diagnostic_bindings,'refitted_diagnostic_comparisons':diagnostic_table,
