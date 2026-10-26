@@ -132,3 +132,14 @@ reconcile.py includes nested receipts and reports live_worker_slots separately
 from all live process identities. The stage_execution_check control passed
 real successful/invalid-CLI exits and no-overwrite checks; it is not a scientific
 uncertainty result.
+
+The --forecast-only execution mode allows the canonical simulation/noise and
+hard-condition forecasts to be audited before the longer information/draw
+stages. It reports complete_forecasts_parameter_pending and explicitly leaves
+parameter_uncertainty_complete false. Use it to finish the primary-run and
+shared-protocol mean comparisons first, then index those canonical forecasts
+and reuse them in the full default pipeline. It does not replace any of the
+nineteen remaining parameter pipelines. The final transfer summary still
+requires all declared 64/256-draw components and the primary-protocol reference
+checks; the existing completion-control fixture rejects twenty noise-only folds
+as complete. The already validated full default execution path is unchanged.

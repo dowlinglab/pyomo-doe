@@ -24,6 +24,8 @@ def main():
     parser.add_argument('--input',type=Path,required=True);parser.add_argument('--fit-audit',type=Path,required=True)
     parser.add_argument('--folds',nargs='+',required=True)
     parser.add_argument('--reuse-noise-index',type=Path)
+    parser.add_argument('--forecast-only',action='store_true',
+        help='Produce audited canonical forecasts now; leave all parameter-uncertainty gates explicitly pending')
     args=parser.parse_args();begun=time.monotonic()
     collection=json.loads((args.input/'transfer_fits.json').read_text())
     audit=json.loads((args.fit_audit/'audit.json').read_text())
@@ -43,6 +45,7 @@ def main():
     folds={r['id']:(j,r) for j,r in enumerate(collection['folds'])}
     assert len(set(args.folds))==len(args.folds) and set(args.folds)<=set(folds)
     design={'candidate':collection['candidate'],'fold_ids':args.folds,'mixture':mix,
+        'mode':'forecast_only_parameter_pending' if args.forecast_only else 'full_parameter_sensitivity',
         'fit_collection_sha256':sha(args.input/'transfer_fits.json'),
         'fit_collection_audit_sha256':sha(args.fit_audit/'audit.json'),
         'failure_policy':'Stop at the first numerical or approximation failure; preserve all prior stages and failed logs.'}
@@ -71,6 +74,12 @@ def main():
                 prediction=stage('run_transfer_predict.py','reference_transport',['--input',fit,'--reference-transport'])
                 checked=stage('audit_transfer_prediction.py','reference_transport_audit',['--input',prediction,'--fit',fit,'--fit-audit',check])
                 row['reference_transport']={'directory':str(prediction),'audit':str(checked/'audit.json')}
+            if args.forecast_only:
+                row['status']='forecast_only_parameter_pending'
+                rows.append(row);write(args.output/'folds.json',rows)
+                write(args.output/'progress.json',{'completed_forecast_folds':len(rows),
+                    'declared':len(args.folds),'parameter_uncertainty_complete':False,'elapsed_s':time.monotonic()-begun})
+                continue
             information=stage('run_information.py','information',['--input',fit])
             checked=stage('audit_information.py','information_audit',['--input',information,'--fit',fit])
             draws=stage('draw_local.py','draws',['--input',fit,'--information',information,'--audit',checked,
@@ -88,7 +97,8 @@ def main():
             raise
         rows.append(row);write(args.output/'folds.json',rows)
         write(args.output/'progress.json',{'completed_folds':len(rows),'declared':len(args.folds),'elapsed_s':time.monotonic()-begun})
-    write(args.output/'summary.json',{'status':'complete','folds':rows,'elapsed_s':time.monotonic()-begun,
+    write(args.output/'summary.json',{'status':'complete_forecasts_parameter_pending' if args.forecast_only else 'complete',
+        'parameter_uncertainty_complete':not args.forecast_only,'folds':rows,'elapsed_s':time.monotonic()-begun,
         'notice':'Conditional local sensitivities, not calibrated total predictive intervals or a validation of the fitted model family. Every component retains its own numerical audit and real process exit.'})
 
 
