@@ -755,7 +755,7 @@
       },
       "output": "skunk_works/delay_study/error_structure_study/results/joint_conductance_b00_v2",
       "source_receipt_sha256": "3c45142ca59588bd1d115ff9b67500834b37ef2ddb38a07c0478aad4ecce8d99",
-      "last_verified_utc": "2026-10-26 01:00:11 UTC",
+      "last_verified_utc": "2026-10-26 01:08:42 UTC",
       "starts_recorded": 1
     },
     {
@@ -794,7 +794,7 @@
       "output": "skunk_works/delay_study/error_structure_study/results/joint_conductance_b10",
       "source_receipt_sha256": "6ceb5cc6eca7a0f30a65e26d823c12e5f3fec43fd3a1a983ad3b426af2718d3a",
       "starts_recorded": 2,
-      "last_verified_utc": "2026-10-26 01:00:11 UTC"
+      "last_verified_utc": "2026-10-26 01:08:42 UTC"
     },
     {
       "id": "joint_conductance_b20",
@@ -832,7 +832,7 @@
       "output": "skunk_works/delay_study/error_structure_study/results/joint_conductance_b20",
       "source_receipt_sha256": "96ad5d780b4646e613de6351fd45a489bffb80d81690cfa333bcb19c03788e9c",
       "starts_recorded": 2,
-      "last_verified_utc": "2026-10-26 01:00:11 UTC"
+      "last_verified_utc": "2026-10-26 01:08:42 UTC"
     },
     {
       "id": "joint_radiation_b10",
@@ -869,7 +869,7 @@
       },
       "output": "skunk_works/delay_study/error_structure_study/results/joint_radiation_b10",
       "source_receipt_sha256": "0554934cdc5c4f751c16467a476fe9ce5dff6f4514286098c8244ef84025828e",
-      "last_verified_utc": "2026-10-26 01:00:11 UTC",
+      "last_verified_utc": "2026-10-26 01:08:42 UTC",
       "starts_recorded": 2
     },
     {
@@ -915,6 +915,50 @@
       "source_receipt_sha256": "ac4b7731754ebdb1a29e4ee493de6822364786071e95dc80176c156ebc0b6244",
       "exit_code": 0,
       "finished_utc": "2026-10-25T23:56:12.491995+00:00"
+    },
+    {
+      "id": "loading_limit_check",
+      "process": {
+        "pid": 15212,
+        "parent_pid": 14910,
+        "command": [
+          "/Users/adowling/opt/anaconda3/bin/python",
+          "/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-error-0f358865-bmkry9wu/skunk_works/delay_study/error_structure_study/check_loading_limit.py",
+          "--output",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/loading_limit_check",
+          "--warm",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/band_10_constant/fit.json"
+        ],
+        "started_utc": "2026-10-26T01:06:54.879231+00:00"
+      },
+      "output": "skunk_works/delay_study/error_structure_study/results/loading_limit_check",
+      "source_commit": "0f358865610bb1bbc08a51c68794fd140e397216",
+      "source_receipt_sha256": "928703069746b900bfbc4669c7c5b17af21fb72d6380b9a84e00e0729a7f398c",
+      "status": "terminal",
+      "exit_code": 0,
+      "finished_utc": "2026-10-26T01:06:58.217423+00:00"
+    },
+    {
+      "id": "lower_loading_score_check",
+      "process": {
+        "pid": 15794,
+        "parent_pid": 15465,
+        "command": [
+          "/Users/adowling/opt/anaconda3/bin/python",
+          "/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-error-0f358865-marq395g/skunk_works/delay_study/error_structure_study/check_joint_quantized.py",
+          "--output",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/lower_loading_score_check",
+          "--warm",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/band_10_constant/fit.json"
+        ],
+        "started_utc": "2026-10-26T01:07:20.044697+00:00"
+      },
+      "output": "skunk_works/delay_study/error_structure_study/results/lower_loading_score_check",
+      "source_commit": "0f358865610bb1bbc08a51c68794fd140e397216",
+      "source_receipt_sha256": "b9888ffb9f017a66469a2637dee0cf68782c3e56224b93bab422fb3dce824ad3",
+      "status": "terminal",
+      "exit_code": 0,
+      "finished_utc": "2026-10-26T01:07:46.842084+00:00"
     },
     {
       "id": "operating_first",
@@ -1354,9 +1398,9 @@
     "joint_conductance_b20",
     "joint_radiation_b10"
   ],
-  "next_action": "Reconcile direct-tool process snapshot and exit artifacts; four long jobs remain live. Launch queued joint_conductance_b05 at first free slot with repaired source, band_05_constant warm start, the two v2 fixed-mean noise fits, three starts and --inflate-initial-noise. Audit terminal joint fits with audit_joint_quantized.py before interpretation. Then full sequential.py comparison via run_sequential.py (IID and joint initializations), run_bin_diagnostics.py (20 streams/50 fixed-model references), guided cross-channel checks, run_profiles.py/run_information.py and run_recovery.py per uncertainty_config.json (50 refitted draws, not the fixed-model diagnostic simulations), retrospective LOO/protocol-out transfer, initial-sensor-bin/phase/noise-initialization sensitivities and checked tablet report. Keep four long numerical processes maximum; no duplicate live jobs. Parent source/numerical receipt owns nested profile/recovery fit tasks. Do not mark goal complete or email; no hardware or DoE.",
-  "updated_utc": "2026-10-26T01:00:18.964440+00:00",
-  "last_goal_turn_classification": "progress: sequential/dense and code-transition audits passed; constrained profile and initial-sensor charts verified; full uncertainty/refitting design committed before measurement",
+  "next_action": "Reconcile direct-tool process snapshot and exit artifacts; four long jobs remain live. Launch queued joint_conductance_b05 at first free slot with repaired source, band_05_constant warm start, the two v2 fixed-mean noise fits, three starts and --inflate-initial-noise. Audit terminal joint fits with audit_joint_quantized.py before interpretation. Then full sequential.py comparison via run_sequential.py (IID and joint initializations), run_bin_diagnostics.py (20 streams/50 fixed-model references), guided cross-channel checks, run_profiles.py/run_information.py and run_recovery.py per uncertainty_config.json (50 refitted draws, not the fixed-model diagnostic simulations), retrospective LOO/protocol-out transfer, initial-sensor-bin/phase/noise-initialization sensitivities and checked tablet report. Keep four long numerical processes maximum; no duplicate live jobs. Parent source/numerical receipt owns nested profile/recovery fit tasks. Do not mark goal complete or email; no hardware or DoE. Sensor-loading lower-bound sensitivity is now declared in uncertainty_config.json: --minimum-sensor-loading 0.0001, three starts after baseline audit; synthetic lag-exchange and below-old-bound full score checks passed. Original live snapshots stay immutable.",
+  "updated_utc": "2026-10-26T01:08:42.713164+00:00",
+  "last_goal_turn_classification": "progress: verified sequential/dense, nonrandomized code forecasts, fixed-coordinate profile charts, initial sensor-bin propagation/scores and weak lag-label limit; committed full profile/eigen/refitted coverage sources before measurement",
   "controller_sessions": {
     "joint_conductance_b00": 55866,
     "joint_conductance_b10": 15102,
@@ -1369,10 +1413,10 @@
   ],
   "process_check": {
     "path": "process_check.json",
-    "checked_utc": "2026-10-26 01:00:11 UTC",
-    "sha256": "d0c60d16047cd6888cae6b0245f36712d371a842b3dccad966a6b7cdf8b058ee",
+    "checked_utc": "2026-10-26 01:08:42 UTC",
+    "sha256": "ea2aa9dc8093f3670221265bd751cabcaed747f0a890b58c24c34aba7c229eca",
     "method": "Direct approved pgrep -fl tclab-error tool",
-    "snapshot_age_s": 7.96444
+    "snapshot_age_s": 0.713164
   },
   "reconciliation_warnings": {
     "missing_exit_or_matching_process": [],
