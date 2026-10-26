@@ -11,6 +11,7 @@ from pathlib import Path
 import time
 import numpy as np
 import matplotlib.pyplot as plt
+from matplotlib.ticker import FixedLocator,FuncFormatter,NullLocator
 from audit_recovery import interval
 from audit_provenance import numerical_binding,diagnostic_binding
 from run_bounded import write
@@ -98,14 +99,26 @@ def main():
     write(args.output/'summary.json',result)
     if not len(points):return
     fig,axes=plt.subplots(2,2,figsize=(8,6));gain=np.exp(points[:,names.index('log_K')]);gain0=np.exp(truth[names.index('log_K')])
-    axes[0,0].hist(100*(gain/gain0-1),bins=min(12,max(1,len(gain))),color='tab:blue',alpha=.7)
+    if len(gain)<3:axes[0,0].plot(100*(gain/gain0-1),np.ones(len(gain)),'o',color='tab:blue')
+    else:axes[0,0].hist(100*(gain/gain0-1),bins=12,color='tab:blue',alpha=.7)
     axes[0,0].axvline(0,color='k',lw=1);axes[0,0].set(xlabel='Gain estimation error (%)',ylabel='Generated data sets')
-    axes[0,1].hist(np.minimum(rs,lag),bins=min(12,max(1,len(rs))),alpha=.6,label='Faster fitted time')
-    axes[0,1].hist(np.maximum(rs,lag),bins=min(12,max(1,len(rs))),alpha=.6,label='Slower fitted time')
+    if len(rs)<3:
+        axes[0,1].plot(np.minimum(rs,lag),np.ones(len(rs)),'o',label='Faster fitted time')
+        axes[0,1].plot(np.maximum(rs,lag),np.ones(len(rs)),'o',label='Slower fitted time')
+    else:
+        axes[0,1].hist(np.minimum(rs,lag),bins=12,alpha=.6,label='Faster fitted time')
+        axes[0,1].hist(np.maximum(rs,lag),bins=12,alpha=.6,label='Slower fitted time')
     axes[0,1].set(xlabel='Fitted time (s)',ylabel='Generated data sets');axes[0,1].legend(fontsize=7)
     ell=np.exp(points[:,names.index('log_ell_T1')]);sd=np.exp(points[:,names.index('log_latent_SD_T1')])
-    axes[1,0].plot(ell,sd,'o',ms=3,alpha=.7);axes[1,0].plot(fit['noise_parameters'][0]['ell_s'],fit['noise_parameters'][0]['latent_SD_C'],'kx',ms=8)
+    ell0=fit['noise_parameters'][0]['ell_s'];sd0=fit['noise_parameters'][0]['latent_SD_C']
+    axes[1,0].plot(ell,sd,'o',ms=3,alpha=.7,label='Refitted');axes[1,0].plot(ell0,sd0,'kx',ms=8,label='Generating fit')
     axes[1,0].set(xscale='log',yscale='log',xlabel='T1 fitted OU length (s)',ylabel='T1 fitted latent SD (C)')
+    for axis,values,reference in [(axes[1,0].xaxis,ell,ell0),(axes[1,0].yaxis,sd,sd0)]:
+        low=.95*min(float(values.min()),reference);high=1.05*max(float(values.max()),reference)
+        axis.set_major_locator(FixedLocator(np.geomspace(low,high,4)))
+        axis.set_major_formatter(FuncFormatter(lambda value,position:f'{value:.3g}'))
+        axis.set_minor_locator(NullLocator())
+    axes[1,0].legend(fontsize=7)
     selected=['T1_score_input_correlation_abs','T1_score_maximum_phase_projection_fraction',
         'T2_score_max_abs_ACF_1_60','score_max_abs_cross_channel_correlation_minus10_10']
     labels=['T1 input','T1 phase','T2 ACF','Cross']
