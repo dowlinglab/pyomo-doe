@@ -235,15 +235,15 @@ draws for its final mode, binds refitted diagnostic definitions, and compares
 their sampling spread with generating-point active-face information. Its final
 measured summary is still pending.
 
-The odd continuation is now terminal with all twenty-five declared outcomes.
-recovery_odd25_audit is independently checking every odd index, regenerating
-its data and auditing each accepted free/null pair. The opposite original even
-shard is supplied only as the immutable full-design declaration witness, under
-the documented partial-audit protocol in uncertainty_methods.md. Its seven old
-completed even outcomes are unselected; the current even continuation remains
-live. No partial-audit coverage estimate is a fifty-draw calibration result.
-The final audit must consume both current complete continuation ledgers and
-reuse only passed source/fit/array/data-bound checks.
+Both continuations are now terminal with all fifty declared outcomes. Each has
+an accepted free/null fit and saved refitted diagnostics; these are unverified
+recovery outcomes until the full numerical/data audits pass. The odd25 audit
+remains live. The next parity audit checks every even index using both current
+terminal ledgers and reuses only the passed, source/data-bound draw-0 checks.
+The odd audit's original even declaration witness is not conflated with the
+current complete ledger. The final full audit must consume both current
+complete continuation ledgers and source-bind any reused parity checks. No
+partial-audit coverage estimate is a fifty-draw calibration result.
 
 transfer_config.json declares sixteen primary folds (twelve runs + four
 protocols) and four shared-model protocol folds. Training/prediction code is
