@@ -153,3 +153,14 @@ sensor shifts and hidden heater-only shifts are separate comparisons. The first
 reading is omitted from the score and the OU state still starts stationary at
 the first scored time. This sensitivity does not integrate a joint physical-state
 and initial-measurement posterior; that distinction must stay visible.
+
+There is a possible phase/temperature-reference symmetry in this linear mean.
+If phase changes by d, every code interval translates by C=0.3223*d. Translating
+both cold heater/sensor pairs and ambient by C translates every predicted
+temperature by C, leaving relative bin limits and the likelihood unchanged.
+The sensor-bin bounds translate consistently. This requires slack ambient
+bounds and the initial-state coordinates; it need not hold when initial sensor
+states are fixed to reported values, when ambient limits prevent the shift, or
+for absolute-Kelvin radiation. Verify the identity before interpreting a
+nearest/floor sensitivity as new dynamic information. Independent temperature
+reference information would be needed to resolve this global reference freedom.
