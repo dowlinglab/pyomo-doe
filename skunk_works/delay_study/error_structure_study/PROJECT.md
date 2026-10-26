@@ -107,8 +107,14 @@ capacity. See lag_identifiability.md for the restricted structural argument.
 Initial sensor-bin coordinates move each cold heater/sensor pair together,
 preserve the original ambient reference/bounds and are separate from hidden
 heater-only starts. Dimensional propagation and score audits passed for nearest
-and floor phases, with/without a 0.1 C buffer. Run the full data sensitivities
-after capacity opens. These bounds do not integrate an initial-noise posterior.
+and floor phases, with/without a 0.1 C buffer. The nearest-bin full-data fit and
+its independent 128/256/512-node, dimensional, rectangle and stationarity audit
+are now terminal and passed. Gain changes from 0.873222 to 0.869704 C/%, short
+lag from 2.73048 to 2.72054 s, and nll from 6238.29865 to 6209.55360 with 24
+additional bounded initial-state coordinates. Several reach bin edges. The
+fit is an initialization sensitivity; improved whitening/transfer has not been
+established. Fixed-initial floor and buffered/floor sensor-bin sensitivities
+remain. These bounds do not integrate an initial-noise posterior.
 
 The phase-reference check passed: nearest-to-floor bins translate by 0.16115 C.
 With both cold pairs and ambient shifted equally and slack bounds, the linear
@@ -173,11 +179,23 @@ known correlated analogue covariance are 4.55 and 5.83 times the matching IID
 same-marginal-variance values; the short-lag SE is 0.645 times. The full bin
 curvature also estimates noise nuisances. These are conditional local
 comparisons, not calibrated intervals. Keep the original matrix as a numerical diagnostic;
-do not report its tiny centered eigenvalue as a variance. The gain profile
-is still running from its original frozen source. recovery_b10_even and
-recovery_b10_odd are running complementary shards of the fifty prespecified
-draws. This conditional algorithm check cannot establish real-data noise
-adequacy. Other profiles remain queued. See sensitivity_methods.md and
+do not report its tiny centered eigenvalue as a variance. The original gain
+profile completed naturally with seven successful points and no point below
+the reference. Its full collection audit is running. Each original recovery
+shard retained seven completed draws before approved termination (exit -15).
+The gain profile exited 0 before that termination request was executed.
+The compiled continuation shards retain all fourteen completed outcomes and
+continue only unfinished work. The original even branch had no point checkpoint
+and is explicitly restarted from its original seed; its 119 abandoned callback
+iterations remain recorded. The odd branch retains its completed start.
+Numerical equivalence, independent score checks, exact input/protocol gates and
+continuation control checks passed before the handoff. The scientific protocol,
+quadrature order, draw count, retry allowance and tolerances are unchanged.
+See compiled_score_methods.md. This conditional algorithm check cannot establish
+real-data noise adequacy. The short-lag profile is running as
+profile_b10_short_lag_v2. Its first command used an incorrect coordinate name
+and failed before fitting; that invocation is retained. Remaining profiles are
+queued. See sensitivity_methods.md and
 uncertainty_interim.md for the source-bound findings and limits.
 uncertainty_config.json declares grids, starts, bounds,
 fifty recovery draws and gain-LR coverage before measurement. Source drivers:
@@ -221,8 +239,10 @@ mode reproduces the prior Gaussian objective within 3e-11 under a full-data
 dense audit. The process-correlation fit and full-data dense audit passed;
 its driving correlation is 0.0908 and nll improves 4.3501 versus the independent
 Gaussian fit. Measurement correlation and its audit also passed: rho=-0.00692,
-Gaussian nll improvement 0.16748. gaussian_both_correlations is now running
-(controller 62272) to check their tradeoff. These are working correlations, not measured
+Gaussian nll improvement 0.16748. gaussian_both_correlations and its full-data
+dense audit are now terminal and passed. Process/measurement correlations are
+0.11587/-0.02463 and nll improves 6.14891 over the independent Gaussian model.
+These are working correlations, not measured
 airflow or electronics. Their likelihood
 is continuous Gaussian on discrete temperatures, not the
 quantized multichannel likelihood. They cannot establish calibrated bin

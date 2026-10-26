@@ -2,8 +2,9 @@
 
 This is a progress note, not the completed report. The goal remains active.
 The selected mean/bin fits and information results below have terminal
-independent audits. Nuisance profiles, refitted coverage, retrospective transfer
-and several initialization sensitivities remain unfinished.
+independent audits. The gain profile's numerical audit, remaining nuisance
+profiles, refitted coverage, retrospective transfer and several initialization
+sensitivities remain unfinished.
 
 ## The run band and loading boundary
 
@@ -62,6 +63,13 @@ selected-point audit. It changes T1 latent SD/length from 0.5362 C/658.3 s to
 2*S/ell remains almost unchanged. This supports the variance/length ambiguity;
 it does not select the initial-state convention or justify transplanting an
 unconditional stationary sampler to the conditional fit.
+
+Letting each cold heater/sensor pair vary within its first reported bin also
+passed the full selected-point audit. Gain changes by -0.403% to 0.869704 C/%,
+the short lag changes to 2.72054 s, and nll decreases by 28.7450 with 24 extra
+bounded initial coordinates. Several hit bin edges. This is a fit sensitivity;
+there is no established whitening or transfer improvement, and these bin
+bounds do not integrate a posterior for the analogue initial temperature.
 
 ## Added PIT randomness can obscure a diagnostic
 
@@ -125,7 +133,9 @@ The figure was inspected. Projection has not resolved the dependence.
    Shared process driving noise gives correlation 0.0908 and improves Gaussian
    nll by 4.3501; its full-data dense audit passed. Shared measurement noise
    gives correlation -0.00692 and improves nll only 0.16748, also audited.
-   The combined comparison is running. These comparisons
+   The combined fit and dense audit also passed: process/measurement
+   correlations are 0.11587/-0.02463, with total nll improvement 6.14891.
+   These comparisons
    are sensitivities on discrete measurements, not the quantized joint likelihood.
 3. Complete profiles, initial sensor-bin sensitivities, the declared fifty
    nuisance-refitted recovery draws, and retrospective run/protocol transfer.
