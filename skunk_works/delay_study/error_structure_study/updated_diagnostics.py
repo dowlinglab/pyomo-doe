@@ -79,6 +79,7 @@ def main():
     rows=[];freq=[];folds=[];operating=[];forecasts=[];bindings={};model_data={}
     for path,audit_path in zip(args.fits,args.audits):
         fit=json.loads((path/'fit.json').read_text());audit=json.loads((audit_path/'audit.json').read_text())
+        assert fit['kernel']=='quantized_ou_nugget','Use a matching multichannel/continuous forecast law for other kernels'
         fitsha=hashlib.sha256((path/'fit.json').read_bytes()).hexdigest();assert audit['status']=='passed' and audit['fit_sha256']==fitsha
         assert json.loads((audit_path/'exit.json').read_text())['exit_code']==0
         if fit.get('condition_initial_code'):raise ValueError('Conditional-first-code diagnostics require matching conditional forecast distributions')
