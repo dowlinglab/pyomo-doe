@@ -96,7 +96,10 @@ def main():
                 value+=f['nll'];cursor+=n
         cache[loading_step]=value;return value
     f0=forward_nll(0.);loading_checks=[]
-    for step in [.02,.05]:
+    # The saved scalar step study resolves cancellation at tiny steps and
+    # truncation bias at 0.05. Use its two stable smaller stencils, without
+    # relaxing the original 0.001 absolute curvature agreement gate.
+    for step in [.005,.02]:
         curvature=(2*f0-5*forward_nll(step)+4*forward_nll(2*step)-forward_nll(3*step))/step**2
         error=float(abs(curvature-H[2,2]));assert error<.001,(step,curvature,H[2,2],error)
         loading_checks.append({'step':step,'scalar_one_sided_curvature':float(curvature),'stored_H22':float(H[2,2]),'absolute_error':error})

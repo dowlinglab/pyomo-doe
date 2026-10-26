@@ -26,6 +26,14 @@ arithmetic, not likelihood-score correctness or interval coverage. The complete
 joint score suite and a recomputed information matrix must pass before the
 replacement supports uncertainty claims.
 
+The saved forward-likelihood step study gives curvature 0.07876 at step 0.005
+and 0.07859 at 0.02. At 0.0002, cancellation affects scalar differences; at 0.05,
+one-sided truncation changes curvature to 0.07756. The independent audit uses
+0.005 and 0.02 with its original 0.001 agreement threshold. It does not relax
+that threshold to accept the original matrix. The original diagnostic omitted
+one 0.03 evaluation from the 0.01 stencil and failed only at final assembly;
+the arithmetic recovery preserves five complete stencils and records that gap.
+
 Frozen fits already running retain their original implementation. Their saved
 likelihoods and stationarity will be checked with the improved score; no process
 is restarted merely to change its source. Accepted old results are not silently
