@@ -46,11 +46,14 @@ def expected_reported(mean,sd,phase):
 
 
 def quantile_check(codes,means,sds,p,phase,mixture=False):
+    assert np.isfinite(codes).all() and np.isfinite(means).all() and np.isfinite(sds).all()
+    assert np.all(np.asarray(sds)>0) and 0<p<1
     lo,hi=bins(codes,phase)
     if mixture:
         lower=np.mean(ndtr((lo[None,:]-means)/sds[:,None]),axis=0)
         upper=np.mean(ndtr((hi[None,:]-means)/sds[:,None]),axis=0)
     else:lower=ndtr((lo-means)/sds);upper=ndtr((hi-means)/sds)
+    assert np.isfinite(lower).all() and np.isfinite(upper).all() and np.all(lower<=upper)
     error=float(max(0.,np.max(lower-p),np.max(p-upper)))
     assert error<1e-10,('Discrete quantile CDF bracket',error)
     return error
