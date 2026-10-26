@@ -246,7 +246,61 @@ def main():
     from transfer import reference_transport_bounds
     low,high=reference_transport_bounds(.1,12,9)
     assert f'[{low:.5f},{high:.5f}]' in text
+    # Check the concise Markdown companion against the same independently
+    # pooled arrays, not by comparing its text with the LaTeX transcription.
+    markdown=(STUDY/'report.md').read_text()
+    md_fits=[('Shared conductance','joint_conductance_b00_export_v3','joint_conductance_b00_audit'),
+        ('5% run band','joint_conductance_b05_export_v2','joint_conductance_b05_audit'),
+        ('10% run band','joint_conductance_b10_export_v2','joint_conductance_b10_audit'),
+        ('20% run band','joint_conductance_b20_export_v2','joint_conductance_b20_audit'),
+        ('Radiation, 10% convective band','joint_radiation_b10_export_v2','joint_radiation_b10_audit')]
+    for label,name,audit_name in md_fits:
+        selected,r=audited(root,name,audit_name)
+        expected=f'| {label} | {r[0]:.3f} | {r[1]:.3f} | {selected["best"]["nll"]:.4f} |'
+        assert expected in markdown,expected
+        if selected['family']=='radiation':assert f'{joint["best"]["nll"]-selected["best"]["nll"]:.3f}' in markdown
+    for key,places in [('K_common_nominal',4),('tA_nominal_s',2),('rS_s',2),('input_lag_s',2)]:
+        assert f'{joint["parameters"][key]:.{places}f}' in markdown
+    assert f'{count:,}' in markdown and 'round(0.3223*n - 50, 2)' in markdown
+    old_partition=next(r for r in csv.DictReader(aggregate.open()) if r['model']=='main_lag_curve_ou' and r['channel']=='1' and r['cutoff_s']=='0')
+    for key,places in [('offset_fraction',1),('additional_trend_fraction',1),('additional_fundamental_fraction',2)]:
+        assert f'{100*float(old_partition[key]):.{places}f}%' in markdown
+    for key,places in [('heat_loss_W',3),('nonlinear_remainder_vs_50C_secant_W',4)]:
+        values=[float(r[key]) for r in csv.DictReader(scenarios.open()) if float(r['surface_C'])==70.54]
+        assert f'{min(values):.{places}f}--{max(values):.{places}f}' in markdown
+    for key in ['T1_score_input_correlation_abs','score_max_abs_cross_channel_correlation_minus10_10']:
+        row=nr['comparisons'][key]
+        for value in [row['data'],row['reference_q025_q50_q975'][2]]:assert f'{value:.5f}' in markdown
+    row=cross['comparisons']['run_trend_and_phase_removed_pooled_cross_max_abs']
+    for value in [row['data'],row['reference_q025_q50_q975'][2]]:assert f'{value:.5f}' in markdown
+    for name,places in [('log_K',2),('log_tA',2),('log_input_lag',3)]:assert f'{ratios[name]:.{places}f}' in markdown
+    for horizon in [0.,60.]:
+        values=[]
+        for channel in [1,2]:
+            chosen=[r for r in forecast_rows if r['model']=='joint_conductance_b10_export_v2' and float(r['cutoff_s'])==0. and float(r['horizon_s'])==horizon and int(r['channel'])==channel]
+            values.append(np.sqrt(sum(float(r['SSE_C2']) for r in chosen)/sum(int(r['nobs']) for r in chosen)))
+        assert f'{values[0]:.3f}/{values[1]:.3f}' in markdown
+    for value,places in [(exchange['parameters']['input_lag_s'],5),(exchange['parameters']['rS_s'],4),
+        (2*(exchange['best']['nll']-joint['best']['nll']),5)]:assert f'{value:.{places}f}' in markdown
+    md_labels={('primary','leave_run_out'):'10% band, omit one run',
+        ('primary','leave_protocol_out'):'10% band, omit a protocol',
+        ('shared','leave_protocol_out'):'Shared conductance, omit a protocol'}
+    for key,label in md_labels.items():
+        pooled=groups[key];rmse=np.sqrt(pooled['sse']/pooled['nobs'])
+        assert f'| {label} | {rmse[0]:.3f} | {rmse[1]:.3f} |' in markdown
+    pooled=groups[('primary','leave_protocol_out')];nobs=pooled['nobs']
+    for k in [0,1]:
+        cover=100*pooled['covered'][k]/nobs;assert f'{cover[0]:.2f}/{cover[1]:.2f}%' in markdown
+    widths=pooled['widths'][1]/nobs;assert f'{widths[0]:.3f}/{widths[1]:.3f}' in markdown
+    centered=np.sqrt((pooled['sse']-pooled['offsets'])/nobs);fraction=100*pooled['offsets']/pooled['sse']
+    assert f'{fraction[0]:.1f}/{fraction[1]:.1f}%' in markdown and f'{centered[0]:.3f}/{centered[1]:.3f}' in markdown
+    for variant in ['noise','parameter_256']:
+        arrays=mixtures[variant];prefix='nuisance_noise_reported' if variant=='noise' else 'parameter_mixture_reported'
+        width=sum(np.sum(arrays[prefix+'_high_'+str(j)]-arrays[prefix+'_low_'+str(j)],axis=0) for j in range(3))
+        nobs=sum(len(arrays[prefix+'_high_'+str(j)]) for j in range(3));width=width/nobs
+        assert f'{width[0]:.3f}/{width[1]:.3f}' in markdown
     args.output.write_text(json.dumps({'status':'passed','source_sha256':sha(HERE/'main.tex'),
+        'markdown_source_sha256':sha(STUDY/'report.md'),
         'checker_source_sha256':sha(Path(__file__)),
         'python':platform.python_version(),'data_count_including_initial_readings':count,'Gaussian_table':checked,
         'Gaussian_radiation_nll_improvement':radiation_delta,'joint_bin_RMSE_C':jr.tolist(),

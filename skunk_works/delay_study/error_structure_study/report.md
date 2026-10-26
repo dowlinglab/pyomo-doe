@@ -143,7 +143,7 @@ Nineteen pipelines remain. Changing the training set also changes the nominal
 conductance reference; compare invariant combinations such as gain/thermal
 time before interpreting raw gain shifts physically.
 
-Evidence: [all twenty canonical groups](results/transfer_all_canonical_summary/summary.json),
+Evidence: [all twenty canonical folds](results/transfer_all_canonical_summary/summary.json),
 [first parameter propagation](results/transfer_first_protocol_parameter_summary/summary.json),
 [transfer definitions and audit scope](transfer_methods.md).
 
