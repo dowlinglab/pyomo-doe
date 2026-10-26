@@ -1175,7 +1175,7 @@
       "source_commit": "e8951c5ae3c6ca4b7dc4252008a3ced464b455b2",
       "source_receipt_sha256": "d7d85c0ef40d029af35f63deb48e9f3e7eb8a8e93a9eb6890147ca3b34a7f028",
       "status": "running_verified",
-      "last_verified_utc": "2026-10-26 23:41:00 UTC"
+      "last_verified_utc": "2026-10-26 23:41:44 UTC"
     },
     {
       "id": "initial_sensor_check",
@@ -2889,7 +2889,7 @@
       "source_commit": "cc9dad7639d2662b88bacc42c864fde2980278c2",
       "source_receipt_sha256": "010097bd36fca5d18ee9b8a323a2eb8b366319dde180d695d6d0d55070e58974",
       "status": "running_verified",
-      "last_verified_utc": "2026-10-26 23:41:00 UTC"
+      "last_verified_utc": "2026-10-26 23:41:44 UTC"
     },
     {
       "id": "quantization_check",
@@ -3421,7 +3421,7 @@
       "source_commit": "6c79063aa4ad50e597246d2fe1877878194dd9a1",
       "source_receipt_sha256": "f86a7ba8e382853bfb1ca7ed9e1d2f8f6b0654a57aa5ee7beb5f62767c15825f",
       "status": "running_verified",
-      "last_verified_utc": "2026-10-26 23:41:00 UTC"
+      "last_verified_utc": "2026-10-26 23:41:44 UTC"
     },
     {
       "id": "recovery_odd25_audit",
@@ -5502,6 +5502,85 @@
       "finished_utc": "2026-10-26T17:00:15.145614+00:00"
     },
     {
+      "id": "transfer_uncertainty_protocols_remaining",
+      "process": {
+        "pid": 29816,
+        "parent_pid": 29499,
+        "command": [
+          "/Users/adowling/opt/anaconda3/bin/python",
+          "/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-error-4b2b6ba3-o1lr0m7o/skunk_works/delay_study/error_structure_study/run_transfer_uncertainty_queue.py",
+          "--output",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_uncertainty_protocols_remaining",
+          "--input",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_primary_protocols",
+          "--fit-audit",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_primary_protocols_audit",
+          "--folds",
+          "protocol_120s",
+          "protocol_300s",
+          "protocol_step",
+          "--reuse-noise-index",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/run_manifest.json"
+        ],
+        "started_utc": "2026-10-26T23:41:28.998919+00:00"
+      },
+      "output": "skunk_works/delay_study/error_structure_study/results/transfer_uncertainty_protocols_remaining",
+      "source_commit": "4b2b6ba3349e4cd75e1374a0c77435eec0054f74",
+      "source_receipt_sha256": "bc303cc454af395f783ea6f741ea8701366b03e0865e4175fd4409d37cae3086",
+      "status": "running_verified",
+      "last_verified_utc": "2026-10-26 23:41:44 UTC"
+    },
+    {
+      "id": "transfer_uncertainty_protocols_remaining/protocol_120s/reference_transport",
+      "process": {
+        "pid": 29841,
+        "parent_pid": 29816,
+        "command": [
+          "/Users/adowling/opt/anaconda3/bin/python",
+          "/private/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-error-4b2b6ba3-o1lr0m7o/skunk_works/delay_study/error_structure_study/run_transfer_predict.py",
+          "--output",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_uncertainty_protocols_remaining/protocol_120s/reference_transport",
+          "--input",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_primary_protocols/protocol_120s",
+          "--reference-transport"
+        ],
+        "started_utc": "2026-10-26T23:41:31.528714+00:00",
+        "sequential_parent": "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_uncertainty_protocols_remaining"
+      },
+      "output": "skunk_works/delay_study/error_structure_study/results/transfer_uncertainty_protocols_remaining/protocol_120s/reference_transport",
+      "source_commit": "4b2b6ba3349e4cd75e1374a0c77435eec0054f74",
+      "source_receipt_sha256": "936b07344425a82e034151ee4b63ca83f48f465708d07ad33fe799228a1bc75b",
+      "status": "terminal",
+      "exit_code": 0,
+      "finished_utc": "2026-10-26T23:41:38.610289+00:00"
+    },
+    {
+      "id": "transfer_uncertainty_protocols_remaining/protocol_120s/reference_transport_audit",
+      "process": {
+        "pid": 29905,
+        "parent_pid": 29816,
+        "command": [
+          "/Users/adowling/opt/anaconda3/bin/python",
+          "/private/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-error-4b2b6ba3-o1lr0m7o/skunk_works/delay_study/error_structure_study/audit_transfer_prediction.py",
+          "--output",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_uncertainty_protocols_remaining/protocol_120s/reference_transport_audit",
+          "--input",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_uncertainty_protocols_remaining/protocol_120s/reference_transport",
+          "--fit",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_primary_protocols/protocol_120s",
+          "--fit-audit",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_primary_protocols_audit/point_1/audit.json"
+        ],
+        "started_utc": "2026-10-26T23:41:38.616880+00:00",
+        "sequential_parent": "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_uncertainty_protocols_remaining"
+      },
+      "output": "skunk_works/delay_study/error_structure_study/results/transfer_uncertainty_protocols_remaining/protocol_120s/reference_transport_audit",
+      "source_commit": "4b2b6ba3349e4cd75e1374a0c77435eec0054f74",
+      "source_receipt_sha256": "6b698f09e067280ab53207b28f1ecc437e3d297bc0a39c9f98e632d928a60ae8",
+      "status": "running_verified",
+      "last_verified_utc": "2026-10-26 23:41:44 UTC"
+    },
+    {
       "id": "updated_diagnostics_check",
       "process": {
         "pid": 64305,
@@ -5627,10 +5706,12 @@
   "live_jobs": [
     "initial_remaining_b10",
     "profile_remaining_b10",
-    "recovery_even25_audit"
+    "recovery_even25_audit",
+    "transfer_uncertainty_protocols_remaining",
+    "transfer_uncertainty_protocols_remaining/protocol_120s/reference_transport_audit"
   ],
-  "next_action": "Odd25 recovery audit is terminal: all twenty-five odd rows and fifty selected free/null numerical checks passed, retaining partial status. Even25 audit remains live; final full fifty-draw calibration still requires both current ledgers and both source-bound audit caches. Use the freed fourth slot for the remaining three primary protocol full parameter/reference pipelines with canonical forecast reuse. Then finish the twelve run and four shared-protocol pipelines, final sensitivity/recovery synthesis, Markdown/tablet report, completion audit and push; no email.",
-  "updated_utc": "2026-10-26T23:41:00.668303+00:00",
+  "next_action": "The remaining primary protocol full parameter/reference queue is live (96366), preserving and source-reusing all canonical forecasts. Odd25 recovery audit passed and is terminal; even25 remains live (18146). Once both parity audits are terminal, use their passed source-bound checks in the full fifty-draw audit and summary. As slots free, run twelve primary-run and four shared-protocol full parameter pipelines. Initial/bin and radiation profile queues remain live. Final synthesis, reports, completion audit and push remain; no email.",
+  "updated_utc": "2026-10-26T23:41:44.430251+00:00",
   "last_goal_turn_classification": "progress: independently audited all twenty-five odd recovery draws with exact regeneration, full selected-point numerical checks and diagnostic bindings; actual parent exit is zero, no failed selected row. Reconciled the freed slot before dispatching the next unfinished transfer phase.",
   "controller_sessions": {
     "joint_conductance_b00": 55866,
@@ -5719,7 +5800,8 @@
     "transfer_all_canonical_summary": 13978,
     "initial_remaining_b10": 93534,
     "recovery_odd25_audit": 31206,
-    "recovery_even25_audit": 18146
+    "recovery_even25_audit": 18146,
+    "transfer_uncertainty_protocols_remaining": 96366
   },
   "queued_jobs": [
     "remaining_primary_protocol_full_parameter_pipelines_after_slots_free",
@@ -5732,10 +5814,10 @@
   ],
   "process_check": {
     "path": "process_check.json",
-    "checked_utc": "2026-10-26 23:41:00 UTC",
-    "sha256": "466455dc984958a7b05cd315c47e7eaf63de012ac829a5261b3f9ea97717bb7a",
+    "checked_utc": "2026-10-26 23:41:44 UTC",
+    "sha256": "81f2d4b53a7e1750f3db90a5ec429804141102318e10fc0ab2cb0ff0216ebc6d",
     "method": "Direct approved pgrep -fl tclab-error tool",
-    "snapshot_age_s": 0.668303
+    "snapshot_age_s": 0.430251
   },
   "reconciliation_warnings": {
     "missing_exit_or_matching_process": [],
@@ -6044,6 +6126,7 @@
   "live_worker_slots": [
     "initial_remaining_b10",
     "profile_remaining_b10",
-    "recovery_even25_audit"
+    "recovery_even25_audit",
+    "transfer_uncertainty_protocols_remaining"
   ]
 }
