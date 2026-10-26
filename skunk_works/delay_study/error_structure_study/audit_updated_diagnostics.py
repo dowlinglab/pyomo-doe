@@ -39,7 +39,9 @@ def main():
     checked=0;partition_error=0.;expectation_error=0.;response_errors=[]
     cache={}
     for label,binding in receipt['source_bindings'].items():
-        path=HERE/'results'/label
+        # Result folders are external inputs; committed source is frozen into
+        # a temporary checkout that intentionally contains no result tree.
+        path=args.input.parent/label
         for filename,key in [('fit.json','fit_sha256'),('trajectories.npz','arrays_sha256')]:assert hashlib.sha256((path/filename).read_bytes()).hexdigest()==binding[key]
         fit=json.loads((path/'fit.json').read_text());arrays=np.load(path/'trajectories.npz');cache[label]=(fit,arrays)
         for j,name in enumerate(fit['record_names']):
