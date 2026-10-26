@@ -15,13 +15,13 @@ def main():
     parser=argparse.ArgumentParser();parser.add_argument('--output',type=Path,required=True)
     parser.add_argument('--warm',type=Path,required=True);args=parser.parse_args()
     fit=json.loads(args.warm.read_text());rng=np.random.RandomState(813331);rows=[]
-    for family,band in [('conductance',.1),('radiation',.1),('conductance',0.),('radiation',0.)]:
+    for family,band,minimum in [('conductance',.1,.005),('radiation',.1,.005),('conductance',0.,.005),('radiation',0.,.005),('conductance',.1,.0001)]:
         records=[]
         for d in load_records()[:3]:
             v=dict(d)
             for name in ['t','u','y']:v[name]=d[name][:61].copy()
             records.append(v)
-        m=Model(records,band=band,nodes=128,family=family);shape=np.asarray(fit['best']['point'][:6]).copy();shape[2]=np.log(.03)
+        m=Model(records,band=band,nodes=128,family=family,minimum_sensor_loading=minimum);shape=np.asarray(fit['best']['point'][:6]).copy();shape[2]=np.log(.03 if minimum==.005 else .0002)
         if family=='conductance':mean=np.r_[shape,[-.02,0.,.02] if band else np.zeros(0),np.log(.85),[.3,-.5,.7]]
         else:mean=np.r_[shape,np.log(.85),.5,[-.02,0.,.02] if band else np.zeros(3),[.3,-.5,.7]]
         noise=np.log([.3,30.,.05,.1,10.,.03]);point=np.r_[mean,noise];truth=m.mean(point,False);cursor=0;generated=[]
@@ -34,7 +34,7 @@ def main():
                         a=np.exp(-(d['t'][i+1]-d['t'][i])/ell);x=a*x+rng.normal(0,latent*np.sqrt(1-a*a))
                     y[i+1,k]=report(truth[k*m.N+cursor+i]+x+rng.normal(0,measurement))
             v['y']=y;generated.append(v);cursor+=n
-        model=Model(generated,band=band,nodes=128,family=family);gradient=model.gradient(point);checks=[]
+        model=Model(generated,band=band,nodes=128,family=family,minimum_sensor_loading=minimum);gradient=model.gradient(point);checks=[]
         # Independent finite differences of the marginal bin likelihood,
         # including shape, per-run deviation, ambient/gain and covariance.
         from quantized import filter_ou
@@ -55,7 +55,7 @@ def main():
         assert max(checks)<2e-3,(family,max(checks))
         assert len(model.coordinate_names())==len(point) and len(set(model.coordinate_names()))==len(point)
         gain_index=model.coordinate_names().index('log_K')
-        fixed=Model(generated,band=band,nodes=128,family=family,fixed={'log_K':point[gain_index]})
+        fixed=Model(generated,band=band,nodes=128,family=family,fixed={'log_K':point[gain_index]},minimum_sensor_loading=minimum)
         assert fixed.bounds()[gain_index]==(point[gain_index],point[gain_index])
         assert abs(fixed.objective(point)-model.objective(point))<1e-9
         from run_bounded import stationary
@@ -63,11 +63,11 @@ def main():
         assert stationary(fixed,point,injected)['lagrangian_projected_gradient_max_abs']==0.
         if band:
             from run_joint_quantized import center_seed
-            fixed_deviation=Model(generated,band=band,nodes=128,family=family,fixed={'log_Ua_ratio_0':np.log(.9)})
+            fixed_deviation=Model(generated,band=band,nodes=128,family=family,fixed={'log_Ua_ratio_0':np.log(.9)},minimum_sensor_loading=minimum)
             seed=center_seed(point,fixed_deviation.bounds(),6 if family=='conductance' else 8,len(records))
             assert abs(fixed_deviation.centered_constraint(seed))<1e-10
             assert seed[fixed_deviation.coordinate_names().index('log_Ua_ratio_0')]==np.log(.9)
-        rows.append({'family':family,'band':band,'coordinates_checked':len(point),'maximum_scaled_score_error':max(checks),
+        rows.append({'family':family,'band':band,'minimum_sensor_loading':minimum,'coordinates_checked':len(point),'maximum_scaled_score_error':max(checks),
             'normalization_error':max(r['normalization_error'] for r in model.details(point)),
             'smoothing_closure_error':max(r['smoothing_closure_error'] for r in model.details(point)),
             'fixed_gain_score_and_stationarity_gate':'passed'})

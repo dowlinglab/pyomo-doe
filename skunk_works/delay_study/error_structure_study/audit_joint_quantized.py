@@ -24,7 +24,8 @@ def audit(args):
     assert all(d['sha256']==fit['raw_sha256'][d['name']] for d in records)
     p=np.array(fit['best']['point']);b=fit['band'];phase=fit['phase'];family=fit['family']
     model=Model(records,b,phase,128,family,fit.get('startup_band_C',0.),fixed=fit.get('fixed_coordinates'),
-                initial_sensor_bins=fit.get('initial_sensor_bins',False),initial_noise_buffer=fit.get('initial_noise_buffer_C',0.))
+                initial_sensor_bins=fit.get('initial_sensor_bins',False),initial_noise_buffer=fit.get('initial_noise_buffer_C',0.),
+                minimum_sensor_loading=fit.get('minimum_sensor_loading',.005))
     assert model.nmean==fit['nmean'] and len(p)==len(model.bounds())
     assert np.all(p>=np.array(model.bounds())[:,0]-1e-7) and np.all(p<=np.array(model.bounds())[:,1]+1e-7)
     ds=np.array(fit['parameters']['log_deviations']);g=np.exp(ds)
@@ -32,7 +33,8 @@ def audit(args):
     mean=model.mean(p,False);nll_current=model.objective(p)
     stat128=stationary(model,p,model.gradient(p))
     finer=Model(records,b,phase,256,family,fit.get('startup_band_C',0.),fixed=fit.get('fixed_coordinates'),
-                initial_sensor_bins=fit.get('initial_sensor_bins',False),initial_noise_buffer=fit.get('initial_noise_buffer_C',0.))
+                initial_sensor_bins=fit.get('initial_sensor_bins',False),initial_noise_buffer=fit.get('initial_noise_buffer_C',0.),
+                minimum_sensor_loading=fit.get('minimum_sensor_loading',.005))
     nll256=finer.objective(p);stat256=stationary(finer,p,finer.gradient(p))
     gradient_difference=float(np.max(abs(model.gradient(p)-finer.gradient(p))))
     legacy=dict(fit,lag=True,curve=True,ambient='constant')

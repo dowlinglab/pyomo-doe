@@ -10,11 +10,13 @@ from smoothing import smooth_ou
 
 
 class Model:
-    def __init__(self,records,band=.1,phase=-.5,nodes=128,family='conductance',startup_band=0.,fixed=None,initial_sensor_bins=False,initial_noise_buffer=0.):
+    def __init__(self,records,band=.1,phase=-.5,nodes=128,family='conductance',startup_band=0.,fixed=None,initial_sensor_bins=False,initial_noise_buffer=0.,minimum_sensor_loading=.005):
         self.records=records;self.band=band;self.phase=phase;self.nodes=nodes;self.family=family
         self.nr=len(records);self.N=sum(len(d['t'])-1 for d in records);self.startup_band=startup_band
         self.fixed=dict(fixed or {})
         self.initial_sensor_bins=initial_sensor_bins;self.initial_noise_buffer=initial_noise_buffer
+        if not 0<minimum_sensor_loading<30:raise ValueError('Positive sensor loading minimum below 30 required')
+        self.minimum_sensor_loading=minimum_sensor_loading
         if initial_noise_buffer and not initial_sensor_bins:raise ValueError('An initial-noise buffer requires sensor-bin sensitivity')
         self.y=np.concatenate([np.concatenate([d['y'][1:,k] for d in records]) for k in [0,1]])
         if family=='conductance':
@@ -42,6 +44,7 @@ class Model:
             mean=self.mean_model.shape_bounds()+[(np.log(low[0]),np.log(high[0]))]+list(zip(low[1:],high[1:]))
         else:mean=self.mean_model.bounds()[:self.nmean]
         bounds=mean+[(np.log(.002),np.log(3.)),(np.log(.05),np.log(3000.)),(np.log(.0001),np.log(1.))]*2
+        bounds[2]=(np.log(self.minimum_sensor_loading),bounds[2][1])
         names=self.coordinate_names()
         for name,value in self.fixed.items():
             if name not in names:raise ValueError('Unknown fixed coordinate '+name)

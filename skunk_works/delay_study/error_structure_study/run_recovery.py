@@ -29,7 +29,7 @@ def main():
     lookup={d['name']:d for d in load_records()};records=[lookup[n] for n in fit['record_names']]
     if len(records)!=len(lookup):raise ValueError('Declare a separate reduced-design recovery study')
     arrays=np.load(args.input/'trajectories.npz');means=[arrays['predicted_'+str(j)] for j in range(len(records))]
-    m=Model(records,fit['band'],fit['phase'],128,fit['family']);truth=np.array(fit['best']['point']);gain_index=m.coordinate_names().index('log_K')
+    m=Model(records,fit['band'],fit['phase'],128,fit['family'],minimum_sensor_loading=fit.get('minimum_sensor_loading',.005));truth=np.array(fit['best']['point']);gain_index=m.coordinate_names().index('log_K')
     for j,d in enumerate(records):assert d['sha256']==fit['raw_sha256'][d['name']] and np.array_equal(d['y'],arrays['observed_'+str(j)])
     indices=list(range(args.first,config['draws'],args.stride))
     if args.limit is not None:indices=indices[:args.limit]
@@ -47,7 +47,8 @@ def main():
             dataset=directory/'observations.npz';np.savez_compressed(dataset,record_names=np.array([d['name'] for d in records]),**data)
             row['dataset_sha256']=hashlib.sha256(dataset.read_bytes()).hexdigest()
             common={'noise1':args.noise1,'noise2':args.noise2,'family':fit['family'],'band':fit['band'],
-                    'phase':fit['phase'],'dataset':dataset,'maxiter':config['maxiter']}
+                    'phase':fit['phase'],'dataset':dataset,'maxiter':config['maxiter'],
+                    'minimum_sensor_loading':fit.get('minimum_sensor_loading',.005)}
             free=run(directory/'free',args.input/'fit.json',starts=config['free_fit_starts'],**common);row['attempts'].append(free)
             if not free['success']:
                 free=run(directory/'free_retry',args.input/'fit.json',starts=config['free_fit_failed_retry_starts'],**common);row['attempts'].append(free)

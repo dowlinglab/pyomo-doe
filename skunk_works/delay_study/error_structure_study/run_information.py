@@ -33,7 +33,8 @@ def main():
     if fit.get('dataset') or fit.get('fixed_coordinates'):raise ValueError('Use the unconstrained hardware reference')
     lookup={d['name']:d for d in load_records()};records=[lookup[n] for n in fit['record_names']]
     m=Model(records,fit['band'],fit['phase'],args.nodes,fit['family'],fit.get('startup_band_C',0.),
-            initial_sensor_bins=fit.get('initial_sensor_bins',False),initial_noise_buffer=fit.get('initial_noise_buffer_C',0.))
+            initial_sensor_bins=fit.get('initial_sensor_bins',False),initial_noise_buffer=fit.get('initial_noise_buffer_C',0.),
+            minimum_sensor_loading=fit.get('minimum_sensor_loading',.005))
     p=np.array(fit['best']['point']);bounds=np.array(m.bounds());names=m.coordinate_names();g0=m.gradient(p);columns={};stencils={}
     requested=list(range(len(p))) if args.columns is None else args.columns
     for j in requested:

@@ -31,6 +31,7 @@ def main():
     parser.add_argument('--startup-band',type=float,default=0.);parser.add_argument('--starts',type=int,default=3)
     parser.add_argument('--fix-coordinate',nargs=2,action='append',default=[],metavar=('NAME','VALUE'))
     parser.add_argument('--initial-sensor-bins',action='store_true');parser.add_argument('--initial-noise-buffer',type=float,default=0.)
+    parser.add_argument('--minimum-sensor-loading',type=float,default=.005)
     parser.add_argument('--maxiter',type=int,default=300);args=parser.parse_args();begun=time.monotonic()
     if args.starts>3:raise ValueError('Declare additional starts before extending the physical/noise branch comparison')
     records=load_records()
@@ -54,7 +55,8 @@ def main():
     fixed={name:float(value) for name,value in args.fix_coordinate}
     if len(fixed)!=len(args.fix_coordinate):raise ValueError('Repeated fixed coordinate')
     model=Model(records,args.band,args.phase,args.nodes,args.family,args.startup_band,fixed=fixed,
-                initial_sensor_bins=args.initial_sensor_bins,initial_noise_buffer=args.initial_noise_buffer);bounds=model.bounds();scale=2*model.N
+                initial_sensor_bins=args.initial_sensor_bins,initial_noise_buffer=args.initial_noise_buffer,
+                minimum_sensor_loading=args.minimum_sensor_loading);bounds=model.bounds();scale=2*model.N
     indices=[warm['record_names'].index(d['name']) for d in records]
     shape=np.asarray(warm['best']['point'][:6]).copy()
     original_delta=np.array(warm['parameters'].get('log_deviations',np.zeros(len(warm['record_names']))))
@@ -154,6 +156,7 @@ def main():
         'startup_band_C':args.startup_band,'initial_noise_inflation':args.inflate_initial_noise,'dataset':dataset_receipt,'selected_input_indices':args.records,'best':best,'starts':starts,'bounds':bounds,'nmean':model.nmean,'shape_count':model.nmean,
         'fixed_coordinates':fixed,'coordinate_names':model.coordinate_names(),
         'initial_sensor_bins':args.initial_sensor_bins,'initial_noise_buffer_C':args.initial_noise_buffer,
+        'minimum_sensor_loading':args.minimum_sensor_loading,
         'initial_sensor_offsets_C':coefficients[1+nr:].reshape(nr,2).tolist() if args.initial_sensor_bins else None,
         'startup_offsets_C':coefficients[1+nr:].reshape(nr,2).tolist() if args.startup_band else None,
         'coefficients':coefficients.tolist(),'noise_parameters':noise_parameters,'record_names':[d['name'] for d in records],

@@ -35,6 +35,28 @@ argument assumes fixed known covariance, regular differentiation and the same
 mean parameters. It does not replace the observed bin Hessian or include
 covariance estimation, uncertain thresholds or model selection.
 
+## Lower loading and lag identity
+
+The baseline repeatedly reaches Us/Ua=0.005. A declared sensitivity lowers that
+positive bound to 0.0001 with the same three starting branches. This does not
+change the baseline comparison or make a zero-capacity physical state valid.
+It tests whether the reported sensor/input lag identities depend on a numerical
+lower bound. A short independent synthetic check verifies the transfer limit
+and positive-loading trajectories before that refit.
+
+For zero loading, the normalized common/differential heater modes factor as
+
+\[
+ G_\pm(s)=\frac{K}{(t_A s+1+\{0,2q\})(1+r_S s)(1+L s)}.
+\]
+
+The measured channels are (G_plus+G_minus)/2 and
+(G_plus-G_minus)/2. Sensor lag rS and input lag L therefore exchange exactly in
+the forced transfer functions at this limit. Unequal initial conditions and
+ambient forcing need not share that symmetry, and finite positive loading
+breaks it. Quantify how much on a synthetic nominal waveform; do not turn this
+limit into a claim that the hardware has a zero sensor heat capacity.
+
 ## Fifty refitted recovery/coverage draws
 
 Generate observations from the fitted correlated latent/analogue-noise model
