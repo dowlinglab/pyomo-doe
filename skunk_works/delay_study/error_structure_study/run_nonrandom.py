@@ -51,7 +51,17 @@ def prefix_cdf_audit(records,means,noise,filtered,phase):
 def main():
     parser=argparse.ArgumentParser();parser.add_argument('--output',type=Path,required=True)
     parser.add_argument('--input',type=Path,required=True);parser.add_argument('--references',type=Path,required=True)
-    parser.add_argument('--nodes',type=int,default=128);args=parser.parse_args();begun=time.monotonic()
+    parser.add_argument('--nodes',type=int,default=128);parser.add_argument('--render-from',type=Path)
+    args=parser.parse_args();begun=time.monotonic()
+    if args.render_from:
+        assert json.loads((args.render_from/'exit.json').read_text())['exit_code']==0
+        actual=json.loads((args.render_from/'data_diagnostics.json').read_text())
+        simulated=json.loads((args.render_from/'simulated_diagnostics.json').read_text())
+        make_plots(args.output,actual,simulated)
+        write(args.output/'render_receipt.json',{'status':'rendered','numeric_source':str(args.render_from),
+            'source_sha256':{name:hashlib.sha256((args.render_from/name).read_bytes()).hexdigest() for name in ['data_diagnostics.json','simulated_diagnostics.json','comparison.json']},
+            'notice':'Rendering only; no filtering, optimization or simulation repeated. Colorbar extensions disclose capped heatmap values.'})
+        return
     fit=json.loads((args.input/'fit.json').read_text());reference=json.loads((args.references/'comparison.json').read_text())
     fitsha=hashlib.sha256((args.input/'fit.json').read_bytes()).hexdigest()
     assert reference['fit_sha256']==fitsha and reference['simulation_failures']==0
@@ -87,6 +97,10 @@ def main():
         'saved_observations_sha256':hashlib.sha256((args.references/'simulated_observations.npz').read_bytes()).hexdigest(),
         'attempts':len(references),'successes':len(simulated),'failures':len(failed),'comparisons':comparisons,
         'elapsed_s':time.monotonic()-begun,'scope':'Matched deterministic statistics on data and fifty saved fixed-model simulations; no PIT jitter. Reference parameters are fitted, not refitted per simulation; ranks are descriptive and do not repeat model selection. Conditional score variance is below 1 under coarsening, so no Gaussian/unit-variance claim.'})
+    make_plots(args.output,actual,simulated)
+
+
+def make_plots(output,actual,simulated):
     fig,axes=plt.subplots(2,2,figsize=(9,6.5))
     for k,color in [(0,'tab:blue'),(1,'tab:orange')]:
         refs=np.array([s['score_channels'][k]['acf_lags_1_60'] for s in simulated]);lo,hi=np.quantile(refs,[.025,.975],axis=0)
@@ -96,12 +110,12 @@ def main():
     axes[0,1].fill_between(np.arange(-10,11),lo,hi,color='gray',alpha=.25)
     axes[0,1].plot(np.arange(-10,11),actual['score_cross_channel_lags_minus10_10'],'k-')
     for ax,key,title in [(axes[1,0],'pooled_joint_transition_standardized','Joint down/same/up counts'),(axes[1,1],'pooled_centered_event_cross_standardized','Centered cross-channel events')]:
-        im=ax.imshow(actual['joint_transition'][key],vmin=-3,vmax=3,cmap='RdBu_r');fig.colorbar(im,ax=ax)
+        im=ax.imshow(actual['joint_transition'][key],vmin=-3,vmax=3,cmap='RdBu_r');fig.colorbar(im,ax=ax,extend='both')
         ax.set(xticks=[0,1,2],yticks=[0,1,2],xticklabels=['Down','Same','Up'],yticklabels=['Down','Same','Up'],xlabel='T2 event',ylabel='T1 event',title=title)
     axes[0,0].set(xlabel='Sample lag within runs',ylabel='Score autocorrelation',title='No randomized PIT jitter');axes[0,0].legend()
     axes[0,1].set(xlabel='Sample lag within runs',ylabel='Score cross-correlation',title='Independent-channel working model')
     for ax in axes[0]:ax.axhline(0,color='gray',lw=.5);ax.grid(alpha=.2)
-    fig.tight_layout();fig.savefig(args.output/'nonrandomized_diagnostics.png',dpi=160);fig.savefig(args.output/'nonrandomized_diagnostics.pdf');plt.close(fig)
+    fig.tight_layout();fig.savefig(output/'nonrandomized_diagnostics.png',dpi=160);fig.savefig(output/'nonrandomized_diagnostics.pdf');plt.close(fig)
 
 
 if __name__=='__main__':main()
