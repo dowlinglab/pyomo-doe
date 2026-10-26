@@ -35,6 +35,7 @@ def main():
     parser.add_argument('--shards',type=Path,nargs='+',required=True)
     parser.add_argument('--input',type=Path,required=True)
     parser.add_argument('--allow-partial',action='store_true')
+    parser.add_argument('--audit-draws',type=int,nargs='+',help='Explicit audit pilot only; does not alter fitted shards or the declared fifty-draw design')
     parser.add_argument('--reuse-audits',type=Path,nargs='*',default=[])
     args=parser.parse_args();begun=time.monotonic()
     config=json.loads((HERE/'uncertainty_config.json').read_text())['recovery']
@@ -59,6 +60,11 @@ def main():
     assert len(set(declared))==len(declared),'Overlapping declared shard indices'
     assert sorted(declared)==list(range(config['draws'])),'Shards must declare the complete design'
     indices=[r['draw'] for r in rows];assert len(set(indices))==len(indices)
+    available_indices=sorted(indices)
+    if args.audit_draws is not None:
+        assert args.allow_partial,'A selected-draw audit is a pilot, not final coverage'
+        assert len(set(args.audit_draws))==len(args.audit_draws) and set(args.audit_draws)<=set(indices)
+        rows=[r for r in rows if r['draw'] in args.audit_draws];indices=[r['draw'] for r in rows]
     if not args.allow_partial:assert sorted(indices)==list(range(config['draws'])),'Incomplete fifty-draw recovery'
     auditor_sha=sha(HERE/'audit_joint_quantized.py');cached={}
     for directory in args.reuse_audits:
@@ -124,7 +130,9 @@ def main():
     n=len(complete);k=sum(r['covered'] for r in complete);failed=len(rows)-n
     final={'status':'partial' if len(rows)<config['draws'] else ('passed' if all(r['status']=='passed' for r in audited) else 'failed'),
         'fit_sha256':fit_hash,'numerical_auditor_sha256':auditor_sha,'shards':bindings,'config':config,
-        'available_draws':len(rows),'declared_draws':config['draws'],'missing_draws':sorted(set(range(config['draws']))-set(indices)),
+        'available_draws':len(available_indices),'draws_audited_in_this_run':len(rows),
+        'available_but_not_selected_for_audit':sorted(set(available_indices)-set(indices)),
+        'declared_draws':config['draws'],'missing_draws':sorted(set(range(config['draws']))-set(indices)),
         'rows':audited,'complete_audited_coverage_draws':n,'failed_or_unaudited_available_draws':failed,
         'covered_audited_draws':k,'coverage_among_audited_complete':k/n if n else None,
         'binomial_95_Monte_Carlo_interval':interval(k,n),
