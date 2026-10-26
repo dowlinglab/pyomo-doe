@@ -32,6 +32,7 @@ def main():
     parser.add_argument('--fix-coordinate',nargs=2,action='append',default=[],metavar=('NAME','VALUE'))
     parser.add_argument('--initial-sensor-bins',action='store_true');parser.add_argument('--initial-noise-buffer',type=float,default=0.)
     parser.add_argument('--minimum-sensor-loading',type=float,default=.005)
+    parser.add_argument('--resume-starts',type=Path,help='Re-evaluate saved terminal start points and export; does not repeat optimization')
     parser.add_argument('--maxiter',type=int,default=300);args=parser.parse_args();begun=time.monotonic()
     if args.starts>3:raise ValueError('Declare additional starts before extending the physical/noise branch comparison')
     records=load_records()
@@ -88,7 +89,7 @@ def main():
             latent=np.sqrt(max(rms*rms-.3223**2/12-measurement*measurement,.002**2))
             initial[model.nmean+3*channel]=max(initial[model.nmean+3*channel],np.log(latent))
     starts=[];evaluation_count=0;numerical_failures=[]
-    for j in range(args.starts):
+    for j in range(0 if args.resume_starts else args.starts):
         seed=initial.copy()
         if j==1:seed[1],seed[4]=seed[4],seed[1]
         if j==2:
@@ -128,6 +129,24 @@ def main():
                  'success':bool(fit.success and abs(stat['equality_residual'])<1e-7 and stat['lagrangian_projected_gradient_max_abs']<.05)}
         except Exception as exc:row={'start':j,'seed':seed.tolist(),'success':False,'exception':repr(exc)}
         starts.append(row);write(args.output/'starts.json',starts);print(json.dumps({k:v for k,v in row.items() if k not in ['seed','point']}),flush=True)
+    if args.resume_starts:
+        saved=json.loads(args.resume_starts.read_text())
+        for old in saved:
+            row=dict(old);row['saved_nll']=old.get('nll');row['saved_stationarity']=old.get('stationarity')
+            if old.get('success'):
+                try:
+                    p=np.array(old['point']);bb=np.array(bounds)
+                    if len(p)!=len(bounds) or np.any(p<bb[:,0]-1e-7) or np.any(p>bb[:,1]+1e-7):raise ValueError('Saved point chart/bounds differ')
+                    value=model.objective(p);stat=stationary(model,p,model.gradient(p))
+                    row.update({'nll':float(value),'stationarity':stat,'saved_point_reevaluated':True,
+                        'success':bool(old.get('solver_success') and abs(stat['equality_residual'])<1e-7 and stat['lagrangian_projected_gradient_max_abs']<.05)})
+                except Exception as exc:row.update({'success':False,'saved_point_reevaluation_exception':repr(exc)})
+            starts.append(row)
+        write(args.output/'starts.json',starts)
+        write(args.output/'resume_receipt.json',{'path':str(args.resume_starts),
+            'starts_sha256':hashlib.sha256(args.resume_starts.read_bytes()).hexdigest(),
+            'source_receipt_sha256':hashlib.sha256((args.resume_starts.parent/'source_snapshot.json').read_bytes()).hexdigest() if (args.resume_starts.parent/'source_snapshot.json').exists() else None,
+            'notice':'Saved terminal points re-evaluated under current committed likelihood and stationarity checks. No optimization rerun or promotion of originally failed starts.'})
     valid=[r for r in starts if r['success']]
     if not valid:raise RuntimeError('No feasible stationary joint quantized fit; preserve trials and diagnose')
     best=min(valid,key=lambda r:r['nll']);p=np.array(best['point']);mean=model.mean(p,False);residual=model.y-mean
@@ -151,12 +170,13 @@ def main():
                                 'normalization_error':float(np.max(abs(f['posterior_normalization_ratio']-1)))})
         arrays.update({'time_'+str(j):d['t'],'observed_'+str(j):d['y'],'predicted_'+str(j):pred,'input_'+str(j):d['u']})
         per_run.append({'name':d['name'],'RMSE_by_channel_C':np.sqrt(np.mean((d['y'][1:]-pred[1:])**2,axis=0)).tolist()});cursor+=n
-    parameter_count=sum(lo<hi for lo,hi in bounds)-int(args.band>0)
+    parameter_count=int(sum(bool(lo<hi) for lo,hi in bounds)-int(args.band>0))
     result={'model':'joint_quantized_'+args.family,'family':args.family,'kernel':'quantized_ou_nugget','band':args.band,'phase':args.phase,
         'startup_band_C':args.startup_band,'initial_noise_inflation':args.inflate_initial_noise,'dataset':dataset_receipt,'selected_input_indices':args.records,'best':best,'starts':starts,'bounds':bounds,'nmean':model.nmean,'shape_count':model.nmean,
         'fixed_coordinates':fixed,'coordinate_names':model.coordinate_names(),
         'initial_sensor_bins':args.initial_sensor_bins,'initial_noise_buffer_C':args.initial_noise_buffer,
         'minimum_sensor_loading':args.minimum_sensor_loading,
+        'resumed_starts':str(args.resume_starts) if args.resume_starts else None,
         'initial_sensor_offsets_C':coefficients[1+nr:].reshape(nr,2).tolist() if args.initial_sensor_bins else None,
         'startup_offsets_C':coefficients[1+nr:].reshape(nr,2).tolist() if args.startup_band else None,
         'coefficients':coefficients.tolist(),'noise_parameters':noise_parameters,'record_names':[d['name'] for d in records],
@@ -170,7 +190,7 @@ def main():
         'per_run':per_run,'selected_quadrature':model.details(p),'diagnostic_streams':diagnostics,
         'source_inputs_sha256':{str(v):hashlib.sha256(v.read_bytes()).hexdigest() for v in [args.warm,args.noise1,args.noise2]},
         'elapsed_s':time.monotonic()-begun,'numerical_failures':len(numerical_failures),
-        'notice':'Mean and both independent-channel OU/analogue-noise models re-estimated under conditional bin probabilities. raw_sha256 binds original experimental design files; dataset identifies any synthetic observation override. Discrete likelihood and assumed bin phase; no cross-channel noise component, uncertainty calibration or external validation claimed. All twelve records reused. Observed information and boundary profiles remain necessary.'}
+        'notice':'Mean and both independent-channel OU/analogue-noise models re-estimated under conditional bin probabilities. raw_sha256 binds original experimental design files; dataset identifies any synthetic observation override. Discrete likelihood and assumed bin phase; no cross-channel noise component, uncertainty calibration or external validation claimed. All twelve records informed structure selection; record_names gives the actual fit subset. Observed information and boundary profiles remain necessary.'}
     write(args.output/'fit.json',result);np.savez_compressed(args.output/'trajectories.npz',**arrays)
     print(json.dumps({'status':'complete','family':args.family,'bin_nll':best['nll'],'RMSE':result['RMSE_by_channel_C'],'parameters':result['parameters'],'noise':noise_parameters}),flush=True)
 
