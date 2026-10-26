@@ -20,9 +20,26 @@ from run_bounded import stationary,write
 
 def audit(args):
     fit=json.loads((args.input/'fit.json').read_text());arrays=np.load(args.input/'trajectories.npz')
-    if fit.get('dataset'):raise ValueError('Synthetic joint audit requires an explicit dataset-binding extension')
     lookup={d['name']:d for d in load_records()};records=[lookup[n] for n in fit['record_names']]
     assert all(d['sha256']==fit['raw_sha256'][d['name']] for d in records)
+    dataset_binding=None
+    if fit.get('dataset'):
+        path=Path(fit['dataset']['path'])
+        digest=hashlib.sha256(path.read_bytes()).hexdigest()
+        assert digest==fit['dataset']['sha256'],'Synthetic observations changed after fitting'
+        data=np.load(path,allow_pickle=False);names=data['record_names'].tolist()
+        assert len(names)==len(set(names)) and set(fit['record_names'])<=set(names)
+        replaced=[]
+        for d in records:
+            j=names.index(d['name']);v=dict(d);v['y']=data['observed_'+str(j)].copy()
+            assert np.array_equal(data['time_'+str(j)],d['t'])
+            assert np.array_equal(data['input_'+str(j)],d['u'])
+            assert v['y'].shape==d['y'].shape and np.array_equal(v['y'][0],d['y'][0])
+            assert np.isfinite(v['y']).all()
+            replaced.append(v)
+        records=replaced
+        dataset_binding={'path':str(path),'sha256':digest,
+            'scope':'Synthetic observations only; original raw hashes bind unchanged command/time design and first readings.'}
     p=np.array(fit['best']['point']);b=fit['band'];phase=fit['phase'];family=fit['family']
     model=Model(records,b,phase,128,family,fit.get('startup_band_C',0.),fixed=fit.get('fixed_coordinates'),
                 initial_sensor_bins=fit.get('initial_sensor_bins',False),initial_noise_buffer=fit.get('initial_noise_buffer_C',0.),
@@ -88,6 +105,7 @@ def audit(args):
     result={'status':'passed' if not failures else 'failed','failures':failures,
         'fit_sha256':hashlib.sha256((args.input/'fit.json').read_bytes()).hexdigest(),
         'arrays_sha256':hashlib.sha256((args.input/'trajectories.npz').read_bytes()).hexdigest(),
+        'dataset_binding':dataset_binding,
         'nll_current128':nll_current,'nll_current256':nll256,'nll_independent_mean512':total512,
         'nll_changes':changes,'gradient128_to256_max_abs_difference':gradient_difference,
         'stationarity128':stat128,'stationarity256':stat256,'per_run':rows,
