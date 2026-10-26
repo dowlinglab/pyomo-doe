@@ -112,6 +112,27 @@ audits require matching numerical dependencies, raw design, runtime and
 fit/trajectory/data hashes. A partial controller pilot cannot replace the
 fifty-draw audit or change any fitted outcome.
 
+The complementary continuation shards can finish at different times. To audit
+the first completed continuation's twenty-five prespecified indices immediately,
+use its terminal outputs and the opposite original terminal shard as the
+complete-design declaration witness, with --allow-partial and all twenty-five
+indices explicitly listed in --audit-draws. The original shard retains its
+seven completed outcomes and actual termination receipt; its unfinished fits
+are not promoted or audited. A preflight comparison verified identical truth,
+fit/data bindings and recovery configuration, with disjoint declarations covering
+0..49. The selected audit subset depends only on shard parity, never on fit
+success, coverage or diagnostic outcome. The partial output's available/missing
+counts describe those immutable inputs and are not the final fifty-draw study.
+
+After both continuations are terminal, the final audit must consume those two
+current complete shard ledgers, retain every declared outcome, and may reuse
+only the previously passed selected-point checks with matching numerical
+source/runtime and fit/trajectory/dataset hashes. Audit the other twenty-five
+indices as well, then regenerate the full fifty-draw accounting. This execution
+order avoids an idle worker while preserving the final denominator and every
+scientific and numerical gate. No live shard may be supplied as an immutable
+audit input.
+
 summarize_recovery.py retains failed and missing draws in worst-case bounds,
 reports Monte Carlo uncertainty for complete-draw gain coverage, and compares
 empirical estimator spread with the audited generating-point active-face SEs.
