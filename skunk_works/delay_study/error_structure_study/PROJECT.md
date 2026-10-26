@@ -358,15 +358,18 @@ quantized baseline's input/phase failures in uncertainty and transfer discussion
 
 ## Reporting and continuation
 
-report/main.tex and main.pdf are a six-page work-in-progress report, not a
-finished study. Current numeric checks bind 122 source files; all six rendered
+report/main.tex and main.pdf are a seven-page work-in-progress report, not a
+finished study. Current numeric checks bind 254 source files; all seven rendered
 pages and the requested geometry were inspected. Recompile, rerender
 and recheck after each meaningful revision. Geometry is 0.25-inch left and
 3.25-inch right, with 35 college-spaced annotation lines per page. Final evidence,
 figures, uncertainty/transfer and the companion concise Markdown report remain
 pending. Current nonrandomized, local-information and initialization findings
 are included in this PDF and uncertainty_interim.md, together with the audited
-canonical omitted-protocol group and offset decomposition. Profiles, calibrated
+all twenty canonical folds, group-specific offset decomposition, the first parameter-inclusive
+fold and whole-data feedback-assisted forecast diagnostics. The latter are in-sample
+and do not validate physical free simulation. The bibliography currently continues
+onto the last page; final pagination is still pending. Profiles, calibrated
 recovery and parameter-inclusive/full-fold transfer remain unfinished. Keep no-ai-slop
 and the user's research practices in the writing check.
 
