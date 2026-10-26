@@ -80,6 +80,50 @@ def main():
     assert f'{a:.4f}/{b:.4f}' in text
     assert f"{values['max_abs_cross_channel_correlation_lags_minus10_10']['data_randomization_min_median_max'][1]:.4f}" in text
     assert f"{values['T1_max_transition_standardized_discrepancy_abs']['simulation_upper_tail_rank_for_data_median']:.4f}" in text
+    for name,audit_name in [('joint_conductance_b05_export_v2','joint_conductance_b05_audit'),
+                            ('joint_conductance_b20_export_v2','joint_conductance_b20_audit'),
+                            ('joint_radiation_b10_export_v2','joint_radiation_b10_audit')]:
+        f,r=audited(root,name,audit_name)
+        assert f'{r[0]:.3f}/{r[1]:.3f}' in text and f"{f['best']['nll']:.4f}" in text
+        if f['family']=='radiation':assert f"{joint['best']['nll']-f['best']['nll']:.3f}" in text
+    assert f"{joint['best']['nll']:.4f}" in text
+    lower,_=audited(root,'joint_b10_loading_lower')
+    assert f"{joint['best']['nll']-lower['best']['nll']:.5f}" in text
+    initial,ir=audited(root,'joint_b10_initial_sensor_bins')
+    for value,places in [(initial['best']['nll'],4),(initial['parameters']['K_common_nominal'],4),
+                          (initial['parameters']['input_lag_s'],5),(ir[0],3),(ir[1],3)]:
+        assert f'{value:.{places}f}' in text
+    condition,_=audited(root,'joint_b10_condition_first_code')
+    for value,places in [(condition['noise_parameters'][0]['latent_SD_C'],4),
+                          (condition['noise_parameters'][0]['ell_s'],1)]:assert f'{value:.{places}f}' in text
+    information=root/'joint_b10_information_v2_audit/audit.json';binding(information)
+    ia=json.loads(information.read_text());assert ia['status']=='passed' and ia['fit_sha256']==sha(root/'joint_conductance_b10_export_v2/fit.json')
+    for name in ['log_K','log_tA','log_input_lag']:
+        row=next(r for r in ia['local_comparison'] if r['coordinate']==name)
+        for key in ['IID_known_analogue_variance_SE','correlated_known_analogue_covariance_SE','bin_observed_mean_and_noise_nuisance_SE']:
+            assert f'{row[key]:.7f}' in text
+    assert f"{ia['diffusion'][0]['conditional_log_SD_log_length_correlation']:.4f}" in text
+    path=root/'joint_b10_nonrandom_diagnostics/comparison.json';binding(path);nr=json.loads(path.read_text())
+    assert nr['status']=='complete' and nr['successes']==50 and nr['failures']==0
+    for key in ['T1_score_input_correlation_abs','T1_score_maximum_phase_projection_fraction',
+                'T2_score_max_abs_ACF_1_60','score_max_abs_cross_channel_correlation_minus10_10']:
+        row=nr['comparisons'][key]
+        assert f"{row['data']:.5f} & {row['reference_q025_q50_q975'][2]:.5f}" in text
+        assert row['upper_tail_rank']==1/51
+    path=root/'joint_b10_cross_localization_v2/comparison.json';binding(path);cross=json.loads(path.read_text())
+    assert cross['status']=='complete' and cross['successes']==50 and cross['failures']==0
+    row=cross['comparisons']['run_trend_and_phase_removed_pooled_cross_max_abs']
+    for value in [row['data'],row['reference_q025_q50_q975'][2]]:assert f'{value:.5f}' in text
+    for name,coordinates in [('gaussian_process_correlation',[('rho_OU_driving',4)]),
+                             ('gaussian_measurement_correlation',[('rho_measurement',5)]),
+                             ('gaussian_both_correlations',[('rho_OU_driving',5),('rho_measurement',5)])]:
+        path=root/name/'fit.json';binding(path);f=json.loads(path.read_text())
+        ap=root/(name+'_audit')/'audit.json';binding(ap);a=json.loads(ap.read_text())
+        assert a['status']=='passed' and a['fit_sha256']==sha(path)
+        for coordinate,places in coordinates:
+            value=f['best']['point'][f['coordinate_names'].index(coordinate)]
+            assert f'{value:.{places}f}' in text
+        if name=='gaussian_both_correlations':assert f"{-a['nll_minus_prior_independent_Gaussian']:.5f}" in text
     args.output.write_text(json.dumps({'status':'passed','source_sha256':sha(HERE/'main.tex'),
         'checker_source_sha256':sha(Path(__file__)),
         'python':platform.python_version(),'data_count_including_initial_readings':count,'Gaussian_table':checked,

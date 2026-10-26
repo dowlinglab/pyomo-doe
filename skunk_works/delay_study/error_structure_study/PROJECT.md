@@ -112,8 +112,10 @@ its independent 128/256/512-node, dimensional, rectangle and stationarity audit
 are now terminal and passed. Gain changes from 0.873222 to 0.869704 C/%, short
 lag from 2.73048 to 2.72054 s, and nll from 6238.29865 to 6209.55360 with 24
 additional bounded initial-state coordinates. Several reach bin edges. The
-fit is an initialization sensitivity; improved whitening/transfer has not been
-established. Fixed-initial floor and buffered/floor sensor-bin sensitivities
+T1 free-simulation RMSE increases from 0.605 to 0.655 C, while T2 decreases from
+0.118 to 0.113 C. Better correlated-bin likelihood does not imply better
+noise-free simulation. The fit is an initialization sensitivity; improved
+whitening/transfer has not been established. Fixed-initial floor and buffered/floor sensor-bin sensitivities
 remain. These bounds do not integrate an initial-noise posterior.
 
 The phase-reference check passed: nearest-to-floor bins translate by 0.16115 C.
@@ -161,10 +163,10 @@ without finish timestamps remain terminal with unknown timestamps.
 
 ## Current execution and next unfinished phases
 
-Use the manifest for current identities and controller sessions. The current
-phase includes the gain profile, even-indexed recovery shard, cross-localization
-and continuous-Gaussian disturbance comparisons/audits. Do not infer live state
-from this prose; use fresh process and terminal receipts.
+Use the manifest for current identities and controller sessions. Recovery and
+profile inference are underway; cross-localization and continuous-Gaussian
+disturbance comparisons are audited. Do not infer live state from this prose;
+use fresh process and terminal receipts.
 No duplicate live retry. At most four long numerical processes, one BLAS thread
 each. Short independent arithmetic checks are recorded separately.
 
@@ -251,14 +253,16 @@ quantized baseline's input/phase failures in uncertainty and transfer discussion
 
 ## Reporting and continuation
 
-report/main.tex and main.pdf are an earlier four-page work-in-progress layout, not a
-finished report. Initial layout and numeric checks passed; recompile, rerender
+report/main.tex and main.pdf are a five-page work-in-progress report, not a
+finished study. Current numeric checks bind 91 source files; all five rendered
+pages and the requested geometry were inspected. Recompile, rerender
 and recheck after each meaningful revision. Geometry is 0.25-inch left and
 3.25-inch right, with 35 college-spaced annotation lines per page. Final evidence,
 figures, uncertainty/transfer and the companion concise Markdown report remain
-pending. Current nonrandomized and uncertainty findings are in
-uncertainty_interim.md and must be carried into the final report; the earlier
-PDF predates them. Keep no-ai-slop and the user's research practices in the writing check.
+pending. Current nonrandomized, local-information and initialization findings
+are included in this PDF and uncertainty_interim.md. Profiles, calibrated
+recovery and retrospective transfer still need to be added. Keep no-ai-slop
+and the user's research practices in the writing check.
 
 The hourly tc-lab-overnight-research heartbeat stays active. Read this file, the
 committed plan and manifest on resume. Freeze committed code/data/configuration

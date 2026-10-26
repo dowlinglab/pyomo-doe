@@ -68,7 +68,10 @@ Letting each cold heater/sensor pair vary within its first reported bin also
 passed the full selected-point audit. Gain changes by -0.403% to 0.869704 C/%,
 the short lag changes to 2.72054 s, and nll decreases by 28.7450 with 24 extra
 bounded initial coordinates. Several hit bin edges. This is a fit sensitivity;
-there is no established whitening or transfer improvement, and these bin
+T1 free-simulation RMSE increases from 0.605 to 0.655 C, while T2 decreases
+from 0.118 to 0.113 C. The correlated-bin objective and unweighted
+free-simulation error assess different features. There is no established
+whitening or transfer improvement, and these bin
 bounds do not integrate a posterior for the analogue initial temperature.
 
 ## Added PIT randomness can obscure a diagnostic

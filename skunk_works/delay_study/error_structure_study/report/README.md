@@ -1,13 +1,14 @@
 # Working report
 
-This is an intermediate four-page LaTeX/PDF draft. It is not the completed
+This is an intermediate LaTeX/PDF draft. It is not the completed
 remaining-error study. The first page states that status; pending profiles,
 refitted coverage, transfer, selected sensitivities and final figures remain.
 The final report also needs its concise Markdown companion.
 
 The document opens in the built-in LaTeX editor as this project. A local TeX
-Live build produces main.pdf. The current source also passed the desktop
-compiler. Use two pdflatex passes if references or pagination require it.
+Live build produces main.pdf. Use two pdflatex passes if references or pagination
+require it. The current revision was checked with local TeX Live; an earlier
+revision also passed the desktop compiler.
 
 check_numbers.py runs with the pinned scientific Python and verifies displayed
 rounding against terminal independently audited fits, raw data and direct RMSE

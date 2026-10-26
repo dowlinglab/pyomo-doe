@@ -21,19 +21,20 @@
 \begin{document}
 \maketitle\vspace{-1em}
 \textbf{Work in progress.} This layout draft contains audited intermediate
-results. Joint discrete-data fits, uncertainty calibration and retrospective
-transfer are running or pending. It is not the completed study report.
+results. Joint discrete-data fits and local information are audited. Profiles,
+refitted uncertainty calibration and retrospective transfer remain underway.
+It is not the completed study report.
 
 \begin{tabularx}{\linewidth}{@{}>{\raggedright\arraybackslash}p{1.02in}>{\raggedright\arraybackslash}X>{\raggedright\arraybackslash}X@{}}
 \toprule
 Question & Evidence so far & Status\\
 \midrule
 Can modest run variation help? & A 10\% conductance band gives T1/T2
-RMSE $0.639/0.115\C$ in the matched Gaussian fit. &
+RMSE $0.605/0.118\C$ in the joint bin-likelihood fit. &
 Audited; transfer and uncertainty pending.\\
 Does radiation explain the rest? & Free radiation gives
-$0.633/0.115\C$; negative log likelihood improves by 1.285. &
-Small conditional change; bin-model profile pending.\\
+$0.590/0.119\C$ in the joint fit; bin nll improves by 3.810. &
+Conditional change; boundary profile pending.\\
 Are cold starts plausible? & Hidden heater offsets remain below
 $0.35\C$ with either $\pm2$ or $\pm5\C$ bounds. &
 Working assumption, not verified equilibrium.\\
@@ -41,9 +42,9 @@ Are measurements discrete? & All 21,614 temperatures match a shifted
 $0.3223\C$ code grid. & Hardware evidence; threshold phase remains assumed.\\
 Do lag labels identify physics? & At the loading boundary, a nominal
 forced-response lag swap changes T1 by at most $0.00430\C$. &
-Weak assignment; bound sensitivity pending.\\
-Are residuals adequate for inference? & The bin likelihood separates
-analogue noise from code rounding. & Initial checks complete; calibration and transfer pending.\\
+Weak assignment; lowering the loading bound barely changes the mean.\\
+Are residuals adequate for inference? & Deterministic code diagnostics retain
+input, phase and cross-channel structure. & Whitening unfinished; no IID claim.\\
 \bottomrule
 \end{tabularx}
 
@@ -129,7 +130,7 @@ context, not calibration for these records.
 
 The free-radiation fit refits convection and gain to avoid double counting.
 Its normalized differential radiation coefficient at $50\C$ is 0.0344
-relative to nominal convection. The small Gaussian improvement is not a
+relative to nominal convection. Gaussian nll improves by 1.285. This is not a
 measured emissivity or a calibrated significance result.
 
 \subsection*{Why assigning the two lags is difficult}
@@ -147,7 +148,10 @@ waveforms by at most $0.00430/0.00185\C$. That calculation uses equal
 $20\C$ starts and zero ambient offset. Unequal starts and ambient forcing
 can break the exchange. Repeated measurements can constrain sub-grid
 effects, so code spacing is not an absolute parameter-resolution limit.
-Profiles and a lower-loading-bound sensitivity must test this ambiguity.
+Lowering the positive loading bound from 0.005 to 0.0001 again reaches the
+bound and improves bin nll by only 0.01291; gain and fitted time scales barely
+change. This does not establish zero sensor heat capacity. Profiles must still
+test the lag assignments.
 
 \section{Discrete observations and residual checks}
 The hardware data, rather than just simulator output, are quantized. The
@@ -191,9 +195,13 @@ Analogue measurement SD, $\C$ & 0.0258 & 0.0325\\
 \bottomrule
 \end{tabular}
 \end{center}
-The remaining 5\% band, boundary profiles and transfer comparison are pending.
-The larger change in noise decomposition does not, by itself, establish the
-resulting parameter uncertainty or predictive calibration.
+The joint 5\% and 20\% bands are also audited, with RMSE
+$0.637/0.153\C$ and $0.606/0.118\C$. Their nll values are 6279.4250 and
+6238.2167, versus 6238.2987 for 10\%. Four 5\% deviations reach bounds;
+the wider band is not selected from training likelihood alone.
+The joint radiation fit gives $0.590/0.119\C$ and nll 6234.4890.
+Its improvement is larger than in the Gaussian approximation, but is neither
+a calibrated significance result nor evidence of measured emissivity.
 
 Fisher's score identity supplies derivatives from smoothed latent moments
 \cite{poyiadjis2011}. Selected points require independent physical propagation,
@@ -208,16 +216,73 @@ simulations are complete with no failed draw. Across twenty independent
 randomizations, median maximum serial correlation over lags 1--60 is
 $0.0248/0.0245$ for T1/T2; maximum cross-channel correlation has median 0.0224.
 These are comparable to the fixed-model references. T1's nonrandomized
-code-transition discrepancy has reference upper-tail rank 0.0588, near the
-upper end. Further nonrandomized joint checks are needed because coarse-bin
-randomization can dilute dependence. The simulations do not refit parameters
-and cannot establish interval coverage or a calibrated IID claim.
+code-transition discrepancy has reference upper-tail rank 0.0588.
+However, deterministic conditional expected Gaussian-PIT scores expose
+structure that the added PIT jitter diluted:
+\begin{center}
+\begin{tabular}{@{}lrr@{}}
+\toprule
+Statistic & Data & Reference 97.5\%\\
+\midrule
+T1 input/score correlation magnitude & 0.04429 & 0.02261\\
+T1 maximum phase projection & 0.02983 & 0.01971\\
+T2 maximum ACF, lags 1--60 & 0.04695 & 0.04039\\
+Cross-channel maximum, lags $\pm10$ & 0.04895 & 0.02540\\
+\bottomrule
+\end{tabular}
+\end{center}
+Each descriptive upper-tail rank is 1/51. These scores are discrete and
+not unit-variance Gaussian residuals. The same calculation is applied to all
+fifty references. Removing run trends and three sine harmonics leaves cross
+correlation 0.04719, above its matched reference 97.5\% value 0.02603.
+Projection has not resolved the dependence or identified its cause.
+Fixed-model references do not refit parameters or repeat selection, so these
+ranks are not calibrated composite-null p-values. Whitening remains unfinished.
+
+Continuous-Gaussian joint sensitivities give process-driving correlation
+0.0908 or measurement correlation $-0.00692$ when estimated separately.
+Estimating both gives 0.11587/$-0.02463$ and improves Gaussian nll by 6.14891.
+All have independent dense-covariance audits. This is a comparison on discrete
+temperatures using a continuous likelihood; it does not establish calibrated
+joint-bin probabilities or an environmental mechanism.
 
 \section{Uncertainty, transfer and open questions}
-Profiles will refit ambient, conductance and noise nuisances. Information
-eigendirections will distinguish the centered tangent space from the active
-constraint face. Sensor-loading bounds and lag alternatives make routine
-Wald intervals unsafe without those checks.
+The independently audited information matrix distinguishes the centered
+tangent space from the selected active constraint face. Conditional local
+standard errors are
+\begin{center}
+\begin{tabular}{@{}lrrr@{}}
+\toprule
+Coordinate & IID analogue & Correlated analogue & Joint bin\\
+\midrule
+$\log K$ & 0.0007263 & 0.0033010 & 0.0033620\\
+$\log t_A$ & 0.0005152 & 0.0030056 & 0.0030888\\
+$\log L$ & 0.0479381 & 0.0309354 & 0.0324303\\
+\bottomrule
+\end{tabular}
+\end{center}
+The first two columns hold covariance known and use identical analogue
+marginal variance. Correlation increases gain and thermal-time SEs by 4.55 and
+5.83, while reducing the short-lag SE to 0.645 of its IID value. The bin column
+also estimates noise nuisances; its difference does not isolate quantization.
+These are selected-basin, active-face approximations, not calibrated intervals.
+
+T1 log latent SD and log correlation length have local correlation 0.9845.
+Conditioning the residual process on the initial code changes their estimates
+from $0.5362\C$/658.3 s to $0.8763\C$/1761.9 s, while $2S/\ell$ changes only
+0.22\% and the mean parameters barely change. The data constrain the diffusion
+rate more clearly than its stationary variance/length split.
+
+Allowing each cold heater/sensor pair within its first reported bin adds 24
+bounded coordinates. Its audited nll falls to 6209.5536, gain to
+$0.8697\C/\%$ and short lag to 2.72054 s; several initial states reach edges.
+T1 free-simulation RMSE increases to $0.655\C$, while T2 falls to $0.113\C$.
+Better correlated-bin likelihood does not imply better noise-free simulation.
+These bin bounds do not integrate an initial measurement-noise posterior.
+
+Profiles refit all ambient, conductance and noise nuisances. Sensor-loading
+bounds, initial-state sensitivities and lag alternatives make routine Wald
+intervals unsafe without those checks.
 
 The separate fifty-draw recovery study refits simulated quantized records.
 Each draw also fits gain at its generating value to assess coverage of the
