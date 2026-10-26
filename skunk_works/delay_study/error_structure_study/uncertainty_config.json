@@ -12,6 +12,16 @@
     {"coordinate": "radiation_gamma", "family": "radiation", "values": [0.0, 0.02, 0.05, 0.1, 0.2, 0.5, 1.0, 2.0, 4.0]}
   ],
   "information": {"score_finite_difference_step": 0.0002, "weak_direction_step_check": 0.0006, "active_bound_tolerance": 0.00001},
+  "lag_exchange_refinement": {
+    "enabled_after_coarse_audits": true,
+    "coordinate": "log_input_lag",
+    "fixed_value_source": "The audited unconstrained reference point's log_rS coordinate, without an exp/log round trip",
+    "warm_source": "Nearest successful coarse profile point around 15 s after the entire coarse profile is terminal and independently audited",
+    "starts": 2,
+    "maxiter": 300,
+    "reason": "The restricted zero-loading theory permits exchange of sensor/input factors; the provisional coarse profile has a second low region near 15 s. Its fixed 15 s grid point does not resolve the sensor-time candidate near 14.79 s. Check that candidate before interpreting lag labels or a disconnected profile.",
+    "gate": "Preserve the original grid and every point. Independently audit the new point. If its nll improves the unconstrained reference by more than 0.001, refine the baseline before reporting likelihood-ratio values. Do not infer interval endpoints by interpolation."
+  },
   "lower_loading_sensitivity": {"minimum_sensor_loading": 0.0001, "band": 0.1, "starts": 3, "maxiter": 300, "reason": "Repeated lower-bound sensor-loading estimates and the theoretical sensor/input lag exchange at zero loading; assess dependence on the original 0.005 lower bound before assigning physical lag identities."},
   "residual_initial_sensitivity": {"condition_initial_code": true, "band": 0.1, "phase": -0.5, "starts": 3, "maxiter": 300, "warm": "Audited joint 10% band quantized fit", "reason": "T1 correlation length is comparable to run length. Compare a stationary prior at the first scored point with the conditional likelihood given the actual first quantized observation; do not add that reading to nobs."},
   "recovery": {

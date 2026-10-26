@@ -158,3 +158,49 @@ The figure was inspected. Projection has not resolved the dependence.
 The final report will distinguish a useful physical mean, a useful short-term
 predictor and a validated stochastic model. Current evidence does not establish
 all three at once.
+
+## First complete protocol-transfer group
+
+All four primary omitted-protocol fits and their canonical forecasts passed
+independent numerical audits. Each fit used the nine retained records; its three
+omitted records initialized the physical states from their first readings only.
+No later test temperatures estimated ambient, conductance or physical parameters.
+Each of the twelve records appears once in this group (10,795 scored readings
+per channel). All records previously informed structure selection, so this is
+retrospective transfer.
+
+| Pooled quantity | T1 | T2 |
+| --- | ---: | ---: |
+| Nominal reported-mean RMSE, C | 2.131 | 0.875 |
+| Noise-only marginal range coverage | 32.1% | 36.7% |
+| Noise-only mean range width, C | 2.010 | 0.303 |
+| Permitted-condition plus noise coverage | 99.57% | 99.95% |
+| Permitted-condition plus noise mean width, C | 9.072 | 5.173 |
+
+Nominal conditions set the unknown run's conductance ratio to one and ambient
+offset to zero. The outer ranges allow the declared ±10% conductance band and
+±2 C ambient range. They are hard scenario envelopes combined with marginal
+noise quantiles, not probability distributions over conditions or calibrated
+total-95% predictions. Parameter draws are still pending. High coverage from
+these wide ranges does not identify whether changing conditions or model error
+caused the nominal discrepancies. The twelve forecast figures were inspected.
+Evidence: transfer_primary_protocols, its four point audits, the four
+transfer_primary_protocol*_noise forecasts/audits, and
+transfer_primary_protocols_noise_summary. That summary remains explicitly
+partial while other folds and uncertainty components are unfinished.
+
+Centering also affects interpretation. Each training subset defines a new
+geometric nominal Ua, so K0, tA, Us/Ua0 and Ux/Ua0 can shift together merely
+because the reference changed. Compare beta/CH=K0/tA, Us/CH, Ux/CH and the
+lag times instead. The source-bound reference_transport_check verifies this
+cohort/training issue and exact preservation of the canonical forecasts.
+
+For a centered twelve-run cohort with deviations bounded by ±10%, an omitted
+run's ratio to a nine-run training nominal can range from 0.86894 to 1.13551.
+This is centering algebra, not an observed conductance range. The all-data fit's
+re-centered reference ratios fall outside the canonical training band in one
+300 s sine record and two step records; those are fitted-reference diagnostics,
+not measured airflow or blind forecast inputs. A separately declared forecast
+stress check will propagate the algebraic range for all four primary protocols.
+Training constraints and all canonical forecasts stay unchanged. This check
+cannot be presented as a transported cohort likelihood or corrected coverage.

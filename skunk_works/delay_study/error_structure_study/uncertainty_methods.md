@@ -35,6 +35,16 @@ argument assumes fixed known covariance, regular differentiation and the same
 mean parameters. It does not replace the observed bin Hessian or include
 covariance estimation, uncertain thresholds or model selection.
 
+The coarse short-lag grid also needs a theory-driven exchange check. After its
+point audits, fix log input lag at the original unconstrained log sensor time,
+warm from the nearest successful coarse secondary-region point, and refit every
+other nuisance with the same two-start/300-iteration protocol. The zero-loading
+exchange argument motivates this coordinate; a low coarse region near 15 s
+alone does not resolve its minimum near the fitted sensor time. Preserve the
+coarse grid, audit the added point and refine the unconstrained reference if a
+constrained point beats it. This check does not supply interpolated interval
+endpoints or physical labels for the two lags.
+
 ## Lower loading and lag identity
 
 The baseline repeatedly reaches Us/Ua=0.005. A declared sensitivity lowers that
