@@ -1,0 +1,53 @@
+{
+  "status": "termination_requested_for_validated_backend_handoff",
+  "requested_utc": "2026-10-26 04:51:51 UTC",
+  "process": {
+    "pid": 49571,
+    "parent_pid": 49274,
+    "command": [
+      "/Users/adowling/opt/anaconda3/bin/python",
+      "/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-error-477ddcaa-to7apcsr/skunk_works/delay_study/error_structure_study/run_profiles.py",
+      "--output",
+      "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/profile_b10_gain",
+      "--input",
+      "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/joint_conductance_b10_export_v2",
+      "--noise1",
+      "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/bin_noise_band10_T1_v2/observation_fit.json",
+      "--noise2",
+      "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/bin_noise_band10_T2_v2/observation_fit.json",
+      "--coordinate",
+      "log_K",
+      "--physical-values",
+      "--values",
+      "0.8208289824118435",
+      "0.8470256520632854",
+      "0.8601239868890064",
+      "0.8732223217147272",
+      "0.8863206565404481",
+      "0.8994189913661691",
+      "0.925615661017611",
+      "--starts",
+      "2",
+      "--maxiter",
+      "300"
+    ],
+    "started_utc": "2026-10-26T02:25:28.905111+00:00"
+  },
+  "original_source_sha256": "18441a7a24ad744e296e714187d5b70c1c81ec3794de4664e2faa85063a0aae2",
+  "replacement_directory": "profile_b10_gain_compiled_continuation",
+  "checks": {
+    "benchmark": {
+      "path": "skunk_works/delay_study/error_structure_study/results/compiled_full_score_benchmark/benchmark.json",
+      "sha256": "977cc071d0cf1341ac9e9f6205ddaa4c62e47da10e5af3048b8cc735391c212a"
+    },
+    "control": {
+      "path": "skunk_works/delay_study/error_structure_study/results/continuation_control_check_v2/check.json",
+      "sha256": "b9752453b5db6996d741e22cc4cc3af64ae4dc50b63c23becd8cf09c60bb7100"
+    },
+    "preflight": {
+      "path": "skunk_works/delay_study/error_structure_study/results/compiled_migration_preflight/preflight.json",
+      "sha256": "50b1a3b7daeeb17db71fb24a5fa109fc929aec81d35d5687586ab1b3dbee7fac"
+    }
+  },
+  "reason": "Preserve completed starts/tasks/datasets and continue the unchanged study protocol with the independently checked 128-node compiled score and audited mean sensitivities. Original snapshots/outputs remain intact; any unfinished branch lacking a point checkpoint is explicitly restarted from its original seed. This is a performance handoff, not an observation timeout or data-dependent selection."
+}
