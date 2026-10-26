@@ -39,7 +39,7 @@ def describe(records,scores):
         cc=[];pp=[];tt=[];channel=[]
         for k,v in enumerate(pair):
             cc.append(v-v.mean());tt.append(v-trend@np.linalg.lstsq(trend,v,rcond=None)[0]);pp.append(v-X@np.linalg.lstsq(X,v,rcond=None)[0])
-            channel.append({'channel':k+1,'input_correlation':float(np.corrcoef(v,d['u'][:-1])[0,1]),
+            channel.append({'channel':k+1,'input_correlation':float(np.corrcoef(v,d['u'][:-1])[0,1]) if np.ptp(d['u'][:-1]) else None,
                 'trend_projection_fraction':float(1-tt[-1]@tt[-1]/np.sum((v-v.mean())**2)),
                 'trend_and_phase_projection_fraction':float(1-pp[-1]@pp[-1]/np.sum((v-v.mean())**2))})
         centered.append(cc);trend_removed.append(tt);phase_removed.append(pp)
