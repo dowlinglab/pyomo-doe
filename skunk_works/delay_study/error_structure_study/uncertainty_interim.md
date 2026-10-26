@@ -123,7 +123,9 @@ The figure was inspected. Projection has not resolved the dependence.
    matched continuous-Gaussian joint refits. Independent mode must reproduce
    the previous Gaussian fit under a dense covariance audit, which passed.
    Shared process driving noise gives correlation 0.0908 and improves Gaussian
-   nll by 4.3501; its full-data dense audit passed. These comparisons
+   nll by 4.3501; its full-data dense audit passed. Shared measurement noise
+   gives correlation -0.00692 and improves nll only 0.16748, also audited.
+   The combined comparison is running. These comparisons
    are sensitivities on discrete measurements, not the quantized joint likelihood.
 3. Complete profiles, initial sensor-bin sensitivities, the declared fifty
    nuisance-refitted recovery draws, and retrospective run/protocol transfer.

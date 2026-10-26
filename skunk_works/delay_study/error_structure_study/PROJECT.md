@@ -220,8 +220,9 @@ innovation and all-coordinate score checks passed. Its independent Gaussian
 mode reproduces the prior Gaussian objective within 3e-11 under a full-data
 dense audit. The process-correlation fit and full-data dense audit passed;
 its driving correlation is 0.0908 and nll improves 4.3501 versus the independent
-Gaussian fit. Measurement correlation is running; assess the combined case
-after those matched results. These are working correlations, not measured
+Gaussian fit. Measurement correlation and its audit also passed: rho=-0.00692,
+Gaussian nll improvement 0.16748. gaussian_both_correlations is now running
+(controller 62272) to check their tradeoff. These are working correlations, not measured
 airflow or electronics. Their likelihood
 is continuous Gaussian on discrete temperatures, not the
 quantized multichannel likelihood. They cannot establish calibrated bin
