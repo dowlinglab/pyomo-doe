@@ -113,6 +113,15 @@ initial-measurement posterior. The existing hidden-heater-only comparisons remai
 separate. Start with nearest bins/no buffer, compare a 0.1 C scenario buffer and
 floor bins consistently; do not label these bounds calibrated confidence limits.
 
+The lag-loading limit check is terminal and passed; its plot was inspected.
+At the nominal Gaussian loading boundary (Us/Ua=0.005), swapping rS and input L
+changes the synthetic fast-sine T1/T2 trajectories by only 0.00430/0.00185 C.
+Zero-loading forced transfer factors exchange exactly. This excludes ambient
+and unequal-start forcing, so it does not prove a symmetry of every experiment.
+The lower positive bound --minimum-sensor-loading 0.0001 is declared as a
+three-start sensitivity after the main selected-point audits. Current live
+snapshots retain their original 0.005 bounds and are not modified.
+
 ## Resume instructions
 
 Read the plan, this file and `run_manifest.json`. Inspect process identities and

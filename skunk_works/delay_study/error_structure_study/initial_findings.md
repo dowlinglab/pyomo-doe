@@ -126,3 +126,17 @@ now running; none has been selected yet. Their starts also test the possible
 exchange of sensor and input time constants. The shared mean, bounded per-run
 conductance and observation distribution must be considered together before
 final uncertainty or new-experiment prediction claims.
+
+The nominal synthetic forced response supplies little information to assign the
+two lag labels at the current sensor-loading boundary. At Us/Ua=0.005, exchanging
+the 14.98 s sensor lag and 2.69 s input lag changes the fast-sine forced T1/T2
+waveforms by at most 0.00430/0.00185 C. This calculation uses a common 20 C cold
+start and zero ambient offset, not the measured starting temperatures. The
+zero-loading transfer functions factor into commuting sensor/input first-order
+terms; an independent calculation agrees within 2.9e-17. Positive-loading
+trajectories agree with dimensional energy balances within 1.9e-13 C. The figure
+in loading_limit_check was visually inspected. A lower positive bound of 0.0001
+is now a declared refit sensitivity, not a measured device property. Startup,
+ambient and loading assumptions can break the exchange, and repeated quantized
+measurements can still constrain sub-grid effects. Neither the 0.3223 C grid nor
+this synthetic comparison proves an absolute resolution limit on lag estimation.
