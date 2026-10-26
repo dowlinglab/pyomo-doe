@@ -5,6 +5,20 @@ from physical import Model as MeanModel
 from quantized import STEP,OFFSET,report,log_probability
 
 
+def reference_transport_bounds(band,total,training):
+    """Retrospective cohort bounds after centering the retained experiments.
+
+    For original centered deltas, a test ratio relative to the training nominal
+    is exp(delta_test + sum(delta_omitted)/training). The extreme assignments
+    below must also permit feasible original training deltas. This is a
+    forecast stress check; it does not refit the training band's constraints.
+    """
+    assert 0<=band<1 and 0<training<total
+    omitted=total-training;lo=np.log(1-band);hi=np.log(1+band)
+    assert -omitted*hi/training>=lo-1e-12 and -omitted*lo/training<=hi+1e-12
+    return np.exp(np.array([lo,hi])*total/training)
+
+
 def reported_mean(mean,sd,phase):
     mean=np.asarray(mean,dtype=float);lower=int(np.floor((mean.min()-11*sd-OFFSET)/STEP))-2
     upper=int(np.ceil((mean.max()+11*sd-OFFSET)/STEP))+2;codes=np.arange(lower,upper+1)
@@ -27,9 +41,11 @@ def mixture_quantile(means,sds,probability):
     return (lo+hi)/2
 
 
-def mean_scenarios(record,shape,K,band,points):
+def mean_scenarios(record,shape,K,band,points,ratio_bounds=None):
     m=MeanModel([record],True,True);n=len(record['t'])-1
-    logs=np.unique(np.r_[np.linspace(np.log(1-band),np.log(1+band),points),0.]) if band else np.array([0.])
+    lower_ratio,upper_ratio=(1-band,1+band) if ratio_bounds is None else ratio_bounds
+    assert 0<lower_ratio<=1<=upper_ratio
+    logs=np.unique(np.r_[np.linspace(np.log(lower_ratio),np.log(upper_ratio),points),0.]) if lower_ratio!=upper_ratio else np.array([0.])
     lower=np.full((n,2),np.inf);upper=np.full((n,2),-np.inf);nominal=None
     for delta in logs:
         local=np.asarray(shape).copy();local[[0,2,3]]-=delta
@@ -41,13 +57,13 @@ def mean_scenarios(record,shape,K,band,points):
     return {'nominal':nominal,'lower':lower,'upper':upper,'conductance_grid_points':len(logs)}
 
 
-def checked_scenarios(record,shape,K,band,config):
-    a=mean_scenarios(record,shape,K,band,config['coarse_points'])
-    b=mean_scenarios(record,shape,K,band,config['fine_points'])
+def checked_scenarios(record,shape,K,band,config,ratio_bounds=None):
+    a=mean_scenarios(record,shape,K,band,config['coarse_points'],ratio_bounds)
+    b=mean_scenarios(record,shape,K,band,config['fine_points'],ratio_bounds)
     error=max(float(np.max(abs(a[k]-b[k]))) for k in ['lower','upper'])
     refinements=[{'points':config['fine_points'],'envelope_change_C':error}]
     if error>config['maximum_envelope_change_C']:
-        c=mean_scenarios(record,shape,K,band,config['refinement_points'])
+        c=mean_scenarios(record,shape,K,band,config['refinement_points'],ratio_bounds)
         error=max(float(np.max(abs(c[k]-b[k]))) for k in ['lower','upper']);b=c
         refinements.append({'points':config['refinement_points'],'envelope_change_C':error})
     if error>config['maximum_envelope_change_C']:raise FloatingPointError('Unknown-run scenario envelope needs a finer conductance grid')

@@ -34,9 +34,9 @@ def main():
     try:aggregate_groups(duplicate,expected,['r1','r2'])
     except AssertionError:rejected=True
     assert rejected
-    noise_only=[{'status':'audited','parameter_sensitivity_complete':False} for _ in range(20)]
+    noise_only=[{'status':'audited','required_uncertainty_complete':False} for _ in range(20)]
     assert completion_state(noise_only,20)['status']=='partial'
-    complete=[dict(r,parameter_sensitivity_complete=True) for r in noise_only]
+    complete=[dict(r,required_uncertainty_complete=True) for r in noise_only]
     assert completion_state(complete,20)['status']=='complete'
     assert completion_state(complete[:-1],20)['status']=='partial'
     complete[-1]={'status':'failed'}

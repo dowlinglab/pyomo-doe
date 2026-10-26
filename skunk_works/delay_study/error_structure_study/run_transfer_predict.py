@@ -12,13 +12,14 @@ import matplotlib.pyplot as plt
 from physical import load_records
 from joint_quantized import Model
 from quantized import report,filter_ou
-from transfer import checked_scenarios,reported_mean,reported_quantile,mixture_quantile
+from transfer import checked_scenarios,reported_mean,reported_quantile,mixture_quantile,reference_transport_bounds
 from run_bounded import write
 
 
 def main():
     parser=argparse.ArgumentParser();parser.add_argument('--output',type=Path,required=True)
     parser.add_argument('--input',type=Path,required=True);parser.add_argument('--parameter-draws',type=Path)
+    parser.add_argument('--reference-transport',action='store_true')
     args=parser.parse_args();begun=time.monotonic();config=json.loads((HERE/'transfer_config.json').read_text())
     fit=json.loads((args.input/'fit.json').read_text());assert fit['family']=='conductance' and fit['kernel']=='quantized_ou_nugget'
     if fit.get('dataset') or fit.get('fixed_coordinates') or fit.get('startup_band_C') or fit.get('initial_sensor_bins'):raise ValueError('Declare separate transfer initial-state/model scenario')
@@ -26,6 +27,11 @@ def main():
     all_records=load_records();train=[d for d in all_records if d['name'] in fit['record_names']]
     test=[d for d in all_records if d['name'] not in fit['record_names']]
     assert test and [d['name'] for d in train]==fit['record_names']
+    ratio_bounds=np.array([1-fit['band'],1+fit['band']])
+    if args.reference_transport:
+        assert fit['band']==.1 and len(all_records)==12 and len(test)==3,'Declared reference-transport check is for primary omitted-protocol folds only'
+        assert config['reference_transport_sensitivity']['enabled']
+        ratio_bounds=reference_transport_bounds(fit['band'],len(all_records),len(train))
     for d in train:assert d['sha256']==fit['raw_sha256'][d['name']]
     model=Model(train,fit['band'],fit['phase'],128,'conductance',minimum_sensor_loading=fit.get('minimum_sensor_loading',.005))
     points=None;draw_metadata=None
@@ -43,7 +49,7 @@ def main():
             'draw_receipt_path':str(receipt_path),'draw_receipt_sha256':hashlib.sha256(receipt_path.read_bytes()).hexdigest()}
     result=[];arrays={}
     for j,d in enumerate(test):
-        scenarios=checked_scenarios(d,np.asarray(fit['best']['point'][:6]),fit['parameters']['K_common_nominal'],fit['band'],config['nuisance_scenario_grid'])
+        scenarios=checked_scenarios(d,np.asarray(fit['best']['point'][:6]),fit['parameters']['K_common_nominal'],fit['band'],config['nuisance_scenario_grid'],ratio_bounds)
         predicted=scenarios['nominal'];y=d['y'][1:];obsmean=np.empty_like(y);noise_low=np.empty_like(y);noise_high=np.empty_like(y)
         outer_low=np.empty_like(y);outer_high=np.empty_like(y);scores=[]
         for k,noise in enumerate(fit['noise_parameters']):
@@ -68,7 +74,7 @@ def main():
         if points is not None:
             low=[];high=[];sds=[]
             for point in points:
-                s=checked_scenarios(d,point[:6],np.exp(point[model.nshape]),fit['band'],config['nuisance_scenario_grid'])
+                s=checked_scenarios(d,point[:6],np.exp(point[model.nshape]),fit['band'],config['nuisance_scenario_grid'],ratio_bounds)
                 low.append(s['lower']);high.append(s['upper'])
                 sds.append([np.hypot(np.exp(point[model.nmean+3*k]),np.exp(point[model.nmean+3*k+2])) for k in [0,1]])
             low=np.array(low);high=np.array(high);sds=np.array(sds);pl=np.empty_like(y);pu=np.empty_like(y)
@@ -101,6 +107,7 @@ def main():
         fig.tight_layout();fig.savefig(args.output/('transfer_'+str(j)+'.png'),dpi=150);plt.close(fig)
     write(args.output/'transfer_predictions.json',{'status':'complete','fit_sha256':hashlib.sha256((args.input/'fit.json').read_bytes()).hexdigest(),
         'train_names':fit['record_names'],'test_names':[d['name'] for d in test],'parameter_draws':draw_metadata,
+        'nuisance_ratio_bounds':ratio_bounds.tolist(),'reference_transport_sensitivity':args.reference_transport,
         'per_run':result,'elapsed_s':time.monotonic()-begun,
         'notice':'Retrospective transfer: only the first test temperature pair initializes the mean; no later test output fits conductance, ambient or physical parameters. Hard-band/ambient envelopes are numerically converged scenarios, not distributions over nuisance parameters. Noise ranges are marginal and not simultaneous. Parameter-mixture sensitivities inherit the supplied draw approximation/calibration limits; no automatic total-95% claim. Filtered bin scores use past test outputs for the residual state and are distinct from free simulation. All twelve records informed structure selection.'})
     np.savez_compressed(args.output/'transfer_predictions.npz',**arrays)

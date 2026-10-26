@@ -16,6 +16,31 @@ Compare those combinations and actual forecasts when discussing stability.
 The unknown-run hard band is explicitly relative to the regressed training
 reference; it does not infer a population reference or variability law.
 
+## Reference transport stress check
+
+The first omitted-protocol results exposed a distinction between the original
+cohort reference and the re-centered training reference. Before adding any
+forecasts for this question, transfer_config.json declares an additional check
+for all four primary protocol folds. It preserves the canonical forecasts and
+all training fits.
+
+Suppose N=12 original log deviations sum to zero and lie in [l,u], with m
+retained and k=N-m omitted. The training mean is minus the omitted sum divided
+by m. An omitted ratio to the training nominal is therefore
+exp(delta_test + sum(delta_omitted)/m). Feasible extreme assignments give bounds
+[(1-b)^(N/m),(1+b)^(N/m)]. The bounds depend on cohort/training sizes and the
+declared band; fitted test outputs do not choose them. A separate all-data-fit
+diagnostic shows how its fitted deviations re-center, without treating them as
+measured conductance or supplying them to blind predictions.
+
+These wider forecast ranges leave the training-band constraints unchanged.
+They measure sensitivity to the reference convention, rather than transporting
+the whole cohort likelihood. Coverage remains descriptive; this does not
+calibrate an unknown-run distribution. The default forecast arithmetic must
+match its saved canonical outputs before the extra check is measured.
+
+## Canonical forecasts and parameter sensitivities
+
 For an unknown run, set its conductance ratio and ambient offset to 1 and 0 for
 the nominal forecast. Initialize cold heater/sensor pairs from the first reported
 temperature pair. No later test output estimates conductance, ambient or physical

@@ -21,7 +21,7 @@ from physical import load_records
 from audit_bounded import independent
 from continuation import parent_receipt
 from quantized import STEP,OFFSET,bins,filter_ou
-from transfer import checked_scenarios
+from transfer import checked_scenarios,reference_transport_bounds
 from run_bounded import write
 
 
@@ -74,6 +74,9 @@ def audit(args):
     for d in train:assert fit['raw_sha256'][d['name']]==d['sha256']
     arrays=np.load(args.input/'transfer_predictions.npz',allow_pickle=False)
     config=json.loads((HERE/'transfer_config.json').read_text());K=fit['parameters']['K_common_nominal'];phase=fit['phase']
+    ratio_bounds=np.array(prediction.get('nuisance_ratio_bounds',[1-fit['band'],1+fit['band']]))
+    expected=reference_transport_bounds(fit['band'],len(records),len(train)) if prediction.get('reference_transport_sensitivity') else np.array([1-fit['band'],1+fit['band']])
+    assert np.max(abs(ratio_bounds-expected))<1e-14
     draws=None;draw_receipt=None
     if prediction['parameter_draws']:
         metadata=prediction['parameter_draws'];path=Path(metadata['path']);assert sha(path)==metadata['sha256']
@@ -93,11 +96,11 @@ def audit(args):
         observed=record['y'][1:];n=len(observed);nominal=direct(record,fit['parameters'],K)
         assert saved['nobs_per_channel']==n and saved['parameter_uncertainty_included']==(draws is not None)
         assert np.max(abs(nominal-arrays['latent_nominal_'+str(j)]))<2e-8
-        scenario=checked_scenarios(record,np.array(fit['best']['point'][:6]),K,fit['band'],config['nuisance_scenario_grid'])
+        scenario=checked_scenarios(record,np.array(fit['best']['point'][:6]),K,fit['band'],config['nuisance_scenario_grid'],ratio_bounds)
         for label in ['lower','upper']:
             assert np.max(abs(scenario[label]-arrays['nuisance_mean_'+('low' if label=='lower' else 'high')+'_'+str(j)]))<1e-8
         containment=0.
-        for g in sorted(set([1-fit['band'],1.,1+fit['band']])):
+        for g in sorted(set([ratio_bounds[0],1.,ratio_bounds[1]])):
             for ambient in [-2.,2.]:
                 physical=direct(record,fit['parameters'],K,g,ambient)
                 error=max(0.,float(np.max(scenario['lower']-physical)),float(np.max(physical-scenario['upper'])))
@@ -164,7 +167,7 @@ def audit(args):
                     'Us_over_Ua_nominal':np.exp(point[2]),'Ux_over_Ua_nominal':np.exp(point[3]),
                     'input_lag_s':np.exp(point[4]),'command_curvature':point[5]}
                 error=0.
-                for g in sorted(set([1-fit['band'],1.,1+fit['band']])):
+                for g in sorted(set([ratio_bounds[0],1.,ratio_bounds[1]])):
                     for ambient in [-2.,2.]:
                         values=direct(record,parameters,kk,g,ambient)[witness]
                         error=max(error,float(np.max(low[q]-values)),float(np.max(values-high[q])))

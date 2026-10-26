@@ -53,7 +53,7 @@ def aggregate_groups(rows,expected,record_names,partial=False):
             for prefix in ['latent','reported']:
                 group[prefix+'_RMSE_by_channel_C']=np.sqrt(np.sum([r[prefix+'_SSE_by_channel_C2'] for r in runs],axis=0)/count).tolist()
             group['reported_signed_mean_error_C']=(np.sum([r['reported_signed_error_sum_C'] for r in runs],axis=0)/count).tolist()
-            for variant in ['noise_only','hard_nuisance_noise','parameter_64','parameter_256']:
+            for variant in ['noise_only','hard_nuisance_noise','parameter_64','parameter_256','reference_transport']:
                 if all(variant+'_covered_counts' in r for r in runs):
                     group[variant+'_marginal_coverage']=(np.sum([r[variant+'_covered_counts'] for r in runs],axis=0)/count).tolist()
                     group[variant+'_mean_width_C']=(np.sum([r[variant+'_width_sum_C'] for r in runs],axis=0)/count).tolist()
@@ -66,7 +66,7 @@ def aggregate_groups(rows,expected,record_names,partial=False):
 
 def completion_state(rows,declared):
     indexed=len(rows)==declared and all(r['status'] in ['audited','failed'] for r in rows)
-    components=indexed and all(r['status']=='failed' or r.get('parameter_sensitivity_complete',False) for r in rows)
+    components=indexed and all(r['status']=='failed' or r.get('required_uncertainty_complete',False) for r in rows)
     complete=components and all(r['status']=='audited' for r in rows)
     return {'status':'complete' if complete else ('complete_with_failures' if components else 'partial'),
         'all_declared_folds_accounted':indexed,'all_required_uncertainty_components_accounted':components}
@@ -103,13 +103,17 @@ def main():
             fit_audit=Path(entry['fit_audit']);fa=json.loads(fit_audit.read_text())
             assert fa['status']=='passed' and fa['fit_sha256']==sha(fitpath)
             variants={};sources=[]
-            for name in ['noise','parameter_64','parameter_256']:
+            required={'noise','parameter_64','parameter_256'}
+            if entry['candidate']=='primary' and fold['type']=='leave_protocol_out' and config['reference_transport_sensitivity']['enabled']:
+                required.add('reference_transport')
+            for name in ['noise','parameter_64','parameter_256','reference_transport']:
                 if name not in entry['predictions']:continue
                 metadata,arrays,source=prediction(entry['predictions'][name],sha(fitpath),names)
+                assert bool(metadata.get('reference_transport_sensitivity',False))==(name=='reference_transport')
                 variants[name]=(metadata,arrays);sources.append(dict(source,variant=name))
             assert 'noise' in variants,'Noise-only forecast not audited'
             if not args.allow_partial:
-                assert {'parameter_64','parameter_256'}<=set(variants),'Declared local parameter sensitivities missing'
+                assert required<=set(variants),'Declared parameter/reference sensitivities missing'
             run_rows=[]
             for j,dname in enumerate(names):
                 metadata,arrays=variants['noise'];y=arrays['observed_'+str(j)][1:];latent=arrays['latent_nominal_'+str(j)]
@@ -138,10 +142,18 @@ def main():
                     item['parameter_64_to_256_max_bound_change_C']=np.max(difference,axis=(0,1)).tolist()
                     item['parameter_64_to_256_changed_bound_counts']=np.sum(difference>1e-9,axis=(0,1)).tolist()
                     item['parameter_64_to_256_compared_bound_counts_per_channel']=2*n
+                if 'reference_transport' in variants:
+                    md,a=variants['reference_transport'];assert md['parameter_draws'] is None
+                    assert np.max(abs(a['reported_mean_'+str(j)]-reported))<1e-10
+                    lo=a['nuisance_noise_reported_low_'+str(j)];hi=a['nuisance_noise_reported_high_'+str(j)]
+                    item['reference_transport_covered_counts']=np.sum((y>=lo)&(y<=hi),axis=0).tolist()
+                    item['reference_transport_width_sum_C']=np.sum(hi-lo,axis=0).tolist()
+                    item['reference_transport_ratio_bounds']=md['nuisance_ratio_bounds']
                 run_rows.append(item)
             row=dict(identity,status='audited',fit_directory=str(fitroot),fit_sha256=sha(fitpath),
                 fit_audit_sha256=sha(fit_audit),per_run=run_rows,
-                parameter_sensitivity_complete={'parameter_64','parameter_256'}<=set(variants))
+                parameter_sensitivity_complete={'parameter_64','parameter_256'}<=set(variants),
+                required_uncertainty_complete=required<=set(variants))
             parameters=fit['parameters'];ta=parameters['tA_nominal_s']
             row['reference_invariant_parameters']={
                 'beta_over_CH_C_per_percent_per_s':parameters['K_common_nominal']/ta,
