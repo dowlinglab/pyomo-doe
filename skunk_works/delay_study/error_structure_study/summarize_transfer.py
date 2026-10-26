@@ -182,6 +182,7 @@ def main():
     for variant,marker in [('noise_only','o'),('hard_nuisance_noise','s'),('parameter_256','^')]:
         for k in [0,1]:
             values=[g.get(variant+'_marginal_coverage',[np.nan,np.nan])[k] for g in available]
+            if not np.isfinite(values).any():continue
             axes[1].plot(x+(k-.5)*.12,values,marker=marker,color=['tab:blue','tab:orange'][k],
                 linestyle='none',label=variant.replace('_',' ')+' T'+str(k+1))
     axes[1].set(xticks=x,xticklabels=labels,ylabel='Observed pointwise coverage',ylim=(0,1.02));axes[1].legend(fontsize=6)

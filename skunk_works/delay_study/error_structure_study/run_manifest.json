@@ -2661,7 +2661,7 @@
       "source_commit": "ccf9362c6544497e906b2c0b4115860cfadf8e8c",
       "source_receipt_sha256": "91f79bb4a821086c98e1197858195a21c2ee40153fd32a8fd385385224f5447e",
       "status": "running_verified",
-      "last_verified_utc": "2026-10-26 14:56:31 UTC"
+      "last_verified_utc": "2026-10-26 15:22:32 UTC"
     },
     {
       "id": "profile_chart_check",
@@ -3094,7 +3094,7 @@
       "source_commit": "7cd61f36763fc5e114416176472bfc26b5b6a277",
       "source_receipt_sha256": "71fc02cd311eae6f6733b98b6f024a8b3dcc942e19c78d07dd4206db4eab2d7d",
       "status": "running_verified",
-      "last_verified_utc": "2026-10-26 14:56:31 UTC"
+      "last_verified_utc": "2026-10-26 15:22:32 UTC"
     },
     {
       "id": "recovery_b10_odd",
@@ -3158,7 +3158,7 @@
       "source_commit": "7cd61f36763fc5e114416176472bfc26b5b6a277",
       "source_receipt_sha256": "caa31c9d75a44f20dc5f7a7662b32c914f55fa375f208f21c1882c5b7014f16d",
       "status": "running_verified",
-      "last_verified_utc": "2026-10-26 14:56:31 UTC"
+      "last_verified_utc": "2026-10-26 15:22:32 UTC"
     },
     {
       "id": "recovery_summary_controller_check",
@@ -3457,8 +3457,34 @@
       "output": "skunk_works/delay_study/error_structure_study/results/transfer_primary_protocols",
       "source_commit": "fdef9fb43dde1984500066ccbaa3f9b28c4d50a0",
       "source_receipt_sha256": "dceb80521f7bba5d0d7f99f83228f25af3d3fb14e1e141cf73b3f873b147688c",
-      "status": "running_verified",
-      "last_verified_utc": "2026-10-26 14:56:31 UTC"
+      "status": "terminal",
+      "last_verified_utc": "2026-10-26 14:56:31 UTC",
+      "exit_code": 0,
+      "finished_utc": "2026-10-26T15:05:51.783449+00:00"
+    },
+    {
+      "id": "transfer_primary_protocols_audit",
+      "process": {
+        "pid": 95865,
+        "parent_pid": 95573,
+        "command": [
+          "/Users/adowling/opt/anaconda3/bin/python",
+          "/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-error-74916b62-7yftnblk/skunk_works/delay_study/error_structure_study/audit_collection.py",
+          "--output",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_primary_protocols_audit",
+          "--input",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_primary_protocols",
+          "--kind",
+          "transfer"
+        ],
+        "started_utc": "2026-10-26T15:11:30.434963+00:00"
+      },
+      "output": "skunk_works/delay_study/error_structure_study/results/transfer_primary_protocols_audit",
+      "source_commit": "74916b6216f1d56fb263ff2d7c8a6546a2e18811",
+      "source_receipt_sha256": "4fae901652ff6072dd5dcb89c8f45726f21715e66ac8ef4482138fa3c9b35201",
+      "status": "terminal",
+      "exit_code": 0,
+      "finished_utc": "2026-10-26T15:21:48.248742+00:00"
     },
     {
       "id": "updated_diagnostics_check",
@@ -3586,11 +3612,10 @@
   "live_jobs": [
     "profile_b10_short_lag_v2",
     "recovery_b10_even_compiled_continuation",
-    "recovery_b10_odd_compiled_continuation",
-    "transfer_primary_protocols"
+    "recovery_b10_odd_compiled_continuation"
   ],
   "next_action": "Four long numerical jobs remain live. After primary protocol fit collection exits, audit all four selected points, then dispatch first noise-only forecast and its full audit; queue per-fold information/audits/draws and coarse/fine parameter forecasts. Use transfer_analysis as the source index. Finish other declared folds, lag/remaining profiles and initial-state queue as slots free. Complete all fifty recovery draws and source-bound numerical/diagnostic aggregation, then final Markdown/tablet PDF and completion audit. No email.",
-  "updated_utc": "2026-10-26T14:56:32.080010+00:00",
+  "updated_utc": "2026-10-26T15:22:33.264942+00:00",
   "last_goal_turn_classification": "progress: coherent audited uncertainty, code-score dependence, updated physical-mean/forecast diagnostics, initial-condition and bounded-conductance sensitivities committed; matched Gaussian cross-channel comparison implemented/audited, both complementary coverage shards dispatched; all current scientific claims source-bound and whitening remains explicitly unresolved",
   "controller_sessions": {
     "joint_conductance_b00": 55866,
@@ -3652,7 +3677,15 @@
     "recovery_audit_cached_controller_check": 45710,
     "recovery_summary_controller_check": 91952,
     "recovery_summary_controller_check_v2": 76209,
-    "transfer_accounting_check": 87560
+    "transfer_accounting_check": 87560,
+    "transfer_primary_protocols_audit": 91177,
+    "transfer_primary_protocol30_noise": 52813,
+    "transfer_primary_protocol30_noise_audit": 24402,
+    "transfer_primary_protocol120_noise_audit": 59790,
+    "transfer_primary_protocol300_noise_audit": 87242,
+    "transfer_primary_protocolstep_noise_audit": 27563,
+    "transfer_primary_runs": 56639,
+    "reference_transport_check": 41527
   },
   "queued_jobs": [
     "current_primary_protocol_fits_then_independent_fold_audits",
@@ -3666,10 +3699,10 @@
   ],
   "process_check": {
     "path": "process_check.json",
-    "checked_utc": "2026-10-26 14:56:31 UTC",
-    "sha256": "2e2b064a5bb6670c36c30168fc9ed19c8f7d1935be8240a87e30b195d2e9266d",
+    "checked_utc": "2026-10-26 15:22:32 UTC",
+    "sha256": "4616d8365b73d31119e94fc83aa3a99f7da72fce0cd84ff975bd1541fad2e776",
     "method": "Direct approved pgrep -fl tclab-error tool",
-    "snapshot_age_s": 1.08001
+    "snapshot_age_s": 1.264942
   },
   "reconciliation_warnings": {
     "missing_exit_or_matching_process": [],
@@ -3683,20 +3716,56 @@
     {
       "candidate": "primary",
       "fold_id": "protocol_30s",
-      "status": "fit_recorded_awaiting_audit",
+      "status": "noise_forecast_audited_parameter_pending",
       "fit_directory": "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_primary_protocols/protocol_30s",
       "fit_sha256": "9e926d027ed2618b2a11a350638d02d6e823cca35fe3d12e11b846eeb90055aa",
-      "fit_audit": null,
-      "predictions": {}
+      "fit_audit": "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_primary_protocols_audit/point_0/audit.json",
+      "predictions": {
+        "noise": {
+          "directory": "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_primary_protocol30_noise",
+          "audit": "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_primary_protocol30_noise_audit/audit.json"
+        }
+      }
     },
     {
       "candidate": "primary",
       "fold_id": "protocol_120s",
-      "status": "fit_recorded_awaiting_audit",
+      "status": "noise_forecast_audited_parameter_pending",
       "fit_directory": "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_primary_protocols/protocol_120s",
       "fit_sha256": "3245b33e6bb21e0f4bd6bf6f8e6ef7c703da4ea1e74997418e460a5f07c0881d",
-      "fit_audit": null,
-      "predictions": {}
+      "fit_audit": "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_primary_protocols_audit/point_1/audit.json",
+      "predictions": {
+        "noise": {
+          "directory": "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_primary_protocol120_noise",
+          "audit": "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_primary_protocol120_noise_audit/audit.json"
+        }
+      }
+    },
+    {
+      "candidate": "primary",
+      "fold_id": "protocol_300s",
+      "status": "noise_forecast_audited_parameter_pending",
+      "fit_directory": "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_primary_protocols/protocol_300s",
+      "fit_audit": "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_primary_protocols_audit/point_2/audit.json",
+      "predictions": {
+        "noise": {
+          "directory": "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_primary_protocol300_noise",
+          "audit": "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_primary_protocol300_noise_audit/audit.json"
+        }
+      }
+    },
+    {
+      "candidate": "primary",
+      "fold_id": "protocol_step",
+      "status": "noise_forecast_audited_parameter_pending",
+      "fit_directory": "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_primary_protocols/protocol_step",
+      "fit_audit": "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_primary_protocols_audit/point_3/audit.json",
+      "predictions": {
+        "noise": {
+          "directory": "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_primary_protocolstep_noise",
+          "audit": "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_primary_protocolstep_noise_audit/audit.json"
+        }
+      }
     }
   ]
 }
