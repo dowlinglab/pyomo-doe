@@ -18,6 +18,7 @@ from scipy.stats import beta
 from physical import load_records
 from bin_diagnostics import sample_observations
 from audit_joint_quantized import audit
+from audit_provenance import numerical_binding,diagnostic_binding
 from run_bounded import write
 
 
@@ -28,6 +29,24 @@ def interval(k,n):
     if not n:return None
     return [float(beta.ppf(.025,k,n-k+1)) if k else 0.,
             float(beta.ppf(.975,k+1,n-k)) if k<n else 1.]
+
+
+def free_output(row):
+    if row.get('selected_free_output'):return Path(row['selected_free_output'])
+    # Older frozen drivers set the selected path only after a complete LR pair.
+    # Resolve an accepted free fit after a null-fit failure by its exact saved
+    # recovered point, rather than choosing an arbitrary successful attempt.
+    assert row['free_fit_success'] and row.get('recovered_point')
+    matches=[]
+    for attempt in row['attempts']:
+        path=Path(attempt['output'])
+        if not attempt['success'] or not path.name.startswith('free'):continue
+        fit=json.loads((path/'fit.json').read_text())
+        if np.array_equal(fit['best']['point'],row['recovered_point']):matches.append(path)
+    assert matches,'Accepted free fit has no source-bound saved point'
+    digests={sha(p/'fit.json') for p in matches}
+    assert len(digests)==1,'Ambiguous accepted free fit after incomplete LR pair'
+    return matches[0]
 
 
 def main():
@@ -71,17 +90,20 @@ def main():
         assert len(set(args.audit_draws))==len(args.audit_draws) and set(args.audit_draws)<=set(indices)
         rows=[r for r in rows if r['draw'] in args.audit_draws];indices=[r['draw'] for r in rows]
     if not args.allow_partial:assert sorted(indices)==list(range(config['draws'])),'Incomplete fifty-draw recovery'
-    auditor_sha=sha(HERE/'audit_joint_quantized.py');cached={}
+    auditor_sha=sha(HERE/'audit_joint_quantized.py');binding=numerical_binding(args.output);cached={}
     for directory in args.reuse_audits:
         previous=json.loads((directory/'audit.json').read_text())
+        assert (directory/'exit.json').exists(),'Reused audit parent must be terminal'
         assert previous['numerical_auditor_sha256']==auditor_sha
+        assert numerical_binding(directory)==binding,'Numerical audit dependencies, raw data or runtime changed'
         for row in previous['rows']:
             for task in row.get('numerical_audits',[]):
                 if task.get('status')=='passed':cached[task['fit_sha256']]=(directory,task)
     audited=[]
     for row in sorted(rows,key=lambda r:r['draw']):
         result={'draw':row['draw'],'seed':row['seed'],'coverage_complete':row['coverage_complete'],
-            'free_fit_success':row['free_fit_success'],'numerical_audits':[],'failures':[]}
+            'free_fit_success':row['free_fit_success'],'fit_exception':row.get('exception'),
+            'numerical_audits':[],'failures':[]}
         assert row['seed']==config['seed_base']+config['seed_stride']*row['draw']
         # Locate the original generated data even for copied terminal draws.
         origin=Path(row['reused_completed_draw']['path']).parent if row.get('reused_completed_draw') else None
@@ -90,6 +112,11 @@ def main():
             assert len(candidates)==1;origin=candidates[0]
         dataset=origin/'observations.npz'
         try:
+            if row.get('reused_completed_draw'):
+                previous=Path(row['reused_completed_draw']['path'])
+                assert sha(previous)==row['reused_completed_draw']['sha256']
+                before=json.loads(previous.read_text())
+                assert all(row[k]==v for k,v in before.items() if k!='reused_completed_draw'),'Copied completed outcome changed'
             assert sha(dataset)==row['dataset_sha256']
             saved=np.load(dataset,allow_pickle=False)
             assert saved['record_names'].tolist()==fit['record_names']
@@ -98,10 +125,12 @@ def main():
                 assert np.array_equal(saved['time_'+str(j)],d['t']) and np.array_equal(saved['input_'+str(j)],d['u'])
                 assert np.array_equal(saved['observed_'+str(j)],d['y']),'Seed/data regeneration mismatch'
             result['dataset_sha256']=sha(dataset)
-            labels=['selected_free_output','selected_null_output'] if row['coverage_complete'] else []
+            paths={}
+            if row['free_fit_success']:paths['selected_free_output']=free_output(row)
+            if row['coverage_complete']:paths['selected_null_output']=Path(row['selected_null_output'])
             selected={}
-            for label in labels:
-                directory=Path(row[label]);selected[label]=json.loads((directory/'fit.json').read_text())
+            for label,directory in paths.items():
+                selected[label]=json.loads((directory/'fit.json').read_text())
                 assert selected[label]['dataset']['sha256']==sha(dataset)
                 digest=sha(directory/'fit.json');reuse=cached.get(digest)
                 if reuse:
@@ -114,6 +143,21 @@ def main():
                     write(destination/(label+'.json'),numerical)
                 result['numerical_audits'].append(dict(numerical,role=label))
                 if numerical['status']!='passed':result['failures'].append([label,numerical['failures']])
+            if row['free_fit_success']:
+                free=selected['selected_free_output'];assert not free.get('fixed_coordinates')
+                result.update({'selected_free_output':str(paths['selected_free_output']),
+                    'recovered_point':free['best']['point'],'recovered_parameters':free['parameters'],
+                    'recovered_noise':free['noise_parameters']})
+                diagnostic=origin/'refitted_nonrandom_diagnostics.json'
+                result['refitted_diagnostic_success']=row.get('refitted_diagnostic_success',False)
+                if result['refitted_diagnostic_success']:
+                    parents=[p for p in [origin]+list(origin.parents) if (p/'source_snapshot.json').exists()]
+                    assert parents and diagnostic_binding(parents[0])==diagnostic_binding(args.output),'Diagnostic definition/runtime changed'
+                    content=json.loads(diagnostic.read_text())
+                    assert content['metrics']==row['refitted_diagnostic_metrics']
+                    result['refitted_diagnostic_binding']={'path':str(diagnostic),'sha256':sha(diagnostic)}
+                    result['refitted_diagnostic_metrics']=content['metrics']
+                else:result['refitted_diagnostic_exception']=row.get('refitted_diagnostic_exception')
             if row['coverage_complete']:
                 free=selected['selected_free_output'];null=selected['selected_null_output']
                 names=json.loads((origin.parent/'design.json').read_text())['coordinate_names']
@@ -134,7 +178,9 @@ def main():
     complete=[r for r in audited if r['status']=='passed' and r['coverage_complete']]
     n=len(complete);k=sum(r['covered'] for r in complete);failed=len(rows)-n
     final={'status':'partial' if len(rows)<config['draws'] else ('passed' if all(r['status']=='passed' for r in audited) else 'failed'),
-        'fit_sha256':fit_hash,'numerical_auditor_sha256':auditor_sha,'shards':bindings,'config':config,
+        'fit_sha256':fit_hash,'numerical_auditor_sha256':auditor_sha,'numerical_dependency_binding':binding,
+        'diagnostic_implementation_binding':diagnostic_binding(args.output),
+        'shards':bindings,'config':config,
         'available_draws':len(available_indices),'draws_audited_in_this_run':len(rows),
         'available_but_not_selected_for_audit':sorted(set(available_indices)-set(indices)),
         'declared_draws':config['draws'],'missing_draws':sorted(set(range(config['draws']))-set(indices)),
