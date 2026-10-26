@@ -67,9 +67,10 @@ def kernel(time,mean,lo,hi,latent_sd,ell,measurement_sd,points,legendre_weights,
                 lower=min(lower,centers[j]+gain*(low-centers[j]));upper=max(upper,centers[j]+gain*(high-centers[j]))
         lower-=tail_sd*conditional_sd;upper+=tail_sd*conditional_sd
         logpost=np.empty(nodes);half=(upper-lower)/2;mid=(upper+lower)/2
+        terms=np.empty(count);density_constant=-.5*(math.log(variance)+LOG2PI)
         for i in range(nodes):
-            x=mid+half*points[i];grids[k,i]=x;terms=np.empty(count)
-            for j in range(count):terms[j]=logmix[j]-.5*((x-centers[j])**2/variance+math.log(variance)+LOG2PI)
+            x=mid+half*points[i];grids[k,i]=x
+            for j in range(count):terms[j]=logmix[j]-.5*(x-centers[j])**2/variance+density_constant
             prior_log[k,i]=logsum(terms)
             lm=interval_logmass((low-x)/measurement_sd,(high-x)/measurement_sd)
             logpost[i]=prior_log[k,i]+lm+math.log(legendre_weights[i]*half)
@@ -89,25 +90,26 @@ def kernel(time,mean,lo,hi,latent_sd,ell,measurement_sd,points,legendre_weights,
     smooth=np.empty((n,nodes));smooth[-1]=weights[-1];cross=np.empty(max(n-1,0));closure=0.
     for k in range(n-2,-1,-1):
         a=math.exp(-(time[k+1]-time[k])/ell);q=S*(-math.expm1(-2*(time[k+1]-time[k])/ell))
-        pair=np.full((nodes,nodes),-np.inf);peak=-np.inf
+        old_log=np.full(nodes,-np.inf);old_centers=a*grids[k];constant=-.5*(math.log(q)+LOG2PI)
+        for j in range(nodes):
+            if weights[k,j]>0:old_log[j]=math.log(weights[k,j])
+        old=np.zeros(nodes);row_sums=np.zeros(nodes);moment=0.;total=0.
         for i in range(nodes):
             if smooth[k+1,i]<=0:continue
+            offset=math.log(smooth[k+1,i])-prior_log[k+1,i]+constant
             for j in range(nodes):
                 if weights[k,j]<=0:continue
-                value=math.log(smooth[k+1,i])+math.log(weights[k,j])-.5*((grids[k+1,i]-a*grids[k,j])**2/q+math.log(q)+LOG2PI)-prior_log[k+1,i]
-                pair[i,j]=value;peak=max(peak,value)
-        total=0.
-        for i in range(nodes):
-            for j in range(nodes):total+=math.exp(pair[i,j]-peak)
-        normalizer=peak+math.log(total);closure=max(closure,abs(math.expm1(normalizer)))
-        old=np.zeros(nodes);moment=0.
-        for i in range(nodes):
-            row=0.
-            for j in range(nodes):
-                value=math.exp(pair[i,j]-normalizer);old[j]+=value;row+=value
+                # This is a smoothed new-state weight times a conditional
+                # old-state probability. Each term is <=1: the denominator
+                # is precisely the positive mixture containing its numerator.
+                # Direct exponentiation therefore cannot overflow, even when
+                # the predictive *density* itself is extremely small.
+                value=math.exp(offset+old_log[j]-.5*(grids[k+1,i]-old_centers[j])**2/q)
+                old[j]+=value;row_sums[i]+=value;total+=value
                 moment+=grids[k+1,i]*value*grids[k,j]
-            closure=max(closure,abs(row-smooth[k+1,i]))
-        smooth[k]=old;cross[k]=moment
+        closure=max(closure,abs(total-1.))
+        for i in range(nodes):closure=max(closure,abs(row_sums[i]/total-smooth[k+1,i]))
+        smooth[k]=old/total;cross[k]=moment/total
     ex=np.empty(n);ex2=np.empty(n);ev=np.empty(n);ev2=np.empty(n)
     for k in range(n):
         ex[k]=smooth[k]@grids[k];ex2[k]=smooth[k]@(grids[k]**2)
