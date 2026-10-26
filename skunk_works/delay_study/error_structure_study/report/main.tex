@@ -21,8 +21,9 @@
 \begin{document}
 \maketitle\vspace{-1em}
 \textbf{Work in progress.} This layout draft contains audited intermediate
-results. Joint discrete-data fits and local information are audited. Profiles,
-refitted uncertainty calibration and retrospective transfer remain underway.
+results. Joint discrete-data fits, local information and the first complete
+omitted-protocol forecast group are audited. Profiles, refitted uncertainty
+calibration and parameter-inclusive transfer remain underway.
 It is not the completed study report.
 
 \begin{tabularx}{\linewidth}{@{}>{\raggedright\arraybackslash}p{1.02in}>{\raggedright\arraybackslash}X>{\raggedright\arraybackslash}X@{}}
@@ -45,6 +46,8 @@ forced-response lag swap changes T1 by at most $0.00430\C$. &
 Weak assignment; lowering the loading bound barely changes the mean.\\
 Are residuals adequate for inference? & Deterministic code diagnostics retain
 input, phase and cross-channel structure. & Whitening unfinished; no IID claim.\\
+Does the nominal fit transfer? & Omitting each protocol gives T1/T2
+RMSE $2.131/0.875\C$. & First four folds audited; nuisance ranges are broad.\\
 \bottomrule
 \end{tabularx}
 
@@ -290,12 +293,48 @@ nominal scalar likelihood-ratio cutoff. Failed fits, retries and Monte Carlo
 uncertainty remain in the denominator and report. This conditional exercise
 does not protect against mean/noise misspecification.
 
-Retrospective leave-run/protocol-out fits will predict omitted records without
-fitting their ambient or conductance from later test temperatures. Show nominal
-simulation, hard-nuisance scenarios, noise ranges and parameter sensitivity
-separately. All records informed model selection, so these are internal
-transfer checks. Marginal coverage fractions do not turn correlated readings
-into independent validation replicates.
+\subsection*{First complete omitted-protocol forecast group}
+Each of four fits retains nine records and predicts the three omitted records
+at one sine period or the step protocol. All four fits and their canonical
+forecasts passed independent audits. No later test temperatures estimate
+ambient, conductance or physical parameters; only the first temperature pair
+initializes the physical states. Each record appears once in this group,
+10,795 scored readings per channel. These are retrospective transfer checks
+because all records informed structure selection.
+
+\begin{tabularx}{\linewidth}{@{}Xrr@{}}
+\toprule
+Pooled reported-temperature quantity & T1 & T2\\
+\midrule
+Nominal RMSE, $\C$ & 2.131 & 0.875\\
+After removing each run's mean error, RMSE, $\C$ & 0.806 & 0.453\\
+Fraction of SSE in run mean errors & 85.7\% & 73.2\%\\
+Noise-only marginal coverage & 32.1\% & 36.7\%\\
+Noise-only mean width, $\C$ & 2.010 & 0.303\\
+Hard conditions plus noise coverage & 99.57\% & 99.95\%\\
+Hard conditions plus noise mean width, $\C$ & 9.072 & 5.173\\
+\bottomrule
+\end{tabularx}
+
+Nominal conditions set the unknown run's conductance ratio to one and ambient
+offset to zero. The outer ranges allow the declared $\pm10\%$ conductance band
+and $\pm2\C$ ambient range. They combine hard scenario limits with marginal
+noise quantiles. Their high coverage accompanies wide ranges and does not
+calibrate a total-95\% interval or identify changing conditions as the cause.
+Removing run mean errors is a descriptive decomposition using test outcomes,
+not a blind prediction correction. Changing error remains in both channels.
+Marginal coverage does not make correlated readings independent replicates.
+Parameter-mixture propagation and the remaining folds are pending.
+
+Each retained subset also defines a different geometric nominal conductance.
+Compare invariant combinations $K_0/t_A=\beta/C_H$, $r/t_A=U_s/C_H$ and
+$q/t_A=U_x/C_H$ before treating shifts in $K_0$ as physical change. Centering
+a hypothetical twelve-run cohort with the same hard band permits an omitted
+run's ratio to a nine-run training nominal in $[0.86894,1.13551]$.
+A source-bound arithmetic check verifies these limits and unchanged canonical
+forecasts. A separately declared forecast stress check will propagate this
+range while preserving the training fits. It is not a transported cohort
+likelihood or a corrected coverage calibration.
 
 The remaining questions are whether the discrete-data model removes
 input-linked residual structure, whether the conductance band transfers

@@ -189,6 +189,14 @@ transfer_primary_protocol*_noise forecasts/audits, and
 transfer_primary_protocols_noise_summary. That summary remains explicitly
 partial while other folds and uncertainty components are unfinished.
 
+Run mean errors account for 85.7% of T1 and 73.2% of T2 squared prediction
+error. Removing each run's mean error reduces the pooled RMSE to 0.806/0.453 C.
+This decomposition uses the omitted observations and cannot be applied as a
+blind prediction correction. It separates run-level shifts from changing error
+without assigning either to a physical mechanism. The independently checked
+summary is transfer_primary_protocols_noise_decomposition; its arithmetic
+fixture transfer_accounting_check_v3 includes an all-offset limiting case.
+
 Centering also affects interpretation. Each training subset defines a new
 geometric nominal Ua, so K0, tA, Us/Ua0 and Ux/Ua0 can shift together merely
 because the reference changed. Compare beta/CH=K0/tA, Us/CH, Ux/CH and the

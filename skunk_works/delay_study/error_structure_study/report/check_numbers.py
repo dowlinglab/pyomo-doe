@@ -130,6 +130,46 @@ def main():
             value=f['best']['point'][f['coordinate_names'].index(coordinate)]
             assert f'{value:.{places}f}' in text
         if name=='gaussian_both_correlations':assert f"{-a['nll_minus_prior_independent_Gaussian']:.5f}" in text
+    # Independently pool every canonical protocol forecast from its arrays.
+    # Per-run offset removal uses the test outputs and is descriptive only.
+    summaryroot=root/'transfer_primary_protocols_noise_decomposition'
+    summary=json.loads((summaryroot/'summary.json').read_text());binding(summaryroot/'summary.json')
+    index=json.loads((summaryroot/'analysis_index_snapshot.json').read_text());binding(summaryroot/'analysis_index_snapshot.json')
+    assert summary['status']=='partial' and json.loads((summaryroot/'exit.json').read_text())['exit_code']==0
+    sse=np.zeros(2);offsets=np.zeros(2);covered=np.zeros((2,2));widths=np.zeros((2,2));nobs=0;seen=[]
+    for entry in index['transfer_analysis']:
+        assert entry['candidate']=='primary' and entry['fold_id'].startswith('protocol_')
+        fp=Path(entry['fit_directory'])/'fit.json';fa=Path(entry['fit_audit'])
+        fcheck=json.loads(fa.read_text());assert fcheck['status']=='passed' and fcheck['fit_sha256']==sha(fp)
+        binding(fp);binding(fa)
+        directory=Path(entry['predictions']['noise']['directory']);ap=Path(entry['predictions']['noise']['audit'])
+        a=json.loads(ap.read_text());assert a['status']=='passed' and a['fit_sha256']==sha(fp)
+        assert a['prediction_sha256']==sha(directory/'transfer_predictions.json') and a['arrays_sha256']==sha(directory/'transfer_predictions.npz')
+        assert json.loads((directory/'exit.json').read_text())['exit_code']==0 and json.loads((ap.parent/'exit.json').read_text())['exit_code']==0
+        for p in [directory/'transfer_predictions.json',directory/'transfer_predictions.npz',ap,directory/'exit.json',ap.parent/'exit.json']:binding(p)
+        metadata=json.loads((directory/'transfer_predictions.json').read_text());arrays=np.load(directory/'transfer_predictions.npz')
+        for j,row in enumerate(metadata['per_run']):
+            seen.append(row['name']);y=arrays['observed_'+str(j)][1:];error=y-arrays['reported_mean_'+str(j)]
+            sse+=np.sum(error**2,axis=0);offsets+=len(y)*np.mean(error,axis=0)**2;nobs+=len(y)
+            for k,prefix in enumerate(['noise_only_reported','nuisance_noise_reported']):
+                low=arrays[prefix+'_low_'+str(j)];high=arrays[prefix+'_high_'+str(j)]
+                covered[k]+=np.sum((y>=low)&(y<=high),axis=0);widths[k]+=np.sum(high-low,axis=0)
+    assert len(seen)==len(set(seen))==12 and nobs==10795 and '10,795' in text
+    group=next(r for r in summary['groups'] if r['candidate']=='primary' and r['fold_type']=='leave_protocol_out')
+    measures=[('Nominal RMSE',np.sqrt(sse/nobs),'reported_RMSE_by_channel_C',3),
+        ('Centered RMSE',np.sqrt((sse-offsets)/nobs),'reported_per_run_centered_RMSE_C',3),
+        ('Offset SSE percent',100*offsets/sse,None,1),('Noise coverage percent',100*covered[0]/nobs,None,1),
+        ('Noise width',widths[0]/nobs,'noise_only_mean_width_C',3),
+        ('Conditions coverage percent',100*covered[1]/nobs,None,2),
+        ('Conditions width',widths[1]/nobs,'hard_nuisance_noise_mean_width_C',3)]
+    for label,values,key,places in measures:
+        if key:assert np.max(abs(np.array(group[key])-values))<1e-10
+        suffix='\\%' if 'percent' in label else ''
+        assert f'{values[0]:.{places}f}{suffix} & {values[1]:.{places}f}{suffix}' in text,label
+    path=root/'reference_transport_check/check.json';binding(path);assert json.loads(path.read_text())['status']=='passed'
+    from transfer import reference_transport_bounds
+    low,high=reference_transport_bounds(.1,12,9)
+    assert f'[{low:.5f},{high:.5f}]' in text
     args.output.write_text(json.dumps({'status':'passed','source_sha256':sha(HERE/'main.tex'),
         'checker_source_sha256':sha(Path(__file__)),
         'python':platform.python_version(),'data_count_including_initial_readings':count,'Gaussian_table':checked,
