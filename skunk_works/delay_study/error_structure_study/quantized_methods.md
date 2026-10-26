@@ -100,3 +100,34 @@ a=exp(-dt/ell) approaches 1 and process variance approaches 2*S*dt/ell;
 profiles must check whether the data distinguish S and ell or mainly their
 ratio. A zero-start or integrating-disturbance limit is a possible sensitivity,
 not an established explanation for this device.
+
+## Predictive checks after joint fitting
+
+Use 20 independent randomized-PIT streams, with different recorded seeds for
+each run and channel. Measure within-run serial correlation through sample lag
+40, cross-channel correlation through lags -10 to 10, marginal shape and
+correlation with the command held over the preceding interval. Pooled lag
+products never join the end of one experiment to the start of another.
+
+Also evaluate nonrandomized probabilities that the next reported code decreases,
+stays the same or increases. These integrate the predictive observation mixture
+over thresholds at the preceding code. They use the previous filtering state;
+neither the current posterior nor a smoothed state is a valid forecast. Compare
+observed transition counts with the sum of their conditional probabilities.
+The sum of p(1-p) supplies a descriptive martingale variance scale. It is not
+used to assert an independently calibrated Gaussian test after fitting.
+
+Before interpreting these diagnostics, simulate 50 data sets conditional on
+the fitted mean, noise, recorded commands, sampling times and first readings.
+Generate stationary OU errors at the first scored time, independent analogue
+noise and the assumed hardware bins. Retain synthetic observations, seeds,
+every failure and denominators. Compare statistics with those fixed-model
+simulation references, alongside the spread across PIT randomizations.
+These simulations do not refit parameters or repeat model selection. Their
+tail ranks are conditional discrepancy measures, not bootstrap p-values or
+interval-coverage calibration. Separate refitted recovery/coverage work remains.
+
+Validate down/same/up probabilities against an independent conditional
+bivariate Gaussian observation integral for both declared bin phases. Gaussian
+PIT appearance can hide coarse-bin discrepancies, so serial, cross-channel and
+nonrandomized checks must be reported together.
