@@ -22,7 +22,7 @@ def main():
     m=Model(records,fit['band'],fit['phase'],128,'conductance');p=np.array(fit['best']['point'])
     H=np.load(args.information/'information_matrices.npz')['observed_Hessian'];rows=[]
     def coeff(q):return np.r_[np.exp(q[m.nshape]),q[m.nshape+1:m.nmean]]
-    for h in [0.,.0002,.0004,.0006,.002,.004,.006,.005,.01,.015,.02,.04,.06,.05,.1,.15]:
+    for h in [0.,.0002,.0004,.0006,.002,.004,.006,.005,.01,.015,.02,.03,.04,.06,.05,.1,.15]:
         q=p.copy();q[2]+=h;mean=dimensional_mean(q,coeff(q),records,fit['band'])
         nll=0.
         for k,noise in enumerate(fit['noise_parameters']):
