@@ -34,7 +34,7 @@ def main():
     lookup={d['name']:d for d in load_records()};records=[lookup[n] for n in fit['record_names']]
     m=Model(records,fit['band'],fit['phase'],args.nodes,fit['family'],fit.get('startup_band_C',0.),
             initial_sensor_bins=fit.get('initial_sensor_bins',False),initial_noise_buffer=fit.get('initial_noise_buffer_C',0.),
-            minimum_sensor_loading=fit.get('minimum_sensor_loading',.005))
+            minimum_sensor_loading=fit.get('minimum_sensor_loading',.005),condition_initial_code=fit.get('condition_initial_code',False))
     p=np.array(fit['best']['point']);bounds=np.array(m.bounds());names=m.coordinate_names();g0=m.gradient(p);columns={};stencils={}
     requested=list(range(len(p))) if args.columns is None else args.columns
     for j in requested:
@@ -74,16 +74,20 @@ def main():
         # Unquantized analogue observations contain at least as much expected
         # mean information as their codes when covariance is held known. These
         # matrices are conditional comparisons, not a substitute bin Hessian.
-        mean,J=m.mean(p);weighted=[];iid=[]
-        for k,noise in enumerate(fit['noise_parameters']):
-            S=noise['latent_SD_C']**2;R=noise['measurement_SD_C']**2
-            W=Whitening([d['t'][1:] for d in records],'ou_nugget',[noise['ell_s'],R/(S+R)])
-            block=J[k*m.N:(k+1)*m.N];weighted.append(W(block)/np.sqrt(S+R));iid.append(block/np.sqrt(S+R))
-        jw=np.vstack(weighted);ji=np.vstack(iid)
-        np.savez_compressed(args.output/'information_matrices.npz',observed_Hessian=H,raw_Hessian=raw,
-            centered_basis=Q,active_face_basis=free,analogue_mean_known_noise=jw.T@jw,
-            iid_mean_same_marginal_variance=ji.T@ji,mean_Jacobian=J)
-        result['conditional_analogue_mean_information_notice']='Known covariance, unreported analogue temperatures: an expected-information upper bound for quantized mean information. IID comparison uses the same marginal variance. Neither includes covariance estimation, threshold uncertainty or model selection.'
+        mean,J=m.mean(p)
+        matrices={'observed_Hessian':H,'raw_Hessian':raw,'centered_basis':Q,'active_face_basis':free,'mean_Jacobian':J}
+        if not m.condition_initial_code:
+            weighted=[];iid=[]
+            for k,noise in enumerate(fit['noise_parameters']):
+                S=noise['latent_SD_C']**2;R=noise['measurement_SD_C']**2
+                W=Whitening([d['t'][1:] for d in records],'ou_nugget',[noise['ell_s'],R/(S+R)])
+                block=J[k*m.N:(k+1)*m.N];weighted.append(W(block)/np.sqrt(S+R));iid.append(block/np.sqrt(S+R))
+            jw=np.vstack(weighted);ji=np.vstack(iid)
+            matrices.update({'analogue_mean_known_noise':jw.T@jw,'iid_mean_same_marginal_variance':ji.T@ji})
+            result['conditional_analogue_mean_information_notice']='Known covariance, unreported analogue temperatures: an expected-information upper bound for quantized mean information. IID comparison uses the same marginal variance. Neither includes covariance estimation, threshold uncertainty or model selection.'
+        else:
+            result['conditional_analogue_mean_information_notice']='Not supplied: conditioning on an initial code gives a non-Gaussian initial latent distribution, so an unconditional Gaussian covariance matrix is not this conditional model information. The observed bin Hessian remains available.'
+        np.savez_compressed(args.output/'information_matrices.npz',**matrices)
     write(args.output/'information.json',result)
 
 

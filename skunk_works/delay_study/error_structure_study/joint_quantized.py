@@ -7,16 +7,18 @@ sys.path.insert(0,str(HERE.parent/'coupled_model_study'))
 import numpy as np
 from bounded import Model as MeanModel
 from smoothing import smooth_ou
+from conditional_initial import smooth_record
 
 
 class Model:
-    def __init__(self,records,band=.1,phase=-.5,nodes=128,family='conductance',startup_band=0.,fixed=None,initial_sensor_bins=False,initial_noise_buffer=0.,minimum_sensor_loading=.005):
+    def __init__(self,records,band=.1,phase=-.5,nodes=128,family='conductance',startup_band=0.,fixed=None,initial_sensor_bins=False,initial_noise_buffer=0.,minimum_sensor_loading=.005,condition_initial_code=False):
         self.records=records;self.band=band;self.phase=phase;self.nodes=nodes;self.family=family
         self.nr=len(records);self.N=sum(len(d['t'])-1 for d in records);self.startup_band=startup_band
         self.fixed=dict(fixed or {})
         self.initial_sensor_bins=initial_sensor_bins;self.initial_noise_buffer=initial_noise_buffer
         if not 0<minimum_sensor_loading<30:raise ValueError('Positive sensor loading minimum below 30 required')
         self.minimum_sensor_loading=minimum_sensor_loading
+        self.condition_initial_code=condition_initial_code
         if initial_noise_buffer and not initial_sensor_bins:raise ValueError('An initial-noise buffer requires sensor-bin sensitivity')
         self.y=np.concatenate([np.concatenate([d['y'][1:,k] for d in records]) for k in [0,1]])
         if family=='conductance':
@@ -100,28 +102,37 @@ class Model:
             J[:,j]=forward(q,self.mean_model.time,self.mean_model.u,self.mean_model.initial,self.mean_model.ends,self.mean_model.max_step).imag/1e-25
         return m,J
 
+    def initial_mean_and_index(self,p,record,channel):
+        value=float(self.records[record]['y'][0,channel]);index=None
+        if self.initial_sensor_bins:
+            index=self.nshape+1+self.nr+2*record+channel;value+=p[index]
+        return value,index
+
     def _evaluate(self,key):
         p=np.asarray(key);mean,J=self.mean(p)
-        mean_score=np.zeros(2*self.N);gradient=np.zeros(len(p));nll=0.;details=[]
+        mean_score=np.zeros(2*self.N);gradient=np.zeros(len(p));initial_score=np.zeros(self.nmean);nll=0.;details=[]
         for channel in [0,1]:
             latent,ell,measurement=np.exp(p[self.nmean+3*channel:self.nmean+3*channel+3]);cursor=0
             noise_score=np.zeros(3)
             for j,d in enumerate(self.records):
                 n=len(d['t'])-1;section=slice(channel*self.N+cursor,channel*self.N+cursor+n);nodes=self.nodes
+                first,first_index=self.initial_mean_and_index(p,j,channel);full_mean=np.r_[first,mean[section]]
                 while True:
-                    f=smooth_ou(d['t'][1:],mean[section],d['y'][1:,channel],latent,ell,measurement,self.phase,nodes)
+                    f=smooth_record(d,full_mean,channel,latent,ell,measurement,self.phase,nodes,self.condition_initial_code)
                     error=float(np.max(abs(f['posterior_normalization_ratio']-1)))
                     if error<1e-6 and f['smoothing_closure_error']<1e-6:break
                     if nodes>=512:
                         bad=int(np.argmax(abs(f['posterior_normalization_ratio']-1)))
-                        raise FloatingPointError('Joint posterior integration failed: '+str({'name':d['name'],'channel':channel+1,'nodes':nodes,'normalization_error':error,'smoothing_closure':f['smoothing_closure_error'],'time':float(d['t'][bad+1]),'log_bin_mass':float(f['log_bin_probability'][bad])}))
+                        index=bad if self.condition_initial_code else bad+1
+                        raise FloatingPointError('Joint posterior integration failed: '+str({'name':d['name'],'channel':channel+1,'nodes':nodes,'normalization_error':error,'smoothing_closure':f['smoothing_closure_error'],'time':float(d['t'][index]),'log_bin_mass':float(f['log_bin_probability'][bad])}))
                     nodes*=2
                 nll+=f['nll'];mean_score[section]=f['mean_nll_gradient'];noise_score+=f['noise_nll_gradient_logsd_logell_logsd']
+                if first_index is not None:initial_score[first_index]+=f['initial_mean_nll_gradient']
                 details.append({'name':d['name'],'channel':channel+1,'nodes':nodes,'nll':f['nll'],
                     'normalization_error':error,'smoothing_closure_error':f['smoothing_closure_error']})
                 cursor+=n
             gradient[self.nmean+3*channel:self.nmean+3*channel+3]=noise_score
-        gradient[:self.nmean]=mean_score@J
+        gradient[:self.nmean]=mean_score@J+initial_score
         return float(nll),gradient,details
 
     def objective(self,p):return self.evaluate(tuple(p))[0]

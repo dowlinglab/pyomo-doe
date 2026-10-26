@@ -30,6 +30,7 @@ def main():
     fit=json.loads((args.input/'fit.json').read_text());candidate=config['candidates'][args.candidate]
     assert fit['kernel']=='quantized_ou_nugget' and fit['family']==candidate['family'] and fit['band']==candidate['band']
     assert not fit.get('fixed_coordinates') and not fit.get('dataset') and not fit.get('startup_band_C') and not fit.get('initial_sensor_bins')
+    if fit.get('condition_initial_code'):raise ValueError('Declare and propagate conditional-first-code transfer conventions before this sweep')
     records=load_records();assert fit['record_names']==[d['name'] for d in records]
     chosen=folds(config,args.candidate)
     if args.folds:

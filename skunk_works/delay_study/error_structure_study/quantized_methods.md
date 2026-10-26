@@ -164,3 +164,26 @@ states are fixed to reported values, when ambient limits prevent the shift, or
 for absolute-Kelvin radiation. Verify the identity before interpreting a
 nearest/floor sensitivity as new dynamic information. Independent temperature
 reference information would be needed to resolve this global reference freedom.
+
+## Conditioning the residual initial state
+
+The declared sensitivity --condition-initial-code changes the residual-state
+convention rather than the physical initial-state rule. Evaluate the joint bin
+probability for times 0 through N, then divide by the marginal probability of
+the observed first code. The resulting density is for observations 1 through N
+given that code, so the observation count stays unchanged.
+
+Its score is the full-sequence smoothing score minus the one-observation score.
+The physical-mean derivative at time 0 is zero for fixed initial sensor states.
+If sensor-bin initial-state coordinates are present, include the corresponding
+initial-mean score difference as well. This permits an independent complete
+conditional-likelihood finite-difference check of all mean and noise coordinates.
+
+The first code constrains the OU state before its transition to the first scored
+time. For a long correlation length, this can matter even when later innovations
+look white. Keep this sensitivity separate from a zero latent-state assumption.
+Fitting, export, profiles and independent Gaussian-rectangle audits support the
+conditional likelihood. Simulation and prospective marginal calculations require
+the corresponding truncated-Gaussian initial latent distribution; current
+stationary-at-first-scored simulation/transfer drivers explicitly refuse such
+fits until that support is supplied. Do not run mismatched diagnostics silently.

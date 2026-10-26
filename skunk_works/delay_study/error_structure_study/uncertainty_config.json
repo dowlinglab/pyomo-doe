@@ -13,6 +13,7 @@
   ],
   "information": {"score_finite_difference_step": 0.0002, "weak_direction_step_check": 0.0006, "active_bound_tolerance": 0.00001},
   "lower_loading_sensitivity": {"minimum_sensor_loading": 0.0001, "band": 0.1, "starts": 3, "maxiter": 300, "reason": "Repeated lower-bound sensor-loading estimates and the theoretical sensor/input lag exchange at zero loading; assess dependence on the original 0.005 lower bound before assigning physical lag identities."},
+  "residual_initial_sensitivity": {"condition_initial_code": true, "band": 0.1, "phase": -0.5, "starts": 3, "maxiter": 300, "warm": "Audited joint 10% band quantized fit", "reason": "T1 correlation length is comparable to run length. Compare a stationary prior at the first scored point with the conditional likelihood given the actual first quantized observation; do not add that reading to nobs."},
   "recovery": {
     "draws": 50,
     "seed_base": 611271,

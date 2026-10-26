@@ -22,6 +22,7 @@ def main():
     args=parser.parse_args();begun=time.monotonic();config=json.loads((HERE/'transfer_config.json').read_text())
     fit=json.loads((args.input/'fit.json').read_text());assert fit['family']=='conductance' and fit['kernel']=='quantized_ou_nugget'
     if fit.get('dataset') or fit.get('fixed_coordinates') or fit.get('startup_band_C') or fit.get('initial_sensor_bins'):raise ValueError('Declare separate transfer initial-state/model scenario')
+    if fit.get('condition_initial_code'):raise ValueError('Conditional-first-code marginal transfer needs its non-Gaussian initial latent mixture')
     all_records=load_records();train=[d for d in all_records if d['name'] in fit['record_names']]
     test=[d for d in all_records if d['name'] not in fit['record_names']]
     assert test and [d['name'] for d in train]==fit['record_names']

@@ -15,15 +15,22 @@ def main():
     parser=argparse.ArgumentParser();parser.add_argument('--output',type=Path,required=True)
     parser.add_argument('--warm',type=Path,required=True);args=parser.parse_args()
     fit=json.loads(args.warm.read_text());rng=np.random.RandomState(813331);rows=[]
-    for family,band,minimum in [('conductance',.1,.005),('radiation',.1,.005),('conductance',0.,.005),('radiation',0.,.005),('conductance',.1,.0001)]:
+    cases=[('conductance',.1,.005,False,False),('radiation',.1,.005,False,False),
+        ('conductance',0.,.005,False,False),('radiation',0.,.005,False,False),
+        ('conductance',.1,.0001,False,False),('conductance',.1,.005,True,False),
+        ('conductance',.1,.005,True,True)]
+    for family,band,minimum,condition,sensor in cases:
         records=[]
         for d in load_records()[:3]:
             v=dict(d)
             for name in ['t','u','y']:v[name]=d[name][:61].copy()
             records.append(v)
-        m=Model(records,band=band,nodes=128,family=family,minimum_sensor_loading=minimum);shape=np.asarray(fit['best']['point'][:6]).copy();shape[2]=np.log(.03 if minimum==.005 else .0002)
+        settings={'band':band,'nodes':128,'family':family,'minimum_sensor_loading':minimum,
+                  'condition_initial_code':condition,'initial_sensor_bins':sensor}
+        m=Model(records,**settings);shape=np.asarray(fit['best']['point'][:6]).copy();shape[2]=np.log(.03 if minimum==.005 else .0002)
         if family=='conductance':mean=np.r_[shape,[-.02,0.,.02] if band else np.zeros(0),np.log(.85),[.3,-.5,.7]]
         else:mean=np.r_[shape,np.log(.85),.5,[-.02,0.,.02] if band else np.zeros(3),[.3,-.5,.7]]
+        if sensor:mean=np.r_[mean,np.zeros(2*len(records))]
         noise=np.log([.3,30.,.05,.1,10.,.03]);point=np.r_[mean,noise];truth=m.mean(point,False);cursor=0;generated=[]
         for j,d in enumerate(records):
             v=dict(d);y=d['y'].copy();n=len(d['t'])-1
@@ -34,17 +41,23 @@ def main():
                         a=np.exp(-(d['t'][i+1]-d['t'][i])/ell);x=a*x+rng.normal(0,latent*np.sqrt(1-a*a))
                     y[i+1,k]=report(truth[k*m.N+cursor+i]+x+rng.normal(0,measurement))
             v['y']=y;generated.append(v);cursor+=n
-        model=Model(generated,band=band,nodes=128,family=family,minimum_sensor_loading=minimum);gradient=model.gradient(point);checks=[]
+        model=Model(generated,**settings);gradient=model.gradient(point);checks=[]
         # Independent finite differences of the marginal bin likelihood,
         # including shape, per-run deviation, ambient/gain and covariance.
-        from quantized import filter_ou
+        from quantized import filter_ou,bins,log_probability
         def nll(p):
             mu=model.mean(p,False);value=0.;cursor=0
             for c in [0,1]:
                 latent,ell,measurement=np.exp(p[model.nmean+3*c:model.nmean+3*c+3]);cursor=0
-                for d in generated:
+                for record_index,d in enumerate(generated):
                     n=len(d['t'])-1;section=slice(c*model.N+cursor,c*model.N+cursor+n)
-                    value+=filter_ou(d['t'][1:],mu[section],d['y'][1:,c],np.sqrt(latent*latent+measurement*measurement),ell,measurement*measurement/(latent*latent+measurement*measurement),nodes=128)['nll'];cursor+=n
+                    sigma=np.hypot(latent,measurement);eta=measurement**2/sigma**2
+                    if condition:
+                        first=d['y'][0,c]+(p[model.nshape+1+len(generated)+2*record_index+c] if sensor else 0.)
+                        value+=filter_ou(d['t'],np.r_[first,mu[section]],d['y'][:,c],sigma,ell,eta,nodes=128)['nll']
+                        a,b=bins(d['y'][:1,c]);value+=float(log_probability((a[0]-first)/sigma,(b[0]-first)/sigma))
+                    else:value+=filter_ou(d['t'][1:],mu[section],d['y'][1:,c],sigma,ell,eta,nodes=128)['nll']
+                    cursor+=n
             return value
         assert abs(nll(point)-model.objective(point))<1e-9
         h=2e-5
@@ -55,7 +68,7 @@ def main():
         assert max(checks)<2e-3,(family,max(checks))
         assert len(model.coordinate_names())==len(point) and len(set(model.coordinate_names()))==len(point)
         gain_index=model.coordinate_names().index('log_K')
-        fixed=Model(generated,band=band,nodes=128,family=family,fixed={'log_K':point[gain_index]},minimum_sensor_loading=minimum)
+        fixed=Model(generated,fixed={'log_K':point[gain_index]},**settings)
         assert fixed.bounds()[gain_index]==(point[gain_index],point[gain_index])
         assert abs(fixed.objective(point)-model.objective(point))<1e-9
         from run_bounded import stationary
@@ -63,11 +76,12 @@ def main():
         assert stationary(fixed,point,injected)['lagrangian_projected_gradient_max_abs']==0.
         if band:
             from run_joint_quantized import center_seed
-            fixed_deviation=Model(generated,band=band,nodes=128,family=family,fixed={'log_Ua_ratio_0':np.log(.9)},minimum_sensor_loading=minimum)
+            fixed_deviation=Model(generated,fixed={'log_Ua_ratio_0':np.log(.9)},**settings)
             seed=center_seed(point,fixed_deviation.bounds(),6 if family=='conductance' else 8,len(records))
             assert abs(fixed_deviation.centered_constraint(seed))<1e-10
             assert seed[fixed_deviation.coordinate_names().index('log_Ua_ratio_0')]==np.log(.9)
-        rows.append({'family':family,'band':band,'minimum_sensor_loading':minimum,'coordinates_checked':len(point),'maximum_scaled_score_error':max(checks),
+        rows.append({'family':family,'band':band,'minimum_sensor_loading':minimum,'condition_initial_code':condition,
+            'initial_sensor_bins':sensor,'coordinates_checked':len(point),'maximum_scaled_score_error':max(checks),
             'normalization_error':max(r['normalization_error'] for r in model.details(point)),
             'smoothing_closure_error':max(r['smoothing_closure_error'] for r in model.details(point)),
             'fixed_gain_score_and_stationarity_gate':'passed'})

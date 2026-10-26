@@ -23,7 +23,7 @@ def main():
     fit=json.loads((args.input/'fit.json').read_text());assert fit['kernel']=='quantized_ou_nugget' and not fit.get('fixed_coordinates')
     if fit.get('dataset') or fit.get('startup_band_C') or fit.get('initial_sensor_bins'):raise ValueError('Declare separate synthetic/startup profile setup')
     lookup={d['name']:d for d in load_records()};records=[lookup[n] for n in fit['record_names']]
-    model=Model(records,fit['band'],fit['phase'],128,fit['family'],minimum_sensor_loading=fit.get('minimum_sensor_loading',.005));names=model.coordinate_names();index=names.index(args.coordinate)
+    model=Model(records,fit['band'],fit['phase'],128,fit['family'],minimum_sensor_loading=fit.get('minimum_sensor_loading',.005),condition_initial_code=fit.get('condition_initial_code',False));names=model.coordinate_names();index=names.index(args.coordinate)
     point=np.array(fit['best']['point']);values=np.array(args.values,dtype=float)
     if args.physical_values:
         if not args.coordinate.startswith('log_'):raise ValueError('Physical-value conversion only for log coordinates')
@@ -40,7 +40,7 @@ def main():
         warm=args.input/'fit.json'
         if successful:warm=Path(min(successful,key=lambda r:abs(r['coordinate_value']-value))['output'])/'fit.json'
         row=run(args.output/('point_'+str(j)),warm,args.noise1,args.noise2,fit['family'],fit['band'],fit['phase'],
-            starts=args.starts,maxiter=args.maxiter,fixed={args.coordinate:float(value)},minimum_sensor_loading=fit.get('minimum_sensor_loading',.005))
+            starts=args.starts,maxiter=args.maxiter,fixed={args.coordinate:float(value)},minimum_sensor_loading=fit.get('minimum_sensor_loading',.005),condition_initial_code=fit.get('condition_initial_code',False))
         row['coordinate_value']=float(value);row['physical_value']=float(np.exp(value)) if args.coordinate.startswith('log_') else float(value)
         if row['success']:
             row['twice_nll_minus_reference']=float(2*(row['nll']-fit['best']['nll']));successful.append(row)

@@ -26,6 +26,7 @@ def main():
     if args.limit is not None and args.purpose!='pilot':raise ValueError('A coverage shard must finish its declared draw indices')
     fit=json.loads((args.input/'fit.json').read_text());assert fit['family']=='conductance' and fit['kernel']=='quantized_ou_nugget'
     assert not fit.get('fixed_coordinates') and not fit.get('dataset') and not fit.get('startup_band_C') and not fit.get('initial_sensor_bins')
+    if fit.get('condition_initial_code'):raise ValueError('Conditional-first-code recovery requires its corresponding conditional latent-state sampler')
     lookup={d['name']:d for d in load_records()};records=[lookup[n] for n in fit['record_names']]
     if len(records)!=len(lookup):raise ValueError('Declare a separate reduced-design recovery study')
     arrays=np.load(args.input/'trajectories.npz');means=[arrays['predicted_'+str(j)] for j in range(len(records))]

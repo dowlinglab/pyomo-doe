@@ -11,7 +11,8 @@ from scipy.integrate import nquad
 from scipy.stats import multivariate_normal
 from physical import load_records
 from joint_quantized import Model
-from quantized import filter_ou,bins
+from quantized import filter_ou,bins,log_probability
+from conditional_initial import filter_record
 from audit_bounded import independent
 from audit_radiative import direct
 from run_bounded import stationary,write
@@ -25,7 +26,7 @@ def audit(args):
     p=np.array(fit['best']['point']);b=fit['band'];phase=fit['phase'];family=fit['family']
     model=Model(records,b,phase,128,family,fit.get('startup_band_C',0.),fixed=fit.get('fixed_coordinates'),
                 initial_sensor_bins=fit.get('initial_sensor_bins',False),initial_noise_buffer=fit.get('initial_noise_buffer_C',0.),
-                minimum_sensor_loading=fit.get('minimum_sensor_loading',.005))
+                minimum_sensor_loading=fit.get('minimum_sensor_loading',.005),condition_initial_code=fit.get('condition_initial_code',False))
     assert model.nmean==fit['nmean'] and len(p)==len(model.bounds())
     assert np.all(p>=np.array(model.bounds())[:,0]-1e-7) and np.all(p<=np.array(model.bounds())[:,1]+1e-7)
     ds=np.array(fit['parameters']['log_deviations']);g=np.exp(ds)
@@ -34,7 +35,7 @@ def audit(args):
     stat128=stationary(model,p,model.gradient(p))
     finer=Model(records,b,phase,256,family,fit.get('startup_band_C',0.),fixed=fit.get('fixed_coordinates'),
                 initial_sensor_bins=fit.get('initial_sensor_bins',False),initial_noise_buffer=fit.get('initial_noise_buffer_C',0.),
-                minimum_sensor_loading=fit.get('minimum_sensor_loading',.005))
+                minimum_sensor_loading=fit.get('minimum_sensor_loading',.005),condition_initial_code=fit.get('condition_initial_code',False))
     nll256=finer.objective(p);stat256=stationary(finer,p,finer.gradient(p))
     gradient_difference=float(np.max(abs(model.gradient(p)-finer.gradient(p))))
     legacy=dict(fit,lag=True,curve=True,ambient='constant')
@@ -54,16 +55,22 @@ def audit(args):
             assert np.max(abs(mean[section]-saved[1:,k]))<1e-8
             noise=fit['noise_parameters'][k];S=noise['latent_SD_C']**2;R=noise['measurement_SD_C']**2;ell=noise['ell_s']
             t=d['t'][1:];y=d['y'][1:,k];m=pred[1:,k];sigma=np.sqrt(S+R);eta=R/(S+R)
-            fine=filter_ou(t,m,y,sigma,ell,eta,phase,nodes=512,tail_sd=12.)
-            wide=filter_ou(t,m,y,sigma,ell,eta,phase,nodes=512,tail_sd=16.)
+            condition=fit.get('condition_initial_code',False)
+            fine=filter_record(d,pred[:,k],k,np.sqrt(S),ell,np.sqrt(R),phase,nodes=512,tail_sd=12.,condition=condition)
+            wide=filter_record(d,pred[:,k],k,np.sqrt(S),ell,np.sqrt(R),phase,nodes=512,tail_sd=16.,condition=condition)
             total512+=fine['nll'];total_wide+=wide['nll']
             support_error=abs(fine['nll']-wide['nll']);norm=float(np.max(abs(fine['posterior_normalization_ratio']-1)))
-            tt=t[:3];C=S*np.exp(-abs(tt[:,None]-tt[None,:])/ell)+R*np.eye(3)
-            density=multivariate_normal(mean=m[:3],cov=C);lo,hi=bins(y[:3],phase)
+            tt=d['t'][:3] if condition else t[:3];mm=pred[:3,k] if condition else m[:3]
+            yy=d['y'][:3,k] if condition else y[:3]
+            C=S*np.exp(-abs(tt[:,None]-tt[None,:])/ell)+R*np.eye(3)
+            density=multivariate_normal(mean=mm,cov=C);lo,hi=bins(yy,phase)
             mass,quadrature_error=nquad(lambda z0,z1,z2:density.pdf([z0,z1,z2]),list(zip(lo,hi)),
                                        opts={'epsabs':1e-11,'epsrel':1e-8})
             reference=-np.log(mass)
-            prefix=filter_ou(tt,m[:3],y[:3],sigma,ell,eta,phase,nodes=512,tail_sd=16.)['nll']
+            prefix=filter_ou(tt,mm,yy,sigma,ell,eta,phase,nodes=512,tail_sd=16.)['nll']
+            if condition:
+                first=float(log_probability((lo[0]-mm[0])/sigma,(hi[0]-mm[0])/sigma))
+                reference+=first;prefix+=first
             rectangle_error=abs(reference-prefix)
             if support_error>1e-4 or norm>1e-6 or rectangle_error>3e-5:
                 failures.append(['bin integration',d['name'],k+1,support_error,norm,rectangle_error])

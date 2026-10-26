@@ -21,6 +21,7 @@ def main():
     parser.add_argument('--simulations',type=int,default=50);parser.add_argument('--nodes',type=int,default=128)
     args=parser.parse_args();begun=time.monotonic();fit=json.loads((args.input/'fit.json').read_text())
     assert fit['kernel']=='quantized_ou_nugget' and not fit.get('dataset')
+    if fit.get('condition_initial_code'):raise ValueError('Use conditional-first-code filtering and simulation before running these diagnostics')
     lookup={d['name']:d for d in load_records()};records=[lookup[n] for n in fit['record_names']]
     arrays=np.load(args.input/'trajectories.npz');means=[arrays['predicted_'+str(j)] for j in range(len(records))]
     for j,d in enumerate(records):
