@@ -1,0 +1,267 @@
+\documentclass[10pt,letterpaper]{article}
+\usepackage[left=0.25in,right=3.25in,top=0.6in,bottom=0.6in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern,amsmath,amssymb,booktabs,tabularx,graphicx,enumitem}
+\usepackage{eso-pic,tikz,placeins}
+\usepackage[protrusion=false]{microtype}
+\usepackage[colorlinks=true,urlcolor=blue,citecolor=blue,linkcolor=blue]{hyperref}
+\hypersetup{pdftitle={TC-Lab remaining-error investigation},pdfauthor={Prepared for Alex Dowling}}
+\setlength{\parindent}{0pt}\setlength{\parskip}{5pt}
+\setlength{\emergencystretch}{2em}\setlist{nosep,leftmargin=*}
+\AddToShipoutPictureBG{%
+ \AtPageLowerLeft{\begin{tikzpicture}[overlay,x=1in,y=1in]
+ \draw[red!25,line width=0.35pt] (5.32,0.6)--(5.32,10.4);
+ \foreach \k in {0,...,34}{\draw[blue!19,line width=0.3pt]
+ (5.4,{0.6+0.28125*\k})--(8.25,{0.6+0.28125*\k});}
+ \end{tikzpicture}}}
+\newcommand{\C}{\,^\circ\mathrm{C}}
+\title{\vspace{-1.5em}TC-Lab: what remains in the error?\\
+ \large Conductance variation, radiation and discrete measurements}
+\author{Prepared for Alex Dowling}\date{October 26, 2026}
+\begin{document}
+\maketitle\vspace{-1em}
+\textbf{Work in progress.} This layout draft contains audited intermediate
+results. Joint discrete-data fits, uncertainty calibration and retrospective
+transfer are running or pending. It is not the completed study report.
+
+\begin{tabularx}{\linewidth}{@{}>{\raggedright\arraybackslash}p{1.02in}>{\raggedright\arraybackslash}X>{\raggedright\arraybackslash}X@{}}
+\toprule
+Question & Evidence so far & Status\\
+\midrule
+Can modest run variation help? & A 10\% conductance band gives T1/T2
+RMSE $0.639/0.115\C$ in the matched Gaussian fit. &
+Audited; transfer and uncertainty pending.\\
+Does radiation explain the rest? & Free radiation gives
+$0.633/0.115\C$; negative log likelihood improves by 1.285. &
+Small conditional change; bin-model profile pending.\\
+Are cold starts plausible? & Hidden heater offsets remain below
+$0.35\C$ with either $\pm2$ or $\pm5\C$ bounds. &
+Working assumption, not verified equilibrium.\\
+Are measurements discrete? & All 21,614 temperatures match a shifted
+$0.3223\C$ code grid. & Hardware evidence; threshold phase remains assumed.\\
+Do lag labels identify physics? & At the loading boundary, a nominal
+forced-response lag swap changes T1 by at most $0.00430\C$. &
+Weak assignment; bound sensitivity pending.\\
+Are residuals adequate for inference? & The bin likelihood separates
+analogue noise from code rounding. & Initial checks complete; calibration and transfer pending.\\
+\bottomrule
+\end{tabularx}
+
+\section{Records and model}
+We accept the same-device ENV2 provenance as the study assumption. The twelve
+distinct records comprise nine sine tests (three repeats at each of 30, 120
+and 300 s) and three step tests. Duplicate aliases do not count as experiments.
+Only within-run time is available; Git history does not establish recovery
+time between runs.
+
+Both temperatures enter a coupled heater/sensor model. With $i=1,2$ and the
+other heater denoted by $k$,
+\begin{align}
+ C_H\dot H_i &= U_{a,j}(A_j-H_i)+U_s(S_i-H_i)
+                 +U_x(H_k-H_i)+\beta z_i,\\
+ C_S\dot S_i &= U_s(H_i-S_i),\\
+ L\dot z_1 &= u+c\,u(1-u/100)-z_1,\qquad z_2=0.
+\end{align}
+The recorded command is held from its timestamp to the next update.
+The empirical curvature is not a measured electrical power law.
+Each run has $A_j=T_{1,j}(0)+a_j$, with $|a_j|\leq2\C$.
+The baseline starts $H_i(0)=S_i(0)=T_{i,j}(0)$ and $z_1(0)=0$.
+
+Absolute power calibration is unavailable. Estimate scale-free quantities
+\[
+ K_0=\beta/U_{a,0},\quad t_A=C_H/U_{a,0},\quad
+ r_S=C_S/U_s,\quad r=U_s/U_{a,0},\quad q=U_x/U_{a,0}.
+\]
+A constant shared heater calibration multiplier is absorbed into gain.
+Temperature-only fitting does not identify absolute conductances or heat
+capacities without an independent scale.
+
+One physical coefficient varies across runs:
+\[
+ U_{a,j}=U_{a,0}e^{\delta_j},\quad \sum_j\delta_j=0,\quad
+ \log(1-b)\leq\delta_j\leq\log(1+b).
+\]
+Thus $K_j=K_0e^{-\delta_j}$, $t_{A,j}=t_Ae^{-\delta_j}$,
+$r_j=re^{-\delta_j}$ and $q_j=qe^{-\delta_j}$, while $r_S$ stays shared.
+The hard band preserves coupling between experiments. It is not a
+population distribution or a fitted random-effects variance.
+
+\section{What the matched fits show}
+The old short-lag/curved-command coupled fit has T1 RMSE $1.022\C$.
+Orthogonal error projections attribute 74.6\% of its T1 squared error to
+run offsets and another 19.3\% to run trends. The additional fundamental
+sine projection contributes only 0.64\%. These are descriptive projections,
+not independent physical causes. The earlier description of a one-degree
+amplitude error confused total RMSE with sine amplitude mismatch.
+
+\begin{tabularx}{\linewidth}{@{}Xrr@{}}
+\toprule
+Gaussian comparison & T1 RMSE, $\C$ & T2 RMSE, $\C$\\
+\midrule
+Shared short lag and curved command & 1.022 & 0.231\\
+Conductance band 5\% & 0.646 & 0.147\\
+Conductance band 10\% & 0.639 & 0.115\\
+Conductance band 20\% & 0.641 & 0.115\\
+10\% band, affine ambient & 0.728 & 0.111\\
+10\% band, hidden heater starts & 0.615 & 0.111\\
+10\% convective band, free radiation & 0.633 & 0.115\\
+\bottomrule
+\end{tabularx}
+
+Widening the band adds little beyond 10\% in this comparison. Two 10\%
+deviations reach their lower bound; protocol-aligned ratios are fitted
+behavior, not measured airflow. Likelihood and unweighted RMSE need
+not rank models alike. These fits reuse all twelve records.
+
+\subsection*{Radiation scale}
+Use Kelvin in $Q_{\rm rad}=\epsilon\sigma A_{\rm rad}(H^4-T_r^4)$.
+For illustrative area $0.0012\,\mathrm{m^2}$, surroundings at $23\C$ and
+surface temperature $70.54\C$, emissivity scenarios 0.05--0.9 give
+0.021--0.383 W. Against a linear radiative loss through ambient, matched
+at $50\C$, the nonlinear remainder is only 0.0021--0.0370 W.
+A locally linear radiative contribution can already reside in fitted $U_a$.
+
+Metal alone does not determine emissivity. Finish, effective area,
+view factors and surface temperature are unknown; a sensor reading is not a
+known heater-surface temperature. Published TC-Lab models include convection,
+radiation and sensor dynamics \cite{park2020}. Their values supply modeling
+context, not calibration for these records.
+
+The free-radiation fit refits convection and gain to avoid double counting.
+Its normalized differential radiation coefficient at $50\C$ is 0.0344
+relative to nominal convection. The small Gaussian improvement is not a
+measured emissivity or a calibrated significance result.
+
+\subsection*{Why assigning the two lags is difficult}
+At zero sensor loading, common/differential forced transfers factor as
+\[
+ G_\pm(s)=
+ \frac{K}{(t_A s+1+\{0,2q\})(1+r_Ss)(1+Ls)}.
+\]
+The output channels are $(G_++G_-)/2$ and $(G_+-G_-)/2$. Exchanging
+$r_S$ and $L$ leaves these forced transfers unchanged in that limit.
+
+At the fitted loading boundary $r=0.005$, exchanging the nominal 14.98 s
+sensor lag and 2.69 s input lag changes the synthetic fast-sine T1/T2
+waveforms by at most $0.00430/0.00185\C$. That calculation uses equal
+$20\C$ starts and zero ambient offset. Unequal starts and ambient forcing
+can break the exchange. Repeated measurements can constrain sub-grid
+effects, so code spacing is not an absolute parameter-resolution limit.
+Profiles and a lower-loading-bound sensitivity must test this ambiguity.
+
+\section{Discrete observations and residual checks}
+The hardware data, rather than just simulator output, are quantized. The
+inferred code values are $\operatorname{round}(0.3223n-50,2)$.
+Their grid does not identify pre-quantization noise or exact thresholds.
+
+There is also a temperature-reference freedom in the linear model. When cold
+initial sensor states and ambient can shift together, changing nearest to floor
+bins translates every interval and predicted temperature by half a code,
+$0.16115\C$, without changing the likelihood. An independent synthetic check
+verifies this identity with slack ambient bounds. Fixed initial states, active
+ambient limits or absolute-temperature radiation can break it. A threshold
+phase comparison must distinguish this reference shift from dynamic information.
+
+For the unreported analogue temperature,
+\[
+ Y_i^*=m_i(\psi)+X_i+v_i,\qquad
+ X_i=e^{-\Delta t_i/\ell}X_{i-1}+w_i,
+\]
+with stationary variance $S$, process variance
+$S(1-e^{-2\Delta t_i/\ell})$ and independent $v_i\sim N(0,R)$.
+The likelihood integrates conditional observation density over each code
+bin. Forward quadrature and backward smoothing account for correlated latent
+errors. Multiplying marginal bin probabilities gives a different likelihood.
+
+Holding the 10\% mean fit fixed, bin-likelihood refitting changes analogue
+measurement SD from about $0.094$ to $0.0255\C$ for T1, and from $0.072$ to
+$0.0325\C$ for T2. T2 correlation length changes from 7.9 to 54.8 s.
+These are conditional noise estimates, not calibration measurements.
+The joint 10\% bin-likelihood fit is now independently audited. Its T1/T2 RMSE
+is $0.605/0.118\C$, with $K_0=0.8732\C/\%$ and $t_A=174.59$ s. Gain is
+within 0.1\% of the matched Gaussian estimate. The fitted noise is
+\begin{center}
+\begin{tabular}{@{}lrr@{}}
+\toprule
+Joint bin fit & T1 & T2\\
+\midrule
+Latent correlated SD, $\C$ & 0.5362 & 0.0681\\
+Correlation length, s & 658.28 & 62.56\\
+Analogue measurement SD, $\C$ & 0.0258 & 0.0325\\
+\bottomrule
+\end{tabular}
+\end{center}
+The remaining 5\% band, boundary profiles and transfer comparison are pending.
+The larger change in noise decomposition does not, by itself, establish the
+resulting parameter uncertainty or predictive calibration.
+
+Fisher's score identity supplies derivatives from smoothed latent moments
+\cite{poyiadjis2011}. Selected points require independent physical propagation,
+Gaussian bin rectangles, grid/support convergence and score stationarity.
+A repaired rare-bin integration failure remains a numerical failure;
+it is not evidence against the shared physical model.
+
+Whitening checks combine independent randomized predictive residuals
+\cite{dunn1996}, serial and cross-channel dependence, input/phase dependence,
+and nonrandomized down/same/up code probabilities. Fifty fixed-model
+simulations are complete with no failed draw. Across twenty independent
+randomizations, median maximum serial correlation over lags 1--60 is
+$0.0248/0.0245$ for T1/T2; maximum cross-channel correlation has median 0.0224.
+These are comparable to the fixed-model references. T1's nonrandomized
+code-transition discrepancy has reference upper-tail rank 0.0588, near the
+upper end. Further nonrandomized joint checks are needed because coarse-bin
+randomization can dilute dependence. The simulations do not refit parameters
+and cannot establish interval coverage or a calibrated IID claim.
+
+\section{Uncertainty, transfer and open questions}
+Profiles will refit ambient, conductance and noise nuisances. Information
+eigendirections will distinguish the centered tangent space from the active
+constraint face. Sensor-loading bounds and lag alternatives make routine
+Wald intervals unsafe without those checks.
+
+The separate fifty-draw recovery study refits simulated quantized records.
+Each draw also fits gain at its generating value to assess coverage of the
+nominal scalar likelihood-ratio cutoff. Failed fits, retries and Monte Carlo
+uncertainty remain in the denominator and report. This conditional exercise
+does not protect against mean/noise misspecification.
+
+Retrospective leave-run/protocol-out fits will predict omitted records without
+fitting their ambient or conductance from later test temperatures. Show nominal
+simulation, hard-nuisance scenarios, noise ranges and parameter sensitivity
+separately. All records informed model selection, so these are internal
+transfer checks. Marginal coverage fractions do not turn correlated readings
+into independent validation replicates.
+
+The remaining questions are whether the discrete-data model removes
+input-linked residual structure, whether the conductance band transfers
+across protocols, how startup/threshold assumptions assign the lag labels,
+and which uncertainty statements survive refitting and simulation.
+A future hood experiment should log ambient temperature, absolute time, prior
+run recovery, airflow settings, firmware and electrical power. A hood can add
+forced or fluctuating convection; it does not automatically supply a constant
+environment. No new hardware or DoE is part of this study.
+
+\section*{Evidence and status}
+This draft uses terminal, independently audited intermediate artifacts in
+the committed remaining-error study. The full decision-gate audit, final
+figures and parameter-inclusive uncertainty/transfer results are pending.
+It will be replaced after those gates are assessed.
+
+\begin{thebibliography}{9}
+\bibitem{park2020}
+Park, Martin, Kelly and Hedengren (2020).
+Benchmark temperature microcontroller for process dynamics and control.
+\emph{Computers \& Chemical Engineering}, article 106736.
+\url{https://doi.org/10.1016/j.compchemeng.2020.106736}.
+\bibitem{poyiadjis2011}
+Poyiadjis, Doucet and Singh (2011).
+Particle approximations of the score and observed information matrix in
+state space models with application to parameter estimation.
+\emph{Biometrika}, 98, 65--80.
+\url{https://www.stats.ox.ac.uk/~doucet/poyiadjis_doucet_singh_particlescoreparameterestimation.pdf}.
+\bibitem{dunn1996}
+Dunn and Smyth (1996). Randomized quantile residuals.
+\emph{Journal of Computational and Graphical Statistics}, 5, 236--244.
+\url{https://gksmyth.github.io/pubs/residual.pdf}.
+\end{thebibliography}
+\end{document}
