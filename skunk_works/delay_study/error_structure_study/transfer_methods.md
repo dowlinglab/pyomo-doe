@@ -7,6 +7,15 @@ All twelve records informed structure selection. This is internal transfer,
 not untouched validation. The full-data fit supplies an optimization warm start;
 only the training records enter each fold's likelihood and nuisance estimates.
 
+The centering reference changes with the retained records. Removing a protocol
+changes the training geometric nominal conductance, so raw K0, tA, Us/Ua0 and
+Ux/Ua0 values are not directly comparable across folds as if their Ua0 were
+fixed. Under a reference shift, all four scale together. K0/tA=beta/CH,
+(Us/Ua0)/tA=Us/CH, (Ux/Ua0)/tA=Ux/CH, rS and L are reference invariant.
+Compare those combinations and actual forecasts when discussing stability.
+The unknown-run hard band is explicitly relative to the regressed training
+reference; it does not infer a population reference or variability law.
+
 For an unknown run, set its conductance ratio and ambient offset to 1 and 0 for
 the nominal forecast. Initialize cold heater/sensor pairs from the first reported
 temperature pair. No later test output estimates conductance, ambient or physical

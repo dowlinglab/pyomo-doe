@@ -133,6 +133,13 @@ def main():
                 run_rows.append(item)
             row=dict(identity,status='audited',fit_directory=str(fitroot),fit_sha256=sha(fitpath),
                 fit_audit_sha256=sha(fit_audit),per_run=run_rows)
+            parameters=fit['parameters'];ta=parameters['tA_nominal_s']
+            row['reference_invariant_parameters']={
+                'beta_over_CH_C_per_percent_per_s':parameters['K_common_nominal']/ta,
+                'Us_over_CH_per_s':parameters['Us_over_Ua_nominal']/ta,
+                'Ux_over_CH_per_s':parameters['Ux_over_Ua_nominal']/ta,
+                'sensor_time_s':parameters['rS_s'],'input_lag_s':parameters['input_lag_s']}
+            row['reference_notice']='Each training subset defines its own centered geometric Ua nominal. Compare invariant rates and predictions rather than raw nominal coordinates alone.'
             rows.append(row);bindings.append(dict(identity,predictions=sources))
         except Exception as exc:
             if not args.allow_partial:raise
