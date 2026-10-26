@@ -198,8 +198,14 @@ Numerical equivalence, independent score checks, exact input/protocol gates and
 continuation control checks passed before the handoff. The scientific protocol,
 quadrature order, draw count, retry allowance and tolerances are unchanged.
 See compiled_score_methods.md. This conditional algorithm check cannot establish
-real-data noise adequacy. The short-lag profile is running as
-profile_b10_short_lag_v2. Its first command used an incorrect coordinate name
+real-data noise adequacy. The nine-point short-lag profile is terminal as
+profile_b10_short_lag_v2, with nine successful points. Its independent point
+audit is running; do not interpret a provisional secondary well as a verified
+confidence component. The declared lag-exchange refinement fixes L at the
+original sensor-time coordinate after the whole coarse collection passes,
+then independently audits that point. If it improves the reference nll,
+refine the unconstrained baseline before reporting deviances or continuing
+profiles. Its first command used an incorrect coordinate name
 and failed before fitting; that invocation is retained. Remaining profiles are
 queued. See sensitivity_methods.md and
 uncertainty_interim.md for the source-bound findings and limits.
@@ -227,22 +233,47 @@ measured summary is still pending.
 transfer_config.json declares sixteen primary folds (twelve runs + four
 protocols) and four shared-model protocol folds. Training/prediction code is
 committed; independent dimensional, no-future-output-leakage, reported-code
-expectation/quantile, mixture and fold-separation checks passed. The four primary
-leave-protocol-out fits are now running in transfer_primary_protocols. The
-twelve primary leave-run-out and four shared-model protocol fits remain queued.
+expectation/quantile, mixture and fold-separation checks passed. All four primary
+leave-protocol-out fits and canonical noise/scenario forecasts passed full
+independent audits. transfer_primary_runs is running the twelve primary
+leave-run-out fits. The four shared-model protocol fits remain queued.
 Parameter-draw propagation must inherit a validated approximation;
 noise-only hard-nuisance ranges are not total predictive intervals. If profiles
 change the candidate set, extend transfer support explicitly rather than using
 a linear predictor for a radiative or conditioned-initial-state fit.
 
-The manifest's transfer_analysis index owns selected fit/prediction paths;
-recorded solver fits still await independent audits. New prediction output binds
+The first complete omitted-protocol group gives pooled reported-mean RMSE
+2.131/0.875 C, with noise-only marginal coverage 32.1/36.7 percent. The hard
+condition-plus-noise envelopes cover 99.57/99.95 percent, but are 9.072/5.173 C
+wide on average. These are scenario envelopes, not calibrated total-95-percent
+intervals. Per-run mean errors account for 85.7/73.2 percent of SSE; removing
+those means leaves RMSE 0.806/0.453 C. That decomposition uses test outcomes
+and is not a blind correction. The accounting fixture and source-bound summary
+transfer_primary_protocols_noise_decomposition passed; figures were inspected.
+
+Training subsets define new geometric nominal conductances. The arithmetic
+reference_transport_check passed, including bit-identical canonical forecasts
+under the optional-ratio refactor. A separately declared primary-protocol
+forecast stress check uses ratios [0.86894,1.13551], derived without test-output
+fitting, and preserves all training fits/canonical forecasts. It does not
+transport the training likelihood or calibrate coverage. Read transfer_methods.md.
+
+The manifest's transfer_analysis index owns selected fit/prediction paths.
+New prediction output binds
 parameter files to draw receipts and stores sparse component witnesses.
 audit_transfer_prediction.py checks complete nominal means/metrics and selected
 mixture witnesses; full measured-fold validation is pending.
 summarize_transfer.py keeps the three declared comparison groups separate and
-checks 64/256-draw changes. Its weighted-SSE, duplicate-record and failed-fold
-accounting fixture passed. Do not treat controller checks as transfer results.
+checks 64/256-draw changes. Its weighted-SSE, duplicate-record, run-offset and
+failed-fold accounting fixtures passed. Do not treat controller checks as
+transfer results. run_transfer_uncertainty_queue.py sequences reference stress,
+information, independent information audit, local draws and 64/256 forecasts
+with their full audits. A failed approximation stops the queue for review.
+stage_execution.py gives every sequential child its actual process, frozen
+source, log and exit. Its success/failure/no-overwrite fixture passed. A waiting
+queue and its one numerical child share one of the four worker slots; reconcile
+the nested process receipts as well as the top-level parent. No queue is yet a
+completed parameter-uncertainty result.
 
 Still required: cross-localization interpretation and disturbance comparisons;
 all pending mean/initial/bin sensitivities and selected-point audits; updated
@@ -285,15 +316,16 @@ quantized baseline's input/phase failures in uncertainty and transfer discussion
 
 ## Reporting and continuation
 
-report/main.tex and main.pdf are a five-page work-in-progress report, not a
-finished study. Current numeric checks bind 91 source files; all five rendered
+report/main.tex and main.pdf are a six-page work-in-progress report, not a
+finished study. Current numeric checks bind 122 source files; all six rendered
 pages and the requested geometry were inspected. Recompile, rerender
 and recheck after each meaningful revision. Geometry is 0.25-inch left and
 3.25-inch right, with 35 college-spaced annotation lines per page. Final evidence,
 figures, uncertainty/transfer and the companion concise Markdown report remain
 pending. Current nonrandomized, local-information and initialization findings
-are included in this PDF and uncertainty_interim.md. Profiles, calibrated
-recovery and retrospective transfer still need to be added. Keep no-ai-slop
+are included in this PDF and uncertainty_interim.md, together with the audited
+canonical omitted-protocol group and offset decomposition. Profiles, calibrated
+recovery and parameter-inclusive/full-fold transfer remain unfinished. Keep no-ai-slop
 and the user's research practices in the writing check.
 
 The hourly tc-lab-overnight-research heartbeat stays active. Read this file, the
