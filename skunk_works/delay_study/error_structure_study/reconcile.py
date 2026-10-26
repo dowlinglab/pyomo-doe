@@ -19,10 +19,14 @@ def main():
     if not -5<=age<=180:raise ValueError('Obtain a fresh direct-tool process snapshot first: age='+str(age))
     manifest=json.loads(args.manifest.read_text());old={r['id']:r for r in manifest['jobs']}
     processes={r['pid']:r['command'] for r in snapshot['processes']};jobs=[];needs=[];live=[];bound_pids=[]
-    for directory in sorted((args.manifest.parent/'results').iterdir()):
-        if not (directory/'process.json').exists():continue
+    results=args.manifest.parent/'results'
+    # Sequential queues save real child receipts below their top-level folder.
+    # A waiting queue and its one numerical child share one worker slot.
+    for receipt in sorted(results.rglob('process.json')):
+        directory=receipt.parent
         process=json.loads((directory/'process.json').read_text());source=json.loads((directory/'source_snapshot.json').read_text())
-        row=dict(old.get(directory.name,{}));row.update({'id':directory.name,'process':process,
+        identity=str(directory.relative_to(results))
+        row=dict(old.get(identity,{}));row.update({'id':identity,'process':process,
             'output':str(directory.relative_to(args.manifest.parents[3])),
             'source_commit':source['commit'],
             'source_receipt_sha256':hashlib.sha256((directory/'source_snapshot.json').read_bytes()).hexdigest()})
@@ -33,13 +37,14 @@ def main():
             # from file metadata or from this controller's observation time.
             row['finished_utc']=exit.get('finished_utc')
         elif processes.get(process['pid'])==' '.join(process['command']):
-            row['status']='running_verified';live.append(directory.name);bound_pids.append(process['pid'])
+            row['status']='running_verified';live.append(identity);bound_pids.append(process['pid'])
             row['last_verified_utc']=snapshot['checked_utc']
         else:
-            row['status']='needs_reconciliation';needs.append(directory.name)
+            row['status']='needs_reconciliation';needs.append(identity)
         if (directory/'starts.json').exists():row['starts_recorded']=len(json.loads((directory/'starts.json').read_text()))
         jobs.append(row)
-    manifest.update({'jobs':jobs,'live_jobs':live,'updated_utc':now.isoformat(),
+    manifest.update({'jobs':jobs,'live_jobs':live,'live_worker_slots':sorted(set(v.split('/')[0] for v in live)),
+        'updated_utc':now.isoformat(),
         'process_check':{'path':str(args.process_snapshot.relative_to(args.manifest.parent)),
             'checked_utc':snapshot['checked_utc'],'sha256':hashlib.sha256(args.process_snapshot.read_bytes()).hexdigest(),
             'method':snapshot['method'],'snapshot_age_s':age},
