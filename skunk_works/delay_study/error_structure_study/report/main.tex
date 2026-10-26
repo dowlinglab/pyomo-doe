@@ -21,8 +21,8 @@
 \begin{document}
 \maketitle\vspace{-1em}
 \textbf{Work in progress.} This layout draft contains audited intermediate
-results. Joint discrete-data fits, local information and the first complete
-omitted-protocol forecast group are audited. Profiles, refitted uncertainty
+results. Joint discrete-data fits, local information and all twenty canonical
+transfer folds are audited. Profiles, refitted uncertainty
 calibration and parameter-inclusive transfer remain underway.
 It is not the completed study report.
 
@@ -32,7 +32,7 @@ Question & Evidence so far & Status\\
 \midrule
 Can modest run variation help? & A 10\% conductance band gives T1/T2
 RMSE $0.605/0.118\C$ in the joint bin-likelihood fit. &
-Audited; transfer and uncertainty pending.\\
+Audited; little nominal protocol-transfer gain.\\
 Does radiation explain the rest? & Free radiation gives
 $0.590/0.119\C$ in the joint fit; bin nll improves by 3.810. &
 Conditional change; boundary profile pending.\\
@@ -46,8 +46,8 @@ forced-response lag swap changes T1 by at most $0.00430\C$. &
 Weak assignment; lowering the loading bound barely changes the mean.\\
 Are residuals adequate for inference? & Deterministic code diagnostics retain
 input, phase and cross-channel structure. & Whitening unfinished; no IID claim.\\
-Does the nominal fit transfer? & Omitting each protocol gives T1/T2
-RMSE $2.131/0.875\C$. & First four folds audited; nuisance ranges are broad.\\
+Does the nominal fit transfer? & Omit one run: $1.750/0.754\C$;
+omit a protocol: $2.131/0.875\C$. & All canonical folds audited; parameter propagation pending.\\
 \bottomrule
 \end{tabularx}
 
@@ -287,44 +287,77 @@ Profiles refit all ambient, conductance and noise nuisances. Sensor-loading
 bounds, initial-state sensitivities and lag alternatives make routine Wald
 intervals unsafe without those checks.
 
+The nine-point lag grid passed independent audits. Twice the nll increase is
+552.445 at $L=7$ s but falls to 6.253 at 15 s, where the fitted sensor time
+is 2.643 s. A further audited fixed point at $L=14.79006$ s fits sensor time
+2.7314 s and gives twice the nll increase 4.78730. Both starts converge, without
+improving the reference. These checks expose a second region; they do not
+locate its free minimum, interpolate endpoints or calibrate an exclusion of
+that lag assignment.
+
 The separate fifty-draw recovery study refits simulated quantized records.
 Each draw also fits gain at its generating value to assess coverage of the
 nominal scalar likelihood-ratio cutoff. Failed fits, retries and Monte Carlo
 uncertainty remain in the denominator and report. This conditional exercise
 does not protect against mean/noise misspecification.
 
-\subsection*{First complete omitted-protocol forecast group}
-Each of four fits retains nine records and predicts the three omitted records
-at one sine period or the step protocol. All four fits and their canonical
-forecasts passed independent audits. No later test temperatures estimate
-ambient, conductance or physical parameters; only the first temperature pair
-initializes the physical states. Each record appears once in this group,
-10,795 scored readings per channel. These are retrospective transfer checks
-because all records informed structure selection.
+\subsection*{All twenty canonical transfer folds}
+Twelve fits omit one run each. Four band-model fits and four shared-conductance
+fits omit one protocol each (30, 120 or 300 s sine, or step). Every selected fit
+and canonical forecast passed independent audits. No later test temperatures
+estimate ambient, conductance or physical parameters; only the first temperature
+pair initializes the physical states. Each record appears once per comparison
+group, 10,795 scored readings per channel. Groups reuse these same observations;
+all records informed structure selection, so transfer is retrospective.
 
 \begin{tabularx}{\linewidth}{@{}Xrr@{}}
 \toprule
-Pooled reported-temperature quantity & T1 & T2\\
+Nominal reported-mean RMSE, $\C$ & T1 & T2\\
 \midrule
-Nominal RMSE, $\C$ & 2.131 & 0.875\\
-After removing each run's mean error, RMSE, $\C$ & 0.806 & 0.453\\
-Fraction of SSE in run mean errors & 85.7\% & 73.2\%\\
-Noise-only marginal coverage & 32.1\% & 36.7\%\\
-Noise-only mean width, $\C$ & 2.010 & 0.303\\
-Hard conditions plus noise coverage & 99.57\% & 99.95\%\\
-Hard conditions plus noise mean width, $\C$ & 9.072 & 5.173\\
+Band: omit one run & 1.750 & 0.754\\
+Band: omit protocol & 2.131 & 0.875\\
+Shared: omit protocol & 2.171 & 0.894\\
+\bottomrule
+\end{tabularx}
+
+Allowing conductance variation improves the all-data fit much more than these
+nominal protocol predictions. Other repeats in training help the leave-run
+case. Run mean errors account for 84.9/72.5\% of its T1/T2 SSE; removing them
+leaves RMSE $0.680/0.395\C$. For omitted protocols, the band model gives
+85.7/73.2\% and $0.806/0.453\C$. Offset removal uses the test outcomes and
+cannot serve as a blind correction.
+
+\begin{tabularx}{\linewidth}{@{}Xrr@{}}
+\toprule
+Range and group & Coverage, \% & Mean width, $\C$\\
+ & T1/T2 & T1/T2\\
+\midrule
+Band/run, noise & 46.01/47.56 & 2.093/0.291\\
+Band/run, conditions + noise & 100.00/99.94 & 9.160/5.170\\
+Band/protocol, noise & 32.07/36.66 & 2.010/0.303\\
+Band/protocol, conditions + noise & 99.57/99.95 & 9.072/5.173\\
+Shared/protocol, noise & 50.25/53.46 & 3.606/0.811\\
+Shared/protocol, conditions + noise & 94.01/99.81 & 6.769/3.969\\
 \bottomrule
 \end{tabularx}
 
 Nominal conditions set the unknown run's conductance ratio to one and ambient
-offset to zero. The outer ranges allow the declared $\pm10\%$ conductance band
-and $\pm2\C$ ambient range. They combine hard scenario limits with marginal
-noise quantiles. Their high coverage accompanies wide ranges and does not
-calibrate a total-95\% interval or identify changing conditions as the cause.
-Removing run mean errors is a descriptive decomposition using test outcomes,
-not a blind prediction correction. Changing error remains in both channels.
-Marginal coverage does not make correlated readings independent replicates.
-Parameter-mixture propagation and the remaining folds are pending.
+offset to zero. Condition ranges allow $\pm2\C$ ambient and, for the band
+model, $\pm10\%$ conductance. They combine hard scenario limits with marginal
+noise quantiles. Higher coverage accompanies broad ranges; neither candidate
+has established calibrated total-95\% predictions or an environmental cause.
+The shared model's larger residual variance gives broader noise-only ranges.
+Correlated readings do not become independent validation replicates.
+
+The first complete parameter propagation check omits the three fast-sine runs.
+Its audited, box-truncated local normal fixes the selected active loading bound
+and conditions on one likelihood basin. Adding 256 draws changes condition-plus-noise
+mean widths from $9.119/5.134\C$ to $9.223/5.206\C$.
+Using 256 instead of the shared-prefix 64 draws moves 2.26/2.69\% of endpoints,
+by at most one reported code (0.33 C). This checks mixture resolution, not
+coverage calibration or released-bound/basin uncertainty. Nineteen full
+parameter pipelines remain unfinished. The local joint-bin log-input-lag SE
+without fast-sine data is 0.1232, versus 0.0324 in the twelve-run fit.
 
 Each retained subset also defines a different geometric nominal conductance.
 Compare invariant combinations $K_0/t_A=\beta/C_H$, $r/t_A=U_s/C_H$ and

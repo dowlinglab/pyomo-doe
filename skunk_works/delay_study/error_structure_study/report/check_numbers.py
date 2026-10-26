@@ -131,17 +131,25 @@ def main():
             value=f['best']['point'][f['coordinate_names'].index(coordinate)]
             assert f'{value:.{places}f}' in text
         if name=='gaussian_both_correlations':assert f"{-a['nll_minus_prior_independent_Gaussian']:.5f}" in text
-    # Independently pool every canonical protocol forecast from its arrays.
-    # Per-run offset removal uses the test outputs and is descriptive only.
-    summaryroot=root/'transfer_primary_protocols_noise_decomposition'
+    # Independently pool all three canonical groups from the forecast arrays.
+    # The groups reuse records; no pooled thirty-six-record inference is made.
+    from continuation import parent_receipt
+    summaryroot=root/'transfer_all_canonical_summary'
     summary=json.loads((summaryroot/'summary.json').read_text());binding(summaryroot/'summary.json')
     index=json.loads((summaryroot/'analysis_index_snapshot.json').read_text());binding(summaryroot/'analysis_index_snapshot.json')
     assert summary['status']=='partial' and json.loads((summaryroot/'exit.json').read_text())['exit_code']==0
-    sse=np.zeros(2);offsets=np.zeros(2);covered=np.zeros((2,2));widths=np.zeros((2,2));nobs=0;seen=[]
+    assert summary['all_declared_folds_accounted'] and not summary['all_required_uncertainty_components_accounted']
+    assert len(index['transfer_analysis'])==20
+    groups={};lookup={d['name']:d for d in records};first=None
     for entry in index['transfer_analysis']:
-        assert entry['candidate']=='primary' and entry['fold_id'].startswith('protocol_')
+        kind='leave_run_out' if entry['fold_id'].startswith('run_') else 'leave_protocol_out'
+        key=(entry['candidate'],kind)
+        if key not in groups:groups[key]={'sse':np.zeros(2),'offsets':np.zeros(2),
+            'covered':np.zeros((2,2)),'widths':np.zeros((2,2)),'nobs':0,'seen':[]}
+        pooled=groups[key]
         fp=Path(entry['fit_directory'])/'fit.json';fa=Path(entry['fit_audit'])
         fcheck=json.loads(fa.read_text());assert fcheck['status']=='passed' and fcheck['fit_sha256']==sha(fp)
+        assert parent_receipt(fa.parent,require_terminal=True)['exit']['exit_code']==0
         binding(fp);binding(fa)
         directory=Path(entry['predictions']['noise']['directory']);ap=Path(entry['predictions']['noise']['audit'])
         a=json.loads(ap.read_text());assert a['status']=='passed' and a['fit_sha256']==sha(fp)
@@ -150,23 +158,75 @@ def main():
         for p in [directory/'transfer_predictions.json',directory/'transfer_predictions.npz',ap,directory/'exit.json',ap.parent/'exit.json']:binding(p)
         metadata=json.loads((directory/'transfer_predictions.json').read_text());arrays=np.load(directory/'transfer_predictions.npz')
         for j,row in enumerate(metadata['per_run']):
-            seen.append(row['name']);y=arrays['observed_'+str(j)][1:];error=y-arrays['reported_mean_'+str(j)]
-            sse+=np.sum(error**2,axis=0);offsets+=len(y)*np.mean(error,axis=0)**2;nobs+=len(y)
+            record=lookup[row['name']];assert row['raw_sha256']==record['sha256']
+            assert np.array_equal(arrays['observed_'+str(j)],record['y'])
+            assert row['name'] not in metadata['train_names']
+            pooled['seen'].append(row['name']);y=arrays['observed_'+str(j)][1:];error=y-arrays['reported_mean_'+str(j)]
+            pooled['sse']+=np.sum(error**2,axis=0);pooled['offsets']+=len(y)*np.mean(error,axis=0)**2;pooled['nobs']+=len(y)
             for k,prefix in enumerate(['noise_only_reported','nuisance_noise_reported']):
                 low=arrays[prefix+'_low_'+str(j)];high=arrays[prefix+'_high_'+str(j)]
-                covered[k]+=np.sum((y>=low)&(y<=high),axis=0);widths[k]+=np.sum(high-low,axis=0)
-    assert len(seen)==len(set(seen))==12 and nobs==10795 and '10,795' in text
-    group=next(r for r in summary['groups'] if r['candidate']=='primary' and r['fold_type']=='leave_protocol_out')
-    measures=[('Nominal RMSE',np.sqrt(sse/nobs),'reported_RMSE_by_channel_C',3),
-        ('Centered RMSE',np.sqrt((sse-offsets)/nobs),'reported_per_run_centered_RMSE_C',3),
-        ('Offset SSE percent',100*offsets/sse,None,1),('Noise coverage percent',100*covered[0]/nobs,None,1),
-        ('Noise width',widths[0]/nobs,'noise_only_mean_width_C',3),
-        ('Conditions coverage percent',100*covered[1]/nobs,None,2),
-        ('Conditions width',widths[1]/nobs,'hard_nuisance_noise_mean_width_C',3)]
-    for label,values,key,places in measures:
-        if key:assert np.max(abs(np.array(group[key])-values))<1e-10
-        suffix='\\%' if 'percent' in label else ''
-        assert f'{values[0]:.{places}f}{suffix} & {values[1]:.{places}f}{suffix}' in text,label
+                pooled['covered'][k]+=np.sum((y>=low)&(y<=high),axis=0);pooled['widths'][k]+=np.sum(high-low,axis=0)
+        if entry['candidate']=='primary' and entry['fold_id']=='protocol_30s':first=entry
+    definitions={('primary','leave_run_out'):('Band: omit one run','Band/run'),
+        ('primary','leave_protocol_out'):('Band: omit protocol','Band/protocol'),
+        ('shared','leave_protocol_out'):('Shared: omit protocol','Shared/protocol')}
+    assert set(groups)==set(definitions) and '10,795' in text
+    for key,(label,short) in definitions.items():
+        pooled=groups[key];nobs=pooled['nobs'];sse=pooled['sse'];offsets=pooled['offsets']
+        assert len(pooled['seen'])==len(set(pooled['seen']))==12 and nobs==10795
+        result=next(r for r in summary['groups'] if (r['candidate'],r['fold_type'])==key)
+        rmse=np.sqrt(sse/nobs);assert np.max(abs(rmse-result['reported_RMSE_by_channel_C']))<1e-10
+        assert f'{label} & {rmse[0]:.3f} & {rmse[1]:.3f}' in text
+        for k,kind in enumerate(['noise','conditions + noise']):
+            cover=100*pooled['covered'][k]/nobs;width=pooled['widths'][k]/nobs
+            prefix=['noise_only','hard_nuisance_noise'][k]
+            assert np.max(abs(cover/100-result[prefix+'_marginal_coverage']))<1e-10
+            assert np.max(abs(width-result[prefix+'_mean_width_C']))<1e-10
+            expected=f'{short}, {kind} & {cover[0]:.2f}/{cover[1]:.2f} & {width[0]:.3f}/{width[1]:.3f}'
+            assert expected in text,expected
+        if key[0]=='primary':
+            centered=np.sqrt((sse-offsets)/nobs);fraction=100*offsets/sse
+            assert f'{fraction[0]:.1f}/{fraction[1]:.1f}\\%' in text
+            assert f'{centered[0]:.3f}/{centered[1]:.3f}\\C' in text
+    # Check the first local-mixture sensitivity directly, retaining its limits.
+    mixtures={};total=0;first_width=np.zeros(2)
+    for variant in ['noise','parameter_64','parameter_256']:
+        entry=first['predictions'][variant];directory=Path(entry['directory']);ap=Path(entry['audit'])
+        a=json.loads(ap.read_text());assert a['status']=='passed'
+        assert a['prediction_sha256']==sha(directory/'transfer_predictions.json') and a['arrays_sha256']==sha(directory/'transfer_predictions.npz')
+        assert json.loads((directory/'exit.json').read_text())['exit_code']==0 and parent_receipt(ap.parent,require_terminal=True)['exit']['exit_code']==0
+        for path in [directory/'transfer_predictions.json',directory/'transfer_predictions.npz',ap]:binding(path)
+        arrays=np.load(directory/'transfer_predictions.npz');mixtures[variant]=arrays
+        width=np.zeros(2);nobs=0
+        for j in range(3):
+            prefix='nuisance_noise_reported' if variant=='noise' else 'parameter_mixture_reported'
+            lo=arrays[prefix+'_low_'+str(j)];hi=arrays[prefix+'_high_'+str(j)]
+            width+=np.sum(hi-lo,axis=0);nobs+=len(lo)
+        if variant in ['noise','parameter_256']:
+            assert f'{width[0]/nobs:.3f}/{width[1]/nobs:.3f}\\C' in text
+    changes=[]
+    for j in range(3):
+        a=mixtures['parameter_64'];b=mixtures['parameter_256']
+        changes.append(np.stack([abs(a['parameter_mixture_reported_'+edge+'_'+str(j)]-b['parameter_mixture_reported_'+edge+'_'+str(j)]) for edge in ['low','high']]))
+    maximum=np.max([d.max(axis=(0,1)) for d in changes],axis=0)
+    fraction=100*np.sum([np.sum(d>1e-9,axis=(0,1)) for d in changes],axis=0)/sum(d.shape[0]*d.shape[1] for d in changes)
+    assert np.max(abs(maximum-.33))<1e-9 and '0.33 C' in text
+    assert f'{fraction[0]:.2f}/{fraction[1]:.2f}\\%' in text
+    ia_path=Path(first['information_audit'])/'audit.json';binding(ia_path);case_info=json.loads(ia_path.read_text())
+    assert case_info['status']=='passed' and case_info['fit_sha256']==sha(Path(first['fit_directory'])/'fit.json')
+    row=next(r for r in case_info['local_comparison'] if r['coordinate']=='log_input_lag')
+    assert f"{row['bin_observed_mean_and_noise_nuisance_SE']:.4f}" in text
+    # The coarse and exchanged-lag values retain their terminal point audits.
+    profile=root/'profile_b10_short_lag_v2';pa=root/'profile_b10_short_lag_audit'
+    content=json.loads((profile/'profile.json').read_text());check=json.loads((pa/'audit.json').read_text())
+    assert check['status']=='passed' and check['source_sha256']==sha(profile/'profile.json') and len(check['rows'])==9
+    for path in [profile/'profile.json',profile/'exit.json',pa/'audit.json',pa/'exit.json']:binding(path)
+    for value in [7.,15.]:
+        row=next(r for r in content['points'] if abs(r['physical_value']-value)<1e-9)
+        assert f"{row['twice_nll_minus_reference']:.3f}" in text
+    exchange,_=audited(root,'profile_b10_exchanged_lag_point')
+    for value,places in [(exchange['parameters']['input_lag_s'],5),(exchange['parameters']['rS_s'],4),
+        (2*(exchange['best']['nll']-joint['best']['nll']),5)]:assert f'{value:.{places}f}' in text
     path=root/'reference_transport_check/check.json';binding(path);assert json.loads(path.read_text())['status']=='passed'
     from transfer import reference_transport_bounds
     low,high=reference_transport_bounds(.1,12,9)
