@@ -278,7 +278,18 @@ stage_execution.py gives every sequential child its actual process, frozen
 source, log and exit. Its success/failure/no-overwrite fixture passed. A waiting
 queue and its one numerical child share one of the four worker slots; reconcile
 the nested process receipts as well as the top-level parent. No queue is yet a
-completed parameter-uncertainty result.
+completed parameter-uncertainty result by itself. The first measured pipeline,
+transfer_uncertainty_protocol30, is now terminal with every stage passed:
+information, independent curvature audit, local draws, reference stress and
+64/256 forecasts with full independent audits. All nine new figures were
+inspected. Its 256-draw mixture changes hard-condition-plus-noise mean widths
+from 9.119/5.134 C to 9.223/5.206 C, with the same 100/99.963 percent observed
+coverage. Coarse/fine mixture endpoints differ by at most one code, 0.33 C,
+at 2.26/2.69 percent of endpoints. The local approximation remains conditional
+on one basin and its active face. transfer_first_protocol_parameter_summary
+keeps this one completed fold separate from the nineteen unfinished pipelines.
+The remaining four profile coordinates are running in profile_remaining_b10,
+which stops if a point improves the reference or fails a numerical audit.
 
 Still required: cross-localization interpretation and disturbance comparisons;
 all pending mean/initial/bin sensitivities and selected-point audits; updated

@@ -246,3 +246,38 @@ not measured airflow or blind forecast inputs. A separately declared forecast
 stress check will propagate the algebraic range for all four primary protocols.
 Training constraints and all canonical forecasts stay unchanged. This check
 cannot be presented as a transported cohort likelihood or corrected coverage.
+
+## First parameter-inclusive protocol check
+
+The omitted-30-s protocol pipeline is terminal. Its information matrix,
+independent information audit, 256 local draws, 64/256-draw forecasts and full
+forecast audits all passed. The selected active face fixes sensor loading at
+its bound; it does not include alternate lag basins or released-bound/profile
+uncertainty. All nine new forecast figures were inspected.
+
+Across these three fast-sine records, the canonical hard-condition-plus-noise
+mean widths are 9.119/5.134 C. Adding the 256-draw local parameter mixture gives
+9.223/5.206 C, with observed marginal coverage unchanged at 100/99.963 percent.
+This is a modest change to an already broad hard-condition envelope, not a
+calibrated total-95-percent prediction or a repair of the nominal mean error.
+The separate centering-reference stress check gives 10.407/5.683 C widths and
+the same coverage. It preserves all training fits.
+
+Using 256 rather than the shared-prefix 64 draws changes at most one reported
+code (0.33 C) at any envelope endpoint; 2.26/2.69 percent of T1/T2 endpoints
+change. Mean widths decrease by about 0.015/0.016 C. This checks finite-mixture
+resolution only, not the validity of the local approximation. The aggregate
+transfer study is still partial: the other nineteen declared fold pipelines
+have not all completed their uncertainty components.
+
+The audited local joint-bin log-input-lag SE is 0.1232 without the fast-sine
+records, versus 0.0324 in the twelve-record fit. These are conditional local
+comparisons. In this omitted-protocol fit, correlated analogue covariance
+increases the input-lag SE relative to the same-marginal IID calculation by
+1.293; in the full-data fit the ratio is 0.645. A single blanket uncertainty
+inflation factor cannot describe both designs.
+
+Evidence: transfer_uncertainty_protocol30 and the manifest-indexed
+transfer_first_protocol_parameter_summary. The four remaining profile
+coordinates are running in profile_remaining_b10; other initial-state,
+recovery and retrospective-transfer gates remain open.
