@@ -43,3 +43,27 @@ perturb every future test output to prove prediction invariance, integrate the
 actual reporting function to check expectations, verify discrete coverage and
 mixture limits, and check every fold's train/test separation. Numerical checks
 do not establish scientific transfer or uncertainty calibration.
+
+Each measured fold needs a terminal selected-fit audit before a scientific
+forecast claim. audit_transfer_prediction.py checks full nominal dimensional
+trajectories, reported-code expectations, every saved RMSE/coverage count,
+quantile CDF brackets, nuisance endpoints and refined conditional bin scores.
+Independent Gaussian prefix rectangles check the observation probability.
+Full measured-fold use of this new auditor is still pending.
+
+Parameter files must bind to the draw receipt and its information audit.
+Prediction output saves component means/noise at nine evenly spaced sample
+indices plus the nearest samples to 60, 180 and 450 s. The auditor checks all
+mixture components' discrete-quantile CDF brackets at those times and selected
+draws' physical containment. It does not independently recompute every component
+trajectory at every time. The final report must retain that limitation.
+
+The execution manifest owns transfer_analysis, the source index for
+summarize_transfer.py. Primary leave-run, primary leave-protocol and shared
+leave-protocol groups remain separate: each contains a record only once when
+complete. Their groups reuse the same observations. The aggregation checks
+weighted SSE/RMSE, counts and interval widths; it never treats group reuse as
+new validation replication. It also reports changes from 64 to 256 local draws,
+using the same declared random prefix, before interpreting mixture coverage.
+Missing or failed folds stay visible. A complete numeric accounting table is
+still not a calibration result or an untouched-validation result.

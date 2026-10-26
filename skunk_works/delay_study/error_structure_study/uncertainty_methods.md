@@ -91,3 +91,32 @@ coverage review. These conditional simulations do not protect against an
 incorrect mean/noise model, unknown threshold phase or a new device population.
 Retrospective transfer and initial-condition/bin-phase sensitivities remain
 separate required checks.
+
+## Refitted summaries and numerical accounting
+
+audit_recovery.py checks immutable terminal shards, seed/data regeneration,
+selected free and constrained fits, and LR arithmetic. Accepted free fits still
+receive a numerical audit if the constrained fit failed. Saved diagnostics must
+match their row metrics and the frozen diagnostic implementation. Reused point
+audits require matching numerical dependencies, raw design, runtime and
+fit/trajectory/data hashes. A partial controller pilot cannot replace the
+fifty-draw audit or change any fitted outcome.
+
+summarize_recovery.py retains failed and missing draws in worst-case bounds,
+reports Monte Carlo uncertainty for complete-draw gain coverage, and compares
+empirical estimator spread with the audited generating-point active-face SEs.
+The final summary requires that information audit. Changes of active face or
+lag basin can invalidate a local-normal interpretation; matching one scalar
+coverage statistic cannot validate every parameter mixture or training design.
+Estimator quantiles are sampling summaries under the working model, not
+hardware confidence intervals.
+
+Refitted deterministic code diagnostics use the same definitions as the
+hardware and fixed-parameter references. Diagnostic failures keep a separate
+denominator. The references account for nuisance refitting within the selected
+family, but not structure selection, threshold uncertainty or a new device.
+The short accounting check uses independent binomial-tail roots to verify the
+beta-quantile Monte Carlo limits, including all-covered and none-covered cases.
+The pinned SciPy emitted an internal beta-quantile overflow warning; every
+reported limit was finite, ordered and agreed with the independent roots to
+about 1e-15. The warning is retained in the check output.
