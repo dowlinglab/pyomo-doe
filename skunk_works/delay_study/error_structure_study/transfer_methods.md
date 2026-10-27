@@ -143,3 +143,39 @@ nineteen remaining parameter pipelines. The final transfer summary still
 requires all declared 64/256-draw components and the primary-protocol reference
 checks; the existing completion-control fixture rejects twenty noise-only folds
 as complete. The already validated full default execution path is unchanged.
+
+## Nonpositive-curvature investigation
+
+The first remaining protocol pipeline (omitting the 120 s sine records) stopped
+before accepting parameter draws. Its independent information auditor initially
+crashed on an empty active-bound set. The corrected audit checks complete
+constraint rank/dimension, equality and active restrictions, and orthogonality.
+Explicit four-coordinate controls cover empty/nonempty active sets and reject
+missing directions or constraints. No bound tolerance was enlarged.
+
+The corrected full audit confirms a separate negative observed-curvature
+direction, eigenvalue -0.00735, dominated by log sensor loading. Producer
+directional checks are stable at two steps; independent dimensional, dense
+analogue information and direct loading-coordinate curvature checks passed.
+The diagonal loading curvature is positive, so the weak negative direction
+includes compensating nuisances. The saved fit's first-order check had passed;
+that did not establish a local minimum or support a Gaussian covariance.
+
+Before any new optimization, transfer_config.json declares four additional
+loading seeds, 0.03, 0.3, 3 and 30, within the original bounds. Each uses the
+usual two lag-branch starts and 300-iteration budget. All mean, ambient,
+conductance and noise nuisances remain free, with the same training subset,
+criterion, feasibility/stationarity rules and tolerances. The original fit is
+also a candidate. Selection uses the lowest successful likelihood objective,
+never positive covariance or test-output performance. Seed files explicitly
+assert no objective value or optimizer success, and preserve every other
+starting coordinate and input. A provenance/mutation/bounds control precedes
+the measured refinement.
+
+refine_transfer_loading.py is gated by the terminal failed curvature audit and
+matching fit/information/matrix hashes. It preserves all attempts and writes a
+single-fold collection for a new independent selected-point audit. New
+information and its independent audit must follow before parameter draws.
+If the selected fit changes, regenerate that fold's canonical forecasts and
+keep the original forecasts for comparison. No eigenvalue clipping, bound
+snapping, covariance substitution or unreported tolerance change is allowed.

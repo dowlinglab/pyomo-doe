@@ -24,6 +24,13 @@
     "formula": "For a hypothetical original centered N=12 cohort with deltas in [log(1-b),log(1+b)], the omitted run's ratio to the retained m-run geometric nominal lies in [(1-b)^(N/m),(1+b)^(N/m)] when both extreme assignments are feasible.",
     "limitations": "Forecast stress check with no fitted test nuisance values. Original training constraints stay unchanged, so this is not a transported cohort likelihood or a corrected coverage calibration. The all-data fit is only an explicitly retrospective reference diagnostic; it does not choose these bounds."
   },
+  "weak_curvature_refinement": {
+    "trigger": "A terminal independent information audit confirms nonpositive observed curvature at an accepted transfer fit; no covariance or draws accepted",
+    "loading_seed_values": [0.03, 0.3, 3.0, 30.0],
+    "starts_per_seed": 2,
+    "maxiter": 300,
+    "protocol": "Additional unconstrained nuisance/mean/noise fits from loading seeds spanning the original bounds, with the usual sensor/input-lag branch exchange. Original fit remains a selection candidate; select lowest successful nll, not positive curvature. Preserve every attempt and independently audit the selected fit, then recompute information. No bound snapping, eigenvalue clipping, tolerance relaxation or test-output fitting."
+  },
   "parameter_mixture_sensitivity": {
     "method": "Independently audited observed-bin Hessian, local normal on the selected active-bound face, truncated by remaining box bounds; profile/model/initial sensitivities reported separately",
     "draws": 256,

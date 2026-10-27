@@ -1146,6 +1146,26 @@
       "finished_utc": "2026-10-26T03:55:45.767534+00:00"
     },
     {
+      "id": "information_basis_check",
+      "process": {
+        "pid": 32519,
+        "parent_pid": 32222,
+        "command": [
+          "/Users/adowling/opt/anaconda3/bin/python",
+          "/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-error-bcbdf77e-jia6s5oo/skunk_works/delay_study/error_structure_study/information_basis_check.py",
+          "--output",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/information_basis_check"
+        ],
+        "started_utc": "2026-10-27T00:00:19.795736+00:00"
+      },
+      "output": "skunk_works/delay_study/error_structure_study/results/information_basis_check",
+      "source_commit": "bcbdf77e308d87843b010435a5182921270893a1",
+      "source_receipt_sha256": "ef69c1e686833eadc9841c2ede5a9b836a2b295ded6a2b4186b32d1c1f3e682e",
+      "status": "terminal",
+      "exit_code": 0,
+      "finished_utc": "2026-10-27T00:00:20.986435+00:00"
+    },
+    {
       "id": "initial_remaining_b10",
       "process": {
         "pid": 78534,
@@ -1175,7 +1195,7 @@
       "source_commit": "e8951c5ae3c6ca4b7dc4252008a3ced464b455b2",
       "source_receipt_sha256": "d7d85c0ef40d029af35f63deb48e9f3e7eb8a8e93a9eb6890147ca3b34a7f028",
       "status": "running_verified",
-      "last_verified_utc": "2026-10-27 00:00:11 UTC"
+      "last_verified_utc": "2026-10-27 00:08:31 UTC"
     },
     {
       "id": "initial_sensor_check",
@@ -2889,7 +2909,7 @@
       "source_commit": "cc9dad7639d2662b88bacc42c864fde2980278c2",
       "source_receipt_sha256": "010097bd36fca5d18ee9b8a323a2eb8b366319dde180d695d6d0d55070e58974",
       "status": "running_verified",
-      "last_verified_utc": "2026-10-27 00:00:11 UTC"
+      "last_verified_utc": "2026-10-27 00:08:31 UTC"
     },
     {
       "id": "quantization_check",
@@ -3421,7 +3441,7 @@
       "source_commit": "6c79063aa4ad50e597246d2fe1877878194dd9a1",
       "source_receipt_sha256": "f86a7ba8e382853bfb1ca7ed9e1d2f8f6b0654a57aa5ee7beb5f62767c15825f",
       "status": "running_verified",
-      "last_verified_utc": "2026-10-27 00:00:11 UTC"
+      "last_verified_utc": "2026-10-27 00:08:31 UTC"
     },
     {
       "id": "recovery_odd25_audit",
@@ -4925,6 +4945,30 @@
       "finished_utc": "2026-10-26T20:24:05.619428+00:00"
     },
     {
+      "id": "transfer_protocol120_information_audit_v2",
+      "process": {
+        "pid": 33045,
+        "parent_pid": 32738,
+        "command": [
+          "/Users/adowling/opt/anaconda3/bin/python",
+          "/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-error-3147bbc0-rg6hn0rs/skunk_works/delay_study/error_structure_study/audit_information.py",
+          "--output",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_protocol120_information_audit_v2",
+          "--input",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_uncertainty_protocols_remaining/protocol_120s/information",
+          "--fit",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_primary_protocols/protocol_120s"
+        ],
+        "started_utc": "2026-10-27T00:02:03.841300+00:00"
+      },
+      "output": "skunk_works/delay_study/error_structure_study/results/transfer_protocol120_information_audit_v2",
+      "source_commit": "3147bbc029c56ddd47aa2ac01eb95a2106ee4b16",
+      "source_receipt_sha256": "9625922663d58512185d374c099fb45679d62ffd8988c185ec79143031c991a2",
+      "status": "terminal",
+      "exit_code": 1,
+      "finished_utc": "2026-10-27T00:03:21.966580+00:00"
+    },
+    {
       "id": "transfer_protocol_candidates_canonical_summary",
       "process": {
         "pid": 67308,
@@ -5761,7 +5805,7 @@
     "recovery_even25_audit"
   ],
   "next_action": "The remaining protocol full pipeline stopped at protocol_120s: an empty-active-set auditor reduction bug, with actual failed exits retained. Commit corrected full-rank basis checks and its explicit control before measurement, then independently audit the existing saved information in a new directory. The stored weak loading curvature is negative and no covariance/draw is accepted; investigate/refine this direction if confirmed, without snapping bounds or changing tolerances. Even25 recovery, initial sensitivities and radiation profiles remain live. All nineteen outstanding transfer parameter pipelines and final fifty-draw aggregation remain required.",
-  "updated_utc": "2026-10-27T00:00:11.809861+00:00",
+  "updated_utc": "2026-10-27T00:08:31.595139+00:00",
   "last_goal_turn_classification": "progress: caught and preserved the protocol120 auditor crash, traced it to the empty active set, and identified a distinct nonpositive observed-curvature diagnostic requiring explicit validation and fit investigation. No passing covariance or narrowed uncertainty was substituted.",
   "controller_sessions": {
     "joint_conductance_b00": 55866,
@@ -5864,10 +5908,10 @@
   ],
   "process_check": {
     "path": "process_check.json",
-    "checked_utc": "2026-10-27 00:00:11 UTC",
-    "sha256": "30a75c7a7bff21b50760d2e2504c781628457f546bd14ecfb962c4f5a35a1fe5",
+    "checked_utc": "2026-10-27 00:08:31 UTC",
+    "sha256": "d1d63e9da7e52d6de132aeab960817acfd8513259ab3bb7d8af348b03ba2db18",
     "method": "Direct approved pgrep -fl tclab-error tool",
-    "snapshot_age_s": 0.809861
+    "snapshot_age_s": 0.595139
   },
   "reconciliation_warnings": {
     "missing_exit_or_matching_process": [],
