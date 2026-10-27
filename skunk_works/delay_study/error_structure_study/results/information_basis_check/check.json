@@ -1,0 +1,44 @@
+{
+  "status": "passed",
+  "valid_cases": {
+    "no_active_bounds": {
+      "orthogonality_error": 2.220446049250313e-16,
+      "centering_error": 0.0,
+      "active_bound_restriction_error": 0.0,
+      "constraint_rank": 1,
+      "expected_dimension": 3,
+      "active_bound_count": 0
+    },
+    "one_active_bound": {
+      "orthogonality_error": 2.220446049250313e-16,
+      "centering_error": 0.0,
+      "active_bound_restriction_error": 0.0,
+      "constraint_rank": 2,
+      "expected_dimension": 2,
+      "active_bound_count": 1
+    },
+    "centered_tangent_ignores_bound_rows": {
+      "orthogonality_error": 2.220446049250313e-16,
+      "centering_error": 0.0,
+      "active_bound_restriction_error": 0.0,
+      "constraint_rank": 1,
+      "expected_dimension": 3,
+      "active_bound_count": 0
+    },
+    "no_constraints": {
+      "orthogonality_error": 0.0,
+      "centering_error": 0.0,
+      "active_bound_restriction_error": 0.0,
+      "constraint_rank": 0,
+      "expected_dimension": 4,
+      "active_bound_count": 0
+    }
+  },
+  "invalid_cases_rejected": [
+    "missing_feasible_direction",
+    "missing_active_constraint",
+    "wrong_centered_subspace",
+    "nonorthonormal_basis"
+  ],
+  "scope": "Explicit four-coordinate algebra checks the empty and nonempty active-set branches, rank/dimension, equality restrictions and orthogonality. Not a measured-fit curvature or covariance result."
+}
