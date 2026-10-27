@@ -2955,7 +2955,7 @@
       "source_commit": "cc9dad7639d2662b88bacc42c864fde2980278c2",
       "source_receipt_sha256": "010097bd36fca5d18ee9b8a323a2eb8b366319dde180d695d6d0d55070e58974",
       "status": "running_verified",
-      "last_verified_utc": "2026-10-27 01:26:58 UTC"
+      "last_verified_utc": "2026-10-27 01:33:56 UTC"
     },
     {
       "id": "quantization_check",
@@ -3629,6 +3629,34 @@
       "last_verified_utc": "2026-10-26 22:27:22 UTC",
       "exit_code": 0,
       "finished_utc": "2026-10-26T23:40:17.757313+00:00"
+    },
+    {
+      "id": "recovery_report_figure",
+      "process": {
+        "pid": 46165,
+        "parent_pid": 45850,
+        "command": [
+          "/Users/adowling/opt/anaconda3/bin/python",
+          "/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-error-bfa8176f-q5elh8zr/skunk_works/delay_study/error_structure_study/report_recovery_figure.py",
+          "--output",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/recovery_report_figure",
+          "--summary",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/recovery_b10_full50_summary",
+          "--summary-audit",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/recovery_b10_full50_summary_audit",
+          "--recovery-audit",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/recovery_b10_full50_audit",
+          "--fit",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/joint_conductance_b10_export_v2"
+        ],
+        "started_utc": "2026-10-27T01:30:50.375023+00:00"
+      },
+      "output": "skunk_works/delay_study/error_structure_study/results/recovery_report_figure",
+      "source_commit": "bfa8176f7875cb3ddafdf3d79a5bd630163af5e6",
+      "source_receipt_sha256": "a7b869c774c31ec850e56ee09405f8abee05cd25bd50da80f8d2967ab95a0390",
+      "status": "terminal",
+      "exit_code": 0,
+      "finished_utc": "2026-10-27T01:30:52.667138+00:00"
     },
     {
       "id": "recovery_summary_controller_check",
@@ -5138,6 +5166,29 @@
       "finished_utc": "2026-10-27T01:22:58.164624+00:00"
     },
     {
+      "id": "transfer_protocol120_loading_refinement_audit",
+      "process": {
+        "pid": 46537,
+        "parent_pid": 46215,
+        "command": [
+          "/Users/adowling/opt/anaconda3/bin/python",
+          "/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-error-bfa8176f-ou3lyrud/skunk_works/delay_study/error_structure_study/audit_collection.py",
+          "--output",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_protocol120_loading_refinement_audit",
+          "--input",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_protocol120_loading_refinement",
+          "--kind",
+          "transfer"
+        ],
+        "started_utc": "2026-10-27T01:31:55.254629+00:00"
+      },
+      "output": "skunk_works/delay_study/error_structure_study/results/transfer_protocol120_loading_refinement_audit",
+      "source_commit": "bfa8176f7875cb3ddafdf3d79a5bd630163af5e6",
+      "source_receipt_sha256": "6f376d467c114bf5cf795ac5bfb14b5dad131d43bafbccb281e9a59c0d18e0b0",
+      "status": "running_verified",
+      "last_verified_utc": "2026-10-27 01:33:56 UTC"
+    },
+    {
       "id": "transfer_protocol_candidates_canonical_summary",
       "process": {
         "pid": 67308,
@@ -5740,7 +5791,7 @@
       "source_commit": "af29c4720fe3e8b26311b15591395a70dd0724f7",
       "source_receipt_sha256": "82431d999a38bb69a40b433f6db4cf42a48ba83c80d4aa85c69c6dbbf98b165d",
       "status": "running_verified",
-      "last_verified_utc": "2026-10-27 01:26:58 UTC"
+      "last_verified_utc": "2026-10-27 01:33:56 UTC"
     },
     {
       "id": "transfer_uncertainty_protocol300_step/protocol_300s/draws",
@@ -6078,7 +6129,7 @@
       "source_commit": "af29c4720fe3e8b26311b15591395a70dd0724f7",
       "source_receipt_sha256": "38e26a05f4ec3b98093bd753278207ca6379cd70a2779f0224839dabeaeb4f07",
       "status": "running_verified",
-      "last_verified_utc": "2026-10-27 01:26:58 UTC"
+      "last_verified_utc": "2026-10-27 01:33:56 UTC"
     },
     {
       "id": "transfer_uncertainty_protocol300_step/protocol_step/parameter_64",
@@ -6439,11 +6490,12 @@
   ],
   "live_jobs": [
     "profile_remaining_b10",
+    "transfer_protocol120_loading_refinement_audit",
     "transfer_uncertainty_protocol300_step",
     "transfer_uncertainty_protocol300_step/protocol_step/parameter_256"
   ],
-  "next_action": "Initial/bin and protocol120 loading-refinement parents are both terminal. All six initial cases passed independent point audits; hidden starts change lag labels, triggering a representative startup nuisance profile. Loading refinement selected r=0.341 with nll improvement0.2579; three added starts agree, original fit/forecasts preserved. Audit this new selected single-fold collection, then recompute information before uncertainty propagation. Render/inspect the committed five-inch recovery figure, then fill available slots with remaining full transfer pipelines. Radiation profiles and protocol300/step uncertainty continue. Independently summarize initial/bin cases in reported-code space; no scope reduction or email.",
-  "updated_utc": "2026-10-27T01:26:58.931904+00:00",
+  "next_action": "The five-inch recovery figure is rendered; inspect/finalize its visual receipt before report inclusion. The new protocol120 loading-selected fit is under independent collection audit (78716). Launch the four shared-protocol full uncertainty pipelines in the available slot with canonical forecast reuse; retain the corrected active-set and positive-curvature gates. Protocol300/step parameter queue and radiation profiles continue. Initial cases are complete; implement a declared consequential-startup nuisance profile and fair reported-code sensitivity summary, then complete the twelve primary-run pipelines and final reports/audits/push.",
+  "updated_utc": "2026-10-27T01:33:56.802365+00:00",
   "last_goal_turn_classification": "progress: completed and independently audited all fifty recovery outcomes, binomial Monte Carlo limits, moments/quantiles, label/bound counts and all fourteen refitted diagnostics; inspected the four-panel figure and reported material label ambiguity and remaining residual structure.",
   "controller_sessions": {
     "joint_conductance_b00": 55866,
@@ -6542,7 +6594,9 @@
     "recovery_b10_full50_audit": 10526,
     "recovery_b10_full50_summary": 54070,
     "recovery_b10_full50_summary_audit": 88986,
-    "transfer_uncertainty_protocol300_step": 57430
+    "transfer_uncertainty_protocol300_step": 57430,
+    "recovery_report_figure": 7741,
+    "transfer_protocol120_loading_refinement_audit": 78716
   },
   "queued_jobs": [
     "remaining_primary_protocol_full_parameter_pipelines_after_slots_free",
@@ -6555,10 +6609,10 @@
   ],
   "process_check": {
     "path": "process_check.json",
-    "checked_utc": "2026-10-27 01:26:58 UTC",
-    "sha256": "015349bd0bfafc7a6b18de0d7feb9f204c759e711e6a3d23ec0cef7907848b4f",
+    "checked_utc": "2026-10-27 01:33:56 UTC",
+    "sha256": "b591b6e1763f22b014742cad9097cfe87248297adc422d0fa36a3a51d05994fd",
     "method": "Direct approved pgrep -fl tclab-error tool",
-    "snapshot_age_s": 0.931904
+    "snapshot_age_s": 0.802365
   },
   "reconciliation_warnings": {
     "missing_exit_or_matching_process": [],
@@ -6866,6 +6920,7 @@
   ],
   "live_worker_slots": [
     "profile_remaining_b10",
+    "transfer_protocol120_loading_refinement_audit",
     "transfer_uncertainty_protocol300_step"
   ]
 }
