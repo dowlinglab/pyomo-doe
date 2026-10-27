@@ -1,21 +1,23 @@
 # TC-Lab remaining-error investigation
 
-Working draft for Alex Dowling, October 26, 2026. The goal remains active.
-The fifty-draw refitted recovery study and initial/bin comparisons are audited.
-Remaining profiles and sixteen parameter-inclusive transfer components are
-unfinished; two transfer information audits stopped before covariance acceptance. The
-[completion register](completion_audit.md) lists the remaining gates. This
-Markdown companion will be checked with the final tablet PDF after those gates.
+Prepared for Alex Dowling, October 27, 2026.
 
-| Question | Finding so far | Status |
+A centered 10% conductance band improves the joint fit substantially. It gives
+little improvement in nominal predictions for omitted protocols. Quantization-aware
+refitting retains input-linked and cross-channel dependence, and a checked
+local Gaussian approximation fails away from its reference. The analyses
+support conditional comparisons; calibrated independent innovations remain
+unresolved. The [tablet PDF](report/main.pdf) contains the equations and figures.
+
+| Question | Finding | Status |
 | --- | --- | --- |
 | Does a shared model with modest run variation help? | A shared nominal conductance with a 10% centered run band reduces joint-bin T1/T2 RMSE from 1.010/0.239 to 0.605/0.118 C. | Selected fits audited; nominal transfer improves much less. |
-| Does radiation explain the rest? | The joint radiative fit gives 0.590/0.119 C and improves bin negative log likelihood by 3.810. | Conditional improvement; radiation profile pending. |
-| Were cold starts a bad assumption? | Quantized hidden-heater offsets remain below 0.515 C with either +/-2 or +/-5 C bounds, but select the opposite lag labels. | Fits audited; consequential startup profile pending. |
+| Does radiation explain the rest? | The joint radiative fit gives 0.590/0.119 C and improves bin negative log likelihood by 3.810. | Profile audited; no calibrated radiation significance. |
+| Were cold starts a bad assumption? | Quantized hidden-heater offsets remain below 0.515 C with either +/-2 or +/-5 C bounds, but select the opposite lag labels. | Startup profile checked; equilibrium remains unverified. |
 | Are the hardware readings quantized? | All 21,614 temperatures lie on round(0.3223*n - 50, 2). | Hardware-data evidence; exact thresholds and analogue noise remain assumptions. |
 | Can we assign the short and long lags physically? | Sensor/input factors exchange in the zero-loading limit; the fitted small-loading model retains a second likelihood region. | Lag labels weakly assigned; no calibrated exclusion of the second region. |
 | Are the innovations adequate for inference? | Deterministic code diagnostics retain input, phase and cross-channel structure. | IID adequacy has not been established. |
-| Does the nominal model transfer? | Omit one run: 1.750/0.754 C; omit a protocol: 2.131/0.875 C. | All twenty canonical folds audited; parameter propagation unfinished. |
+| Does the nominal model transfer? | Omit one run: 1.750/0.754 C; omit a protocol: 2.137/0.878 C. | All twenty full numerical pipelines audited; local-normal uncertainty remains exploratory. |
 
 ## Model and comparisons
 
@@ -140,50 +142,112 @@ Evidence and limits: [interim uncertainty analysis](uncertainty_interim.md),
 [lag argument](lag_identifiability.md), [sequential method](sequential_methods.md),
 [uncertainty protocol](uncertainty_methods.md).
 
+## Nuisance profiles and startup
+
+All 28 loading, step-run conductance, disturbance-length and radiation points
+have independent numerical audits. Raising sensor loading from 0.005 to 0.1
+or 0.3 costs twice nll 0.577 or 2.316. Raising step run 1's conductance ratio
+from 0.9 to 0.925 costs 17.215. That bound constrains a consequential fitted
+effect, without establishing a population distribution. The radiation optimum
+is 0.11530; zero costs twice nll 7.619 after nuisance refitting. No calibrated
+boundary test or emissivity estimate follows.
+
+The startup profile fixes H1's offset in the first 300 s sine run, with all
+other 23 hidden starts and permitted dynamics/noise coordinates refitted.
+Five of six points are accepted and independently audited. Fixing this offset
+to zero costs twice nll 6.447 and retains sensor/input times near
+2.678/14.881 s. Both declared starts at -2 C exhausted their iteration budgets;
+no profile value is assigned there. No accepted point beats the startup
+reference. This adaptively selected coordinate and coarse grid do not supply
+confidence endpoints or test an all-cold-start model.
+
+Evidence: [28 nuisance profiles](results/remaining_profiles_figure_v3/figure_values.json),
+[startup profile](results/startup_profile_summary/summary.json),
+[profile interpretation](nuisance_profile_findings.md).
+
 ## Retrospective transfer
 
 | Comparison group | T1 nominal RMSE, C | T2 nominal RMSE, C |
 | --- | ---: | ---: |
 | 10% band, omit one run | 1.750 | 0.754 |
-| 10% band, omit a protocol | 2.131 | 0.875 |
-| Shared conductance, omit a protocol | 2.171 | 0.894 |
+| 10% band, omit a protocol | 2.137 | 0.878 |
+| Shared conductance, omit a protocol | 2.178 | 0.896 |
+
+| Range and group | Coverage, T1/T2 | Mean width, T1/T2, C |
+| --- | ---: | ---: |
+| 10% band, omit one run, noise | 46.01/47.56% | 2.093/0.291 |
+| 10% band, omit one run, conditions + noise | 100.00/99.94% | 9.160/5.170 |
+| 10% band, omit one run, parameters | 100.00/99.94% | 11.120/6.048 |
+| 10% band, omit a protocol, noise | 31.84/36.48% | 2.006/0.302 |
+| 10% band, omit a protocol, conditions + noise | 99.57/99.95% | 9.068/5.174 |
+| 10% band, omit a protocol, parameters | 99.64/99.95% | 9.274/5.346 |
+| 10% band, omit a protocol, reference stress | 100.00/99.95% | 10.380/5.737 |
+| Shared conductance, omit a protocol, noise | 49.87/53.11% | 3.610/0.812 |
+| Shared conductance, omit a protocol, conditions + noise | 94.01/99.81% | 6.771/3.968 |
+| Shared conductance, omit a protocol, parameters | 94.65/100.00% | 7.115/4.286 |
+
+| 64/256 comparison | Maximum endpoint change, T1/T2, C | Endpoints changed, T1/T2 |
+| --- | ---: | ---: |
+| 10% band, omit one run | 1.61/0.65 | 19.11/11.08% |
+| 10% band, omit a protocol | 0.65/0.33 | 8.71/5.39% |
+| Shared conductance, omit a protocol | 1.62/0.65 | 16.54/13.74% |
 
 Each group scores the same twelve records once: 10,795 readings per channel.
-Groups reuse observations; all records informed model selection. No later
-test temperatures fit ambient, conductance or physical parameters. The first
-temperature pair initializes the physical states.
+All records informed structure selection and initial guesses; comparisons are
+retrospective. No later test temperatures fit ambient, conductance or physical
+parameters. The first reported pair initializes physical states.
 
-The large all-data fitting improvement produces little nominal omitted-protocol
-gain. For the band model, run mean errors explain 85.7/73.2% of omitted-protocol
-SSE. Removing those means leaves RMSE 0.806/0.453 C, but uses test outcomes
-and cannot serve as a blind correction.
+For the band model, run means explain 85.7/73.3% of omitted-protocol SSE.
+Removing them leaves RMSE 0.809/0.454 C, using test outcomes rather than a blind
+correction. Nominal transfer improves little relative to shared conductance.
+Noise-only ranges cover 31.84/36.48% of omitted-protocol observations.
+Hard conditions (+/-2 C ambient and +/-10% conductance) raise coverage to
+99.57/99.95%, with mean widths 9.068/5.174 C. These hard scenario envelopes
+and marginal noise quantiles do not define calibrated total-95% predictions.
 
-Band-model omitted-protocol noise-only marginal ranges cover 32.07/36.66% of
-observations. Allowing +/-2 C ambient and +/-10% conductance raises coverage
-to 99.57/99.95%, with mean widths 9.072/5.173 C. These are hard scenario
-envelopes combined with noise quantiles. They do not establish calibrated
-total-95% predictions or a distribution over run conditions.
+The parameters rows mix 256 box-truncated local normal draws of physical and
+noise nuisance coordinates, fixing active bounds and one likelihood basin.
+Their mean widths for omitted protocols become 9.274/5.346 C. The first
+fast-sine-omission prototype changed 9.119/5.134 to 9.223/5.206 C; the complete
+64/256 table shows larger endpoint changes in other folds. Numerical audits
+verify the calculations, rather than the sampling law.
 
-The first complete local-parameter propagation, omitting the three fast sine
-runs, changes mean scenario-plus-noise widths from 9.119/5.134 to
-9.223/5.206 C. Its local normal fixes the active loading bound and one basin.
-The 64/256 shared-prefix comparison changes some endpoints by one code.
-Four full components are audited; sixteen remain, including two failed
-information gates under investigation. Changing the training set also changes the nominal
-conductance reference; compare invariant combinations such as gain/thermal
-time before interpreting raw gain shifts physically.
+A declared likelihood-shape check examined 16 saved draws for each of three
+training fits. For the run-omission fit with largest conditional log-thermal-time
+SE, a representative draw has actual twice nll increase **201.731**, versus
+local Taylor prediction **34.276**. Independent propagation and up to 1024-node
+integration confirm the **167.454** discrepancy. The most extreme saved draw
+still fails the declared integration gate; its precise deviance is withheld.
+No draws were clipped or reweighted. A positive Hessian and more mixture draws
+cannot establish calibration when the local shape approximation fails. The
+parameter-inclusive ranges are exploratory sensitivities.
 
-Evidence: [all twenty canonical folds](results/transfer_all_canonical_summary/summary.json),
-[first parameter propagation](results/transfer_first_protocol_parameter_summary/summary.json),
-[transfer definitions and audit scope](transfer_methods.md).
+Changing the training set also changes its geometric nominal conductance.
+Compare gain/thermal-time and conductance-ratio/thermal-time invariants before
+interpreting raw gain shifts physically. The four primary-protocol stress
+checks allow ratios [0.86894,1.13551] to the nine-run training reference,
+yielding widths 10.380/5.737 C. Training constraints remain unchanged; this is
+not a transported-cohort likelihood or a corrected coverage calibration.
+
+Evidence: [complete twenty-fold summary and bindings](results/transfer_final_summary/summary.json),
+[local-shape check](results/local_taylor_quality/summary.json),
+[independent quadrature followup](results/local_taylor_quadrature_followup/summary.json),
+[transfer methods and audit scope](transfer_methods.md).
 
 ## Questions for scientific review
 
-Refitting preserves the residual inadequacy finding. The remaining analyses
-must establish how consequential startup assumptions and incomplete transfer
-uncertainty affect the conclusions. The
-existing data have not identified an environmental cause, emissivity, an
-electrical power law or a unique physical assignment of both lags.
+One bounded conductance effect captures much of the between-run mismatch,
+but transfers weakly across protocols. Radiation offers modest conditional
+improvement. Small hidden starts change lag labels. Refitted residual checks
+and a failed local-normal shape check limit inference despite precise local
+standard errors. The existing data have not identified an environmental cause,
+emissivity, an electrical power law or a unique physical assignment of both lags.
+
+For a next analysis, compare a quantized multichannel disturbance model and
+less symmetric physical balances using the same residual checks. Neither a
+higher likelihood nor better one-step filtering alone establishes adequate
+whitening. See the [completion evidence](completion_audit.md) for the scope
+of each numerical and scientific check.
 
 A later fume-hood experiment should record ambient temperature, absolute time,
 preceding run/end and recovery, airflow and sash settings, firmware/device

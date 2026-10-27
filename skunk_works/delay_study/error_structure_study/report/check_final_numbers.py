@@ -366,6 +366,9 @@ def main():
     from check_recovery_initial import check as recovery_initial_check
     recovery_initial_check(STUDY,text,markdown,binding)
     binding(HERE/'check_recovery_initial.py')
+    from check_remaining_claims import check as remaining_check
+    remaining=remaining_check(STUDY,text,markdown,binding)
+    binding(HERE/'check_remaining_claims.py')
     args.output.write_text(json.dumps({'status':'passed','source_sha256':sha(HERE/'main.tex'),
         'markdown_source_sha256':sha(STUDY/'report.md'),
         'checker_source_sha256':sha(Path(__file__)),
@@ -374,7 +377,8 @@ def main():
         'historical_T1_only_benchmark':{'RMSE_C':benchmark_rmse,'nobs':benchmark_nobs,
             'notice':'Different output set and affine ambient; no matched likelihood or AIC comparison.'},
         'source_bindings_sha256':bindings,
-        'scope':'Intermediate numeric values, raw observation/fit/audit bindings, direct RMSE arithmetic and displayed rounding. Does not certify pending scientific gates, complete-goal status, writing interpretation or PDF layout.'},indent=2)+'\n')
+        'remaining_claims':remaining,
+        'scope':'Completed report numeric values, raw observations, fit/audit and complete20-fold parameter chains; independent RMSE/coverage/width/profile/convergence arithmetic and displayed rounding. Numerical selected-point audits are prerequisites. This does not establish scientific adequacy, sampling calibration, complete-goal status, writing interpretation or PDF layout.'},indent=2)+'\n')
     print(json.dumps({'status':'passed','table_rows':len(table),'bound_files':len(bindings),'raw_temperature_count':count}))
 
 

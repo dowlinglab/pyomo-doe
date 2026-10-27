@@ -17,37 +17,37 @@
 \newcommand{\C}{\,^\circ\mathrm{C}}
 \title{\vspace{-1.5em}TC-Lab: what remains in the error?\\
  \large Conductance variation, radiation and discrete measurements}
-\author{Prepared for Alex Dowling}\date{October 26, 2026}
+\author{Prepared for Alex Dowling}\date{October 27, 2026}
 \begin{document}
 \maketitle\vspace{-1em}
-\textbf{Work in progress.} This layout draft contains audited intermediate
-results. Joint discrete-data fits, local information and all twenty canonical
-transfer folds are audited. Fifty-draw refitted recovery and initial/bin sensitivities are audited;
-remaining profiles and parameter-inclusive transfer are underway.
-It is not the completed study report.
+A centered 10\% conductance band improves the joint fit substantially, but
+nominal predictions for omitted protocols remain poor. Quantization-aware
+refitting retains input-linked and cross-channel dependence. The completed
+analyses therefore support conditional comparisons and identify limitations;
+they do not establish calibrated independent innovations.
 
 \begin{tabularx}{\linewidth}{@{}>{\raggedright\arraybackslash}p{1.02in}>{\raggedright\arraybackslash}X>{\raggedright\arraybackslash}X@{}}
 \toprule
-Question & Evidence so far & Status\\
+Question & Finding & Status\\
 \midrule
 Can modest run variation help? & A 10\% conductance band gives T1/T2
 RMSE $0.605/0.118\C$ in the joint bin-likelihood fit. &
 Audited; little nominal protocol-transfer gain.\\
 Does radiation explain the rest? & Free radiation gives
 $0.590/0.119\C$ in the joint fit; bin nll improves by 3.810. &
-Conditional change; boundary profile pending.\\
+Profile checked; no calibrated radiation significance.\\
 Are cold starts plausible? & Quantized hidden heater offsets remain below
 $0.515\C$, but exchange lag labels. &
-Fits audited; startup profile underway, equilibrium unverified.\\
+Startup sensitivity checked; equilibrium unverified.\\
 Are measurements discrete? & All 21,614 temperatures match a shifted
 $0.3223\C$ code grid. & Hardware evidence; threshold phase remains assumed.\\
 Do lag labels identify physics? & At the loading boundary, a nominal
 forced-response lag swap changes T1 by at most $0.00430\C$. &
 Weak assignment; lowering the loading bound barely changes the mean.\\
 Are residuals adequate for inference? & Deterministic code diagnostics retain
-input, phase and cross-channel structure. & Whitening unfinished; no IID claim.\\
+input, phase and cross-channel structure. & Dependence persists after refitted reference checks.\\
 Does the nominal fit transfer? & Omit one run: $1.750/0.754\C$;
-omit a protocol: $2.131/0.875\C$. & All canonical folds audited; parameter propagation pending.\\
+omit a protocol: $2.137/0.878\C$. & All twenty folds audited; local-normal propagation fails a shape check.\\
 \bottomrule
 \end{tabularx}
 
@@ -159,8 +159,7 @@ can break the exchange. Repeated measurements can constrain sub-grid
 effects, so code spacing is not an absolute parameter-resolution limit.
 Lowering the positive loading bound from 0.005 to 0.0001 again reaches the
 bound and improves bin nll by only 0.01291; gain and fitted time scales barely
-change. This does not establish zero sensor heat capacity. Profiles must still
-test the lag assignments.
+change. This does not establish zero sensor heat capacity. The profiles below retain both lag regions.
 
 \section{Discrete observations and residual checks}
 The hardware data, rather than just simulator output, are quantized. The
@@ -308,7 +307,7 @@ Hidden-heater-only $\pm2$ and $\pm5\C$ sensitivities coincide, with maximum
 selected offset $0.514\C$. They favor sensor time 2.667 s and input lag
 14.898 s, reversing the baseline labels. Their reported-code RMSE is
 $0.682/0.109\C$, against baseline $0.605/0.114\C$. A better likelihood did
-not improve T1 free prediction. The representative startup profile is pending.
+not improve T1 free prediction. The representative startup profile below retains this assignment near zero.
 These changes are distinct from the earlier Gaussian hidden-start comparison.
 
 Profiles refit all ambient, conductance and noise nuisances. Sensor-loading
@@ -322,6 +321,39 @@ is 2.643 s. A further audited fixed point at $L=14.79006$ s fits sensor time
 improving the reference. These checks expose a second region; they do not
 locate its free minimum, interpolate endpoints or calibrate an exclusion of
 that lag assignment.
+
+\subsection*{What the nuisance profiles resolve}
+All 28 loading, run-conductance, disturbance-length and radiation grid points
+passed independent numerical audits. Raising loading $U_s/U_{a,0}$ from 0.005
+to 0.1 or 0.3 increases twice nll by only 0.577 or 2.316. For step run 1,
+raising its conductance ratio from the lower bound 0.9 to 0.925 costs 17.215.
+The fitted band therefore constrains a consequential run effect; it has not
+estimated a distribution of airflow.
+
+Radiation's optimum normalized coefficient is 0.11530. Setting it to zero
+costs twice nll 7.619 with all permitted nuisances refitted. This supports a
+conditional model improvement, without a calibrated boundary test or an
+emissivity estimate. The largest coefficient tested, 4, reaches gain and
+noise-length bounds. The coarse grid and two starts do not prove global minima.
+
+The startup grid fixes only the first 300 s sine run's H1 offset and refits
+all other 23 hidden starts, dynamics, ambient, conductance and noise terms.
+Five of six points have accepted, independently audited fits. At zero offset,
+twice nll rises 6.447; sensor/input times remain about 2.678/14.881 s.
+The $-2\C$ task exhausted both declared starts and has no accepted profile
+value. No accepted point beats the startup reference. This is a sensitivity
+of one adaptively selected coordinate, rather than a confidence interval or
+an all-cold-start comparison.
+
+\begin{figure}[p]
+\centering\includegraphics[width=\linewidth]{images/remaining_profiles.pdf}
+\par\medskip
+\includegraphics[width=\linewidth]{images/startup_profile.pdf}
+\caption{Audited nuisance profiles. The upper panels show all 28 grid points;
+radiation axes use symlog scales. The lower panels fix one hidden-heater
+initial offset. The failed $-2\C$ task has no plotted deviance. All other
+permitted coordinates are refitted. No routine chi-square cutoff is assigned.}
+\end{figure}
 
 \subsection*{Fifty refitted recovery collections}
 All fifty declared generated collections and all one hundred free/true-gain
@@ -354,89 +386,108 @@ checks nominal scalar LR coverage only. Hardware residual diagnostics exceed
 the refitted ranges; the analysis has not resolved their cause.}
 \end{figure}
 
-\subsection*{All twenty canonical transfer folds}
+\FloatBarrier
+\subsection*{Retrospective transfer across all twenty folds}
 Twelve fits omit one run each. Four band-model fits and four shared-conductance
-fits omit one protocol each (30, 120 or 300 s sine, or step). Every selected fit
-and canonical forecast passed independent audits. No later test temperatures
-estimate ambient, conductance or physical parameters; only the first temperature
-pair initializes the physical states. Each record appears once per comparison
-group, 10,795 scored readings per channel. Groups reuse these same observations;
-all records informed structure selection, so transfer is retrospective.
+fits omit one protocol each (30, 120 or 300 s sine, or step). All twenty
+selected fits, information matrices, noise and parameter forecasts passed
+independent numerical audits. No later test temperatures estimate ambient,
+conductance or physical parameters; the first temperature pair initializes
+the physical states. Each record appears once per comparison group, 10,795
+scored readings per channel. All records informed structure selection and
+initial guesses, so these comparisons are retrospective.
 
-\begin{tabularx}{\linewidth}{@{}Xrr@{}}
-\toprule
-Nominal reported-mean RMSE, $\C$ & T1 & T2\\
-\midrule
-Band: omit one run & 1.750 & 0.754\\
-Band: omit protocol & 2.131 & 0.875\\
-Shared: omit protocol & 2.171 & 0.894\\
-\bottomrule
-\end{tabularx}
+\input{tables/transfer_nominal.tex}
 
-Allowing conductance variation improves the all-data fit much more than these
-nominal protocol predictions. Other repeats in training help the leave-run
-case. Run mean errors account for 84.9/72.5\% of its T1/T2 SSE; removing them
-leaves RMSE $0.680/0.395\C$. For omitted protocols, the band model gives
-85.7/73.2\% and $0.806/0.453\C$. Offset removal uses the test outcomes and
-cannot serve as a blind correction.
+Conductance variation improves the all-data fit much more than nominal
+protocol predictions. Run mean errors account for 84.9/72.5\% of leave-run
+T1/T2 SSE; removing them leaves RMSE $0.680/0.395\C$. Omitted protocols give
+85.7/73.3\% and $0.809/0.454\C$. Offset removal uses test outcomes and cannot
+serve as a blind correction. Shared-conductance omitted-protocol RMSE is
+only slightly worse than the band model's.
 
-\begin{tabularx}{\linewidth}{@{}Xrr@{}}
-\toprule
-Range and group & Coverage, \% & Mean width, $\C$\\
- & T1/T2 & T1/T2\\
-\midrule
-Band/run, noise & 46.01/47.56 & 2.093/0.291\\
-Band/run, conditions + noise & 100.00/99.94 & 9.160/5.170\\
-Band/protocol, noise & 32.07/36.66 & 2.010/0.303\\
-Band/protocol, conditions + noise & 99.57/99.95 & 9.072/5.173\\
-Shared/protocol, noise & 50.25/53.46 & 3.606/0.811\\
-Shared/protocol, conditions + noise & 94.01/99.81 & 6.769/3.969\\
-\bottomrule
-\end{tabularx}
+\input{tables/transfer_ranges.tex}
 
-Nominal conditions set the unknown run's conductance ratio to one and ambient
-offset to zero. Condition ranges allow $\pm2\C$ ambient and, for the band
-model, $\pm10\%$ conductance. They combine hard scenario limits with marginal
-noise quantiles. Higher coverage accompanies broad ranges; neither candidate
-has established calibrated total-95\% predictions or an environmental cause.
-The shared model's larger residual variance gives broader noise-only ranges.
-Correlated readings do not become independent validation replicates.
+Nominal conditions use conductance ratio one and ambient offset zero.
+Condition ranges allow $\pm2\C$ ambient and, for the band model,
+$\pm10\%$ conductance. They combine hard scenarios with marginal noise
+quantiles. The table's ``parameters'' rows also mix 256 box-truncated local
+normal draws of physical and noise nuisance coordinates. They fix active
+bounds and one likelihood basin. Their numerical arithmetic passed; their
+sampling calibration has not been established. Broad hard ranges and high
+pointwise coverage do not define a probability distribution over run conditions.
+Correlated readings are not independent validation replicates.
 
-The first complete parameter propagation check omits the three fast-sine runs.
-Its audited, box-truncated local normal fixes the selected active loading bound
-and conditions on one likelihood basin. Adding 256 draws changes condition-plus-noise
-mean widths from $9.119/5.134\C$ to $9.223/5.206\C$.
-Using 256 instead of the shared-prefix 64 draws moves 2.26/2.69\% of endpoints,
-by at most one reported code (0.33 C). This checks mixture resolution, not
-coverage calibration or released-bound/basin uncertainty. Four full
-components are audited; sixteen remain, including two stopped information
-gates under investigation. The local joint-bin log-input-lag SE
-without fast-sine data is 0.1232, versus 0.0324 in the twelve-run fit.
+The complete local-parameter calculations change omitted-protocol band-model
+mean widths from $9.068/5.174\C$ to $9.274/5.346\C$. Leave-run and shared-model
+changes are larger. Shared-prefix 64/256 comparisons also retain appreciable
+endpoint changes:
 
-Each retained subset also defines a different geometric nominal conductance.
+\input{tables/transfer_resolution.tex}
+
+The first prototype, omitting the three fast-sine runs, changes widths from
+$9.119/5.134\C$ to $9.223/5.206\C$. Its 64/256 comparison changes
+2.26/2.69\% of endpoints by at most one code (0.33 C), and its local log-input-lag
+SE is 0.1232. This single-fold result does not describe all twenty folds.
+The complete table above reports the larger sensitivities elsewhere.
+
+\subsection*{Why the local mixtures remain exploratory}
+Positive numerical curvature alone did not validate a local normal law.
+A declared check evaluated 16 saved draws in each of three cases: the full
+fit, omission of 30 s sines, and the run-omission fit with largest conditional
+log-thermal-time SE, selected using training geometry. At that last fit,
+a representative draw predicts twice nll increase 34.276 from the local
+Taylor expansion; independent evaluation gives 201.731. This discrepancy
+survives 128/256/512/1024-node and tail-support checks, with confirmed
+absolute error 167.454. The local approximation fails along a curved weak
+nuisance direction, even with a numerically audited Hessian.
+
+The most extreme saved draw fails the declared integration-convergence gate
+even at 1024 nodes and wider support. Its precise deviance is withheld.
+No draws were clipped, discarded or reweighted to make the ranges agree.
+Increasing Monte Carlo count would not repair the demonstrated approximation
+error. The parameter-inclusive rows therefore quantify sensitivity to an
+unvalidated local law; they are not calibrated 95\% prediction intervals.
+The fifty-refit gain check supports only its specified scalar/model case.
+
+Each training subset defines a different geometric nominal conductance.
 Compare invariant combinations $K_0/t_A=\beta/C_H$, $r/t_A=U_s/C_H$ and
-$q/t_A=U_x/C_H$ before treating shifts in $K_0$ as physical change. Centering
-a hypothetical twelve-run cohort with the same hard band permits an omitted
-run's ratio to a nine-run training nominal in $[0.86894,1.13551]$.
-A source-bound arithmetic check verifies these limits and unchanged canonical
-forecasts. A separately declared forecast stress check will propagate this
-range while preserving the training fits. It is not a transported cohort
-likelihood or a corrected coverage calibration.
+$q/t_A=U_x/C_H$ before treating raw gain shifts as physical change. Centering
+a hypothetical twelve-run cohort permits an omitted run's ratio to a nine-run
+training nominal in $[0.86894,1.13551]$. The four audited reference-stress
+forecasts propagate that range without changing the training fits: mean
+widths become $10.380/5.737\C$. This is a scenario stress check, without a
+transported-cohort likelihood or corrected coverage calibration.
 
-The refitted checks retain input-linked residual structure. Remaining
-questions include whether the conductance band transfers
-across protocols, how startup/threshold assumptions assign the lag labels,
-and which uncertainty statements survive refitting and simulation.
-A future hood experiment should log ambient temperature, absolute time, prior
-run recovery, airflow settings, firmware and electrical power. A hood can add
-forced or fluctuating convection; it does not automatically supply a constant
-environment. No new hardware or DoE is part of this study.
+\section{Questions for scientific review}
+One bounded conductance effect captures much of the between-run mismatch.
+It does not identify airflow as its cause, and its benefit transfers weakly
+across protocols. Radiation adds modest conditional improvement. Small hidden
+initial offsets change physical lag labels, while the two fitted time scales
+remain near 3 and 15 s. Discrete measurement modeling changes noise estimates
+and exposes structure that randomized residual jitter can conceal.
 
-\section*{Evidence and status}
-This draft uses terminal, independently audited intermediate artifacts in
-the committed remaining-error study. The full decision-gate audit, final
-figures and parameter-inclusive uncertainty/transfer results are pending.
-It will be replaced after those gates are assessed.
+The residual model has not achieved approximately calibrated independent
+innovations. The hardware input/phase and cross-channel failures, the lag
+exchange and the local-normal shape failure limit uncertainty claims.
+A justified next analysis would compare a quantized multichannel disturbance
+model and a less symmetric physical model against the same diagnostics,
+without treating a higher likelihood as adequate whitening. Neither a unique
+cause nor a physical emissivity or electrical power law has been identified.
+
+A later hood experiment should log ambient temperature, absolute time,
+previous run recovery, airflow/sash settings, firmware, board/sensor identity,
+heater P settings and electrical power. A hood can add forced or fluctuating
+convection; it does not automatically supply a constant environment.
+
+\section*{Evidence and scope}
+The committed source, raw-data snapshots, multistart outcomes, numerical
+failures, independent checks and complete fold index are retained in the
+remaining-error study. The Markdown companion links the detailed methods,
+profiles, recovery and transfer evidence. Figures and report values are checked
+separately from scientific interpretation. These scoped analyses stop for
+Alex's review; no hardware, DoE, pair enumeration or new email is part of this
+study.
 
 \begin{thebibliography}{9}
 \bibitem{park2020}
