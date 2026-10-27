@@ -68,3 +68,16 @@ needs its full independent selected-point audit. A point improving the free
 startup reference by more than 0.001 requires free-baseline refinement before
 interpreting relative likelihoods. Neither the physical initial states nor the
 measurement-error initial posterior are established by these bounded fits.
+
+### Initialization comparisons in observation-code space
+
+initial_reported_code_summary binds eight independently audited initial-state
+fits and all 12 raw observed/time arrays per fit. It recomputes stationary
+marginal reported-code expectations and full scored RMSE. Four hundred
+independent scalar erfc bin-integration witnesses agree within3.5e-13 C.
+The freely initialized floor/nearest fits differ in expected reported output
+by at most0.00030 C, although their analogue-reference RMSE differs. Exact
+translation by half the grid preserves expected codes within3.1e-12 C.
+Consequently, that latent-reference RMSE change is not a prediction benefit.
+The fixed-start cases do not have the same reference freedom. All metrics are
+in-sample stationary marginals, with no claim of whitening or transfer.
