@@ -151,5 +151,21 @@
     "comparison": "2*(actual training nll minus fitted nll) versus 2*g*d+d^T*H*d in optimization coordinates. Reproduce saved draws from receipt/seed/matrix first.",
     "quadrature": "Recheck the largest absolute Taylor discrepancy in each case at256 nodes, unchanged .001 absolute deviance agreement gate.",
     "interpretation": "Descriptive local-approximation quality; retain every failed evaluation. No automatic distributional acceptance threshold, confidence cutoff, refitting, parameter-bound change or calibration claim."
+  },
+  "taylor_quadrature_followup": {
+    "trigger": "The predeclared run4 worst Taylor witness changes deviance by4.1455 between128 and256 nodes, failing the unchanged .001 numerical gate.",
+    "nodes": [
+      128,
+      256,
+      512,
+      1024
+    ],
+    "tail_SD": [
+      12,
+      16
+    ],
+    "selection": "Largest absolute discrepancy and the saved draw closest to the median absolute discrepancy among the original16; ties by smaller draw index.",
+    "method": "Independent dimensional mean, forward-only likelihood; no smoothing-score/Hessian reuse for objective evaluation.",
+    "acceptance": "Highest two orders and tail12/16 deviance changes each below.001. Otherwise withhold the precise discrepancy and report unresolved quadrature."
   }
 }
