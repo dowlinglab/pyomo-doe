@@ -557,3 +557,12 @@ bringing the full-component count to15. A fresh complete process snapshot
 confirmed its released slot; shared300/step queue97911 now occupies it.
 The remaining numerical work is startup profile/audit, shared120 refinement
 and full uncertainty, shared300/step, and final run11/12 propagation.
+
+Run11's full curvature/draw/forecast chain and both images passed review;16
+transfer components are indexed. Startup point-2C exhausted both declared
+300-iteration starts and is retained as failed. One branch has projected
+gradient1048; the other0.0435 but still reports iteration-limit failure.
+Neither is accepted or promoted by its objective/gradient. Other grid points
+continue. The eventual audit must retain this failed endpoint and withhold
+confidence-endpoint/global-profile claims. No repeated retry is authorized by
+a successful-looking partial trace alone.
