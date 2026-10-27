@@ -2,7 +2,7 @@
 
 This is the requirement register for the plan committed as `346a03d`. The
 scientific analyses are complete with the stated solver, quadrature and
-statistical limitations. Final preservation/push/closure checks are in progress. The register separates finished numerical checks from
+statistical limitations. Preservation and scientific-output push are verified; the heartbeat is paused. The register separates finished numerical checks from
 scientific adequacy and from unfinished deliverables. A passed controller
 fixture is not evidence that its measured study passed. The execution manifest
 owns live process state; this file does not infer it from older prose.
@@ -61,8 +61,8 @@ honestly; a missing calculation cannot be relabeled as that outcome.
 | Inspect rendered figures/PDF, resolved references, labels and pagination | Per-result figure reviews, final PDF review with exact render/source/PDF hashes | VERIFIED all 11 page pixels, source-bound figure PDFs and references; changed pagination inspected, no empty tables/missing figures/unresolved citations |
 | no-ai-slop and claude-for-researchers practices | Final writing check, independent numeric/method/transcription audit and explicit self-correction ledger | VERIFIED end-to-end writing check and report_audit.md arithmetic/method/transcription/author-decision/self-correction registers |
 | Preserve prior studies, raw CSVs and email receipts | Final diff against recorded starting evidence plus raw hashes and prior delivery artifacts | VERIFIED exact contents of 8090 prior files versus 346a03d, including rawCSV and earlier delivery receipts; no out-of-scope tracked change |
-| Commit coherent progress and push reformulation-exploration | Local commits, final clean scoped status and verified remote commit | PARTIAL; newer local work remains unpushed |
-| No required job remains live; pause heartbeat and hand back for review | Fresh direct process snapshot, terminal exits for every required job, full requirement audit, verified push, heartbeat pause receipt | PENDING; goal stays active |
+| Commit coherent progress and push reformulation-exploration | Local commits, final clean scoped status and verified remote commit | VERIFIED scientific/report commit7dd86477 pushed; git ls-remote matches exactSHA. Final metadata commit push is checked separately in the task. |
+| No required job remains live; pause heartbeat and hand back for review | Fresh direct process snapshot, terminal exits for every required job, full requirement audit, verified push, heartbeat pause receipt | VERIFIED398 terminal indexed jobs, no process warnings or live numerical jobs; heartbeat PAUSED via app tool and config. Stop for scientific review. |
 | No hardware, DoE, pair enumeration or new email | Scope and final action/artifact audit | VERIFIED scope/action review; no hardware, DoE, pair enumeration or email action in this goal |
 
 ## Closure protocol
@@ -101,3 +101,13 @@ failed startup subtask. Exact failed-job logs are preserved as text beside the
 inventory. The manifest and process inputs are copied byte-for-byte with a
 receipt before later closure metadata updates. The audit deliberately does not
 claim remote push or heartbeat/goal completion; those are verified separately.
+
+## Handoff
+
+Scientific/report commit `7dd8647754b8ae3ab00cacc73b5d43cb682ed371` is
+pushed to `reformulation-exploration` and independently confirmed by
+`git ls-remote`. The existing heartbeat is PAUSED; only status and updated_at
+changed. The fresh final process check finds zero numerical jobs, with398
+terminal receipts and no identity warnings. Closure metadata is committed and
+pushed separately; its final remoteSHA is checked in the task before marking
+the app goal complete. No email. Scientific adequacy remains open as documented.

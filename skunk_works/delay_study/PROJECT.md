@@ -7,12 +7,12 @@ This file owns current execution state. Git preserves superseded states.
 
 ## Current state
 
-- The October 25 remaining-error goal is active. Its scientific plan is
+- The October 25 remaining-error goal is complete for scientific review. Its scientific plan is
   `review/next_investigation_discussion.md`, committed before launch as
   `346a03d`; `error_structure_study/PROJECT.md` and its run manifest own current
   execution state. It tests bounded conductance variation around a fitted shared
   nominal, radiation/startup sensitivities and correlated, quantized observations.
-  The existing hourly TC-Lab heartbeat is active. No new hardware, DoE or email
+  Scientific/report commit `7dd86477` is pushed and verified. The TC-Lab heartbeat is paused. No new hardware, DoE or email
   is authorized for this goal. Earlier studies and delivery receipts are preserved.
 
 - The October 25 follow-up on the physical interpretation of unequal lags is

@@ -1,7 +1,8 @@
 # TC-Lab remaining-error study
 
-The scientific work authorized October 25 is complete with documented limits;
-final preservation, push and goal/heartbeat closure are in progress. The plan
+The study is complete for Alex's scientific review. Scientific/report outputs
+are pushed and verified at `7dd86477`; the heartbeat is paused. Final metadata
+is committed and its push checked before marking the app goal complete. The plan
 was committed first as `346a03d` and remains unchanged at
 [the discussion note](../review/next_investigation_discussion.md). The explicit
 goal started 2026-10-25T19:39:29Z. The requested ten-plus-hour research scope had
@@ -95,8 +96,14 @@ independently recomputing every component history.
 
 ## Closure
 
-Finish the final preservation/requirement audit, commit the report and receipts,
-push `reformulation-exploration` and verify the remoteSHA. Then pause the existing
-TC-Lab heartbeat and mark the explicit goal complete. Stop for Alex's scientific
-review. No email and no new experiment. Older studies, raw files and delivery
-receipts remain unchanged; unrelated `tmp/` is outside this work.
+`completion_receipt.json` records the verified scientific push, report and
+preservation hashes, and paused heartbeat. Only heartbeat status and update time
+changed. Fresh final reconciliation finds398 terminal jobs, no live numerical
+process and no warnings. The metadata commit is pushed and its remoteSHA checked
+in the task before app-goal completion. Stop for Alex's scientific review; an
+old queued heartbeat must not restart the completed analyses.
+
+No email or new experiment. All8090 pre-existing files, including raw CSVs,
+earlier reports and delivery receipts, passed exact preservation checks against
+the plan commit. Unrelated `tmp/` is untouched. Numerical convergence does not
+establish IID innovations, unique lag labels or calibrated predictive uncertainty.
