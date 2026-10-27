@@ -54,7 +54,7 @@ def main():
     ax.axvline(0,color='k',lw=.8);ax.set_ylim(0,max(counts)*1.3)
     ax.set(xlabel='Gain estimation error (%)',ylabel='Generated collections',title='(b) Gain recovery under the fitted model')
     ax.text(.02,.96,str(summary['coverage']['covered'])+'/50 nominal gain regions include the generating value',
-        transform=ax.transAxes,va='top',fontsize=8)
+        transform=ax.transAxes,va='top',fontsize=8,bbox={'facecolor':'white','edgecolor':'none','alpha':1.,'pad':2.})
     ax=axes[2];x=np.arange(4)
     ax.errorbar(x,quantiles[:,1],yerr=np.vstack([quantiles[:,1]-quantiles[:,0],quantiles[:,2]-quantiles[:,1]]),
         fmt='o',ms=3,color='tab:blue',lw=2,label='Refitted reference 2.5/50/97.5%')

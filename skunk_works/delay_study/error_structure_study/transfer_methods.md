@@ -179,3 +179,19 @@ information and its independent audit must follow before parameter draws.
 If the selected fit changes, regenerate that fold's canonical forecasts and
 keep the original forecasts for comparison. No eigenvalue clipping, bound
 snapping, covariance substitution or unreported tolerance change is allowed.
+
+### Loading-curvature convergence after the refined fit
+
+The refined protocol120 point has H22=249.20545; the old forward .005
+stencil fails the unchanged .001 gate by0.0375. Before changing the auditor,
+diagnose_loading_stencils.py will compare independent dimensional forward
+likelihood curvatures on steps .02,.01,.005,.002,.001. It retains the old
+second-order one-sided stencil and adds a fourth-order centered stencil only
+where both sides are inside the original loading bounds. All evaluations and
+source/fit bindings are saved. A stable high-order range must agree with the
+stored H before any audit retry. No tolerance, fitted bound or eigenvalue changes.
+
+The shared-model protocol120 fold independently fails positive curvature in
+the same weak loading direction. The existing four-seed, two-branch objective-only
+refinement policy applies to that fold too, with its own original fit/audit and
+failed information bindings. It does not change the held-out records or criterion.
