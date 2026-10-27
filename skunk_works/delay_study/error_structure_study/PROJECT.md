@@ -530,3 +530,12 @@ all20 canonical aggregate/report tables remain frozen original-fit comparisons;
 regenerate final groups. Eight full transfer components are indexed. The
 released slot now runs shared120's declared additional loading seeds80110.
 Startup and both run queues continue. Next released slot advances shared300/step.
+
+The source-frozen preferred interim aggregate exited0 and verifies all eight
+currently indexed information/audit/draw provenance chains. Its figure was
+inspected. Status remains partial. All four primary protocol folds now include
+parameter mixtures: hard-condition+noise widths9.068/5.174C become9.274/5.346C
+with256 local draws. The64/256 endpoint difference reaches0.65/0.33C, so the
+mixture resolution is a reported sensitivity, not a convergence claim. Preferred
+nominal protocol RMSE is2.137/0.878C after the objective-based120 refinement.
+The old PDF tables remain frozen original-fit comparisons until final rebuild.
