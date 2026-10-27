@@ -11,6 +11,7 @@ from physical import load_records
 from joint_quantized import Model
 from draw_local import conditional_draws
 from continuation import parent_receipt
+from audit_common import dimensional_mean
 from run_bounded import write
 
 
@@ -74,7 +75,12 @@ def main():
             worst=max(finite,key=lambda r:r['absolute_taylor_error']);other=Model(records,fit['band'],fit['phase'],256,'conductance',minimum_sensor_loading=fit.get('minimum_sensor_loading',.005),score_backend='compiled')
             high=other.objective(points[worst['draw_index']]);base=other.objective(point)
             difference=float(2*(high-base));error=abs(difference-worst['twice_nll_difference'])
-            witness={'draw_index':worst['draw_index'],'twice_nll_difference256':difference,'order128_to256_absolute_change':error,'passed_1e_minus3_gate':bool(error<1e-3)}
+            q=points[worst['draw_index']];coefficients=np.r_[np.exp(q[model.nshape]),q[model.nshape+1:model.nmean]]
+            independent=dimensional_mean(q,coefficients,records,fit['band']);calculated=model.mean(q,False)
+            mean_error=float(np.max(abs(independent-calculated)))
+            witness={'draw_index':worst['draw_index'],'twice_nll_difference256':difference,
+                'order128_to256_absolute_change':error,'passed_1e_minus3_gate':bool(error<1e-3),
+                'independent_dimensional_mean_max_error_C':mean_error,'passed_1e_minus7_mean_gate':bool(mean_error<1e-7)}
         files=[fitdir/'fit.json',information/'information.json',information/'information_matrices.npz',auditor/'audit.json',drawdir/'draw_receipt.json',path]
         errors=[r['absolute_taylor_error'] for r in finite]
         results.append({'id':case['id'],'fold_id':case.get('fold_id'),'evaluated':len(finite),'declared':len(indices),
