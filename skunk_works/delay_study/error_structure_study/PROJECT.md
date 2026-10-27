@@ -505,3 +505,12 @@ the released long slot; its first three centered fourth-order stencils agree
 within2.2e-5, while the old forward errors shrink by about4 on step halving.
 Full study termination and unchanged .001 audit agreement are still required
 before accepting a covariance. Startup and the two run queues remain live.
+
+The refined120 five-step scalar convergence study exited0. Fourth-order
+centered errors stay below2.2e-5; the forward error falls quadratically but
+still exceeds.001 at h=.001. Source-committed interior centered stencils now
+replace only that numerically biased audit check, with the same .001 gate.
+Fresh full information audit52318 is live. The stored matrix, fit, bounds and
+all other checks are unchanged. The failed old audit and full convergence
+evaluations are retained. Then finish primary120 parameter forecasts before
+using the released slot for shared120 additional starts.
