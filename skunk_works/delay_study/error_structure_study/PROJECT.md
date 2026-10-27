@@ -543,3 +543,10 @@ with256 local draws. The64/256 endpoint difference reaches0.65/0.33C, so the
 mixture resolution is a reported sensitivity, not a convergence claim. Preferred
 nominal protocol RMSE is2.137/0.878C after the objective-based120 refinement.
 The old PDF tables remain frozen original-fit comparisons until final rebuild.
+
+Five more omitted-run components(3/4/5/8/9) have passed full prediction and
+curvature/draw-chain checks and ten displayed images were inspected. Thirteen
+components are now indexed; seven remain. Some omitted-run local mixtures are
+visibly broader than hard-condition/noise limits, so the modest width increase
+in the complete protocol group must not be generalized to every omitted run.
+Final aggregation will report both groups and truncation/basin limitations.
