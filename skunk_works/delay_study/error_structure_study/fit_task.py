@@ -9,12 +9,15 @@ from run_bounded import write
 
 
 def command(output,warm,noise1,noise2,family,band,phase,nodes=128,starts=2,maxiter=300,
-        fixed=None,dataset=None,records=None,minimum_sensor_loading=.005,condition_initial_code=False,score_backend='reference',continue_task=None):
+        fixed=None,dataset=None,records=None,minimum_sensor_loading=.005,condition_initial_code=False,score_backend='reference',continue_task=None,startup_band=0.):
     argv=['run_joint_quantized.py','--output',str(output),'--warm',str(warm),
         '--noise1',str(noise1),'--noise2',str(noise2),'--family',family,'--band',str(band),
         '--phase',str(phase),'--nodes',str(nodes),'--starts',str(starts),'--maxiter',str(maxiter)]
     argv+=['--minimum-sensor-loading',str(minimum_sensor_loading)]
     argv+=['--score-backend',score_backend]
+    if startup_band:
+        if startup_band<0 or continue_task is not None:raise ValueError('Startup profiling supports fresh tasks with positive bounds only')
+        argv+=['--startup-band',str(startup_band)]
     if condition_initial_code:argv+=['--condition-initial-code']
     for name,value in (fixed or {}).items():argv+=['--fix-coordinate',name,str(value)]
     if dataset is not None:argv+=['--dataset',str(dataset)]

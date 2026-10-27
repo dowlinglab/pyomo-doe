@@ -24,6 +24,16 @@
   },
   "lower_loading_sensitivity": {"minimum_sensor_loading": 0.0001, "band": 0.1, "starts": 3, "maxiter": 300, "reason": "Repeated lower-bound sensor-loading estimates and the theoretical sensor/input lag exchange at zero loading; assess dependence on the original 0.005 lower bound before assigning physical lag identities."},
   "residual_initial_sensitivity": {"condition_initial_code": true, "band": 0.1, "phase": -0.5, "starts": 3, "maxiter": 300, "warm": "Audited joint 10% band quantized fit", "reason": "T1 correlation length is comparable to run length. Compare a stationary prior at the first scored point with the conditional likelihood given the actual first quantized observation; do not add that reading to nobs."},
+  "consequential_startup_profile": {
+    "trigger": "The independently audited +/-2 C hidden-heater fit changes the preferred sensor/input lag assignment; the +/-5 C fit coincides",
+    "coordinate_rule": "Largest absolute selected hidden-heater starting offset in the audited +/-2 C fit; first in coordinate order breaks a tie",
+    "values_C": [-2.0, -1.0, 0.0, 1.0, 2.0],
+    "include_selected_value": true,
+    "starts": 2,
+    "maxiter": 300,
+    "nodes": 128,
+    "scope": "Fix this one named heater offset and refit all other permitted dynamics, ambient, conductance, 23 hidden starts and noise coordinates from both lag branches. Zero fixes only this coordinate; the all-cold model is a separate comparison. Adaptive representative choice and coarse grid preclude routine confidence endpoints or a chi-square claim."
+  },
   "recovery": {
     "draws": 50,
     "seed_base": 611271,

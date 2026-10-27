@@ -39,3 +39,32 @@ likelihoods and stationarity will be checked with the improved score; no process
 is restarted merely to change its source. Accepted old results are not silently
 replaced. The new score also supports all nuisance-refitted recovery draws and
 their deterministic code diagnostics after the score suite passes.
+
+## Consequential hidden-start nuisance profile
+
+The quantized +/-2 and +/-5 C hidden-heater fits coincide and reverse the
+preferred lag assignment relative to the cold baseline. Their largest selected
+heater offset is -0.514 C in H1 of the first 300 s sine record (record index 6).
+This triggers the plan's startup-profile condition.
+
+Before measuring a profile, uncertainty_config.json declares the representative
+coordinate rule: largest absolute hidden-heater offset in the audited +/-2 C
+fit, with coordinate-order tie breaking. Profile it at -2, -1, 0, 1 and 2 C plus
+its exact selected value. Each point refits all other dynamics, conductance,
+ambient, twenty-three hidden starts and covariance nuisances from the usual two
+lag branches, 300 iterations each and 128-node compiled scores. Source/data,
+failed starts and the nearest successful warm start are retained. This is an
+exploratory representative chosen after the observed discrepancy; no ordinary
+chi-square confidence endpoint follows from the coarse grid. Fixing this one
+offset to zero leaves twenty-three starts free and is not the all-cold model.
+
+check_startup_profile.py must pass before run_startup_profile.py is measured.
+It checks independent dimensional propagation, all four hidden-heater bin scores
+on two short generated actual-command records, reference/compiled agreement,
+fixed-coordinate objective/bounds/KKT behavior and the fitter's startup CLI flag.
+The optional flag leaves old default commands unchanged. This profile uses fresh
+tasks, not an unsupported startup continuation. Every accepted profile point then
+needs its full independent selected-point audit. A point improving the free
+startup reference by more than 0.001 requires free-baseline refinement before
+interpreting relative likelihoods. Neither the physical initial states nor the
+measurement-error initial posterior are established by these bounded fits.
