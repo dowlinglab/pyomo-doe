@@ -550,3 +550,10 @@ components are now indexed; seven remain. Some omitted-run local mixtures are
 visibly broader than hard-condition/noise limits, so the modest width increase
 in the complete protocol group must not be generalized to every omitted run.
 Final aggregation will report both groups and truncation/basin limitations.
+
+The first six omitted-run pipelines are terminal, all stages passed. The
+last(run6) and run10 images/curvature chains were inspected and indexed,
+bringing the full-component count to15. A fresh complete process snapshot
+confirmed its released slot; shared300/step queue97911 now occupies it.
+The remaining numerical work is startup profile/audit, shared120 refinement
+and full uncertainty, shared300/step, and final run11/12 propagation.

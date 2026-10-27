@@ -1,0 +1,86 @@
+{
+  "status": "complete",
+  "fit_sha256": "fd55b24710585fd17676c781594f44c3e7537f95b53ae5b56f0bef12d2d105fc",
+  "train_names": [
+    "validation_experiment_env_2_sin_50_50_run_1.csv",
+    "validation_experiment_env_2_sin_50_50_run_2.csv",
+    "validation_experiment_env_2_sin_50_50_run_3.csv",
+    "validation_experiment_env_2_sin_2_50_run_1.csv",
+    "validation_experiment_env_2_sin_2_50_run_2.csv",
+    "validation_experiment_env_2_sin_2_50_run_3.csv",
+    "validation_experiment_env_2_sin_5_50_run_1.csv",
+    "validation_experiment_env_2_sin_5_50_run_2.csv",
+    "validation_experiment_env_2_sin_5_50_run_3.csv",
+    "validation_experiment_env_2_step_50_run_2.csv",
+    "validation_experiment_env_2_step_50_run_3.csv"
+  ],
+  "test_names": [
+    "validation_experiment_env_2_step_50_run_1.csv"
+  ],
+  "parameter_draws": {
+    "path": "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_uncertainty_primary_runs_b/run_10/draws/parameter_draws_64.npz",
+    "sha256": "0ccb97503af428671f702fbbb2db0213a7a70a1d582eacf78f05fa0c7ee7d422",
+    "draws": 64,
+    "method": "observed-bin-Hessian active-face local normal, box truncated",
+    "calibration_notice": "Local-normal mixing on the selected active-bound face, truncated by inactive box limits, in explicit optimization coordinates. Conditions on the selected likelihood basin and fixes active loading/deviation bounds; excludes released-bound/profile branches, model selection and initial/bin convention uncertainty. Not calibrated simultaneous confidence or a posterior distribution. Combine with hard unknown-run nuisance ranges and separately reported model/initial/profile sensitivities; empirical gain-LR recovery tests do not validate this whole mixture.",
+    "draw_receipt_path": "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_uncertainty_primary_runs_b/run_10/draws/draw_receipt.json",
+    "draw_receipt_sha256": "2b882c3435816167c80826056247de02273547d99e840d77a8603872d1179ecf"
+  },
+  "nuisance_ratio_bounds": [
+    0.9,
+    1.1
+  ],
+  "reference_transport_sensitivity": false,
+  "per_run": [
+    {
+      "name": "validation_experiment_env_2_step_50_run_1.csv",
+      "raw_sha256": "0c5fc5917a3693ca73a9240f0f40aea711fe1458853b88dd9c9db54fded776ec",
+      "nobs_per_channel": 900,
+      "latent_free_simulation_RMSE_C": [
+        2.7964360211173043,
+        1.3173173784530772
+      ],
+      "reported_conditional_mean_RMSE_C": [
+        2.796036841900025,
+        1.315199812654493
+      ],
+      "signed_reported_mean_error_C": [
+        2.6227947125568445,
+        1.114476135062866
+      ],
+      "nominal_mean_noise_only_marginal_coverage": [
+        0.13555555555555557,
+        0.18
+      ],
+      "hard_nuisance_plus_noise_outer_coverage": [
+        1.0,
+        1.0
+      ],
+      "scenario_grid_checks": [
+        {
+          "points": 401,
+          "envelope_change_C": 1.2029488516418496e-11
+        }
+      ],
+      "conditional_bin_scores": [
+        {
+          "channel": 1,
+          "conditional_one_step_bin_nll": 304.8432650267895,
+          "nodes": 128
+        },
+        {
+          "channel": 2,
+          "conditional_one_step_bin_nll": 1583.1728922770728,
+          "nodes": 128
+        }
+      ],
+      "parameter_uncertainty_included": true,
+      "parameter_mixture_hard_nuisance_noise_outer_coverage": [
+        1.0,
+        1.0
+      ]
+    }
+  ],
+  "elapsed_s": 71.95159258400001,
+  "notice": "Retrospective transfer: only the first test temperature pair initializes the mean; no later test output fits conductance, ambient or physical parameters. Hard-band/ambient envelopes are numerically converged scenarios, not distributions over nuisance parameters. Noise ranges are marginal and not simultaneous. Parameter-mixture sensitivities inherit the supplied draw approximation/calibration limits; no automatic total-95% claim. Filtered bin scores use past test outputs for the residual state and are distinct from free simulation. All twelve records informed structure selection."
+}
