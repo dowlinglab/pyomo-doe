@@ -6,6 +6,7 @@ from pathlib import Path
 import numpy as np
 import matplotlib.pyplot as plt
 from continuation import parent_receipt
+from audit_provenance import numerical_binding
 from run_bounded import write
 
 
@@ -14,14 +15,42 @@ def sha(path):return hashlib.sha256(path.read_bytes()).hexdigest()
 
 def main():
     p=argparse.ArgumentParser();p.add_argument('--output',type=Path,required=True)
-    p.add_argument('--input',type=Path,required=True);p.add_argument('--audit',type=Path,required=True)
+    p.add_argument('--input',type=Path,required=True)
+    group=p.add_mutually_exclusive_group(required=True)
+    group.add_argument('--audit',type=Path)
+    group.add_argument('--point-audits',type=Path,nargs='+',
+        help='Terminal independent audits of every accepted point, matched by fit and trajectory hashes')
     p.add_argument('--reference-fit',type=Path,required=True);p.add_argument('--reference-audit',type=Path,required=True)
-    args=p.parse_args();paths=[args.input/'profile.json',args.audit/'audit.json',args.reference_fit/'fit.json',args.reference_audit/'audit.json']
-    for d in [args.input,args.audit,args.reference_fit,args.reference_audit]:assert parent_receipt(d,require_terminal=True)['exit']['exit_code']==0
-    profile,checked,reference,refcheck=[json.loads(q.read_text()) for q in paths]
-    assert profile['fit_sha256']==refcheck['fit_sha256']==sha(paths[2]) and refcheck['status']=='passed'
-    assert checked['kind']=='profile' and checked['source_sha256']==sha(paths[0])
-    assert checked['status'] in ['passed','completed_with_failures']
+    args=p.parse_args();paths=[args.input/'profile.json',args.reference_fit/'fit.json',args.reference_audit/'audit.json']
+    for d in [args.input,args.reference_fit,args.reference_audit]:assert parent_receipt(d,require_terminal=True)['exit']['exit_code']==0
+    profile,reference,refcheck=[json.loads(q.read_text()) for q in paths];point_audits={}
+    if args.audit:
+        assert parent_receipt(args.audit,require_terminal=True)['exit']['exit_code']==0
+        paths.append(args.audit/'audit.json');checked=json.loads(paths[-1].read_text())
+        assert checked['kind']=='profile' and checked['source_sha256']==sha(paths[0])
+        assert checked['status'] in ['passed','completed_with_failures']
+        mode='collection'
+    else:
+        expected_binding=numerical_binding(args.output);lookup={}
+        for directory in args.point_audits:
+            assert parent_receipt(directory,require_terminal=True)['exit']['exit_code']==0
+            assert numerical_binding(directory)==expected_binding,'Changed numerical auditor/model/data dependencies'
+            path=directory/'audit.json';audit=json.loads(path.read_text());assert audit['status']=='passed'
+            assert audit['fit_sha256'] not in lookup,'Duplicate selected-point audit'
+            lookup[audit['fit_sha256']]=(path,audit);paths += [path,directory/'source_snapshot.json',directory/'exit.json']
+        accepted={sha(Path(v['output'])/'fit.json') for v in profile['points'] if v['success']}
+        assert set(lookup)==accepted,'A required accepted point is missing or an unrelated audit was supplied'
+        checkrows=[]
+        for j,v in enumerate(profile['points']):
+            row={'optimization_success':v['success'],'coordinate_value':v['coordinate_value'],
+                'audit_status':'not_audited_failed_optimization'}
+            if v['success']:
+                path,audit=lookup[sha(Path(v['output'])/'fit.json')]
+                assert audit['arrays_sha256']==sha(Path(v['output'])/'trajectories.npz')
+                point_audits[j]=path;row['audit_status']='passed'
+            checkrows.append(row)
+        checked={'rows':checkrows};mode='independent_point_audits'
+    assert profile['fit_sha256']==refcheck['fit_sha256']==sha(args.reference_fit/'fit.json') and refcheck['status']=='passed'
     assert len(profile['points'])==len(checked['rows'])==6
     assert profile['coordinate']=='initial_H1_offset_6' and reference['startup_band_C']==2.
     bindings={str(q):sha(q) for q in paths};rows=[]
@@ -32,7 +61,8 @@ def main():
         assert result['success']==point['success'];bindings[str(task)]=sha(task)
         row={'initial_H1_offset_6_C':point['coordinate_value'],'optimization_success':point['success']}
         if point['success']:
-            fitpath=directory/'fit.json';fit=json.loads(fitpath.read_text());auditpath=args.audit/('point_'+str(j))/'audit.json';check=json.loads(auditpath.read_text())
+            fitpath=directory/'fit.json';fit=json.loads(fitpath.read_text())
+            auditpath=point_audits[j] if args.point_audits else args.audit/('point_'+str(j))/'audit.json';check=json.loads(auditpath.read_text())
             assert auditrow['audit_status']==check['status']=='passed'
             assert check['fit_sha256']==sha(fitpath) and check['arrays_sha256']==sha(directory/'trajectories.npz')
             assert fit['fixed_coordinates'][profile['coordinate']]==point['coordinate_value']
@@ -53,7 +83,7 @@ def main():
     result={'status':'baseline_refinement_required' if lower else 'complete_with_declared_solver_failures' if any(not r['optimization_success'] for r in rows) else 'complete',
         'reference_nll':reference['best']['nll'],'reference_coordinate_C':profile['reference_coordinate'],
         'accepted_points':sum(r['optimization_success'] for r in rows),'declared_points':6,'rows':rows,
-        'baseline_refinement_required':lower,'source_bindings_sha256':bindings,
+        'baseline_refinement_required':lower,'audit_mode':mode,'source_bindings_sha256':bindings,
         'scope':'Coarse representative nuisance grid with all other startup/dynamic/ambient/noise terms refit. Failed tasks retained without a numerical profile value. No global minimum, confidence endpoint, chi-square exclusion or initial-noise posterior claim. A lower accepted point requires unconstrained reference refinement before LR interpretation.'}
     write(args.output/'summary.json',result)
     x=np.array([r['initial_H1_offset_6_C'] for r in rows]);success=np.array([r['optimization_success'] for r in rows])

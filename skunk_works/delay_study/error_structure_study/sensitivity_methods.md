@@ -81,3 +81,15 @@ translation by half the grid preserves expected codes within3.1e-12 C.
 Consequently, that latent-reference RMSE change is not a prediction benefit.
 The fixed-start cases do not have the same reference freedom. All metrics are
 in-sample stationary marginals, with no claim of whitening or transfer.
+
+Completed startup point tasks are immutable and may receive independent
+selected-point audits while later grid optimizations continue. Two released
+slots first check the reference-offset and zero-offset points. The final
+startup summary may consume these real terminal audits directly, requiring
+an audit for every accepted final point, exact fit/trajectory SHA matches,
+terminal zero exits and identical numerical auditor/model/raw-data dependencies.
+It records those actual source/exit receipts; it does not fabricate a collection
+audit or promote failed tasks. The original collection mode remains available.
+Global profile interpretation still waits for all declared tasks and the
+baseline-refinement check. This avoids repeating the same numerical audit
+solely because its completed fit was checked before the parent queue ended.
