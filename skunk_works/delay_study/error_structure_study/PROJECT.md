@@ -421,3 +421,11 @@ The frozen failed control and source commit remain intact. The corrected
 four-file compilation/configuration preflight now passes; a new seed-control
 output must pass before the refinement starts. No failed control or fit is
 promoted by correction, and no original fit/forecast is overwritten.
+
+Both parity audits are now terminal: twenty-five rows and fifty selected free/null
+numerical checks passed in each. Their partial statuses remain unchanged. The
+final full50 audit must bind both current terminal continuation ledgers, exact
+seeds/data/diagnostics and all reused numerical checks; it uses no subset or
+partial mode. The even audit's retained SciPy beta-quantile overflow warning did
+not change its zero exit or finite JSON output; final Monte Carlo interval
+arithmetic must still be checked independently before reporting calibration.
