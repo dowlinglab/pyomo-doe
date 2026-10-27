@@ -514,3 +514,10 @@ Fresh full information audit52318 is live. The stored matrix, fit, bounds and
 all other checks are unchanged. The failed old audit and full convergence
 evaluations are retained. Then finish primary120 parameter forecasts before
 using the released slot for shared120 additional starts.
+
+The03:10:20 process capture was truncated by an insufficient output budget,
+producing an invalid null PID and a false parent mismatch. That capture is
+preserved as process_check_truncated_031020.json. A complete direct snapshot
+with strict numeric-PID line validation corrects it; no process was restarted
+or declared stopped from the truncated output. Future captures must reject
+truncation/invalid lines before reconciliation.
