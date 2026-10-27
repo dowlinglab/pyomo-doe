@@ -24,5 +24,11 @@ failures still prevent a claim of adequate whitening.
 The source-bound four-panel figure is in
 `results/remaining_profiles_figure_v3`; it shows every evaluated point and uses
 symlog radiation axes to retain both the low-coefficient valley and large values.
-No chi-square cutoff is drawn. The separate consequential-startup profile is
-still live; these results do not replace it.
+No chi-square cutoff is drawn. The consequential-startup profile is now terminal: five accepted/audited points
+out of six declared. The -2C task exhausted both300-iteration starts and has
+no accepted profile value. At zero offset, twice nll rises6.44655 while the
+sensor/input times remain2.67757/14.88131s. At+1C the preferred labels reverse.
+No accepted point beats the startup reference. The adaptively selected
+first300s-sine H1 offset is a nuisance sensitivity, not an all-cold fit or a
+confidence interval. See results/startup_profile_summary for every point,
+failed-start outcome and source-bound independent audit.
