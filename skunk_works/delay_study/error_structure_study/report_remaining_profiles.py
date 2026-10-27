@@ -19,7 +19,7 @@ def main():
     columns=[('log_Us_over_Ua','Sensor loading $U_s/U_{a,0}$','log'),
         ('log_Ua_ratio_9','Step run 1 conductance ratio','linear'),
         ('log_ell_T1','T1 disturbance length (s)','log'),
-        ('radiation_gamma','Radiation coefficient at 50 C / $U_{a,0}$','linear')]
+        ('radiation_gamma','Radiation coefficient at 50 C / $U_{a,0}$','symlog')]
     fit=json.loads((args.fit/'fit.json').read_text())
     assert 'step_50_run_1' in fit['record_names'][9]
     profiles=[];binding={}
@@ -41,7 +41,10 @@ def main():
             assert abs(saved['best']['point'][index]-row['coordinate_value'])<1e-9
             binding[str(point)]=sha(point);x.append(row['physical_value']);y.append(value)
         binding.update({str(q):sha(q) for q in [source,audit,reference/'fit.json']})
-        profiles.append({'coordinate':name,'label':label,'xscale':scale,'x':x,'twice_nll_increase':y,
+        profiles.append({'coordinate':name,'label':label,'xscale':scale,
+            'x_linthresh':.02 if name=='radiation_gamma' else None,
+            'yscale':'symlog' if name=='radiation_gamma' else 'linear',
+            'y_linthresh':1. if name=='radiation_gamma' else None,'x':x,'twice_nll_increase':y,
             'reference_x':float(np.exp(profile['reference_coordinate'])) if name.startswith('log_') else profile['reference_coordinate']})
     write(args.output/'figure_values.json',{'profiles':profiles,'source_bindings_sha256':binding,
         'notice':'All declared points shown. Lines connect coarse evaluated grids, not interpolated confidence endpoints or global profiles. Conditional on model, bounds, initialization and bin phase; no significance cutoff is drawn.'})
