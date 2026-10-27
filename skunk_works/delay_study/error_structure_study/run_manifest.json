@@ -2955,7 +2955,7 @@
       "source_commit": "cc9dad7639d2662b88bacc42c864fde2980278c2",
       "source_receipt_sha256": "010097bd36fca5d18ee9b8a323a2eb8b366319dde180d695d6d0d55070e58974",
       "status": "running_verified",
-      "last_verified_utc": "2026-10-27 01:44:27 UTC"
+      "last_verified_utc": "2026-10-27 02:08:42 UTC"
     },
     {
       "id": "quantization_check",
@@ -3972,6 +3972,28 @@
       "source_receipt_sha256": "cde03007dfadbdc5edc71819c943c9fff8b7d4d4a3d04bc629e86afc59108dae",
       "exit_code": 0,
       "finished_utc": "2026-10-25T19:58:28.315932+00:00"
+    },
+    {
+      "id": "startup_profile_control",
+      "process": {
+        "pid": 63768,
+        "parent_pid": 63456,
+        "command": [
+          "/Users/adowling/opt/anaconda3/bin/python",
+          "/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-error-1eb4f309-0x4d7lgf/skunk_works/delay_study/error_structure_study/check_startup_profile.py",
+          "--output",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/startup_profile_control",
+          "--warm",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/initial_remaining_b10/hidden_heater_2C/fit.json"
+        ],
+        "started_utc": "2026-10-27T02:08:22.792650+00:00"
+      },
+      "output": "skunk_works/delay_study/error_structure_study/results/startup_profile_control",
+      "source_commit": "1eb4f309bdf1c229e8c90d0319b536a3a667e845",
+      "source_receipt_sha256": "b2b4b2abd105a0c4701082f45238628bb988574e0e7f77ba719b737707b7cb08",
+      "status": "terminal",
+      "exit_code": 0,
+      "finished_utc": "2026-10-27T02:08:26.964447+00:00"
     },
     {
       "id": "transfer_accounting_check",
@@ -5504,6 +5526,418 @@
       "finished_utc": "2026-10-26T19:42:50.882246+00:00"
     },
     {
+      "id": "transfer_uncertainty_primary_runs_a",
+      "process": {
+        "pid": 60844,
+        "parent_pid": 60224,
+        "command": [
+          "/Users/adowling/opt/anaconda3/bin/python",
+          "/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-error-3baaca65-zfg28ddm/skunk_works/delay_study/error_structure_study/run_transfer_uncertainty_queue.py",
+          "--output",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_uncertainty_primary_runs_a",
+          "--input",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_primary_runs",
+          "--fit-audit",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_primary_runs_audit",
+          "--folds",
+          "run_1",
+          "run_2",
+          "run_3",
+          "run_4",
+          "run_5",
+          "run_6",
+          "--reuse-noise-index",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/run_manifest.json"
+        ],
+        "started_utc": "2026-10-27T01:44:35.054498+00:00"
+      },
+      "output": "skunk_works/delay_study/error_structure_study/results/transfer_uncertainty_primary_runs_a",
+      "source_commit": "3baaca653b1d9af110fdc1bbad34366289968339",
+      "source_receipt_sha256": "2c2459b512066c923eca8e637ddfa9056d86fe2f542f0d29a4c135838f2d98f6",
+      "status": "running_verified",
+      "last_verified_utc": "2026-10-27 02:08:42 UTC"
+    },
+    {
+      "id": "transfer_uncertainty_primary_runs_a/run_1/draws",
+      "process": {
+        "pid": 62548,
+        "parent_pid": 60844,
+        "command": [
+          "/Users/adowling/opt/anaconda3/bin/python",
+          "/private/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-error-3baaca65-zfg28ddm/skunk_works/delay_study/error_structure_study/draw_local.py",
+          "--output",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_uncertainty_primary_runs_a/run_1/draws",
+          "--input",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_primary_runs/run_1",
+          "--information",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_uncertainty_primary_runs_a/run_1/information",
+          "--audit",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_uncertainty_primary_runs_a/run_1/information_audit",
+          "--draws",
+          "256",
+          "--seed",
+          "931771"
+        ],
+        "started_utc": "2026-10-27T02:01:26.208496+00:00",
+        "sequential_parent": "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_uncertainty_primary_runs_a"
+      },
+      "output": "skunk_works/delay_study/error_structure_study/results/transfer_uncertainty_primary_runs_a/run_1/draws",
+      "source_commit": "3baaca653b1d9af110fdc1bbad34366289968339",
+      "source_receipt_sha256": "5bfae9ed80c0dd6d458d969d28bf01702008618259e4aec5dcd97fb8860309b8",
+      "status": "terminal",
+      "exit_code": 0,
+      "finished_utc": "2026-10-27T02:01:27.127305+00:00"
+    },
+    {
+      "id": "transfer_uncertainty_primary_runs_a/run_1/information",
+      "process": {
+        "pid": 60855,
+        "parent_pid": 60844,
+        "command": [
+          "/Users/adowling/opt/anaconda3/bin/python",
+          "/private/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-error-3baaca65-zfg28ddm/skunk_works/delay_study/error_structure_study/run_information.py",
+          "--output",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_uncertainty_primary_runs_a/run_1/information",
+          "--input",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_primary_runs/run_1"
+        ],
+        "started_utc": "2026-10-27T01:44:36.659587+00:00",
+        "sequential_parent": "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_uncertainty_primary_runs_a"
+      },
+      "output": "skunk_works/delay_study/error_structure_study/results/transfer_uncertainty_primary_runs_a/run_1/information",
+      "source_commit": "3baaca653b1d9af110fdc1bbad34366289968339",
+      "source_receipt_sha256": "1d0be0f336cf0f31b3d6f3cdaf4e9a77957a40d5d668bb588ebc15d52b295dc6",
+      "status": "terminal",
+      "exit_code": 0,
+      "finished_utc": "2026-10-27T01:59:56.512246+00:00"
+    },
+    {
+      "id": "transfer_uncertainty_primary_runs_a/run_1/information_audit",
+      "process": {
+        "pid": 62355,
+        "parent_pid": 60844,
+        "command": [
+          "/Users/adowling/opt/anaconda3/bin/python",
+          "/private/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-error-3baaca65-zfg28ddm/skunk_works/delay_study/error_structure_study/audit_information.py",
+          "--output",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_uncertainty_primary_runs_a/run_1/information_audit",
+          "--input",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_uncertainty_primary_runs_a/run_1/information",
+          "--fit",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_primary_runs/run_1"
+        ],
+        "started_utc": "2026-10-27T01:59:56.518454+00:00",
+        "sequential_parent": "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_uncertainty_primary_runs_a"
+      },
+      "output": "skunk_works/delay_study/error_structure_study/results/transfer_uncertainty_primary_runs_a/run_1/information_audit",
+      "source_commit": "3baaca653b1d9af110fdc1bbad34366289968339",
+      "source_receipt_sha256": "2764c637cf7bf4e3f34c2748aa273b2989a08c1bc88dd1a8702a693c698d5dcf",
+      "status": "terminal",
+      "exit_code": 0,
+      "finished_utc": "2026-10-27T02:01:26.201695+00:00"
+    },
+    {
+      "id": "transfer_uncertainty_primary_runs_a/run_1/parameter_256",
+      "process": {
+        "pid": 62668,
+        "parent_pid": 60844,
+        "command": [
+          "/Users/adowling/opt/anaconda3/bin/python",
+          "/private/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-error-3baaca65-zfg28ddm/skunk_works/delay_study/error_structure_study/run_transfer_predict.py",
+          "--output",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_uncertainty_primary_runs_a/run_1/parameter_256",
+          "--input",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_primary_runs/run_1",
+          "--parameter-draws",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_uncertainty_primary_runs_a/run_1/draws/parameter_draws_256.npz"
+        ],
+        "started_utc": "2026-10-27T02:02:34.620301+00:00",
+        "sequential_parent": "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_uncertainty_primary_runs_a"
+      },
+      "output": "skunk_works/delay_study/error_structure_study/results/transfer_uncertainty_primary_runs_a/run_1/parameter_256",
+      "source_commit": "3baaca653b1d9af110fdc1bbad34366289968339",
+      "source_receipt_sha256": "bc2d73aed209a5b3471f71ffffd34eb472bcf9c159667fd6dd093d8f6eab4f72",
+      "status": "terminal",
+      "exit_code": 0,
+      "finished_utc": "2026-10-27T02:06:37.027875+00:00"
+    },
+    {
+      "id": "transfer_uncertainty_primary_runs_a/run_1/parameter_256_audit",
+      "process": {
+        "pid": 63211,
+        "parent_pid": 60844,
+        "command": [
+          "/Users/adowling/opt/anaconda3/bin/python",
+          "/private/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-error-3baaca65-zfg28ddm/skunk_works/delay_study/error_structure_study/audit_transfer_prediction.py",
+          "--output",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_uncertainty_primary_runs_a/run_1/parameter_256_audit",
+          "--input",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_uncertainty_primary_runs_a/run_1/parameter_256",
+          "--fit",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_primary_runs/run_1",
+          "--fit-audit",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_primary_runs_audit/point_0/audit.json"
+        ],
+        "started_utc": "2026-10-27T02:06:37.034330+00:00",
+        "sequential_parent": "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_uncertainty_primary_runs_a"
+      },
+      "output": "skunk_works/delay_study/error_structure_study/results/transfer_uncertainty_primary_runs_a/run_1/parameter_256_audit",
+      "source_commit": "3baaca653b1d9af110fdc1bbad34366289968339",
+      "source_receipt_sha256": "49036c88fc6d588f04083cde433e219bb1121409c8569aca06fbdf0b26e12639",
+      "status": "terminal",
+      "exit_code": 0,
+      "finished_utc": "2026-10-27T02:06:42.741961+00:00"
+    },
+    {
+      "id": "transfer_uncertainty_primary_runs_a/run_1/parameter_64",
+      "process": {
+        "pid": 62549,
+        "parent_pid": 60844,
+        "command": [
+          "/Users/adowling/opt/anaconda3/bin/python",
+          "/private/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-error-3baaca65-zfg28ddm/skunk_works/delay_study/error_structure_study/run_transfer_predict.py",
+          "--output",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_uncertainty_primary_runs_a/run_1/parameter_64",
+          "--input",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_primary_runs/run_1",
+          "--parameter-draws",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_uncertainty_primary_runs_a/run_1/draws/parameter_draws_64.npz"
+        ],
+        "started_utc": "2026-10-27T02:01:27.132091+00:00",
+        "sequential_parent": "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_uncertainty_primary_runs_a"
+      },
+      "output": "skunk_works/delay_study/error_structure_study/results/transfer_uncertainty_primary_runs_a/run_1/parameter_64",
+      "source_commit": "3baaca653b1d9af110fdc1bbad34366289968339",
+      "source_receipt_sha256": "482ffa12f2b8d9e12d253cb61fac86685508911c4505de9997e6fae7ba972732",
+      "status": "terminal",
+      "exit_code": 0,
+      "finished_utc": "2026-10-27T02:02:28.948761+00:00"
+    },
+    {
+      "id": "transfer_uncertainty_primary_runs_a/run_1/parameter_64_audit",
+      "process": {
+        "pid": 62656,
+        "parent_pid": 60844,
+        "command": [
+          "/Users/adowling/opt/anaconda3/bin/python",
+          "/private/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-error-3baaca65-zfg28ddm/skunk_works/delay_study/error_structure_study/audit_transfer_prediction.py",
+          "--output",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_uncertainty_primary_runs_a/run_1/parameter_64_audit",
+          "--input",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_uncertainty_primary_runs_a/run_1/parameter_64",
+          "--fit",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_primary_runs/run_1",
+          "--fit-audit",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_primary_runs_audit/point_0/audit.json"
+        ],
+        "started_utc": "2026-10-27T02:02:28.954611+00:00",
+        "sequential_parent": "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_uncertainty_primary_runs_a"
+      },
+      "output": "skunk_works/delay_study/error_structure_study/results/transfer_uncertainty_primary_runs_a/run_1/parameter_64_audit",
+      "source_commit": "3baaca653b1d9af110fdc1bbad34366289968339",
+      "source_receipt_sha256": "1362d4d957c51bcdc2769559eacc4116e8ff142ad9b8be327ff25a38f5d899f0",
+      "status": "terminal",
+      "exit_code": 0,
+      "finished_utc": "2026-10-27T02:02:34.615115+00:00"
+    },
+    {
+      "id": "transfer_uncertainty_primary_runs_a/run_2/information",
+      "process": {
+        "pid": 63223,
+        "parent_pid": 60844,
+        "command": [
+          "/Users/adowling/opt/anaconda3/bin/python",
+          "/private/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-error-3baaca65-zfg28ddm/skunk_works/delay_study/error_structure_study/run_information.py",
+          "--output",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_uncertainty_primary_runs_a/run_2/information",
+          "--input",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_primary_runs/run_2"
+        ],
+        "started_utc": "2026-10-27T02:06:42.751734+00:00",
+        "sequential_parent": "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_uncertainty_primary_runs_a"
+      },
+      "output": "skunk_works/delay_study/error_structure_study/results/transfer_uncertainty_primary_runs_a/run_2/information",
+      "source_commit": "3baaca653b1d9af110fdc1bbad34366289968339",
+      "source_receipt_sha256": "78a797fb0ead90cf12fad006b724775cfed3815d072c1c9eceb6d6f91fd0705f",
+      "status": "running_verified",
+      "last_verified_utc": "2026-10-27 02:08:42 UTC"
+    },
+    {
+      "id": "transfer_uncertainty_protocol120_refined",
+      "process": {
+        "pid": 60845,
+        "parent_pid": 60223,
+        "command": [
+          "/Users/adowling/opt/anaconda3/bin/python",
+          "/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-error-3baaca65-bd1bz52k/skunk_works/delay_study/error_structure_study/run_transfer_uncertainty_queue.py",
+          "--output",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_uncertainty_protocol120_refined",
+          "--input",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_protocol120_loading_refinement",
+          "--fit-audit",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_protocol120_loading_refinement_audit",
+          "--folds",
+          "protocol_120s"
+        ],
+        "started_utc": "2026-10-27T01:44:35.056689+00:00"
+      },
+      "output": "skunk_works/delay_study/error_structure_study/results/transfer_uncertainty_protocol120_refined",
+      "source_commit": "3baaca653b1d9af110fdc1bbad34366289968339",
+      "source_receipt_sha256": "2adb8936b3c6e4c8fc2cac041da7ca6f77e806ae34e9ec90bc5b474fadc489a0",
+      "status": "terminal",
+      "exit_code": 1,
+      "finished_utc": "2026-10-27T01:56:59.727891+00:00"
+    },
+    {
+      "id": "transfer_uncertainty_protocol120_refined/protocol_120s/information",
+      "process": {
+        "pid": 60950,
+        "parent_pid": 60845,
+        "command": [
+          "/Users/adowling/opt/anaconda3/bin/python",
+          "/private/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-error-3baaca65-bd1bz52k/skunk_works/delay_study/error_structure_study/run_information.py",
+          "--output",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_uncertainty_protocol120_refined/protocol_120s/information",
+          "--input",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_protocol120_loading_refinement/seed_0"
+        ],
+        "started_utc": "2026-10-27T01:45:19.056493+00:00",
+        "sequential_parent": "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_uncertainty_protocol120_refined"
+      },
+      "output": "skunk_works/delay_study/error_structure_study/results/transfer_uncertainty_protocol120_refined/protocol_120s/information",
+      "source_commit": "3baaca653b1d9af110fdc1bbad34366289968339",
+      "source_receipt_sha256": "ceac05035e0936da1bf4fd4932b4cfacad0d801000394a43b2a213eddaf2d80b",
+      "status": "terminal",
+      "exit_code": 0,
+      "finished_utc": "2026-10-27T01:56:14.334065+00:00"
+    },
+    {
+      "id": "transfer_uncertainty_protocol120_refined/protocol_120s/information_audit",
+      "process": {
+        "pid": 62037,
+        "parent_pid": 60845,
+        "command": [
+          "/Users/adowling/opt/anaconda3/bin/python",
+          "/private/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-error-3baaca65-bd1bz52k/skunk_works/delay_study/error_structure_study/audit_information.py",
+          "--output",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_uncertainty_protocol120_refined/protocol_120s/information_audit",
+          "--input",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_uncertainty_protocol120_refined/protocol_120s/information",
+          "--fit",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_protocol120_loading_refinement/seed_0"
+        ],
+        "started_utc": "2026-10-27T01:56:14.342039+00:00",
+        "sequential_parent": "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_uncertainty_protocol120_refined"
+      },
+      "output": "skunk_works/delay_study/error_structure_study/results/transfer_uncertainty_protocol120_refined/protocol_120s/information_audit",
+      "source_commit": "3baaca653b1d9af110fdc1bbad34366289968339",
+      "source_receipt_sha256": "ec5a36f55cea504fff7626b760ce360ccf26981972fbdbb705fd7a2426cb6f42",
+      "status": "terminal",
+      "exit_code": 1,
+      "finished_utc": "2026-10-27T01:56:59.638302+00:00"
+    },
+    {
+      "id": "transfer_uncertainty_protocol120_refined/protocol_120s/noise",
+      "process": {
+        "pid": 60854,
+        "parent_pid": 60845,
+        "command": [
+          "/Users/adowling/opt/anaconda3/bin/python",
+          "/private/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-error-3baaca65-bd1bz52k/skunk_works/delay_study/error_structure_study/run_transfer_predict.py",
+          "--output",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_uncertainty_protocol120_refined/protocol_120s/noise",
+          "--input",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_protocol120_loading_refinement/seed_0"
+        ],
+        "started_utc": "2026-10-27T01:44:36.656799+00:00",
+        "sequential_parent": "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_uncertainty_protocol120_refined"
+      },
+      "output": "skunk_works/delay_study/error_structure_study/results/transfer_uncertainty_protocol120_refined/protocol_120s/noise",
+      "source_commit": "3baaca653b1d9af110fdc1bbad34366289968339",
+      "source_receipt_sha256": "b3e8b399b66e591d30b3fce49847e281a7f29f724cd57b5f8bae13c323e956d5",
+      "status": "terminal",
+      "exit_code": 0,
+      "finished_utc": "2026-10-27T01:44:43.500930+00:00"
+    },
+    {
+      "id": "transfer_uncertainty_protocol120_refined/protocol_120s/noise_audit",
+      "process": {
+        "pid": 60862,
+        "parent_pid": 60845,
+        "command": [
+          "/Users/adowling/opt/anaconda3/bin/python",
+          "/private/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-error-3baaca65-bd1bz52k/skunk_works/delay_study/error_structure_study/audit_transfer_prediction.py",
+          "--output",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_uncertainty_protocol120_refined/protocol_120s/noise_audit",
+          "--input",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_uncertainty_protocol120_refined/protocol_120s/noise",
+          "--fit",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_protocol120_loading_refinement/seed_0",
+          "--fit-audit",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_protocol120_loading_refinement_audit/point_0/audit.json"
+        ],
+        "started_utc": "2026-10-27T01:44:43.507297+00:00",
+        "sequential_parent": "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_uncertainty_protocol120_refined"
+      },
+      "output": "skunk_works/delay_study/error_structure_study/results/transfer_uncertainty_protocol120_refined/protocol_120s/noise_audit",
+      "source_commit": "3baaca653b1d9af110fdc1bbad34366289968339",
+      "source_receipt_sha256": "c687aa0e40397e093047b6dbea48a699274b7d4a0c7db6c9a13f7c3dd2cb133c",
+      "status": "terminal",
+      "exit_code": 0,
+      "finished_utc": "2026-10-27T01:44:58.065936+00:00"
+    },
+    {
+      "id": "transfer_uncertainty_protocol120_refined/protocol_120s/reference_transport",
+      "process": {
+        "pid": 60869,
+        "parent_pid": 60845,
+        "command": [
+          "/Users/adowling/opt/anaconda3/bin/python",
+          "/private/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-error-3baaca65-bd1bz52k/skunk_works/delay_study/error_structure_study/run_transfer_predict.py",
+          "--output",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_uncertainty_protocol120_refined/protocol_120s/reference_transport",
+          "--input",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_protocol120_loading_refinement/seed_0",
+          "--reference-transport"
+        ],
+        "started_utc": "2026-10-27T01:44:58.072149+00:00",
+        "sequential_parent": "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_uncertainty_protocol120_refined"
+      },
+      "output": "skunk_works/delay_study/error_structure_study/results/transfer_uncertainty_protocol120_refined/protocol_120s/reference_transport",
+      "source_commit": "3baaca653b1d9af110fdc1bbad34366289968339",
+      "source_receipt_sha256": "f9c363574ec67feb8d6e782dcfbc58b5bc8b230d67e98d1348f850cd2f067f9d",
+      "status": "terminal",
+      "exit_code": 0,
+      "finished_utc": "2026-10-27T01:45:04.674971+00:00"
+    },
+    {
+      "id": "transfer_uncertainty_protocol120_refined/protocol_120s/reference_transport_audit",
+      "process": {
+        "pid": 60878,
+        "parent_pid": 60845,
+        "command": [
+          "/Users/adowling/opt/anaconda3/bin/python",
+          "/private/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-error-3baaca65-bd1bz52k/skunk_works/delay_study/error_structure_study/audit_transfer_prediction.py",
+          "--output",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_uncertainty_protocol120_refined/protocol_120s/reference_transport_audit",
+          "--input",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_uncertainty_protocol120_refined/protocol_120s/reference_transport",
+          "--fit",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_protocol120_loading_refinement/seed_0",
+          "--fit-audit",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_protocol120_loading_refinement_audit/point_0/audit.json"
+        ],
+        "started_utc": "2026-10-27T01:45:04.681251+00:00",
+        "sequential_parent": "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_uncertainty_protocol120_refined"
+      },
+      "output": "skunk_works/delay_study/error_structure_study/results/transfer_uncertainty_protocol120_refined/protocol_120s/reference_transport_audit",
+      "source_commit": "3baaca653b1d9af110fdc1bbad34366289968339",
+      "source_receipt_sha256": "fb7b863426468b09ba06ead6834c05c16f7d8458752ef812ae15060701a54da2",
+      "status": "terminal",
+      "exit_code": 0,
+      "finished_utc": "2026-10-27T01:45:19.049935+00:00"
+    },
+    {
       "id": "transfer_uncertainty_protocol30",
       "process": {
         "pid": 26164,
@@ -6425,8 +6859,58 @@
       "output": "skunk_works/delay_study/error_structure_study/results/transfer_uncertainty_shared_protocols",
       "source_commit": "bd00376da78ada9447abbf2d8edfb5e9f2770421",
       "source_receipt_sha256": "059834499fd7134f27e948c0cb2980d1ec334764210d83fbcafab6d306f30368",
-      "status": "running_verified",
-      "last_verified_utc": "2026-10-27 01:44:27 UTC"
+      "status": "terminal",
+      "last_verified_utc": "2026-10-27 01:44:27 UTC",
+      "exit_code": 1,
+      "finished_utc": "2026-10-27T01:54:21.291304+00:00"
+    },
+    {
+      "id": "transfer_uncertainty_shared_protocols/protocol_120s/information",
+      "process": {
+        "pid": 60861,
+        "parent_pid": 47003,
+        "command": [
+          "/Users/adowling/opt/anaconda3/bin/python",
+          "/private/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-error-bd00376d-qsy9b30a/skunk_works/delay_study/error_structure_study/run_information.py",
+          "--output",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_uncertainty_shared_protocols/protocol_120s/information",
+          "--input",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_shared_protocols/protocol_120s"
+        ],
+        "started_utc": "2026-10-27T01:44:42.816832+00:00",
+        "sequential_parent": "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_uncertainty_shared_protocols"
+      },
+      "output": "skunk_works/delay_study/error_structure_study/results/transfer_uncertainty_shared_protocols/protocol_120s/information",
+      "source_commit": "bd00376da78ada9447abbf2d8edfb5e9f2770421",
+      "source_receipt_sha256": "9f1ad4cf78dba747a0f5bd2641ba005f9e3e0128ddc9c3ce9283133b3f0c06ed",
+      "status": "terminal",
+      "exit_code": 0,
+      "finished_utc": "2026-10-27T01:53:05.449999+00:00"
+    },
+    {
+      "id": "transfer_uncertainty_shared_protocols/protocol_120s/information_audit",
+      "process": {
+        "pid": 61838,
+        "parent_pid": 47003,
+        "command": [
+          "/Users/adowling/opt/anaconda3/bin/python",
+          "/private/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-error-bd00376d-qsy9b30a/skunk_works/delay_study/error_structure_study/audit_information.py",
+          "--output",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_uncertainty_shared_protocols/protocol_120s/information_audit",
+          "--input",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_uncertainty_shared_protocols/protocol_120s/information",
+          "--fit",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_shared_protocols/protocol_120s"
+        ],
+        "started_utc": "2026-10-27T01:53:05.457400+00:00",
+        "sequential_parent": "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_uncertainty_shared_protocols"
+      },
+      "output": "skunk_works/delay_study/error_structure_study/results/transfer_uncertainty_shared_protocols/protocol_120s/information_audit",
+      "source_commit": "bd00376da78ada9447abbf2d8edfb5e9f2770421",
+      "source_receipt_sha256": "abc54bb9df74a9eb6043e02433b7d7b40123b9ca58dc120dbc4bc945e4f4861f",
+      "status": "terminal",
+      "exit_code": 1,
+      "finished_utc": "2026-10-27T01:54:21.195961+00:00"
     },
     {
       "id": "transfer_uncertainty_shared_protocols/protocol_30s/draws",
@@ -6528,8 +7012,37 @@
       "output": "skunk_works/delay_study/error_structure_study/results/transfer_uncertainty_shared_protocols/protocol_30s/parameter_256",
       "source_commit": "bd00376da78ada9447abbf2d8edfb5e9f2770421",
       "source_receipt_sha256": "71aa9bc871316c54b84af204015af616dacf6e52973a811ffa5b9bb7e6740827",
-      "status": "running_verified",
-      "last_verified_utc": "2026-10-27 01:44:27 UTC"
+      "status": "terminal",
+      "last_verified_utc": "2026-10-27 01:44:27 UTC",
+      "exit_code": 0,
+      "finished_utc": "2026-10-27T01:44:30.292672+00:00"
+    },
+    {
+      "id": "transfer_uncertainty_shared_protocols/protocol_30s/parameter_256_audit",
+      "process": {
+        "pid": 60340,
+        "parent_pid": 47003,
+        "command": [
+          "/Users/adowling/opt/anaconda3/bin/python",
+          "/private/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-error-bd00376d-qsy9b30a/skunk_works/delay_study/error_structure_study/audit_transfer_prediction.py",
+          "--output",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_uncertainty_shared_protocols/protocol_30s/parameter_256_audit",
+          "--input",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_uncertainty_shared_protocols/protocol_30s/parameter_256",
+          "--fit",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_shared_protocols/protocol_30s",
+          "--fit-audit",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_shared_protocols_audit/point_0/audit.json"
+        ],
+        "started_utc": "2026-10-27T01:44:30.297087+00:00",
+        "sequential_parent": "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_uncertainty_shared_protocols"
+      },
+      "output": "skunk_works/delay_study/error_structure_study/results/transfer_uncertainty_shared_protocols/protocol_30s/parameter_256_audit",
+      "source_commit": "bd00376da78ada9447abbf2d8edfb5e9f2770421",
+      "source_receipt_sha256": "6a5d71692eb4d6342baa4256ea40c3cc0b830034aca2f180bece641c698e1e6c",
+      "status": "terminal",
+      "exit_code": 0,
+      "finished_utc": "2026-10-27T01:44:42.807149+00:00"
     },
     {
       "id": "transfer_uncertainty_shared_protocols/protocol_30s/parameter_64",
@@ -6708,11 +7221,11 @@
   ],
   "live_jobs": [
     "profile_remaining_b10",
-    "transfer_uncertainty_shared_protocols",
-    "transfer_uncertainty_shared_protocols/protocol_30s/parameter_256"
+    "transfer_uncertainty_primary_runs_a",
+    "transfer_uncertainty_primary_runs_a/run_2/information"
   ],
   "next_action": "Four numerical queues now cover remaining radiation profiles, all shared-protocol uncertainty, the refined protocol120 full pipeline with regenerated canonical forecasts, and primary run1..6 propagation. The source/configuration for a six-point representative hidden-start profile is committed before measurement; its short independent control must pass in the next available slot. Then run/audit that profile, independently summarize initial/bin sensitivities in reported-code space, finish run7..12 propagation and all figure/report/completion gates. Index only terminal independently audited transfer components; no scope reduction or email.",
-  "updated_utc": "2026-10-27T01:44:27.670156+00:00",
+  "updated_utc": "2026-10-27T02:08:42.585286+00:00",
   "last_goal_turn_classification": "progress: completed and independently audited all fifty recovery outcomes, binomial Monte Carlo limits, moments/quantiles, label/bound counts and all fourteen refitted diagnostics; inspected the four-panel figure and reported material label ambiguity and remaining residual structure.",
   "controller_sessions": {
     "joint_conductance_b00": 55866,
@@ -6829,10 +7342,10 @@
   ],
   "process_check": {
     "path": "process_check.json",
-    "checked_utc": "2026-10-27 01:44:27 UTC",
-    "sha256": "37082f20d127e74b08fcd6e3632e1a17ffdc0735680e6147d4dee599e07ef974",
-    "method": "Direct approved pgrep -fl tclab-error tool",
-    "snapshot_age_s": 0.670156
+    "checked_utc": "2026-10-27 02:08:42 UTC",
+    "sha256": "123a5b8a50018223165114f9c4bb55719fb81bdc84498332c856280407a773c2",
+    "method": "direct exec_command pgrep -fl tclab-error; exact PID and command binding",
+    "snapshot_age_s": 0.585286
   },
   "reconciliation_warnings": {
     "missing_exit_or_matching_process": [],
@@ -7140,6 +7653,6 @@
   ],
   "live_worker_slots": [
     "profile_remaining_b10",
-    "transfer_uncertainty_shared_protocols"
+    "transfer_uncertainty_primary_runs_a"
   ]
 }

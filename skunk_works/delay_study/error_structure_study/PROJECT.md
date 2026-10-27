@@ -466,3 +466,20 @@ required. Original fits, canonical forecasts and failed information artifacts
 remain unchanged. The fresh process reconciliation found two free worker slots;
 the earlier controller's exact-three-active expectation was protective but too
 restrictive and launched nothing. More free slots do not violate the limit.
+
+## October 27, 02:10 UTC execution checkpoint
+
+The startup-profile control passed: dimensional propagation agrees within
+3.6e-15 C and all four hidden-heater scores agree with independent likelihood
+differences within 2.3e-9 scaled error. Fixed-state and CLI routing checks passed.
+The six-point representative profile is now released for measurement.
+
+The shared protocol120 information audit confirms negative curvature
+(-0.00475); no covariance was accepted. The primary refined120 audit instead
+stopped at its independent scalar-curvature gate: the old one-sided .005
+stencil differs by0.0375 from H22=249.20545. This can be truncation at the
+new, much larger loading, and requires a saved convergence study with unchanged
+.001 agreement tolerance before changing the stencil. Both failures remain.
+The protocol300/step full pipelines are terminal and passed; their figures and
+final index integration remain. The shared30 full pipeline passed numerically.
+The first six run pipelines and remaining radiation profile are still active.
