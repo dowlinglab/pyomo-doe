@@ -22,8 +22,8 @@
 \maketitle\vspace{-1em}
 \textbf{Work in progress.} This layout draft contains audited intermediate
 results. Joint discrete-data fits, local information and all twenty canonical
-transfer folds are audited. Profiles, refitted uncertainty
-calibration and parameter-inclusive transfer remain underway.
+transfer folds are audited. Fifty-draw refitted recovery and initial/bin sensitivities are audited;
+remaining profiles and parameter-inclusive transfer are underway.
 It is not the completed study report.
 
 \begin{tabularx}{\linewidth}{@{}>{\raggedright\arraybackslash}p{1.02in}>{\raggedright\arraybackslash}X>{\raggedright\arraybackslash}X@{}}
@@ -36,9 +36,9 @@ Audited; little nominal protocol-transfer gain.\\
 Does radiation explain the rest? & Free radiation gives
 $0.590/0.119\C$ in the joint fit; bin nll improves by 3.810. &
 Conditional change; boundary profile pending.\\
-Are cold starts plausible? & Hidden heater offsets remain below
-$0.35\C$ with either $\pm2$ or $\pm5\C$ bounds. &
-Working assumption, not verified equilibrium.\\
+Are cold starts plausible? & Quantized hidden heater offsets remain below
+$0.515\C$, but exchange lag labels. &
+Fits audited; startup profile underway, equilibrium unverified.\\
 Are measurements discrete? & All 21,614 temperatures match a shifted
 $0.3223\C$ code grid. & Hardware evidence; threshold phase remains assumed.\\
 Do lag labels identify physics? & At the loading boundary, a nominal
@@ -296,6 +296,21 @@ T1 free-simulation RMSE increases to $0.655\C$, while T2 falls to $0.113\C$.
 Better correlated-bin likelihood does not imply better noise-free simulation.
 These bin bounds do not integrate an initial measurement-noise posterior.
 
+An observation-space check prevents a bin-reference shift from masquerading
+as improved prediction. The freely initialized nearest/floor fits differ in
+expected reported output by less than $0.00030\C$. Exact half-grid translation
+preserves those expectations within $3.1\times10^{-12}\C$. Their different raw
+code-minus-analogue-reference RMSE therefore does not demonstrate different
+predictive quality. The nearest free-initial fit's reported-code RMSE is
+$0.655/0.108\C$; stationary analogue noise and code integration are included.
+
+Hidden-heater-only $\pm2$ and $\pm5\C$ sensitivities coincide, with maximum
+selected offset $0.514\C$. They favor sensor time 2.667 s and input lag
+14.898 s, reversing the baseline labels. Their reported-code RMSE is
+$0.682/0.109\C$, against baseline $0.605/0.114\C$. A better likelihood did
+not improve T1 free prediction. The representative startup profile is pending.
+These changes are distinct from the earlier Gaussian hidden-start comparison.
+
 Profiles refit all ambient, conductance and noise nuisances. Sensor-loading
 bounds, initial-state sensitivities and lag alternatives make routine Wald
 intervals unsafe without those checks.
@@ -308,11 +323,36 @@ improving the reference. These checks expose a second region; they do not
 locate its free minimum, interpolate endpoints or calibrate an exclusion of
 that lag assignment.
 
-The separate fifty-draw recovery study refits simulated quantized records.
-Each draw also fits gain at its generating value to assess coverage of the
-nominal scalar likelihood-ratio cutoff. Failed fits, retries and Monte Carlo
-uncertainty remain in the denominator and report. This conditional exercise
-does not protect against mean/noise misspecification.
+\subsection*{Fifty refitted recovery collections}
+All fifty declared generated collections and all one hundred free/true-gain
+point audits passed, with no missing outcome. The nominal 95\% gain
+likelihood-ratio region includes the generating value in 49/50 collections.
+Its independently inverted exact-binomial 95\% Monte Carlo interval is
+89.35--99.95\%. This is conditional on the generating model, initialization,
+bins, bounds and fitting algorithm. It does not establish real-device coverage.
+
+Fifteen refits exchange the sensor/input lag labels. Unordered fast and slow
+2.5--97.5\% repeated-fit ranges are 2.547--2.898 s and 14.419--15.576 s.
+These are estimator quantiles, not physical confidence intervals. Gain's
+sampling SD is 0.898 times its local SE; log thermal time spreads 4.780 times
+farther than the selected-face approximation. Named lag-coordinate spreads
+mix the two label regions and should not be summarized as one Gaussian error.
+
+Refitting preserves the residual inadequacy finding. The reference 97.5\%
+values for T1 input, T1 phase, T2 ACF and cross-channel diagnostics become
+0.01689, 0.02146, 0.03894 and 0.03014, respectively. The hardware values in
+the earlier table exceed every one of the fifty refitted references. These
+are descriptive selected-diagnostic ranks, without multiple-testing or
+structure-selection calibration. Randomized PIT agreement has not established
+approximately IID innovations.
+
+\begin{figure}[!htbp]
+\centering\includegraphics[width=\linewidth]{images/recovery_report.pdf}
+\caption{Conditional recovery from fifty fully audited refits. Lag labels
+exchange while the two time scales remain separated. The gain calculation
+checks nominal scalar LR coverage only. Hardware residual diagnostics exceed
+the refitted ranges; the analysis has not resolved their cause.}
+\end{figure}
 
 \subsection*{All twenty canonical transfer folds}
 Twelve fits omit one run each. Four band-model fits and four shared-conductance
@@ -368,8 +408,9 @@ and conditions on one likelihood basin. Adding 256 draws changes condition-plus-
 mean widths from $9.119/5.134\C$ to $9.223/5.206\C$.
 Using 256 instead of the shared-prefix 64 draws moves 2.26/2.69\% of endpoints,
 by at most one reported code (0.33 C). This checks mixture resolution, not
-coverage calibration or released-bound/basin uncertainty. Nineteen full
-parameter pipelines remain unfinished. The local joint-bin log-input-lag SE
+coverage calibration or released-bound/basin uncertainty. Four full
+components are audited; sixteen remain, including two stopped information
+gates under investigation. The local joint-bin log-input-lag SE
 without fast-sine data is 0.1232, versus 0.0324 in the twelve-run fit.
 
 Each retained subset also defines a different geometric nominal conductance.
@@ -382,8 +423,8 @@ forecasts. A separately declared forecast stress check will propagate this
 range while preserving the training fits. It is not a transported cohort
 likelihood or a corrected coverage calibration.
 
-The remaining questions are whether the discrete-data model removes
-input-linked residual structure, whether the conductance band transfers
+The refitted checks retain input-linked residual structure. Remaining
+questions include whether the conductance band transfers
 across protocols, how startup/threshold assumptions assign the lag labels,
 and which uncertainty statements survive refitting and simulation.
 A future hood experiment should log ambient temperature, absolute time, prior

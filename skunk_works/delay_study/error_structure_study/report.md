@@ -1,8 +1,9 @@
 # TC-Lab remaining-error investigation
 
 Working draft for Alex Dowling, October 26, 2026. The goal remains active.
-Profiles, full refitted uncertainty calibration, nineteen parameter-inclusive
-transfer pipelines and several startup/bin sensitivities are unfinished. The
+The fifty-draw refitted recovery study and initial/bin comparisons are audited.
+Remaining profiles and sixteen parameter-inclusive transfer components are
+unfinished; two transfer information audits stopped before covariance acceptance. The
 [completion register](completion_audit.md) lists the remaining gates. This
 Markdown companion will be checked with the final tablet PDF after those gates.
 
@@ -10,7 +11,7 @@ Markdown companion will be checked with the final tablet PDF after those gates.
 | --- | --- | --- |
 | Does a shared model with modest run variation help? | A shared nominal conductance with a 10% centered run band reduces joint-bin T1/T2 RMSE from 1.010/0.239 to 0.605/0.118 C. | Selected fits audited; nominal transfer improves much less. |
 | Does radiation explain the rest? | The joint radiative fit gives 0.590/0.119 C and improves bin negative log likelihood by 3.810. | Conditional improvement; radiation profile pending. |
-| Were cold starts a bad assumption? | Gaussian hidden-heater offsets remain below 0.35 C with either +/-2 or +/-5 C bounds. | Quantized comparisons pending; actual equilibrium unverified. |
+| Were cold starts a bad assumption? | Quantized hidden-heater offsets remain below 0.515 C with either +/-2 or +/-5 C bounds, but select the opposite lag labels. | Fits audited; consequential startup profile pending. |
 | Are the hardware readings quantized? | All 21,614 temperatures lie on round(0.3223*n - 50, 2). | Hardware-data evidence; exact thresholds and analogue noise remain assumptions. |
 | Can we assign the short and long lags physically? | Sensor/input factors exchange in the zero-loading limit; the fitted small-loading model retains a second likelihood region. | Lag labels weakly assigned; no calibrated exclusion of the second region. |
 | Are the innovations adequate for inference? | Deterministic code diagnostics retain input, phase and cross-channel structure. | IID adequacy has not been established. |
@@ -93,7 +94,8 @@ correlation is 0.04429 versus a reference 97.5% value 0.02261; maximum
 cross-channel correlation is 0.04895 versus 0.02540. Trend and harmonic
 projection leaves cross correlation 0.04719 versus 0.02603. These are
 descriptive ranks from fitted, fixed-model references. Refitted references
-and multiple-diagnostic limitations remain necessary.
+are now complete; all four selected hardware diagnostics still exceed every
+refitted reference. The multiple-diagnostic and structure-selection limitations remain.
 
 Using earlier reported codes to update the disturbance state gives whole-data
 one-step RMSE 0.103/0.087 C, and at least 60 s ahead 0.255/0.110 C. These
@@ -104,8 +106,10 @@ Correlation changes parameter uncertainty by direction. Holding the same
 analogue marginal variance, it increases local gain and thermal-time standard
 errors by factors 4.55 and 5.83, while reducing the short-lag standard error
 to 0.645 of its IID value. These local calculations condition on one basin
-and its active constraint face. The fifty-draw refitted recovery/calibration
-study is still undergoing independent audits.
+and its active constraint face. The fifty-draw refitted recovery study and all 100 free/true-gain point audits
+are complete. The nominal gain likelihood-ratio region covers 49/50 generated
+collections. The exact-binomial 95% Monte Carlo interval is 89.35--99.95%;
+this checks the fitted model and algorithm rather than real-device adequacy.
 
 Input and sensor lags nearly exchange at weak sensor loading. The audited
 coarse profile rises strongly between the two regions, then falls again near
@@ -113,6 +117,24 @@ coarse profile rises strongly between the two regions, then falls again near
 twice negative log likelihood by 4.78730. It neither improves the reference
 nor locates the free secondary minimum. Profiles and initialization
 sensitivities must accompany physical lag labels and local covariance.
+
+Fifteen of the fifty fits reverse the sensor/input lag labels. Their unordered
+fast and slow time scales have 2.5--97.5% repeated-fit ranges of
+2.547--2.898 s and 14.419--15.576 s. These are estimator quantiles under
+the generating model, not physical confidence intervals. Gain's empirical
+standard deviation is 0.898 times its local standard error; log thermal
+time spreads 4.780 times farther than its local approximation. A small
+selected-basin covariance misses the lag-label ambiguity.
+
+The hidden-heater fits bounded at +/-2 and +/-5 C coincide, with largest
+offset 0.514 C, sensor time 2.667 s and input time 14.898 s. They give
+reported-code RMSE 0.682/0.109 C, versus 0.605/0.114 C for the baseline.
+A better likelihood did not improve T1 free prediction. Free-initial
+nearest/floor fits give practically identical expected reported codes
+(maximum difference below 0.00030 C), despite different analogue-reference
+RMSE. Exact half-grid translation preserves expected codes within
+3.1e-12 C. Bin phase alone is not dynamic information under that reference
+freedom. Fixed starts and absolute-temperature radiation can break it.
 
 Evidence and limits: [interim uncertainty analysis](uncertainty_interim.md),
 [lag argument](lag_identifiability.md), [sequential method](sequential_methods.md),
@@ -146,7 +168,8 @@ The first complete local-parameter propagation, omitting the three fast sine
 runs, changes mean scenario-plus-noise widths from 9.119/5.134 to
 9.223/5.206 C. Its local normal fixes the active loading bound and one basin.
 The 64/256 shared-prefix comparison changes some endpoints by one code.
-Nineteen pipelines remain. Changing the training set also changes the nominal
+Four full components are audited; sixteen remain, including two failed
+information gates under investigation. Changing the training set also changes the nominal
 conductance reference; compare invariant combinations such as gain/thermal
 time before interpreting raw gain shifts physically.
 
@@ -156,8 +179,9 @@ Evidence: [all twenty canonical folds](results/transfer_all_canonical_summary/su
 
 ## Questions for scientific review
 
-The remaining analyses must establish which uncertainty conclusions survive
-refitting, startup/threshold assumptions and retrospective transfer. The
+Refitting preserves the residual inadequacy finding. The remaining analyses
+must establish how consequential startup assumptions and incomplete transfer
+uncertainty affect the conclusions. The
 existing data have not identified an environmental cause, emissivity, an
 electrical power law or a unique physical assignment of both lags.
 

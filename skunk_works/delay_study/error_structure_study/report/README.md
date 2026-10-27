@@ -1,9 +1,9 @@
 # Working report
 
 This is an intermediate LaTeX/PDF draft. It is not the completed
-remaining-error study. The first page states that status; pending profiles,
-refitted coverage, transfer, selected sensitivities and final figures remain.
-The final report also needs its concise Markdown companion.
+remaining-error study. The first page states that status; remaining profiles, full transfer uncertainty and final pagination remain.
+The fifty-draw recovery and initialization comparisons are included in this
+eight-page PDF and its concise Markdown companion.
 
 The document opens in the built-in LaTeX editor as this project. A local TeX
 Live build produces main.pdf. Use two pdflatex passes if references or pagination

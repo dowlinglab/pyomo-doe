@@ -10,24 +10,34 @@ Read run_manifest.json and a fresh direct-tool process snapshot before dispatch.
 Only terminal audited results support report claims. All twelve ENV2 records
 informed structure selection; transfer is retrospective.
 
-## Current checkpoint: October 27, 00:33 UTC
+## Current checkpoint: October 27, 02:17 UTC
 
-The complete fifty-draw recovery and independent summary audit passed. Gain's
-nominal 95% likelihood-ratio region covers 49/50 generated collections; the
-independently inverted binomial 95% Monte Carlo interval is 89.35--99.95%.
-Fifteen fits exchange the sensor/input lag labels. All four selected hardware
-input/phase/T2-ACF/cross diagnostics exceed every refitted reference. These are
-conditional algorithm/model checks, not hardware confidence guarantees or a
-successful whitening result. Source: recovery_b10_full50_summary and its audit;
-the figure was inspected.
+The full fifty-draw recovery and independent summary audit passed: gain coverage
+49/50, exact-binomial MC interval89.35--99.95%, fifteen lag-label exchanges.
+All four selected hardware input/phase/T2-ACF/cross statistics exceed all fifty
+refitted references. The eight-page WIP PDF and Markdown now contain these
+results; numeric checks bind295 files, all eight pixels/geometry were reviewed.
+Final pagination and remaining inference are still pending.
 
-Current unfinished numerical work is the initial/bin queue, remaining radiation
-profile and protocol120 loading refinement. The latter follows a confirmed
-nonpositive-curvature audit and retains original forecasts. The next available
-slot advances full protocol300/step uncertainty, then twelve run and four shared
-protocol pipelines. All nineteen missing parameter components remain required.
-Earlier execution notes below preserve the chronology; consult the manifest and
-this checkpoint for current task state.
+All initial/bin cases passed selected-point audits. In reported-code space,
+freely initialized floor/nearest fits differ below0.00030C. Their changed
+analogue-reference RMSE is not predictive improvement. Hidden +/-2/5C fits
+coincide (maximum0.514C) and reverse the lag labels, triggering the declared
+six-point startup profile. Its independent score/propagation control passed.
+
+Four full transfer components are indexed and reviewed: primary30/300/step
+and shared30. Primary120 extra loading starts improve nll, but the old scalar
+curvature stencil needs a saved convergence study at the larger loading.
+Shared120 has confirmed negative weak-loading curvature and needs the existing
+additional-start policy. Both original failed audits remain. No covariance
+was accepted on those failures. Shared300/step propagation remains undispatched.
+
+Four long slots are allocated: remaining radiation profile, startup profile,
+primary runs1--6 and runs7--12. Reconcile exact identities before any dispatch.
+Next free slot: committed diagnose_loading_stencils.py on primary refined120,
+then consider a justified auditor stencil update without relaxing the .001 gate;
+use another slot for shared120 additional starts. Consult run_manifest for
+actual receipts and sessions rather than historical pending prose below.
 
 ## Audited scientific results
 

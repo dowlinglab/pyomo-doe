@@ -327,6 +327,9 @@ def main():
         width=sum(np.sum(arrays[prefix+'_high_'+str(j)]-arrays[prefix+'_low_'+str(j)],axis=0) for j in range(3))
         nobs=sum(len(arrays[prefix+'_high_'+str(j)]) for j in range(3));width=width/nobs
         assert f'{width[0]:.3f}/{width[1]:.3f}' in markdown
+    from check_recovery_initial import check as recovery_initial_check
+    recovery_initial_check(STUDY,text,markdown,binding)
+    binding(HERE/'check_recovery_initial.py')
     args.output.write_text(json.dumps({'status':'passed','source_sha256':sha(HERE/'main.tex'),
         'markdown_source_sha256':sha(STUDY/'report.md'),
         'checker_source_sha256':sha(Path(__file__)),
