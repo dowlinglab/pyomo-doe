@@ -493,3 +493,15 @@ new, much larger loading, and requires a saved convergence study with unchanged
 The protocol300/step full pipelines are terminal and passed; their figures and
 final index integration remain. The shared30 full pipeline passed numerically.
 The first six run pipelines and remaining radiation profile are still active.
+
+## October27 remaining nuisance profiles complete
+
+The four-coordinate queue exited0 at03:03:58UTC. All28 points and their
+independent numerical checks passed; no point improves its reference. The
+inspected source-bound figure v3 retains every point. Read
+nuisance_profile_findings.md for the conditional comparisons and boundary
+limits. The primary refined120 scalar-curvature convergence study now occupies
+the released long slot; its first three centered fourth-order stencils agree
+within2.2e-5, while the old forward errors shrink by about4 on step halving.
+Full study termination and unchanged .001 audit agreement are still required
+before accepting a covariance. Startup and the two run queues remain live.
