@@ -10,6 +10,7 @@ import numpy as np
 from physical import load_records
 from joint_quantized import Model
 from draw_local import conditional_draws
+from continuation import parent_receipt
 from run_bounded import write
 
 
@@ -43,12 +44,13 @@ def main():
         fitdir=Path(case['fit_directory']);information=Path(case['information']);auditor=Path(case['information_audit']);drawdir=Path(case['draws'])
         fit=json.loads((fitdir/'fit.json').read_text());info=json.loads((information/'information.json').read_text());audit=json.loads((auditor/'audit.json').read_text());receipt=json.loads((drawdir/'draw_receipt.json').read_text())
         for directory in [fitdir,information,auditor,drawdir]:
-            if (directory/'exit.json').exists():assert json.loads((directory/'exit.json').read_text())['exit_code']==0
+            assert parent_receipt(directory,require_terminal=True)['exit']['exit_code']==0
         assert audit['status']=='passed' and fit['family']=='conductance'
         assert not any(fit.get(k) for k in ['fixed_coordinates','startup_band_C','initial_sensor_bins','condition_initial_code','dataset'])
         fitsha=sha(fitdir/'fit.json');assert fitsha==info['fit_sha256']==audit['fit_sha256']==receipt['fit_sha256']
         assert audit['matrix_sha256']==receipt['information_matrix_sha256']==sha(information/'information_matrices.npz')
         assert receipt['information_audit_sha256']==sha(auditor/'audit.json')
+        assert audit['information_sha256']==sha(information/'information.json') and receipt['draws']==256
         records=[lookup[n] for n in fit['record_names']];assert all(d['sha256']==fit['raw_sha256'][d['name']] for d in records)
         model=Model(records,fit['band'],fit['phase'],128,'conductance',minimum_sensor_loading=fit.get('minimum_sensor_loading',.005),score_backend='compiled')
         assert model.coordinate_names()==info['coordinate_names']==fit['coordinate_names']
@@ -63,7 +65,7 @@ def main():
             row={'draw_index':index,'twice_linear_term':linear,'quadratic_term':quadratic,'taylor_prediction':linear+quadratic,
                 'loading_ratio':float(np.exp(q[2]))}
             try:
-                value=model.objective(q);actual=float(2*(value-f0));row.update({'status':'evaluated','twice_nll_difference':actual,
+                value=model.objective(q);assert np.isfinite(value);actual=float(2*(value-f0));row.update({'status':'evaluated','twice_nll_difference':actual,
                     'absolute_taylor_error':abs(actual-linear-quadratic),'relative_error_to_1_plus_abs_actual':abs(actual-linear-quadratic)/(1+abs(actual))})
             except Exception as exc:row.update({'status':'failed_evaluation','exception':repr(exc)})
             rows.append(row);write(args.output/(case['id']+'_draws.json'),rows)
