@@ -3,8 +3,9 @@
 This is a progress note, not the completed report. The goal remains active.
 The selected mean/bin fits and information results below have terminal
 independent audits. The gain profile and all seven point audits are complete;
-remaining nuisance profiles, refitted coverage, retrospective transfer and
-several initialization sensitivities remain unfinished.
+remaining nuisance profiles, complete parameter-inclusive transfer and several
+initialization sensitivities remain unfinished. The fifty-draw recovery and
+refitted-diagnostic study is now complete and independently audited below.
 
 ## The run band and loading boundary
 
@@ -112,8 +113,8 @@ Evidence: joint_b10_nonrandom_diagnostics; its figure was inspected.
 
 Whitening is therefore unfinished. The larger randomization-based check looked
 less concerning, but cannot overrule the code-based input/phase and cross
-structure. The recovery sweep will add refitted diagnostic references within
-the chosen working model and retain every failed draw.
+structure. The completed recovery sweep below adds refitted diagnostic references within
+the chosen working model, with every declared outcome retained.
 
 ## Next discriminating checks
 
@@ -333,3 +334,60 @@ transfer_all_canonical_summary accounts for all twenty folds, with no missing
 fold IDs, but remains **partial** because nineteen parameter pipelines are
 unfinished. The remaining six bin/initial/hidden-heater cases are now running
 in initial_remaining_b10, alongside the remaining profiles and recovery shards.
+
+## Complete fifty-draw recovery and refitted diagnostics
+
+All fifty declared generated collections have accepted free and true-gain fits,
+exact seed/data regeneration, saved refitted diagnostics and independently
+passed selected-point numerical checks. The full-design audit binds both current
+continuation ledgers and all one hundred cached point checks. No failed or missing
+outcome is omitted. The source-bound summary and an independent arithmetic audit
+also passed: one hundred saved objective values, all thirty-seven coordinates,
+manual order-statistic quantiles, active-bound/lag counts and fourteen refitted
+diagnostic statistics. Its four-panel figure was inspected.
+
+The nominal 95% gain likelihood-ratio region covers the generating value in
+49/50 collections. Direct binomial-tail inversion confirms the finite beta-quantile
+output despite its retained SciPy overflow warning: the 95% Monte Carlo interval
+is 89.353--99.949%. Fifty draws do not tightly establish coverage, and this is
+conditional on the specified generating model, initial/bin conventions, bounds
+and fitting algorithm. It does not calibrate hardware uncertainty or every
+training-fold parameter mixture.
+
+| Coordinate | Refitted estimator SD | Generating-point active-face local SE | SD / local SE |
+| --- | ---: | ---: | ---: |
+| log gain | 0.003018 | 0.003362 | 0.898 |
+| log thermal time | 0.014765 | 0.003089 | 4.780 |
+| log sensor time | 0.782163 | 0.011361 | 68.845 |
+| log input time | 0.781136 | 0.032430 | 24.087 |
+| Command curvature | 0.010054 | 0.011243 | 0.894 |
+
+Fifteen of fifty fits put the sensor time below the input time, reversing their
+generating labels. The estimator distribution crosses lag basins, so the large
+labeled SDs must not be read as a single Gaussian uncertainty interval. Unordered
+fast/slow time quantiles (2.5/50/97.5%) are 2.547/2.733/2.898 s and
+14.419/14.805/15.576 s. These are conditional repeated-fit quantiles, not confidence
+intervals for the device. The lag scales are much more stable than their physical
+assignment. The thermal-time spread also exceeds the fixed-face approximation;
+gain and command-curvature spread are closer to their conditional local SEs.
+
+| Hardware statistic | Data | Refitted reference 97.5% | Descriptive upper-tail rank |
+| --- | ---: | ---: | ---: |
+| T1 input/score correlation | 0.04429 | 0.01689 | 1/51 |
+| T1 maximum phase projection | 0.02983 | 0.02146 | 1/51 |
+| T2 maximum score ACF, lags 1--60 | 0.04695 | 0.03894 | 1/51 |
+| Cross-channel maximum, lags +/-10 | 0.04895 | 0.03014 | 1/51 |
+
+All four hardware statistics exceed every refitted reference. Accounting for
+parameter fitting has not explained the input/phase and cross dependence. These
+ranks account for fitting within the declared family/algorithm, but not structure
+selection or a joint multiple-diagnostic calibration. Approximately IID
+innovations have not been established.
+
+Evidence: [full numerical/data audit](results/recovery_b10_full50_audit/audit.json),
+[full summary](results/recovery_b10_full50_summary/summary.json),
+[independent scalar/quantile/diagnostic audit](results/recovery_b10_full50_summary_audit/audit.json)
+and [inspected figure](results/recovery_b10_full50_summary/recovery_summary.png).
+The separate protocol120 information failure and targeted loading-start
+investigation are recorded in transfer_methods.md; no covariance from its
+nonpositive-curvature point is accepted.
