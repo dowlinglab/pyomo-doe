@@ -1,0 +1,100 @@
+{
+  "status": "passed",
+  "fit_sha256": "3672cc7dbfce5133cbc13298f8e6fbcb61fcf37e4dc435cf3bca9a6d549ed332",
+  "training_fit_audit_sha256": "1dd1a9a949a716192e971058921611920b11492e3ef5cf8b4b533ec708f420ee",
+  "prediction_sha256": "e8c293f01afe1d847d089af5dcaed08b0cde11eddc034013a6e021f0c63dbffb",
+  "arrays_sha256": "bc67a267d2af64e3558d9a2494573800f4d9e3b928b4220c612ee837c38a42e8",
+  "parameter_draw_receipt": {
+    "status": "complete",
+    "fit_sha256": "3672cc7dbfce5133cbc13298f8e6fbcb61fcf37e4dc435cf3bca9a6d549ed332",
+    "information_matrix_sha256": "0d742e6149361ca8dedf4ab55600432fe7503ce3f63938a4386bbccc337fb0cb",
+    "information_audit_sha256": "d557ee3352c6bf1f07d065e6bf3eb264a8a1918ab4dbee54221d3f708de940b1",
+    "seed": 931771,
+    "draws": 256,
+    "proposals": 561,
+    "acceptance_fraction": 0.4563279857397504,
+    "parameter_files_sha256": {
+      "parameter_draws_64.npz": "ee9941403cfc4ecfe56ba7247f35e69dc462baa30ba29050c2fc258223904b01",
+      "parameter_draws_256.npz": "f96c7992797d18b1d072e8b5fd2b790c5b291a1eeb4a921c1d30a887d50c1c0a"
+    },
+    "information_path": "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_uncertainty_primary_runs_a/run_1/information",
+    "information_audit_path": "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_uncertainty_primary_runs_a/run_1/information_audit",
+    "fixed_active_coordinates": [
+      "log_Us_over_Ua"
+    ],
+    "method": "observed-bin-Hessian active-face local normal, box truncated",
+    "calibration_notice": "Local-normal mixing on the selected active-bound face, truncated by inactive box limits, in explicit optimization coordinates. Conditions on the selected likelihood basin and fixes active loading/deviation bounds; excludes released-bound/profile branches, model selection and initial/bin convention uncertainty. Not calibrated simultaneous confidence or a posterior distribution. Combine with hard unknown-run nuisance ranges and separately reported model/initial/profile sensitivities; empirical gain-LR recovery tests do not validate this whole mixture."
+  },
+  "per_run": [
+    {
+      "name": "validation_experiment_env_2_sin_50_50_run_1.csv",
+      "nobs_per_channel": 900,
+      "recomputed_metrics": {
+        "latent_free_simulation_RMSE_C": [
+          0.9584281694762844,
+          0.16969162293364076
+        ],
+        "reported_conditional_mean_RMSE_C": [
+          0.9589028006391828,
+          0.17360003577182986
+        ],
+        "signed_reported_mean_error_C": [
+          -0.7847594686201924,
+          -0.009879025357616965
+        ],
+        "nominal_mean_noise_only_marginal_coverage": [
+          0.6722222222222223,
+          0.93
+        ],
+        "hard_nuisance_plus_noise_outer_coverage": [
+          1.0,
+          1.0
+        ],
+        "parameter_mixture_hard_nuisance_noise_outer_coverage": [
+          1.0,
+          1.0
+        ]
+      },
+      "independent_nuisance_endpoint_containment_error_C": 2.842170943040401e-14,
+      "channel_checks": [
+        {
+          "channel": 1,
+          "independent_code_expectation_max_error_C": 1.9184653865522705e-13,
+          "discrete_quantile_CDF_bracket_error": 0.0,
+          "nodes": 256,
+          "conditional_bin_nll_refinement_error": 4.490630090003833e-12,
+          "independent_three_bin_nll_error": 4.263256414560601e-14,
+          "rectangle_integrator_error": 2.394756802197704e-08,
+          "parameter_mixture_witness_times": 11,
+          "parameter_mixture_CDF_bracket_error": 0.0
+        },
+        {
+          "channel": 2,
+          "independent_code_expectation_max_error_C": 5.684341886080802e-14,
+          "discrete_quantile_CDF_bracket_error": 0.0,
+          "nodes": 256,
+          "conditional_bin_nll_refinement_error": 2.0463630789890885e-12,
+          "independent_three_bin_nll_error": 5.967448757360216e-16,
+          "rectangle_integrator_error": 9.672555493288181e-09,
+          "parameter_mixture_witness_times": 11,
+          "parameter_mixture_CDF_bracket_error": 0.0
+        }
+      ],
+      "selected_component_physics": [
+        {
+          "draw_index": 0,
+          "independent_dimensional_witness_containment_error_C": 1.4921397450962104e-13
+        },
+        {
+          "draw_index": 128,
+          "independent_dimensional_witness_containment_error_C": 2.7000623958883807e-13
+        },
+        {
+          "draw_index": 255,
+          "independent_dimensional_witness_containment_error_C": 1.4921397450962104e-13
+        }
+      ]
+    }
+  ],
+  "scope": "All nominal dimensional trajectories, code expectations, quantile brackets, metrics and refined conditional scores; independent prefix Gaussian rectangles and nuisance-endpoint containment. Parameter-mixture CDF checks use all components at declared sparse times, with selected-draw physical containment; not all component trajectories are independently recomputed. No predictive-coverage calibration, population nuisance law or untouched-validation claim."
+}
