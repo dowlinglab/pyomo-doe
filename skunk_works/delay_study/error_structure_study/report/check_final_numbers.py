@@ -264,6 +264,28 @@ def main():
             centered=np.sqrt((sse-offsets)/nobs);fraction=100*offsets/sse
             assert f'{fraction[0]:.1f}/{fraction[1]:.1f}\\%' in text
             assert f'{centered[0]:.3f}/{centered[1]:.3f}\\C' in text
+    stress_covered=np.zeros(2);stress_width=np.zeros(2);stress_nobs=0
+    for entry in index['transfer_analysis']:
+        if entry['candidate']!='primary' or not entry['fold_id'].startswith('protocol_'):continue
+        definition=entry['predictions']['reference_transport']
+        directory=Path(definition['directory']);ap=Path(definition['audit'])
+        a=json.loads(ap.read_text());assert a['status']=='passed'
+        assert a['fit_sha256']==sha(Path(entry['fit_directory'])/'fit.json')
+        assert a['arrays_sha256']==sha(directory/'transfer_predictions.npz')
+        assert a['prediction_sha256']==sha(directory/'transfer_predictions.json')
+        arrays=np.load(directory/'transfer_predictions.npz')
+        md=json.loads((directory/'transfer_predictions.json').read_text())
+        for j,row in enumerate(md['per_run']):
+            y=arrays['observed_'+str(j)][1:]
+            assert np.array_equal(arrays['observed_'+str(j)],lookup[row['name']]['y'])
+            lo=arrays['nuisance_noise_reported_low_'+str(j)];hi=arrays['nuisance_noise_reported_high_'+str(j)]
+            stress_covered+=np.sum((y>=lo)&(y<=hi),axis=0);stress_width+=np.sum(hi-lo,axis=0);stress_nobs+=len(y)
+        for path in [ap,directory/'transfer_predictions.json',directory/'transfer_predictions.npz']:binding(path)
+    assert stress_nobs==10795
+    cover=100*stress_covered/stress_nobs;width=stress_width/stress_nobs
+    expected=f'Band/protocol, reference stress & {cover[0]:.2f}/{cover[1]:.2f} & {width[0]:.3f}/{width[1]:.3f}'
+    assert expected in text,expected
+    assert f'{width[0]:.3f}/{width[1]:.3f}' in markdown
     # Check the first local-mixture sensitivity directly, retaining its limits.
     mixtures={};total=0;first_width=np.zeros(2)
     for variant in ['noise','parameter_64','parameter_256']:

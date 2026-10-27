@@ -93,6 +93,22 @@ def check(study,text,markdown,binding):
     for case in original['cases']:
         for name,digest in case['source_bindings_sha256'].items():
             path=Path(name);assert sha(path)==digest;binding(path)
+    localdesign=read(local/'design.json')
+    selected=next(v for v in localdesign['cases'] if v['id']=='largest_run_log_tA_SE')
+    fit=read(Path(selected['fit_directory'])/'fit.json')
+    info=read(Path(selected['information'])/'information.json')
+    matrixpath=Path(selected['information'])/'information_matrices.npz'
+    drawpath=Path(selected['draws'])/'parameter_draws_256.npz'
+    binding(matrixpath);binding(drawpath)
+    H=np.load(matrixpath)['observed_Hessian'];points=np.load(drawpath)['points']
+    base=np.array(fit['best']['point']);gradient=np.array(info['gradient'])
+    for r in q['results']:
+        delta=points[r['draw_index']]-base
+        # Scalar double sum provides a separate arithmetic implementation.
+        predicted=sum(2*float(gradient[i])*float(delta[i]) for i in range(len(delta)))
+        predicted+=sum(float(delta[i])*float(H[i,j])*float(delta[j])
+                       for i in range(len(delta)) for j in range(len(delta)))
+        assert abs(predicted-r['taylor_prediction'])<1e-6,(predicted,r['taylor_prediction'])
     representative=next(v for v in q['results'] if v['role']=='median_error')
     extreme=next(v for v in q['results'] if v['role']=='worst')
     for r in q['results']:
