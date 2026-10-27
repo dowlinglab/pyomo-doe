@@ -564,5 +564,5 @@ transfer components are indexed. Startup point-2C exhausted both declared
 gradient1048; the other0.0435 but still reports iteration-limit failure.
 Neither is accepted or promoted by its objective/gradient. Other grid points
 continue. The eventual audit must retain this failed endpoint and withhold
-confidence-endpoint/global-profile claims. No repeated retry is authorized by
-a successful-looking partial trace alone.
+confidence-endpoint/global-profile claims. A partially stationary iteration-limited start is not an accepted fit. Any
+further optimization should follow a recorded diagnosis and declared budget.
