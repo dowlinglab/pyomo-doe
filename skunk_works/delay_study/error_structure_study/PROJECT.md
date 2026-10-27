@@ -10,6 +10,25 @@ Read run_manifest.json and a fresh direct-tool process snapshot before dispatch.
 Only terminal audited results support report claims. All twelve ENV2 records
 informed structure selection; transfer is retrospective.
 
+## Current checkpoint: October 27, 00:33 UTC
+
+The complete fifty-draw recovery and independent summary audit passed. Gain's
+nominal 95% likelihood-ratio region covers 49/50 generated collections; the
+independently inverted binomial 95% Monte Carlo interval is 89.35--99.95%.
+Fifteen fits exchange the sensor/input lag labels. All four selected hardware
+input/phase/T2-ACF/cross diagnostics exceed every refitted reference. These are
+conditional algorithm/model checks, not hardware confidence guarantees or a
+successful whitening result. Source: recovery_b10_full50_summary and its audit;
+the figure was inspected.
+
+Current unfinished numerical work is the initial/bin queue, remaining radiation
+profile and protocol120 loading refinement. The latter follows a confirmed
+nonpositive-curvature audit and retains original forecasts. The next available
+slot advances full protocol300/step uncertainty, then twelve run and four shared
+protocol pipelines. All nineteen missing parameter components remain required.
+Earlier execution notes below preserve the chronology; consult the manifest and
+this checkpoint for current task state.
+
 ## Audited scientific results
 
 The old coupled short-lag/curved-command fit has T1 RMSE 1.022 C. Orthogonal
