@@ -4,14 +4,89 @@
   "profile_starts": 2,
   "profile_maxiter": 300,
   "profiles": [
-    {"coordinate": "log_K", "physical_values": true, "values_relative_to_selected": [0.94, 0.97, 0.985, 1.0, 1.015, 1.03, 1.06]},
-    {"coordinate": "log_input_lag", "physical_values": true, "values": [1.0, 2.0, 2.7, 4.0, 7.0, 12.0, 15.0, 20.0]},
-    {"coordinate": "log_Us_over_Ua", "physical_values": true, "values": [0.005, 0.01, 0.03, 0.1, 0.3, 1.0]},
-    {"coordinate": "log_Ua_ratio_9", "physical_values": true, "values": [0.9, 0.925, 0.95, 1.0, 1.05]},
-    {"coordinate": "log_ell_T1", "physical_values": true, "values": [100, 300, 600, 1000, 2000, 3000]},
-    {"coordinate": "radiation_gamma", "family": "radiation", "values": [0.0, 0.02, 0.05, 0.1, 0.2, 0.5, 1.0, 2.0, 4.0]}
+    {
+      "coordinate": "log_K",
+      "physical_values": true,
+      "values_relative_to_selected": [
+        0.94,
+        0.97,
+        0.985,
+        1.0,
+        1.015,
+        1.03,
+        1.06
+      ]
+    },
+    {
+      "coordinate": "log_input_lag",
+      "physical_values": true,
+      "values": [
+        1.0,
+        2.0,
+        2.7,
+        4.0,
+        7.0,
+        12.0,
+        15.0,
+        20.0
+      ]
+    },
+    {
+      "coordinate": "log_Us_over_Ua",
+      "physical_values": true,
+      "values": [
+        0.005,
+        0.01,
+        0.03,
+        0.1,
+        0.3,
+        1.0
+      ]
+    },
+    {
+      "coordinate": "log_Ua_ratio_9",
+      "physical_values": true,
+      "values": [
+        0.9,
+        0.925,
+        0.95,
+        1.0,
+        1.05
+      ]
+    },
+    {
+      "coordinate": "log_ell_T1",
+      "physical_values": true,
+      "values": [
+        100,
+        300,
+        600,
+        1000,
+        2000,
+        3000
+      ]
+    },
+    {
+      "coordinate": "radiation_gamma",
+      "family": "radiation",
+      "values": [
+        0.0,
+        0.02,
+        0.05,
+        0.1,
+        0.2,
+        0.5,
+        1.0,
+        2.0,
+        4.0
+      ]
+    }
   ],
-  "information": {"score_finite_difference_step": 0.0002, "weak_direction_step_check": 0.0006, "active_bound_tolerance": 0.00001},
+  "information": {
+    "score_finite_difference_step": 0.0002,
+    "weak_direction_step_check": 0.0006,
+    "active_bound_tolerance": 1e-05
+  },
   "lag_exchange_refinement": {
     "enabled_after_coarse_audits": true,
     "coordinate": "log_input_lag",
@@ -22,12 +97,32 @@
     "reason": "The restricted zero-loading theory permits exchange of sensor/input factors; the provisional coarse profile has a second low region near 15 s. Its fixed 15 s grid point does not resolve the sensor-time candidate near 14.79 s. Check that candidate before interpreting lag labels or a disconnected profile.",
     "gate": "Preserve the original grid and every point. Independently audit the new point. If its nll improves the unconstrained reference by more than 0.001, refine the baseline before reporting likelihood-ratio values. Do not infer interval endpoints by interpolation."
   },
-  "lower_loading_sensitivity": {"minimum_sensor_loading": 0.0001, "band": 0.1, "starts": 3, "maxiter": 300, "reason": "Repeated lower-bound sensor-loading estimates and the theoretical sensor/input lag exchange at zero loading; assess dependence on the original 0.005 lower bound before assigning physical lag identities."},
-  "residual_initial_sensitivity": {"condition_initial_code": true, "band": 0.1, "phase": -0.5, "starts": 3, "maxiter": 300, "warm": "Audited joint 10% band quantized fit", "reason": "T1 correlation length is comparable to run length. Compare a stationary prior at the first scored point with the conditional likelihood given the actual first quantized observation; do not add that reading to nobs."},
+  "lower_loading_sensitivity": {
+    "minimum_sensor_loading": 0.0001,
+    "band": 0.1,
+    "starts": 3,
+    "maxiter": 300,
+    "reason": "Repeated lower-bound sensor-loading estimates and the theoretical sensor/input lag exchange at zero loading; assess dependence on the original 0.005 lower bound before assigning physical lag identities."
+  },
+  "residual_initial_sensitivity": {
+    "condition_initial_code": true,
+    "band": 0.1,
+    "phase": -0.5,
+    "starts": 3,
+    "maxiter": 300,
+    "warm": "Audited joint 10% band quantized fit",
+    "reason": "T1 correlation length is comparable to run length. Compare a stationary prior at the first scored point with the conditional likelihood given the actual first quantized observation; do not add that reading to nobs."
+  },
   "consequential_startup_profile": {
     "trigger": "The independently audited +/-2 C hidden-heater fit changes the preferred sensor/input lag assignment; the +/-5 C fit coincides",
     "coordinate_rule": "Largest absolute selected hidden-heater starting offset in the audited +/-2 C fit; first in coordinate order breaks a tie",
-    "values_C": [-2.0, -1.0, 0.0, 1.0, 2.0],
+    "values_C": [
+      -2.0,
+      -1.0,
+      0.0,
+      1.0,
+      2.0
+    ],
     "include_selected_value": true,
     "starts": 2,
     "maxiter": 300,
@@ -47,5 +142,14 @@
     "coverage_definition": "Refit unconstrained and true-log-K constrained models for each generated record collection; fraction with twice-nll difference <= nominal chi-square-one cutoff. This empirically checks that cutoff with nuisance bounds, conditional on the generating model and design.",
     "denominators": "Retain every attempted draw, failure, retry and local-basin correction. Report coverage among complete draws, binomial Monte Carlo uncertainty and worst-case bounds counting failed draws either way.",
     "expansion": "No expansion to 200 until numerical convergence and the 50-draw diagnostic review justify it."
+  },
+  "local_taylor_check": {
+    "added_after": "All12 primary run components completed and their local-mixture widths were larger than the protocol group; before evaluating any saved draw likelihood for this diagnostic.",
+    "cases": "Full-data generating fit, primary omit30s protocol, and primary omitted-run fold with largest conditional joint-bin log_tA SE; ties by fold id. Selection uses training information only.",
+    "draws_checked_per_case": 16,
+    "indices": "Evenly spaced integer indices from0 through255 in the declared256 draws, no replacement or cherry picking.",
+    "comparison": "2*(actual training nll minus fitted nll) versus 2*g*d+d^T*H*d in optimization coordinates. Reproduce saved draws from receipt/seed/matrix first.",
+    "quadrature": "Recheck the largest absolute Taylor discrepancy in each case at256 nodes, unchanged .001 absolute deviance agreement gate.",
+    "interpretation": "Descriptive local-approximation quality; retain every failed evaluation. No automatic distributional acceptance threshold, confidence cutoff, refitting, parameter-bound change or calibration claim."
   }
 }
