@@ -2440,6 +2440,49 @@
       "finished_utc": "2026-10-26T03:34:51.478158+00:00"
     },
     {
+      "id": "local_taylor_quadrature_followup",
+      "process": {
+        "pid": 18278,
+        "parent_pid": 17937,
+        "command": [
+          "/Users/adowling/opt/anaconda3/bin/python",
+          "/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-error-424c318b-2473c1vu/skunk_works/delay_study/error_structure_study/resolve_taylor_quadrature.py",
+          "--output",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/local_taylor_quadrature_followup",
+          "--input",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/local_taylor_quality"
+        ],
+        "started_utc": "2026-10-27T04:56:21.940826+00:00"
+      },
+      "output": "skunk_works/delay_study/error_structure_study/results/local_taylor_quadrature_followup",
+      "source_commit": "424c318bc9f134c3922e51cab1f215fb715b1c78",
+      "source_receipt_sha256": "ec4d2ff8d1df622187e5ccb7682dc91538acefe6047d82ea9b3999eac82efa71",
+      "status": "running_verified",
+      "last_verified_utc": "2026-10-27 05:02:28 UTC"
+    },
+    {
+      "id": "local_taylor_quality",
+      "process": {
+        "pid": 14417,
+        "parent_pid": 14084,
+        "command": [
+          "/Users/adowling/opt/anaconda3/bin/python",
+          "/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-error-150a84e2-we6yn43y/skunk_works/delay_study/error_structure_study/check_local_taylor.py",
+          "--output",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/local_taylor_quality",
+          "--manifest",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/run_manifest.json"
+        ],
+        "started_utc": "2026-10-27T04:46:24.141126+00:00"
+      },
+      "output": "skunk_works/delay_study/error_structure_study/results/local_taylor_quality",
+      "source_commit": "150a84e25de801ab69ca0c94c5c64cbbd959d06d",
+      "source_receipt_sha256": "eb2fbd65c75f9247b1d46108e3b0d74d02e17f4213b3c2b9934e9f5a6cf8e51f",
+      "status": "terminal",
+      "exit_code": 0,
+      "finished_utc": "2026-10-27T04:51:09.428527+00:00"
+    },
+    {
       "id": "lower_loading_score_check",
       "process": {
         "pid": 15794,
@@ -4128,7 +4171,7 @@
       "source_commit": "f4fad2ae834a66d9002ebeafee132a7db4d0ef4a",
       "source_receipt_sha256": "fc7bca4b82b8e329de39ea15ea868e562fa82bd39ba3dabecaeefa8cb725d614",
       "status": "running_verified",
-      "last_verified_utc": "2026-10-27 04:46:15 UTC"
+      "last_verified_utc": "2026-10-27 05:02:28 UTC"
     },
     {
       "id": "startup_profile_control",
@@ -5735,8 +5778,34 @@
       "output": "skunk_works/delay_study/error_structure_study/results/transfer_shared_protocol120_loading_refinement",
       "source_commit": "0a484b6d9d453b3a2e27ce345414b691126dba2b",
       "source_receipt_sha256": "f163bf3f50ff2e7cfff35bbb4ab716e4777f9cc17bfd06d7cf1502bc21d1e760",
-      "status": "running_verified",
-      "last_verified_utc": "2026-10-27 04:46:15 UTC"
+      "status": "terminal",
+      "last_verified_utc": "2026-10-27 04:46:15 UTC",
+      "exit_code": 0,
+      "finished_utc": "2026-10-27T04:54:34.306933+00:00"
+    },
+    {
+      "id": "transfer_shared_protocol120_loading_refinement_audit",
+      "process": {
+        "pid": 18855,
+        "parent_pid": 18513,
+        "command": [
+          "/Users/adowling/opt/anaconda3/bin/python",
+          "/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-error-424c318b-kwu6745i/skunk_works/delay_study/error_structure_study/audit_collection.py",
+          "--output",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_shared_protocol120_loading_refinement_audit",
+          "--input",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_shared_protocol120_loading_refinement",
+          "--kind",
+          "transfer"
+        ],
+        "started_utc": "2026-10-27T04:57:15.681581+00:00"
+      },
+      "output": "skunk_works/delay_study/error_structure_study/results/transfer_shared_protocol120_loading_refinement_audit",
+      "source_commit": "424c318bc9f134c3922e51cab1f215fb715b1c78",
+      "source_receipt_sha256": "ed6a82542901f2470ba930120aeeada86c5381a41d86d8fab9d3862a6ccc485f",
+      "status": "terminal",
+      "exit_code": 0,
+      "finished_utc": "2026-10-27T04:59:46.981213+00:00"
     },
     {
       "id": "transfer_shared_protocols",
@@ -10157,11 +10226,11 @@
     }
   ],
   "live_jobs": [
-    "startup_profile_b10",
-    "transfer_shared_protocol120_loading_refinement"
+    "local_taylor_quadrature_followup",
+    "startup_profile_b10"
   ],
-  "next_action": "Observe shared120 refinement80110 and startup69793. Four accepted startup point audits are terminal/pass; final +2C task still needs its independent audit if successful. Taylor-quality diagnostic82811 checks actual likelihood away from the fitted point, distinct from numerical Hessian audits. After shared120 terminal, independently audit selected fit then run full information/draw/forecast chain. Final20-component aggregate and report must include measured mixture-resolution and approximation limits; finish claim/layout/preservation/push gates.",
-  "updated_utc": "2026-10-27T04:46:16.263584+00:00",
+  "next_action": "All20 transfer components are terminal/audited/reviewed; run the final preferred aggregate with no partial flag and the linked local-shape assessment. Startup69793 still needs its final task; independently audit +2C if accepted, retain failures, then summarize through the four existing terminal point audits plus any final accepted audit. Finish final report/claim/geometry/pixels/preservation/push gates; no email.",
+  "updated_utc": "2026-10-27T05:02:29.187349+00:00",
   "last_goal_turn_classification": "progress: completed and independently audited all fifty recovery outcomes, binomial Monte Carlo limits, moments/quantiles, label/bound counts and all fourteen refitted diagnostics; inspected the four-panel figure and reported material label ambiguity and remaining residual structure.",
   "controller_sessions": {
     "joint_conductance_b00": 55866,
@@ -10289,7 +10358,10 @@
     "startup_profile_minus1_point_audit": 57043,
     "startup_profile_plus1_point_audit": 58288,
     "transfer_preferred_19_component_summary": 72719,
-    "local_taylor_quality": 82811
+    "local_taylor_quality": 82811,
+    "transfer_shared_protocol120_loading_refinement_audit": 93415,
+    "transfer_uncertainty_shared120_refined": 80588,
+    "local_taylor_quadrature_followup": 97701
   },
   "queued_jobs": [
     "remaining_primary_protocol_full_parameter_pipelines_after_slots_free",
@@ -10302,10 +10374,10 @@
   ],
   "process_check": {
     "path": "process_check.json",
-    "checked_utc": "2026-10-27 04:46:15 UTC",
-    "sha256": "b785a19796c993352e7e88e058208079a1ce54460431319b8d40799e0e6b80b6",
+    "checked_utc": "2026-10-27 05:02:28 UTC",
+    "sha256": "0480f62d8223ec75de7e3997fb0c75888a476303cefaff8f3f35af10d3158e68",
     "method": "direct full-output pgrep with strict PID validation",
-    "snapshot_age_s": 1.263584
+    "snapshot_age_s": 1.187349
   },
   "reconciliation_warnings": {
     "missing_exit_or_matching_process": [],
@@ -10465,16 +10537,30 @@
     {
       "candidate": "shared",
       "fold_id": "protocol_120s",
-      "status": "noise_forecast_audited_parameter_pending",
-      "fit_directory": "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_shared_protocols/protocol_120s",
-      "fit_audit": "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_shared_protocols_audit/point_1/audit.json",
+      "status": "all_declared_components_audited",
+      "fit_directory": "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_shared_protocol120_loading_refinement/seed_1",
+      "fit_audit": "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_shared_protocol120_loading_refinement_audit/point_0/audit.json",
       "predictions": {
         "noise": {
-          "directory": "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_shared_protocols_forecasts/protocol_120s/noise",
-          "audit": "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_shared_protocols_forecasts/protocol_120s/noise_audit/audit.json"
+          "directory": "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_uncertainty_shared120_refined/protocol_120s/noise",
+          "audit": "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_uncertainty_shared120_refined/protocol_120s/noise_audit/audit.json"
+        },
+        "parameter_64": {
+          "directory": "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_uncertainty_shared120_refined/protocol_120s/parameter_64",
+          "audit": "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_uncertainty_shared120_refined/protocol_120s/parameter_64_audit/audit.json"
+        },
+        "parameter_256": {
+          "directory": "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_uncertainty_shared120_refined/protocol_120s/parameter_256",
+          "audit": "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_uncertainty_shared120_refined/protocol_120s/parameter_256_audit/audit.json"
         }
       },
-      "forecast_queue": "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_shared_protocols_forecasts"
+      "forecast_queue": "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_shared_protocols_forecasts",
+      "fit_sha256": "5d6545f90ff26e6fd427e69800f1ac9c3658df9592ff4b8b194c71f271d319c5",
+      "information": "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_uncertainty_shared120_refined/protocol_120s/information",
+      "information_audit": "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_uncertainty_shared120_refined/protocol_120s/information_audit",
+      "draws": "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_uncertainty_shared120_refined/protocol_120s/draws",
+      "uncertainty_queue": "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_uncertainty_shared120_refined",
+      "superseded_entry_receipt": "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_uncertainty_shared120_refined/prior_analysis_entry.json"
     },
     {
       "candidate": "shared",
@@ -10842,14 +10928,19 @@
     }
   ],
   "live_worker_slots": [
-    "startup_profile_b10",
-    "transfer_shared_protocol120_loading_refinement"
+    "local_taylor_quadrature_followup",
+    "startup_profile_b10"
   ],
   "transfer_progress": {
-    "fully_indexed_and_reviewed_components": 19,
-    "remaining_components": 1,
+    "fully_indexed_and_reviewed_components": 20,
+    "remaining_components": 0,
     "notice": "Preferred primary120 now uses the refined fit. Earlier all20 canonical summary and WIP report are frozen original-fit comparisons; regenerate final groups from this index.",
     "preferred_interim_summary": "results/transfer_preferred_interim_summary"
   },
-  "checkpoint_utc": "2026-10-27 03:40:25 UTC"
+  "checkpoint_utc": "2026-10-27 03:40:25 UTC",
+  "local_approximation_assessment": {
+    "initial_report": "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/local_taylor_quality/summary.json",
+    "followup_report": "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/local_taylor_quadrature_followup/summary.json",
+    "interpretation": "A representative preselected draw in the geometry-selected weak run fit has actual twice-nll loss201.73 versus local quadratic34.28 under independently converged forward likelihoods. Positive local curvature does not validate the Gaussian shape away from the optimum. Treat all local-mixture ranges as exploratory sensitivities, not calibrated parameter/predictive intervals. The more extreme witness fails high-order/tail convergence and its precise likelihood is withheld."
+  }
 }

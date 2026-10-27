@@ -209,6 +209,25 @@ def main():
         'missing_fold_ids':[list(k) for k in sorted(set(expected)-set(keys))],
         'rows':rows,'groups':group_rows,'source_bindings':bindings,
         'notice':'Each candidate/fold-type group contains each omitted record once; groups reuse the same hardware observations and are not independent replicates. Pointwise marginal coverage and unknown-run hard-scenario envelopes are descriptive, not simultaneous or automatically calibrated total-95% ranges. Local parameter mixtures condition on an audited active face and selected basin. All twelve records informed structure selection and warm starts; transfer is retrospective.'}
+    if manifest.get('local_approximation_assessment'):
+        declared=manifest['local_approximation_assessment'];initial=Path(declared['initial_report']);follow=Path(declared['followup_report'])
+        for path in [initial,follow]:assert parent_receipt(path.parent,require_terminal=True)['exit']['exit_code']==0
+        source=json.loads(initial.read_text());checked=json.loads(follow.read_text())
+        assert checked['source_summary_sha256']==sha(initial)
+        case=next(r for r in source['cases'] if r['id']=='largest_run_log_tA_SE')
+        selected=next(e for e in registry if e['candidate']=='primary' and e['fold_id']==case['fold_id'])
+        assert case['source_bindings_sha256'][str(Path(selected['fit_directory'])/'fit.json')]==sha(Path(selected['fit_directory'])/'fit.json')
+        median=next(r for r in checked['results'] if r['role']=='median_error')
+        assert median['passed_1e_minus3_highest_order_and_tail_gates']
+        values=median['evaluations'];assert abs(values[-1]['twice_nll_minus_reference']-values[-2]['twice_nll_minus_reference'])<.001
+        assert abs(values[-2]['twice_nll_minus_reference']-values[-3]['twice_nll_minus_reference'])<.001
+        worst=next(r for r in checked['results'] if r['role']=='worst')
+        result['local_approximation_assessment']={'source_reports_sha256':{str(p):sha(p) for p in [initial,follow]},
+            'selected_fold':case['fold_id'],'representative_draw_index':median['draw_index'],
+            'representative_actual_twice_nll_difference':values[-1]['twice_nll_minus_reference'],
+            'representative_taylor_prediction':median['taylor_prediction'],
+            'extreme_draw_quadrature_gate_passed':worst['passed_1e_minus3_highest_order_and_tail_gates'],
+            'interpretation':declared['interpretation']}
     write(args.output/'summary.json',result)
     available=[g for g in group_rows if g['nobs_per_channel']]
     if not available:return
@@ -225,7 +244,8 @@ def main():
                 linestyle='none',label=variant.replace('_',' ')+' T'+str(k+1))
     axes[1].set(xticks=x,xticklabels=labels,ylabel='Observed pointwise coverage',ylim=(0,1.02));axes[1].legend(fontsize=6)
     for ax in axes:ax.grid(axis='y',alpha=.15)
-    fig.suptitle(('PARTIAL: ' if not complete else '')+'Internal transfer; nuisance envelopes and local mixtures are conditional',fontsize=10)
+    title='Retrospective transfer; local-normal ranges remain uncalibrated' if 'local_approximation_assessment' in result else 'Internal transfer; nuisance envelopes and local mixtures are conditional'
+    fig.suptitle(('PARTIAL: ' if not complete else '')+title,fontsize=10)
     fig.tight_layout();fig.savefig(args.output/'transfer_summary.png',dpi=160);plt.close(fig)
 
 

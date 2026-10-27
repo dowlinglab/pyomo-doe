@@ -1,0 +1,47 @@
+{
+  "policy": {
+    "trigger": "The predeclared run4 worst Taylor witness changes deviance by4.1455 between128 and256 nodes, failing the unchanged .001 numerical gate.",
+    "nodes": [
+      128,
+      256,
+      512,
+      1024
+    ],
+    "tail_SD": [
+      12,
+      16
+    ],
+    "selection": "Largest absolute discrepancy and the saved draw closest to the median absolute discrepancy among the original16; ties by smaller draw index.",
+    "method": "Independent dimensional mean, forward-only likelihood; no smoothing-score/Hessian reuse for objective evaluation.",
+    "acceptance": "Highest two orders and tail12/16 deviance changes each below.001. Otherwise withhold the precise discrepancy and report unresolved quadrature."
+  },
+  "selected": [
+    {
+      "draw_index": 238,
+      "twice_linear_term": 0.04405781395364593,
+      "quadratic_term": 36.846892135643856,
+      "taylor_prediction": 36.8909499495975,
+      "loading_ratio": 15.96306048261001,
+      "status": "evaluated",
+      "twice_nll_difference": 338964.1930569543,
+      "absolute_taylor_error": 338927.30210700474,
+      "relative_error_to_1_plus_abs_actual": 0.9998882158088037,
+      "role": "worst"
+    },
+    {
+      "draw_index": 255,
+      "twice_linear_term": 0.02050597747923636,
+      "quadratic_term": 34.255777462756505,
+      "taylor_prediction": 34.276283440235744,
+      "loading_ratio": 0.22188708589501993,
+      "status": "evaluated",
+      "twice_nll_difference": 201.73073388803277,
+      "absolute_taylor_error": 167.45445044779703,
+      "relative_error_to_1_plus_abs_actual": 0.8259943977723739,
+      "role": "median_error"
+    }
+  ],
+  "original_summary_sha256": "27b9ce599f4e4067ba044690b788afee3f27fecca60f24512b2c51678a52e43d",
+  "original_evaluations_sha256": "8da73aef49cd28ec8675297d5f4b488e5ae149e8ca4dab9ea8387273ea11a54b",
+  "fit_audit_sha256": "2bcf89e05fec1cb881403840099cb2aab196eb06aeb867e39af9d07564acffca"
+}
