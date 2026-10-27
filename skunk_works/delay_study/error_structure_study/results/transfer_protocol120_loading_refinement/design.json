@@ -1,0 +1,67 @@
+{
+  "policy": {
+    "trigger": "A terminal independent information audit confirms nonpositive observed curvature at an accepted transfer fit; no covariance or draws accepted",
+    "loading_seed_values": [
+      0.03,
+      0.3,
+      3.0,
+      30.0
+    ],
+    "starts_per_seed": 2,
+    "maxiter": 300,
+    "protocol": "Additional unconstrained nuisance/mean/noise fits from loading seeds spanning the original bounds, with the usual sensor/input-lag branch exchange. Original fit remains a selection candidate; select lowest successful nll, not positive curvature. Preserve every attempt and independently audit the selected fit, then recompute information. No bound snapping, eigenvalue clipping, tolerance relaxation or test-output fitting."
+  },
+  "fold": {
+    "id": "protocol_120s",
+    "test_indices": [
+      3,
+      4,
+      5
+    ],
+    "type": "leave_protocol_out",
+    "train_indices": [
+      0,
+      1,
+      2,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11
+    ],
+    "success": true,
+    "attempts": [
+      {
+        "success": true,
+        "output": "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_primary_protocols/protocol_120s",
+        "nll": 4595.596155946063,
+        "elapsed_s": 857.824604625,
+        "finished_utc": "2026-10-26T14:40:44.869154+00:00"
+      }
+    ],
+    "selected_output": "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_primary_protocols/protocol_120s",
+    "train_names": [
+      "validation_experiment_env_2_sin_50_50_run_1.csv",
+      "validation_experiment_env_2_sin_50_50_run_2.csv",
+      "validation_experiment_env_2_sin_50_50_run_3.csv",
+      "validation_experiment_env_2_sin_5_50_run_1.csv",
+      "validation_experiment_env_2_sin_5_50_run_2.csv",
+      "validation_experiment_env_2_sin_5_50_run_3.csv",
+      "validation_experiment_env_2_step_50_run_1.csv",
+      "validation_experiment_env_2_step_50_run_2.csv",
+      "validation_experiment_env_2_step_50_run_3.csv"
+    ],
+    "test_names": [
+      "validation_experiment_env_2_sin_2_50_run_1.csv",
+      "validation_experiment_env_2_sin_2_50_run_2.csv",
+      "validation_experiment_env_2_sin_2_50_run_3.csv"
+    ]
+  },
+  "prior_fit_sha256": "3245b33e6bb21e0f4bd6bf6f8e6ef7c703da4ea1e74997418e460a5f07c0881d",
+  "fit_collection_sha256": "31b4e4083e10288306abd40f05206467366c8d96c45d15e2ec853aa1db692a2f",
+  "prior_fit_audit_sha256": "c0f63e24e19178b7785f4b5eb405e234dcf89fe8c218baf96e6e07d838690d8b",
+  "failed_information_audit_sha256": "95ccb346b9fc42bfc60dd834706dad45d0099a8c4897f503b8c22c73b033182c",
+  "information_matrix_sha256": "ec502b8159634a1bbc2725d946352a90920c0171c4bd192639b6b7054e7e2911",
+  "scope": "Additional starts for the same training data, model, hard bounds and fitting criterion; no new parameter, test nuisance fit or accepted covariance."
+}

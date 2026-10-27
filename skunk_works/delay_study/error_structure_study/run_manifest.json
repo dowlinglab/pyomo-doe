@@ -1195,7 +1195,7 @@
       "source_commit": "e8951c5ae3c6ca4b7dc4252008a3ced464b455b2",
       "source_receipt_sha256": "d7d85c0ef40d029af35f63deb48e9f3e7eb8a8e93a9eb6890147ca3b34a7f028",
       "status": "running_verified",
-      "last_verified_utc": "2026-10-27 00:10:01 UTC"
+      "last_verified_utc": "2026-10-27 00:11:09 UTC"
     },
     {
       "id": "initial_sensor_check",
@@ -2953,7 +2953,7 @@
       "source_commit": "cc9dad7639d2662b88bacc42c864fde2980278c2",
       "source_receipt_sha256": "010097bd36fca5d18ee9b8a323a2eb8b366319dde180d695d6d0d55070e58974",
       "status": "running_verified",
-      "last_verified_utc": "2026-10-27 00:10:01 UTC"
+      "last_verified_utc": "2026-10-27 00:11:09 UTC"
     },
     {
       "id": "quantization_check",
@@ -3485,7 +3485,7 @@
       "source_commit": "6c79063aa4ad50e597246d2fe1877878194dd9a1",
       "source_receipt_sha256": "f86a7ba8e382853bfb1ca7ed9e1d2f8f6b0654a57aa5ee7beb5f62767c15825f",
       "status": "running_verified",
-      "last_verified_utc": "2026-10-27 00:10:01 UTC"
+      "last_verified_utc": "2026-10-27 00:11:09 UTC"
     },
     {
       "id": "recovery_odd25_audit",
@@ -5013,6 +5013,39 @@
       "finished_utc": "2026-10-27T00:03:21.966580+00:00"
     },
     {
+      "id": "transfer_protocol120_loading_refinement",
+      "process": {
+        "pid": 34645,
+        "parent_pid": 34303,
+        "command": [
+          "/Users/adowling/opt/anaconda3/bin/python",
+          "/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-error-625ba8c6-852knfm2/skunk_works/delay_study/error_structure_study/refine_transfer_loading.py",
+          "--output",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_protocol120_loading_refinement",
+          "--input",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_primary_protocols",
+          "--fit-audit",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_primary_protocols_audit",
+          "--fold",
+          "protocol_120s",
+          "--information",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_uncertainty_protocols_remaining/protocol_120s/information",
+          "--information-audit",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_protocol120_information_audit_v2",
+          "--noise1",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/bin_noise_band10_T1_v2/observation_fit.json",
+          "--noise2",
+          "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/bin_noise_band10_T2_v2/observation_fit.json"
+        ],
+        "started_utc": "2026-10-27T00:10:09.502837+00:00"
+      },
+      "output": "skunk_works/delay_study/error_structure_study/results/transfer_protocol120_loading_refinement",
+      "source_commit": "625ba8c617b08debaa472bb9ca64f5a84aa7c6ab",
+      "source_receipt_sha256": "d594efc75042c4aeb84619cf7ad7faf9ed905131e6906484ec7aa8a3fd2b0d61",
+      "status": "running_verified",
+      "last_verified_utc": "2026-10-27 00:11:09 UTC"
+    },
+    {
       "id": "transfer_protocol_candidates_canonical_summary",
       "process": {
         "pid": 67308,
@@ -5846,10 +5879,11 @@
   "live_jobs": [
     "initial_remaining_b10",
     "profile_remaining_b10",
-    "recovery_even25_audit"
+    "recovery_even25_audit",
+    "transfer_protocol120_loading_refinement"
   ],
-  "next_action": "The corrected seed provenance/mutation/bounds control passed for all four declared loading seeds, with no original input mutation or objective/success claim. Launch the gated protocol120 refinement in the freed fourth slot using only its original training records. After terminal output, audit the selected single-fold fit, recompute information and validate covariance before any draws/forecasts; preserve originals. Even25 recovery, initial sensitivities and radiation profiles remain live. Final full fifty-draw audit/summary and all outstanding transfer components remain required.",
-  "updated_utc": "2026-10-27T00:10:01.541081+00:00",
+  "next_action": "Protocol120 targeted loading refinement is now live (88479), gated by the terminal independent nonpositive-curvature audit and the passed seed control. It preserves the original fit as a candidate and all four declared loading-start tasks. On terminal output, audit the selected single-fold fit and recompute information before uncertainty propagation. Even25 recovery, initial sensitivities and radiation profiles remain live; after parity completion, combine both caches into the full fifty-draw audit/summary. Then advance remaining protocol300/step, twelve run and four shared-protocol full pipelines; no scope reduction or email.",
+  "updated_utc": "2026-10-27T00:11:10.087413+00:00",
   "last_goal_turn_classification": "progress: the corrected independent information audit confirmed unsupported covariance, and the declared additional-start driver/control were implemented. A syntax preflight failed; the controller incorrectly continued to the seed-only control, which also failed before numerical work. Both failed source/exit are retained. Corrected source now compiles and will be rechecked in a separate measured control before optimization.",
   "controller_sessions": {
     "joint_conductance_b00": 55866,
@@ -5943,7 +5977,8 @@
     "transfer_protocol120_information_audit_v2": 91021,
     "information_basis_check": 65995,
     "loading_seed_check_protocol120": 79345,
-    "loading_seed_check_protocol120_v2": 73862
+    "loading_seed_check_protocol120_v2": 73862,
+    "transfer_protocol120_loading_refinement": 88479
   },
   "queued_jobs": [
     "remaining_primary_protocol_full_parameter_pipelines_after_slots_free",
@@ -5956,10 +5991,10 @@
   ],
   "process_check": {
     "path": "process_check.json",
-    "checked_utc": "2026-10-27 00:10:01 UTC",
-    "sha256": "bca5de24accb41917a12e1e5afe714629323137aa604fa8ba44518f1064e2d0f",
+    "checked_utc": "2026-10-27 00:11:09 UTC",
+    "sha256": "92e6b6ac4186b279d40e27d3b0dd8c6707a09eded57ee697c95d73463abdbecc",
     "method": "Direct approved pgrep -fl tclab-error tool",
-    "snapshot_age_s": 0.541081
+    "snapshot_age_s": 1.087413
   },
   "reconciliation_warnings": {
     "missing_exit_or_matching_process": [],
@@ -6268,6 +6303,7 @@
   "live_worker_slots": [
     "initial_remaining_b10",
     "profile_remaining_b10",
-    "recovery_even25_audit"
+    "recovery_even25_audit",
+    "transfer_protocol120_loading_refinement"
   ]
 }
