@@ -53,7 +53,10 @@ def main():
         ax.set(xscale=row['xscale'],xlabel=row['label'],ylabel='Twice nll increase',title='('+letter+') '+
             {'log_Us_over_Ua':'Weak loading information','log_Ua_ratio_9':'Active run bound',
              'log_ell_T1':'Disturbance length','radiation_gamma':'Nonnegative radiation'}[row['coordinate']])
-        if row['coordinate']=='radiation_gamma':ax.set_yscale('symlog',linthresh=1.)
+        if row['coordinate']=='radiation_gamma':
+            ax.set_yscale('symlog',linthresh=1.)
+            ax.set_xscale('symlog',linthresh=.02)
+            ax.set_xticks([0.,.02,.1,1.,4.]);ax.set_xticklabels(['0','0.02','0.1','1','4'])
         ax.grid(alpha=.15)
     fig.tight_layout()
     for suffix in ['png','pdf']:fig.savefig(args.output/('remaining_profiles.'+suffix),dpi=240)
