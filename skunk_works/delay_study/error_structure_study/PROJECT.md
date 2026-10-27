@@ -409,3 +409,15 @@ with stable producer directional checks. Its covariance is not accepted; the
 corrected full audit will retain an explicit nonpositive-curvature failure if
 confirmed, before any fit refinement or parameter propagation. No existing
 canonical forecast or selected fit is overwritten.
+
+The corrected protocol120 audit completed with explicit nonpositive-curvature
+failure after its numerical checks. Four loading seeds (.03, .3, 3, 30), usual
+two lag branches, original bounds and 300-iteration budgets are declared in
+transfer_config.json and transfer_methods.md before any refinement fit. The
+first new seed control failed on a Python dict-call syntax error before
+numerical work. A separate compilation preflight had caught it, but the
+controller incorrectly continued instead of checking that exit before dispatch.
+The frozen failed control and source commit remain intact. The corrected
+four-file compilation/configuration preflight now passes; a new seed-control
+output must pass before the refinement starts. No failed control or fit is
+promoted by correction, and no original fit/forecast is overwritten.

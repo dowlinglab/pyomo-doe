@@ -85,7 +85,7 @@ def main():
             'successful_additional_tasks':sum(r['success'] for r in attempts[1:]),'elapsed_s':time.monotonic()-begun})
     best=min([r for r in attempts if r['success']],key=lambda r:r['nll'])
     updated=dict(fold,success=True,selected_output=best['output'],attempts=attempts,
-        'curvature_refinement':{'original_output':str(old),'original_nll':fit['best']['nll'],
+        curvature_refinement={'original_output':str(old),'original_nll':fit['best']['nll'],
             'selected_nll':best['nll'],'nll_improvement':fit['best']['nll']-best['nll'],
             'notice':'Selection is by successful objective value only, never by covariance definiteness. Selected-point and new information audits remain required.'})
     write(args.output/'transfer_fits.json',{'status':'complete','candidate':collection['candidate'],
