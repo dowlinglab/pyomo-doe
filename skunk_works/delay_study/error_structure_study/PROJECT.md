@@ -566,3 +566,11 @@ Neither is accepted or promoted by its objective/gradient. Other grid points
 continue. The eventual audit must retain this failed endpoint and withhold
 confidence-endpoint/global-profile claims. A partially stationary iteration-limited start is not an accepted fit. Any
 further optimization should follow a recorded diagnosis and declared budget.
+
+Both final run and shared300/step queues exited0. Fourteen new images and
+all three information/draw/forecast chains were inspected;19 of20 components
+are now indexed. Shared120's loading refinement is the sole transfer pipeline
+left. Two released slots independently audit immutable successful startup
+reference and zero-offset tasks while the later grid points continue. Final
+startup synthesis must consume a terminal audit for every accepted point,
+exact source/fit/trajectory bindings and all declared failures.

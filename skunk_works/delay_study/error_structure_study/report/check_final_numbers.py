@@ -177,7 +177,7 @@ def main():
     # Independently pool all three canonical groups from the forecast arrays.
     # The groups reuse records; no pooled thirty-six-record inference is made.
     from continuation import parent_receipt
-    summaryroot=args.transfer_summary
+    summaryroot=args.transfer_summary.resolve()
     summary=json.loads((summaryroot/'summary.json').read_text());binding(summaryroot/'summary.json')
     index=json.loads((summaryroot/'analysis_index_snapshot.json').read_text());binding(summaryroot/'analysis_index_snapshot.json')
     assert summary['status']=='complete' and json.loads((summaryroot/'exit.json').read_text())['exit_code']==0
