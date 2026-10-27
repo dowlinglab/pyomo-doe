@@ -1,0 +1,23 @@
+{"start": 0, "branch_seed": "saved branch", "nll": 6234.488985407258, "solver_success": true, "message": "Optimization terminated successfully", "stationarity": {"equality_residual": -2.6020852139652106e-17, "lagrangian_projected_gradient_max_abs": 0.004587944751975064, "equality_multiplier_free_least_squares": 36.324139562774505, "note": "First-order diagnostic; inspect active-bound KKT multiplier if no free deviation remains."}, "success": true}
+{"start": 1, "branch_seed": "sensor/input lag swapped", "nll": 6236.853784613216, "solver_success": true, "message": "Optimization terminated successfully", "stationarity": {"equality_residual": -1.9081958235744878e-17, "lagrangian_projected_gradient_max_abs": 0.011001534209327457, "equality_multiplier_free_least_squares": 39.50584023221373, "note": "First-order diagnostic; inspect active-bound KKT multiplier if no free deviation remains."}, "success": true}
+{"start": 2, "branch_seed": "low analogue noise", "nll": 6234.488985602014, "solver_success": true, "message": "Optimization terminated successfully", "stationarity": {"equality_residual": -2.42861286636753e-17, "lagrangian_projected_gradient_max_abs": 0.03271373700083302, "equality_multiplier_free_least_squares": 36.32464380113397, "note": "First-order diagnostic; inspect active-bound KKT multiplier if no free deviation remains."}, "success": true}
+Traceback (most recent call last):
+  File "/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-error-b7dcc5d0-8xre2iwt/skunk_works/delay_study/error_structure_study/run_joint_quantized.py", line 149, in <module>
+    if __name__=='__main__':main()
+  File "/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-error-b7dcc5d0-8xre2iwt/skunk_works/delay_study/error_structure_study/run_joint_quantized.py", line 145, in main
+    write(args.output/'fit.json',result);np.savez_compressed(args.output/'trajectories.npz',**arrays)
+  File "/private/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-error-b7dcc5d0-8xre2iwt/skunk_works/delay_study/error_structure_study/run_bounded.py", line 19, in write
+    path.write_text(json.dumps(obj,indent=2,allow_nan=False)+'\n')
+  File "/Users/adowling/opt/anaconda3/lib/python3.9/json/__init__.py", line 234, in dumps
+    return cls(
+  File "/Users/adowling/opt/anaconda3/lib/python3.9/json/encoder.py", line 201, in encode
+    chunks = list(chunks)
+  File "/Users/adowling/opt/anaconda3/lib/python3.9/json/encoder.py", line 431, in _iterencode
+    yield from _iterencode_dict(o, _current_indent_level)
+  File "/Users/adowling/opt/anaconda3/lib/python3.9/json/encoder.py", line 405, in _iterencode_dict
+    yield from chunks
+  File "/Users/adowling/opt/anaconda3/lib/python3.9/json/encoder.py", line 438, in _iterencode
+    o = _default(o)
+  File "/Users/adowling/opt/anaconda3/lib/python3.9/json/encoder.py", line 179, in default
+    raise TypeError(f'Object of type {o.__class__.__name__} '
+TypeError: Object of type int64 is not JSON serializable

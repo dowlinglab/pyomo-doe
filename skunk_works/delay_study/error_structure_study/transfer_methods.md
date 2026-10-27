@@ -1,5 +1,11 @@
 # Retrospective transfer design
 
+All twenty preferred numerical components are now complete and independently
+audited. The final source index is `results/transfer_final_summary`; the
+report labels local mixtures exploratory after the independent likelihood-shape
+check failed. Execution notes below preserve the earlier partial/failure stages;
+their pending statements describe those stages, not the current accounting.
+
 The declared primary candidate has a 10% conductance band: twelve leave-run-out
 and four leave-protocol-out fits. A shared-parameter baseline has four
 leave-protocol-out fits. The protocols are 30/120/300-second sine and step.

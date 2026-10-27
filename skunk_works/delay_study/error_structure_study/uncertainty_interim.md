@@ -1,6 +1,9 @@
 # Interim uncertainty and whitening findings
 
-This is a progress note, not the completed report. The goal remains active.
+This file preserves intermediate analyses and their original partial scopes.
+The completed findings and current limitations are in [report.md](report.md)
+and [the completion register](completion_audit.md); later results supersede
+the pending statements and original-fit comparisons below.
 The selected mean/bin fits and information results below have terminal
 independent audits. The gain profile and all seven point audits are complete;
 remaining nuisance profiles, complete parameter-inclusive transfer and several

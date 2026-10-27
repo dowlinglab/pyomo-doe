@@ -1,0 +1,30 @@
+/Users/adowling/opt/anaconda3/lib/python3.9/site-packages/numpy/lib/function_base.py:2691: RuntimeWarning: invalid value encountered in true_divide
+  c /= stddev[:, None]
+/Users/adowling/opt/anaconda3/lib/python3.9/site-packages/numpy/lib/function_base.py:2692: RuntimeWarning: invalid value encountered in true_divide
+  c /= stddev[None, :]
+Traceback (most recent call last):
+  File "/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-error-814404f5-3o2v_oul/skunk_works/delay_study/error_structure_study/localize_nonrandom.py", line 98, in <module>
+    if __name__=='__main__':main()
+  File "/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-error-814404f5-3o2v_oul/skunk_works/delay_study/error_structure_study/localize_nonrandom.py", line 73, in main
+    actual=process(records,'data');write(args.output/'data_localization.json',actual);results=[];failures=[]
+  File "/private/var/folders/3w/vr4xmyqs451dg23xk88pqcg00000gq/T/tclab-error-814404f5-3o2v_oul/skunk_works/delay_study/error_structure_study/run_bounded.py", line 19, in write
+    path.write_text(json.dumps(obj,indent=2,allow_nan=False)+'\n')
+  File "/Users/adowling/opt/anaconda3/lib/python3.9/json/__init__.py", line 234, in dumps
+    return cls(
+  File "/Users/adowling/opt/anaconda3/lib/python3.9/json/encoder.py", line 201, in encode
+    chunks = list(chunks)
+  File "/Users/adowling/opt/anaconda3/lib/python3.9/json/encoder.py", line 431, in _iterencode
+    yield from _iterencode_dict(o, _current_indent_level)
+  File "/Users/adowling/opt/anaconda3/lib/python3.9/json/encoder.py", line 405, in _iterencode_dict
+    yield from chunks
+  File "/Users/adowling/opt/anaconda3/lib/python3.9/json/encoder.py", line 325, in _iterencode_list
+    yield from chunks
+  File "/Users/adowling/opt/anaconda3/lib/python3.9/json/encoder.py", line 405, in _iterencode_dict
+    yield from chunks
+  File "/Users/adowling/opt/anaconda3/lib/python3.9/json/encoder.py", line 325, in _iterencode_list
+    yield from chunks
+  File "/Users/adowling/opt/anaconda3/lib/python3.9/json/encoder.py", line 397, in _iterencode_dict
+    yield _floatstr(value)
+  File "/Users/adowling/opt/anaconda3/lib/python3.9/json/encoder.py", line 239, in floatstr
+    raise ValueError(
+ValueError: Out of range float values are not JSON compliant: nan

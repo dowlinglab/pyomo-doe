@@ -2,10 +2,11 @@
 \usepackage[left=0.25in,right=3.25in,top=0.6in,bottom=0.6in]{geometry}
 \usepackage[T1]{fontenc}
 \usepackage{lmodern,amsmath,amssymb,booktabs,tabularx,graphicx,enumitem}
-\usepackage{eso-pic,tikz,placeins}
+\usepackage{eso-pic,tikz,placeins,needspace}
 \usepackage[protrusion=false]{microtype}
 \usepackage[colorlinks=true,urlcolor=blue,citecolor=blue,linkcolor=blue]{hyperref}
 \hypersetup{pdftitle={TC-Lab remaining-error investigation},pdfauthor={Prepared for Alex Dowling}}
+\clubpenalty=10000\widowpenalty=10000
 \setlength{\parindent}{0pt}\setlength{\parskip}{5pt}
 \setlength{\emergencystretch}{2em}\setlist{nosep,leftmargin=*}
 \AddToShipoutPictureBG{%
@@ -137,6 +138,7 @@ known heater-surface temperature. Published TC-Lab models include convection,
 radiation and sensor dynamics \cite{park2020}. Their values supply modeling
 context, not calibration for these records.
 
+\Needspace{5\baselineskip}
 The free-radiation fit refits convection and gain to avoid double counting.
 Its normalized differential radiation coefficient at $50\C$ is 0.0344
 relative to nominal convection. Gaussian nll improves by 1.285. This is not a
@@ -261,7 +263,8 @@ All have independent dense-covariance audits. This is a comparison on discrete
 temperatures using a continuous likelihood; it does not establish calibrated
 joint-bin probabilities or an environmental mechanism.
 
-\section{Uncertainty, transfer and open questions}
+\clearpage
+\section{Uncertainty and identifiability}
 The independently audited information matrix distinguishes the centered
 tangent space from the selected active constraint face. Conditional local
 standard errors are
@@ -322,6 +325,7 @@ improving the reference. These checks expose a second region; they do not
 locate its free minimum, interpolate endpoints or calibrate an exclusion of
 that lag assignment.
 
+\Needspace{9\baselineskip}
 \subsection*{What the nuisance profiles resolve}
 All 28 loading, run-conductance, disturbance-length and radiation grid points
 passed independent numerical audits. Raising loading $U_s/U_{a,0}$ from 0.005
@@ -330,6 +334,7 @@ raising its conductance ratio from the lower bound 0.9 to 0.925 costs 17.215.
 The fitted band therefore constrains a consequential run effect; it has not
 estimated a distribution of airflow.
 
+\Needspace{6\baselineskip}
 Radiation's optimum normalized coefficient is 0.11530. Setting it to zero
 costs twice nll 7.619 with all permitted nuisances refitted. This supports a
 conditional model improvement, without a calibrated boundary test or an
@@ -414,7 +419,9 @@ $\pm10\%$ conductance. They combine hard scenarios with marginal noise
 quantiles. The table's ``parameters'' rows also mix 256 box-truncated local
 normal draws of physical and noise nuisance coordinates. They fix active
 bounds and one likelihood basin. Their numerical arithmetic passed; their
-sampling calibration has not been established. Broad hard ranges and high
+sampling calibration has not been established. Mixture audits check all
+components' quantile brackets at declared times and selected trajectories,
+without independently recomputing every component history. Broad hard ranges and high
 pointwise coverage do not define a probability distribution over run conditions.
 Correlated readings are not independent validation replicates.
 
@@ -425,6 +432,7 @@ endpoint changes:
 
 \input{tables/transfer_resolution.tex}
 
+\Needspace{7\baselineskip}
 The first prototype, omitting the three fast-sine runs, changes widths from
 $9.119/5.134\C$ to $9.223/5.206\C$. Its 64/256 comparison changes
 2.26/2.69\% of endpoints by at most one code (0.33 C), and its local log-input-lag
@@ -480,6 +488,7 @@ previous run recovery, airflow/sash settings, firmware, board/sensor identity,
 heater P settings and electrical power. A hood can add forced or fluctuating
 convection; it does not automatically supply a constant environment.
 
+\Needspace{8\baselineskip}
 \section*{Evidence and scope}
 The committed source, raw-data snapshots, multistart outcomes, numerical
 failures, independent checks and complete fold index are retained in the

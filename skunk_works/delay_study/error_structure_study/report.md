@@ -210,7 +210,9 @@ noise nuisance coordinates, fixing active bounds and one likelihood basin.
 Their mean widths for omitted protocols become 9.274/5.346 C. The first
 fast-sine-omission prototype changed 9.119/5.134 to 9.223/5.206 C; the complete
 64/256 table shows larger endpoint changes in other folds. Numerical audits
-verify the calculations, rather than the sampling law.
+verify the calculations, rather than the sampling law. Mixture checks cover
+all component quantile brackets at declared times and selected trajectories;
+they do not independently recompute every component history.
 
 A declared likelihood-shape check examined 16 saved draws for each of three
 training fits. For the run-omission fit with largest conditional log-thermal-time
