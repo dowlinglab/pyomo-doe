@@ -1,0 +1,866 @@
+{
+  "model": "joint_quantized_conductance",
+  "family": "conductance",
+  "kernel": "quantized_ou_nugget",
+  "band": 0.1,
+  "phase": -0.5,
+  "startup_band_C": 0.0,
+  "initial_noise_inflation": false,
+  "dataset": null,
+  "selected_input_indices": [
+    0,
+    1,
+    2,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11
+  ],
+  "best": {
+    "start": 0,
+    "branch_seed": "saved branch",
+    "seed": [
+      5.185185336090116,
+      2.6256156359120353,
+      1.0986122886681098,
+      -0.9047048364932675,
+      1.154364012024741,
+      0.11212762880044355,
+      0.05825387320773323,
+      0.075618623651413,
+      0.07646130527498636,
+      -0.08304425166272446,
+      -0.01005804908830688,
+      0.000580535096743967,
+      -0.0871316962728704,
+      -0.06741932118808261,
+      0.036738980981107776,
+      -0.10727434014606567,
+      0.3569555198790073,
+      -0.20770632690893254,
+      -0.01321806302400762,
+      0.3281783532809082,
+      -0.4643718366564375,
+      0.18321934134108017,
+      0.06320028421637193,
+      -0.1783617165575136,
+      0.1955993024879245,
+      -0.5674636814912024,
+      6.7319703964746695,
+      -3.684007839223907,
+      -2.768448362402687,
+      4.061322803760216,
+      -3.400901570865593
+    ],
+    "point": [
+      5.156835320739877,
+      2.6545948436597584,
+      -1.0757488575597427,
+      -0.9037225034084128,
+      1.1557188314580862,
+      0.11171465882785916,
+      0.05866561504890493,
+      0.07594616917930716,
+      0.07683686671758704,
+      -0.08351371019123197,
+      -0.010746787289130455,
+      -0.0001703147374251229,
+      -0.08690958845909116,
+      -0.06720470549643634,
+      0.03709645522751593,
+      -0.10580104026624437,
+      0.3458784227539258,
+      -0.2190764866926982,
+      -0.024201749180961817,
+      0.30260214364811633,
+      -0.4897299331224775,
+      0.15707057930871018,
+      0.04741245582077097,
+      -0.19388986785724344,
+      0.18411634940658184,
+      -0.5740680016755602,
+      6.720504783943047,
+      -3.68319199570811,
+      -2.7602348741841363,
+      4.088275869649506,
+      -3.400298030878922
+    ],
+    "nll": 4595.338242295979,
+    "solver_success": true,
+    "message": "Optimization terminated successfully",
+    "stationarity": {
+      "equality_residual": 3.469446951953614e-17,
+      "lagrangian_projected_gradient_max_abs": 0.012317681861352344,
+      "equality_multiplier_free_least_squares": -0.0010747681796671367,
+      "note": "First-order diagnostic; inspect active-bound KKT multiplier if no free deviation remains."
+    },
+    "success": true
+  },
+  "starts": [
+    {
+      "start": 0,
+      "branch_seed": "saved branch",
+      "seed": [
+        5.185185336090116,
+        2.6256156359120353,
+        1.0986122886681098,
+        -0.9047048364932675,
+        1.154364012024741,
+        0.11212762880044355,
+        0.05825387320773323,
+        0.075618623651413,
+        0.07646130527498636,
+        -0.08304425166272446,
+        -0.01005804908830688,
+        0.000580535096743967,
+        -0.0871316962728704,
+        -0.06741932118808261,
+        0.036738980981107776,
+        -0.10727434014606567,
+        0.3569555198790073,
+        -0.20770632690893254,
+        -0.01321806302400762,
+        0.3281783532809082,
+        -0.4643718366564375,
+        0.18321934134108017,
+        0.06320028421637193,
+        -0.1783617165575136,
+        0.1955993024879245,
+        -0.5674636814912024,
+        6.7319703964746695,
+        -3.684007839223907,
+        -2.768448362402687,
+        4.061322803760216,
+        -3.400901570865593
+      ],
+      "point": [
+        5.156835320739877,
+        2.6545948436597584,
+        -1.0757488575597427,
+        -0.9037225034084128,
+        1.1557188314580862,
+        0.11171465882785916,
+        0.05866561504890493,
+        0.07594616917930716,
+        0.07683686671758704,
+        -0.08351371019123197,
+        -0.010746787289130455,
+        -0.0001703147374251229,
+        -0.08690958845909116,
+        -0.06720470549643634,
+        0.03709645522751593,
+        -0.10580104026624437,
+        0.3458784227539258,
+        -0.2190764866926982,
+        -0.024201749180961817,
+        0.30260214364811633,
+        -0.4897299331224775,
+        0.15707057930871018,
+        0.04741245582077097,
+        -0.19388986785724344,
+        0.18411634940658184,
+        -0.5740680016755602,
+        6.720504783943047,
+        -3.68319199570811,
+        -2.7602348741841363,
+        4.088275869649506,
+        -3.400298030878922
+      ],
+      "nll": 4595.338242295979,
+      "solver_success": true,
+      "message": "Optimization terminated successfully",
+      "stationarity": {
+        "equality_residual": 3.469446951953614e-17,
+        "lagrangian_projected_gradient_max_abs": 0.012317681861352344,
+        "equality_multiplier_free_least_squares": -0.0010747681796671367,
+        "note": "First-order diagnostic; inspect active-bound KKT multiplier if no free deviation remains."
+      },
+      "success": true
+    },
+    {
+      "start": 1,
+      "branch_seed": "sensor/input lag swapped",
+      "seed": [
+        5.185185336090116,
+        1.154364012024741,
+        1.0986122886681098,
+        -0.9047048364932675,
+        2.6256156359120353,
+        0.11212762880044355,
+        0.05825387320773323,
+        0.075618623651413,
+        0.07646130527498636,
+        -0.08304425166272446,
+        -0.01005804908830688,
+        0.000580535096743967,
+        -0.0871316962728704,
+        -0.06741932118808261,
+        0.036738980981107776,
+        -0.10727434014606567,
+        0.3569555198790073,
+        -0.20770632690893254,
+        -0.01321806302400762,
+        0.3281783532809082,
+        -0.4643718366564375,
+        0.18321934134108017,
+        0.06320028421637193,
+        -0.1783617165575136,
+        0.1955993024879245,
+        -0.5674636814912024,
+        6.7319703964746695,
+        -3.684007839223907,
+        -2.768448362402687,
+        4.061322803760216,
+        -3.400901570865593
+      ],
+      "point": [
+        5.143374920599318,
+        1.1972069004688186,
+        0.7916575353069738,
+        -0.9007663511528075,
+        2.6253611713385263,
+        0.11428472931853648,
+        0.05804106629360431,
+        0.07700110985422563,
+        0.07652979769636004,
+        -0.08542771128354418,
+        -0.007744309155358581,
+        -0.001113147432438685,
+        -0.08630632317067527,
+        -0.06706704346617973,
+        0.036086560664006465,
+        -0.1064942479039687,
+        0.32239693541837394,
+        -0.2218690426503701,
+        -0.04337467008505926,
+        0.25337124861171967,
+        -0.4667385133000738,
+        0.12409637908529582,
+        0.029351531940214035,
+        -0.21780703155393605,
+        0.14829764524218686,
+        -0.5544524815475309,
+        6.756181622563996,
+        -3.6847617867534215,
+        -2.772657038000228,
+        4.0491495264711554,
+        -3.4003948646728084
+      ],
+      "nll": 4596.384743554215,
+      "solver_success": true,
+      "message": "Optimization terminated successfully",
+      "stationarity": {
+        "equality_residual": -1.3877787807814457e-17,
+        "lagrangian_projected_gradient_max_abs": 0.0735568466612526,
+        "equality_multiplier_free_least_squares": 0.006709456757054112,
+        "note": "First-order diagnostic; inspect active-bound KKT multiplier if no free deviation remains."
+      },
+      "success": false
+    }
+  ],
+  "bounds": [
+    [
+      1.6094379124341003,
+      6.907755278982137
+    ],
+    [
+      -2.995732273553991,
+      5.298317366548036
+    ],
+    [
+      -5.298317366548036,
+      3.4011973816621555
+    ],
+    [
+      -6.907755278982137,
+      2.302585092994046
+    ],
+    [
+      -4.605170185988091,
+      3.4011973816621555
+    ],
+    [
+      -0.8,
+      0.8
+    ],
+    [
+      -0.10536051565782628,
+      0.09531017980432493
+    ],
+    [
+      -0.10536051565782628,
+      0.09531017980432493
+    ],
+    [
+      -0.10536051565782628,
+      0.09531017980432493
+    ],
+    [
+      -0.10536051565782628,
+      0.09531017980432493
+    ],
+    [
+      -0.10536051565782628,
+      0.09531017980432493
+    ],
+    [
+      -0.10536051565782628,
+      0.09531017980432493
+    ],
+    [
+      -0.10536051565782628,
+      0.09531017980432493
+    ],
+    [
+      -0.10536051565782628,
+      0.09531017980432493
+    ],
+    [
+      -0.10536051565782628,
+      0.09531017980432493
+    ],
+    [
+      -1.6094379124341003,
+      1.0986122886681098
+    ],
+    [
+      -2.0,
+      2.0
+    ],
+    [
+      -2.0,
+      2.0
+    ],
+    [
+      -2.0,
+      2.0
+    ],
+    [
+      -2.0,
+      2.0
+    ],
+    [
+      -2.0,
+      2.0
+    ],
+    [
+      -2.0,
+      2.0
+    ],
+    [
+      -2.0,
+      2.0
+    ],
+    [
+      -2.0,
+      2.0
+    ],
+    [
+      -2.0,
+      2.0
+    ],
+    [
+      -6.214608098422191,
+      1.0986122886681098
+    ],
+    [
+      -2.995732273553991,
+      8.006367567650246
+    ],
+    [
+      -9.210340371976182,
+      0.0
+    ],
+    [
+      -6.214608098422191,
+      1.0986122886681098
+    ],
+    [
+      -2.995732273553991,
+      8.006367567650246
+    ],
+    [
+      -9.210340371976182,
+      0.0
+    ]
+  ],
+  "nmean": 25,
+  "shape_count": 25,
+  "fixed_coordinates": {},
+  "coordinate_names": [
+    "log_tA",
+    "log_rS",
+    "log_Us_over_Ua",
+    "log_Ux_over_Ua",
+    "log_input_lag",
+    "command_curvature",
+    "log_Ua_ratio_0",
+    "log_Ua_ratio_1",
+    "log_Ua_ratio_2",
+    "log_Ua_ratio_3",
+    "log_Ua_ratio_4",
+    "log_Ua_ratio_5",
+    "log_Ua_ratio_6",
+    "log_Ua_ratio_7",
+    "log_Ua_ratio_8",
+    "log_K",
+    "ambient_offset_0",
+    "ambient_offset_1",
+    "ambient_offset_2",
+    "ambient_offset_3",
+    "ambient_offset_4",
+    "ambient_offset_5",
+    "ambient_offset_6",
+    "ambient_offset_7",
+    "ambient_offset_8",
+    "log_latent_SD_T1",
+    "log_ell_T1",
+    "log_measurement_SD_T1",
+    "log_latent_SD_T2",
+    "log_ell_T2",
+    "log_measurement_SD_T2"
+  ],
+  "initial_sensor_bins": false,
+  "initial_noise_buffer_C": 0.0,
+  "minimum_sensor_loading": 0.005,
+  "resumed_starts": null,
+  "condition_initial_code": false,
+  "score_backend": "compiled",
+  "continued_task": null,
+  "initial_sensor_offsets_C": null,
+  "startup_offsets_C": null,
+  "coefficients": [
+    0.8996036151674706,
+    0.3458784227539258,
+    -0.2190764866926982,
+    -0.024201749180961817,
+    0.30260214364811633,
+    -0.4897299331224775,
+    0.15707057930871018,
+    0.04741245582077097,
+    -0.19388986785724344,
+    0.18411634940658184
+  ],
+  "noise_parameters": [
+    {
+      "latent_SD_C": 0.5632295532663771,
+      "ell_s": 829.2359908649328,
+      "measurement_SD_C": 0.025142591567581054
+    },
+    {
+      "latent_SD_C": 0.06327690450282117,
+      "ell_s": 59.636981084876766,
+      "measurement_SD_C": 0.03336332517734712
+    }
+  ],
+  "record_names": [
+    "validation_experiment_env_2_sin_50_50_run_1.csv",
+    "validation_experiment_env_2_sin_50_50_run_2.csv",
+    "validation_experiment_env_2_sin_50_50_run_3.csv",
+    "validation_experiment_env_2_sin_5_50_run_1.csv",
+    "validation_experiment_env_2_sin_5_50_run_2.csv",
+    "validation_experiment_env_2_sin_5_50_run_3.csv",
+    "validation_experiment_env_2_step_50_run_1.csv",
+    "validation_experiment_env_2_step_50_run_2.csv",
+    "validation_experiment_env_2_step_50_run_3.csv"
+  ],
+  "raw_sha256": {
+    "validation_experiment_env_2_sin_50_50_run_1.csv": "958261e9db4cdd43c94d793e87ec97a3abef177913888bad4d25de27b8956389",
+    "validation_experiment_env_2_sin_50_50_run_2.csv": "ea3c7238ee1b4f7d04af9b3ad0de2ff68898aa876ce9d74e7b49e75e64a5add2",
+    "validation_experiment_env_2_sin_50_50_run_3.csv": "4de694a3e5288f89d2379ebdaba34dac668e8a885a90c9b7132b31706371f71a",
+    "validation_experiment_env_2_sin_5_50_run_1.csv": "12abe51379ee107ee593986e1923aa849939aa2254412c551886708c26aa7f6d",
+    "validation_experiment_env_2_sin_5_50_run_2.csv": "a0cc520a2826d5dbd7cae6d389a48eb7ec32aa4046ca4a320ebed70caab638bc",
+    "validation_experiment_env_2_sin_5_50_run_3.csv": "4b278a66c60f6adb4746fda7b7a71b43c39458d3c5a11cca064a59d1dd2f152f",
+    "validation_experiment_env_2_step_50_run_1.csv": "0c5fc5917a3693ca73a9240f0f40aea711fe1458853b88dd9c9db54fded776ec",
+    "validation_experiment_env_2_step_50_run_2.csv": "bd249f911ac8635bf2cf0d50dbf74405ebd10f879f9784feae90544d046cdbe4",
+    "validation_experiment_env_2_step_50_run_3.csv": "08f2d71786510f0d232e22c1bb8e6225b5f4e7ecb572d4cde446f3305b184b6f"
+  },
+  "nobs": 16192,
+  "parameter_count": 30,
+  "parameters": {
+    "K_common_nominal": 0.8996036151674706,
+    "tA_nominal_s": 173.6141521907907,
+    "rS_s": 14.219223883408608,
+    "Us_over_Ua_nominal": 0.341042267570712,
+    "Ux_over_Ua_nominal": 0.4050590162286877,
+    "input_lag_s": 3.176305825643918,
+    "command_curvature": 0.11171465882785916,
+    "gamma_differential_50C_over_Ua": null,
+    "Ua_run_over_nominal": [
+      1.0604205927609394,
+      1.078904494279678,
+      1.0798658999540454,
+      0.9198784748749809,
+      0.9893107531200764,
+      0.9998296997653064,
+      0.9167599775685696,
+      0.935003781331854,
+      1.037793116581875
+    ],
+    "log_deviations": [
+      0.05866561504890493,
+      0.07594616917930716,
+      0.07683686671758704,
+      -0.08351371019123197,
+      -0.010746787289130455,
+      -0.0001703147374251229,
+      -0.08690958845909116,
+      -0.06720470549643634,
+      0.03709645522751593
+    ]
+  },
+  "RMSE_by_channel_C": [
+    0.60765145518388,
+    0.11589793497096554
+  ],
+  "nominal_AICc": 9250.791576479836,
+  "per_run": [
+    {
+      "name": "validation_experiment_env_2_sin_50_50_run_1.csv",
+      "RMSE_by_channel_C": [
+        0.5435113727219565,
+        0.1276751549320917
+      ]
+    },
+    {
+      "name": "validation_experiment_env_2_sin_50_50_run_2.csv",
+      "RMSE_by_channel_C": [
+        0.4032521520702536,
+        0.11813478805639048
+      ]
+    },
+    {
+      "name": "validation_experiment_env_2_sin_50_50_run_3.csv",
+      "RMSE_by_channel_C": [
+        0.17142561955522864,
+        0.11317918342902657
+      ]
+    },
+    {
+      "name": "validation_experiment_env_2_sin_5_50_run_1.csv",
+      "RMSE_by_channel_C": [
+        0.5157760632353952,
+        0.11861692078718332
+      ]
+    },
+    {
+      "name": "validation_experiment_env_2_sin_5_50_run_2.csv",
+      "RMSE_by_channel_C": [
+        1.386585959070774,
+        0.11796524610090568
+      ]
+    },
+    {
+      "name": "validation_experiment_env_2_sin_5_50_run_3.csv",
+      "RMSE_by_channel_C": [
+        0.4871323636844055,
+        0.11155781006455662
+      ]
+    },
+    {
+      "name": "validation_experiment_env_2_step_50_run_1.csv",
+      "RMSE_by_channel_C": [
+        0.3618655296026582,
+        0.10999529196016082
+      ]
+    },
+    {
+      "name": "validation_experiment_env_2_step_50_run_2.csv",
+      "RMSE_by_channel_C": [
+        0.2859760455252008,
+        0.09941220029695585
+      ]
+    },
+    {
+      "name": "validation_experiment_env_2_step_50_run_3.csv",
+      "RMSE_by_channel_C": [
+        0.44257439240889374,
+        0.12414424031186286
+      ]
+    }
+  ],
+  "selected_quadrature": [
+    {
+      "name": "validation_experiment_env_2_sin_50_50_run_1.csv",
+      "channel": 1,
+      "nodes": 128,
+      "nll": 311.387771508805,
+      "normalization_error": 5.773159728050814e-15,
+      "smoothing_closure_error": 4.6629367034256575e-15
+    },
+    {
+      "name": "validation_experiment_env_2_sin_50_50_run_2.csv",
+      "channel": 1,
+      "nodes": 128,
+      "nll": 310.2608053311072,
+      "normalization_error": 5.329070518200751e-15,
+      "smoothing_closure_error": 3.774758283725532e-15
+    },
+    {
+      "name": "validation_experiment_env_2_sin_50_50_run_3.csv",
+      "channel": 1,
+      "nodes": 128,
+      "nll": 320.0611967727276,
+      "normalization_error": 5.773159728050814e-15,
+      "smoothing_closure_error": 3.9968028886505635e-15
+    },
+    {
+      "name": "validation_experiment_env_2_sin_5_50_run_1.csv",
+      "channel": 1,
+      "nodes": 128,
+      "nll": 258.7856233550772,
+      "normalization_error": 5.773159728050814e-15,
+      "smoothing_closure_error": 3.9968028886505635e-15
+    },
+    {
+      "name": "validation_experiment_env_2_sin_5_50_run_2.csv",
+      "channel": 1,
+      "nodes": 128,
+      "nll": 340.6794236335634,
+      "normalization_error": 7.105427357601002e-15,
+      "smoothing_closure_error": 4.218847493575595e-15
+    },
+    {
+      "name": "validation_experiment_env_2_sin_5_50_run_3.csv",
+      "channel": 1,
+      "nodes": 128,
+      "nll": 256.2996071794939,
+      "normalization_error": 5.773159728050814e-15,
+      "smoothing_closure_error": 4.440892098500626e-15
+    },
+    {
+      "name": "validation_experiment_env_2_step_50_run_1.csv",
+      "channel": 1,
+      "nodes": 128,
+      "nll": 272.3965005037934,
+      "normalization_error": 5.773159728050814e-15,
+      "smoothing_closure_error": 4.440892098500626e-15
+    },
+    {
+      "name": "validation_experiment_env_2_step_50_run_2.csv",
+      "channel": 1,
+      "nodes": 128,
+      "nll": 249.81669759609676,
+      "normalization_error": 5.329070518200751e-15,
+      "smoothing_closure_error": 4.440892098500626e-15
+    },
+    {
+      "name": "validation_experiment_env_2_step_50_run_3.csv",
+      "channel": 1,
+      "nodes": 128,
+      "nll": 291.3160219682684,
+      "normalization_error": 5.773159728050814e-15,
+      "smoothing_closure_error": 4.6629367034256575e-15
+    },
+    {
+      "name": "validation_experiment_env_2_sin_50_50_run_1.csv",
+      "channel": 2,
+      "nodes": 128,
+      "nll": 198.01506057713536,
+      "normalization_error": 2.2368773500147654e-12,
+      "smoothing_closure_error": 3.774758283725532e-15
+    },
+    {
+      "name": "validation_experiment_env_2_sin_50_50_run_2.csv",
+      "channel": 2,
+      "nodes": 128,
+      "nll": 229.69780121302782,
+      "normalization_error": 3.1441516057384433e-13,
+      "smoothing_closure_error": 3.885780586188048e-15
+    },
+    {
+      "name": "validation_experiment_env_2_sin_50_50_run_3.csv",
+      "channel": 2,
+      "nodes": 128,
+      "nll": 247.74096946518893,
+      "normalization_error": 1.7963408538435033e-12,
+      "smoothing_closure_error": 3.774758283725532e-15
+    },
+    {
+      "name": "validation_experiment_env_2_sin_5_50_run_1.csv",
+      "channel": 2,
+      "nodes": 128,
+      "nll": 239.95493347481167,
+      "normalization_error": 2.2213342276700132e-12,
+      "smoothing_closure_error": 3.1086244689504383e-15
+    },
+    {
+      "name": "validation_experiment_env_2_sin_5_50_run_2.csv",
+      "channel": 2,
+      "nodes": 128,
+      "nll": 217.73035054893742,
+      "normalization_error": 8.86402062860725e-13,
+      "smoothing_closure_error": 3.3306690738754696e-15
+    },
+    {
+      "name": "validation_experiment_env_2_sin_5_50_run_3.csv",
+      "channel": 2,
+      "nodes": 128,
+      "nll": 210.43037912276716,
+      "normalization_error": 9.232614672782802e-13,
+      "smoothing_closure_error": 3.552713678800501e-15
+    },
+    {
+      "name": "validation_experiment_env_2_step_50_run_1.csv",
+      "channel": 2,
+      "nodes": 128,
+      "nll": 235.40266172437998,
+      "normalization_error": 1.5707435352396715e-12,
+      "smoothing_closure_error": 3.552713678800501e-15
+    },
+    {
+      "name": "validation_experiment_env_2_step_50_run_2.csv",
+      "channel": 2,
+      "nodes": 128,
+      "nll": 193.215369320269,
+      "normalization_error": 1.8411938640383596e-12,
+      "smoothing_closure_error": 3.3306690738754696e-15
+    },
+    {
+      "name": "validation_experiment_env_2_step_50_run_3.csv",
+      "channel": 2,
+      "nodes": 128,
+      "nll": 212.14706900052857,
+      "normalization_error": 5.81756864903582e-14,
+      "smoothing_closure_error": 2.9976021664879227e-15
+    }
+  ],
+  "diagnostic_streams": [
+    {
+      "name": "validation_experiment_env_2_sin_50_50_run_1.csv",
+      "channel": 1,
+      "seed": 10371,
+      "bin_nll_256": 311.3877715088067,
+      "normalization_error": 6.661338147750939e-15
+    },
+    {
+      "name": "validation_experiment_env_2_sin_50_50_run_1.csv",
+      "channel": 2,
+      "seed": 110371,
+      "bin_nll_256": 198.01506057713863,
+      "normalization_error": 6.661338147750939e-15
+    },
+    {
+      "name": "validation_experiment_env_2_sin_50_50_run_2.csv",
+      "channel": 1,
+      "seed": 11371,
+      "bin_nll_256": 310.2608053311111,
+      "normalization_error": 6.217248937900877e-15
+    },
+    {
+      "name": "validation_experiment_env_2_sin_50_50_run_2.csv",
+      "channel": 2,
+      "seed": 111371,
+      "bin_nll_256": 229.69780121302148,
+      "normalization_error": 6.217248937900877e-15
+    },
+    {
+      "name": "validation_experiment_env_2_sin_50_50_run_3.csv",
+      "channel": 1,
+      "seed": 12371,
+      "bin_nll_256": 320.0611967727316,
+      "normalization_error": 7.105427357601002e-15
+    },
+    {
+      "name": "validation_experiment_env_2_sin_50_50_run_3.csv",
+      "channel": 2,
+      "seed": 112371,
+      "bin_nll_256": 247.7409694651903,
+      "normalization_error": 7.105427357601002e-15
+    },
+    {
+      "name": "validation_experiment_env_2_sin_5_50_run_1.csv",
+      "channel": 1,
+      "seed": 13371,
+      "bin_nll_256": 258.78562335507877,
+      "normalization_error": 6.661338147750939e-15
+    },
+    {
+      "name": "validation_experiment_env_2_sin_5_50_run_1.csv",
+      "channel": 2,
+      "seed": 113371,
+      "bin_nll_256": 239.9549334748603,
+      "normalization_error": 6.661338147750939e-15
+    },
+    {
+      "name": "validation_experiment_env_2_sin_5_50_run_2.csv",
+      "channel": 1,
+      "seed": 14371,
+      "bin_nll_256": 340.67942363356633,
+      "normalization_error": 7.105427357601002e-15
+    },
+    {
+      "name": "validation_experiment_env_2_sin_5_50_run_2.csv",
+      "channel": 2,
+      "seed": 114371,
+      "bin_nll_256": 217.73035054924367,
+      "normalization_error": 6.661338147750939e-15
+    },
+    {
+      "name": "validation_experiment_env_2_sin_5_50_run_3.csv",
+      "channel": 1,
+      "seed": 15371,
+      "bin_nll_256": 256.2996071794928,
+      "normalization_error": 6.661338147750939e-15
+    },
+    {
+      "name": "validation_experiment_env_2_sin_5_50_run_3.csv",
+      "channel": 2,
+      "seed": 115371,
+      "bin_nll_256": 210.43037912319014,
+      "normalization_error": 6.217248937900877e-15
+    },
+    {
+      "name": "validation_experiment_env_2_step_50_run_1.csv",
+      "channel": 1,
+      "seed": 16371,
+      "bin_nll_256": 272.3965005037925,
+      "normalization_error": 6.661338147750939e-15
+    },
+    {
+      "name": "validation_experiment_env_2_step_50_run_1.csv",
+      "channel": 2,
+      "seed": 116371,
+      "bin_nll_256": 235.40266172438965,
+      "normalization_error": 7.105427357601002e-15
+    },
+    {
+      "name": "validation_experiment_env_2_step_50_run_2.csv",
+      "channel": 1,
+      "seed": 17371,
+      "bin_nll_256": 249.81669759609716,
+      "normalization_error": 6.217248937900877e-15
+    },
+    {
+      "name": "validation_experiment_env_2_step_50_run_2.csv",
+      "channel": 2,
+      "seed": 117371,
+      "bin_nll_256": 193.21536932027982,
+      "normalization_error": 6.661338147750939e-15
+    },
+    {
+      "name": "validation_experiment_env_2_step_50_run_3.csv",
+      "channel": 1,
+      "seed": 18371,
+      "bin_nll_256": 291.31602196827106,
+      "normalization_error": 6.661338147750939e-15
+    },
+    {
+      "name": "validation_experiment_env_2_step_50_run_3.csv",
+      "channel": 2,
+      "seed": 118371,
+      "bin_nll_256": 212.14706900052335,
+      "normalization_error": 6.661338147750939e-15
+    }
+  ],
+  "source_inputs_sha256": {
+    "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/transfer_protocol120_loading_refinement/loading_seed_2.json": "d933585164e714794c07c2cb1efae8952db457fe1acdbd66a969e68e0570fb1d",
+    "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/bin_noise_band10_T1_v2/observation_fit.json": "5e320009e90084a03209c1de3dbcb66f277f4d5ac33e7084d580a916ce829765",
+    "/Users/adowling/DowlingLab/Teaching/pyomo-doe/skunk_works/delay_study/error_structure_study/results/bin_noise_band10_T2_v2/observation_fit.json": "d715a5b25ab926162d169d7640b6b644268f3d86b1065a1376328569f8b7550b"
+  },
+  "elapsed_s": 1102.0357391669997,
+  "numerical_failures": 0,
+  "notice": "Mean and both independent-channel OU/analogue-noise models re-estimated under conditional bin probabilities. raw_sha256 binds original experimental design files; dataset identifies any synthetic observation override. Discrete likelihood and assumed bin phase; no cross-channel noise component, uncertainty calibration or external validation claimed. All twelve records informed structure selection; record_names gives the actual fit subset. Observed information and boundary profiles remain necessary."
+}

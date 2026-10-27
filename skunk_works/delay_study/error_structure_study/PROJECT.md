@@ -448,3 +448,21 @@ seeds/data/diagnostics and all reused numerical checks; it uses no subset or
 partial mode. The even audit's retained SciPy beta-quantile overflow warning did
 not change its zero exit or finite JSON output; final Monte Carlo interval
 arithmetic must still be checked independently before reporting calibration.
+
+All six remaining initial/bin/hidden-heater cases are terminal and independently
+audited. Hidden-heater +/-2 and +/-5 C fits coincide: max selected offset 0.514 C,
+T1/T2 latent-reference RMSE 0.682/0.113 C, rS=2.667 s and input L=14.898 s.
+Their opposite lag assignment makes the consequential-startup-profile condition
+apply. Declare a representative nuisance profile before measuring it.
+Free-initial nearest/floor fits have matching likelihoods and nearly identical
+dynamics but different raw code-minus-latent-mean RMSE; compare reported-code
+expectations before interpreting that as a prediction difference.
+
+The targeted protocol120 loading refinement also exited 0. Three additional
+loading starts converge to r=0.341 and nll4595.33824, improving the original
+near-bound point by0.25791. The fourth reaches the other lag region. Selection
+used objective value only; the new selected-point and information audits remain
+required. Original fits, canonical forecasts and failed information artifacts
+remain unchanged. The fresh process reconciliation found two free worker slots;
+the earlier controller's exact-three-active expectation was protective but too
+restrictive and launched nothing. More free slots do not violate the limit.
