@@ -396,3 +396,16 @@ is retained in both report drafts at 0.374 C RMSE. Its old producer/independent
 audit exits, fit/trajectory/source hashes, all raw T1/time/input arrays and
 10,795-point scalar SSE were rechecked. Different outputs and ambient definitions
 prevent a matched likelihood/AIC ranking with the current two-output fits.
+
+The remaining-protocol uncertainty queue stopped at protocol_120s. Its
+information producer exited 0; the independent auditor failed before numerical
+checks because it took max over an empty active-bound set. The failed auditor
+and parent exits/logs are retained. The correction treats the empty restriction
+as vacuous while independently checking constraint rank, complete basis dimension,
+centering and orthogonality. It does not snap a fitted parameter to a bound or
+change any tolerance. A declared four-coordinate control must pass first.
+The saved information also has a negative weak loading eigenvalue (-0.00735),
+with stable producer directional checks. Its covariance is not accepted; the
+corrected full audit will retain an explicit nonpositive-curvature failure if
+confirmed, before any fit refinement or parameter propagation. No existing
+canonical forecast or selected fit is overwritten.

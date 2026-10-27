@@ -21,6 +21,23 @@ def conditional_covariance(information,basis):
     return basis@cho_solve(cho_factor(small,lower=True),np.eye(small.shape[0]))@basis.T
 
 
+def basis_invariants(basis,centering,active,conditional):
+    """Check the complete null space, including an empty active-bound set."""
+    basis=np.asarray(basis);centering=np.asarray(centering);active=np.asarray(active,dtype=bool)
+    n=len(centering);assert basis.ndim==2 and basis.shape[0]==n and active.shape==(n,)
+    rows=[centering] if np.any(centering) else []
+    if conditional:rows += list(np.eye(n)[active])
+    rank=np.linalg.matrix_rank(np.array(rows)) if rows else 0
+    assert basis.shape[1]==n-rank,'Constraint basis omits or adds feasible directions'
+    orth=float(np.max(abs(basis.T@basis-np.eye(basis.shape[1])))) if basis.shape[1] else 0.
+    centered=float(np.max(abs(centering@basis))) if basis.shape[1] else 0.
+    active_error=float(np.max(abs(basis[active]))) if conditional and np.any(active) and basis.shape[1] else 0.
+    assert orth<1e-12 and centered<1e-12 and active_error<1e-12
+    return {'orthogonality_error':orth,'centering_error':centered,
+        'active_bound_restriction_error':active_error,'constraint_rank':int(rank),
+        'expected_dimension':n-int(rank),'active_bound_count':int(np.sum(active)) if conditional else 0}
+
+
 def main():
     parser=argparse.ArgumentParser();parser.add_argument('--output',type=Path,required=True)
     parser.add_argument('--input',type=Path,required=True);parser.add_argument('--fit',type=Path,required=True)
@@ -39,13 +56,11 @@ def main():
     a=m.centered_jacobian(p);bounds=np.array(m.bounds());active=(p-bounds[:,0]<1e-5)|(bounds[:,1]-p<1e-5)
     basis_checks={}
     for label,basis in [('centered_tangent',Q),('conditional_active_face',F)]:
-        orth=float(np.max(abs(basis.T@basis-np.eye(basis.shape[1]))));centering=float(np.max(abs(a@basis)))
-        assert orth<1e-12 and centering<1e-12
-        if label=='conditional_active_face':assert np.max(abs(basis[active]))<1e-12
+        invariants=basis_invariants(basis,a,active,label=='conditional_active_face')
         B=basis.T@H@basis;values,vectors=eigh((B+B.T)/2,driver='evr')
         difference=float(np.max(abs(values-info[label]['eigenvalues'])/(1+abs(values))));assert difference<1e-7
         residual=float(np.linalg.norm(B@vectors-vectors*values,ord='fro')/np.linalg.norm(B));assert residual<1e-12
-        basis_checks[label]={'orthogonality_error':orth,'centering_error':centering,
+        basis_checks[label]={**invariants,
             'relative_eigenpair_residual':residual,'scaled_eigenvalue_reconstruction_error':difference}
     # Compare stored normalized-model sensitivities with central differences of
     # independently assembled dimensional heat-flux matrices over every sample.
@@ -103,8 +118,23 @@ def main():
         curvature=(2*f0-5*forward_nll(step)+4*forward_nll(2*step)-forward_nll(3*step))/step**2
         error=float(abs(curvature-H[2,2]));assert error<.001,(step,curvature,H[2,2],error)
         loading_checks.append({'step':step,'scalar_one_sided_curvature':float(curvature),'stored_H22':float(H[2,2]),'absolute_error':error})
-    # Conditional local comparisons include all permitted mean nuisances, but
-    # freeze the two currently active bounds. They are not calibrated CIs.
+    # Nonpositive observed curvature cannot generate a local-normal covariance.
+    # Retain the independent checks rather than failing with only a Cholesky
+    # exception or changing the fitted active set to force positive curvature.
+    if ev[0]<=0:
+        write(args.output/'audit.json',{'status':'failed','failure_kind':'nonpositive_observed_curvature',
+            'fit_sha256':info['fit_sha256'],
+            'information_sha256':hashlib.sha256((args.input/'information.json').read_bytes()).hexdigest(),
+            'matrix_sha256':hashlib.sha256((args.input/'information_matrices.npz').read_bytes()).hexdigest(),
+            'basis_and_eigen_checks':basis_checks,'independent_dimensional_derivative_checks':derivative_checks,
+            'dense_analogue_information_relative_error':analogue_error,'IID_information_relative_error':iid_error,
+            'nominal_deviation_chart_gauge_mean_error_C':gauge_error,'loading_scalar_curvature_checks':loading_checks,
+            'active_coordinates':[names[j] for j in np.flatnonzero(active)],
+            'minimum_observed_active_face_eigenvalue':float(ev[0]),
+            'notice':'Observed curvature is nonpositive at the saved accepted fit. No local covariance or parameter draw is accepted. Investigate the fit and weak direction without snapping bounds, changing tolerances or clipping eigenvalues.'})
+        raise RuntimeError('Nonpositive observed curvature; local-normal uncertainty is unsupported at this fit')
+    # Conditional local comparisons include all permitted mean nuisances and
+    # freeze exactly the detected active bounds. They are not calibrated CIs.
     mean_constraints=[a[:m.nmean]] if np.any(a[:m.nmean]) else []
     mean_constraints += [np.eye(m.nmean)[j] for j in np.flatnonzero(active[:m.nmean])]
     face=null_space(np.array(mean_constraints)) if mean_constraints else np.eye(m.nmean)
