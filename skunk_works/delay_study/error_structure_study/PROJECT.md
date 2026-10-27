@@ -574,3 +574,23 @@ left. Two released slots independently audit immutable successful startup
 reference and zero-offset tasks while the later grid points continue. Final
 startup synthesis must consume a terminal audit for every accepted point,
 exact source/fit/trajectory bindings and all declared failures.
+
+Four accepted startup points(reference,-1,0,+1C) now have terminal passed
+independent audits. The final grid point is still fitting. The new summary
+accepts these exact, source/data-bound real audits rather than repeating them
+after parent completion; missing or unrelated audits are rejected.
+
+The19-component interim aggregate is terminal/partial. Primary omitted-run
+local-mixture widths are11.120/6.048C versus9.160/5.170C for hard conditions
+plus fitted noise. Its64/256 maximum endpoint change is1.61/0.65C, with
+19.11/11.08% endpoints moving. This differs from the modest protocol-group
+change. A committed diagnostic now checks actual training likelihood against
+the local quadratic at16 preselected saved draws in three cases, chosen by
+training information geometry, with independent physical/quadrature witnesses.
+It does not refit, alter bounds or assert mixture calibration.
+
+The declared transfer candidates are shared and10% conductance-band models.
+Radiation and startup are all-data sensitivities, with no dedicated transfer
+comparison here. The earlier note that radiation transfer remains necessary
+means it would be needed before adopting radiation as a validated correction;
+this study cannot make that adoption claim from its all-data fit/profile.
