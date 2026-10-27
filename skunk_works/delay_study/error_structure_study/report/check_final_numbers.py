@@ -21,6 +21,11 @@ def main():
     parser.add_argument('--transfer-summary',type=Path,required=True);args=parser.parse_args()
     text=(HERE/'main.tex').read_text();bindings={};checked=[];records=load_records()
     def binding(path):bindings[str(path.relative_to(DELAY))]=sha(path)
+    # Numeric assertions inspect the generated TeX inputs as well as the main
+    # source; bind each file so a later table edit cannot retain a stale audit.
+    for path in sorted((HERE/'tables').glob('*.tex')):
+        text+='\n'+path.read_text();binding(path)
+    binding(HERE/'render_transfer_tables.py')
     # Historical T1-only benchmark: reuse its independently audited fit, bind
     # unchanged raw data, and recompute the scalar SSE without ranking unlike
     # single-/two-output likelihoods or ambient definitions.
