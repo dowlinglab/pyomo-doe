@@ -30,11 +30,13 @@ def main():
     assert not manifest['live_jobs'] and not manifest['live_worker_slots']
     assert not any(manifest['reconciliation_warnings'].values())
     assert all(r['status']=='terminal' for r in manifest['jobs'])
-    failures=[]
+    failures=[];failure_logs={}
     for row in manifest['jobs']:
         d=REPO/row['output'];exit=read(d/'exit.json');source=read(d/'source_snapshot.json')
         assert source['commit']==row['source_commit'] and exit['exit_code']==row['exit_code']
         if exit['exit_code']!=0:
+            log=d/'run.log'
+            if log.exists():failure_logs[row['id']]=log
             failures.append({'id':row['id'],'exit_code':exit['exit_code'],'source_commit':source['commit'],
                 'finished_utc':exit.get('finished_utc'),'directory':row['output']})
     # Preserve all prior studies and raw data, rather than only checking the
@@ -72,12 +74,24 @@ def main():
         if name=='recovery_b10_full50_summary':assert summary['status']=='complete' and summary['coverage']['covered']==49
         if name=='local_taylor_quadrature_followup':assert summary['status']=='completed_with_unresolved_quadrature'
     args.output.mkdir(exist_ok=False)
+    (args.output/'failure_logs').mkdir()
+    for row in failures:
+        if row['id'] in failure_logs:
+            original=failure_logs[row['id']];target=args.output/'failure_logs'/(row['id'].replace('/','__')+'.txt')
+            target.write_bytes(original.read_bytes())
+            row['original_run_log_sha256']=sha(original);row['preserved_log']=str(target.relative_to(args.output))
+    failed_tasks=[]
+    for task in sorted((HERE/'results').rglob('task_exit.json')):
+        value=json.loads(task.read_text())
+        if not value.get('success',True):
+            failed_tasks.append({'path':str(task.relative_to(REPO)),'sha256':sha(task),'result':value})
+    (args.output/'failed_tasks.json').write_text(json.dumps(failed_tasks,indent=2)+'\n')
     (args.output/'preserved_files.json').write_text(json.dumps(preserved,indent=2)+'\n')
     (args.output/'terminal_nonzero_exits.json').write_text(json.dumps(failures,indent=2)+'\n')
     output={'status':'passed','checked_utc':datetime.now(timezone.utc).isoformat(),
         'source_commit':subprocess.check_output(['git','rev-parse','HEAD'],cwd=REPO,text=True).strip(),
         'checker_source_sha256':sha(Path(__file__)),'starting_plan_commit':BASE,
-        'terminal_jobs':len(manifest['jobs']),'nonzero_exits_retained':len(failures),'live_jobs':0,
+        'terminal_jobs':len(manifest['jobs']),'nonzero_exits_retained':len(failures),'failed_task_receipts_retained':len(failed_tasks),'live_jobs':0,
         'preserved_prior_files':len(preserved),'changed_paths_outside_allowed_scope':unexpected,
         'preserved_inventory_sha256':sha(args.output/'preserved_files.json'),
         'nonzero_exit_inventory_sha256':sha(args.output/'terminal_nonzero_exits.json'),
