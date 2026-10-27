@@ -10,34 +10,38 @@ Read run_manifest.json and a fresh direct-tool process snapshot before dispatch.
 Only terminal audited results support report claims. All twelve ENV2 records
 informed structure selection; transfer is retrospective.
 
-## Current checkpoint: October 27, 02:17 UTC
+## Current checkpoint: 2026-10-27 03:40:25 UTC
 
-The full fifty-draw recovery and independent summary audit passed: gain coverage
-49/50, exact-binomial MC interval89.35--99.95%, fifteen lag-label exchanges.
-All four selected hardware input/phase/T2-ACF/cross statistics exceed all fifty
-refitted references. The eight-page WIP PDF and Markdown now contain these
-results; numeric checks bind295 files, all eight pixels/geometry were reviewed.
-Final pagination and remaining inference are still pending.
+Complete and independently audited: fifty refitted recovery collections and
+100 free/null point checks; all28 loading/deviation/noise-length/radiation
+profile points; all initial/bin/hidden-heater cases and reported-code phase
+comparisons. Refitting preserves hardware input/phase/cross failures; no IID
+claim. Fifteen recovery fits exchange lag labels. Startup changes also reverse
+labels, so its declared six-point nuisance profile remains required.
 
-All initial/bin cases passed selected-point audits. In reported-code space,
-freely initialized floor/nearest fits differ below0.00030C. Their changed
-analogue-reference RMSE is not predictive improvement. Hidden +/-2/5C fits
-coincide (maximum0.514C) and reverse the lag labels, triggering the declared
-six-point startup profile. Its independent score/propagation control passed.
+Eight full transfer components are indexed and visually reviewed, including
+all four primary protocol folds after the objective-based120 refinement. Its
+independent scalar curvature failure was truncation: the terminal convergence
+study justified fourth-order centered stencils at interior loading, unchanged
+.001 gate. Fresh information/draw/forecast audits passed. The preferred
+interim summary verifies all eight curvature/audit/draw chains and all20
+canonical forecasts; its global status is partial. The old report/aggregate
+tables are frozen original-fit comparisons and need final regeneration.
 
-Four full transfer components are indexed and reviewed: primary30/300/step
-and shared30. Primary120 extra loading starts improve nll, but the old scalar
-curvature stencil needs a saved convergence study at the larger loading.
-Shared120 has confirmed negative weak-loading curvature and needs the existing
-additional-start policy. Both original failed audits remain. No covariance
-was accepted on those failures. Shared300/step propagation remains undispatched.
+Four long slots: startup69793, primary runs_a68702, runs_b76494 and shared120
+loading refinement80110. Reconcile fresh full process output (>=12000-token
+budget, strict PID-line validation) before dispatch; a retained truncated
+03:10 capture is not stopped-process evidence. Next free slot runs shared300
+and step full uncertainty. Shared120 needs independent selected-point audit,
+new information and full forecasts after its four seeds. Audit startup when
+terminal. Inspect/index completed run3/4/8/9 and later folds.
 
-Four long slots are allocated: remaining radiation profile, startup profile,
-primary runs1--6 and runs7--12. Reconcile exact identities before any dispatch.
-Next free slot: committed diagnose_loading_stencils.py on primary refined120,
-then consider a justified auditor stencil update without relaxing the .001 gate;
-use another slot for shared120 additional starts. Consult run_manifest for
-actual receipts and sessions rather than historical pending prose below.
+The eight-page WIP PDF and Markdown contain full recovery and code-space
+initialization findings;295-source numerical checks, all eight pixels and
+geometry were inspected. The new28-point profile figurev3 is separately
+inspected and ready for final inclusion. Finish all scoped numerical gates,
+preferred20-fold summary, final report/figures/pagination/claim audit and
+requirement register before push/completion. No email.
 
 ## Audited scientific results
 
