@@ -19,7 +19,8 @@ def sha(path):return hashlib.sha256(path.read_bytes()).hexdigest()
 def main():
     parser=argparse.ArgumentParser();parser.add_argument('--output',type=Path,required=True)
     parser.add_argument('--transfer-summary',type=Path,required=True);args=parser.parse_args()
-    text=(HERE/'main.tex').read_text();bindings={};checked=[];records=load_records()
+    text=(HERE/'main.tex').read_text();markdown=(STUDY/'report.md').read_text()
+    bindings={};checked=[];records=load_records()
     def binding(path):bindings[str(path.relative_to(DELAY))]=sha(path)
     # Numeric assertions inspect the generated TeX inputs as well as the main
     # source; bind each file so a later table edit cannot retain a stale audit.
