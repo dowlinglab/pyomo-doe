@@ -205,3 +205,11 @@ Near a bound it keeps the original .005/.02 forward stencils. Selection uses
 feasible stencil support, never positivity or passing error. The .001 absolute
 gate, stored Hessian, fitted point and all other checks remain unchanged.
 A fresh full information audit must pass before any draw is accepted.
+
+The final aggregator must bind every parameter mixture through its terminal
+information producer, passed independent information audit, positive active-face
+curvature, draw receipt and exact64/256 files, in addition to the forecast
+audits. Earlier summaries checked forecast/draw-file hashes but did not retain
+the full curvature/audit provenance chain in their own receipt. The strengthened
+summary checks this chain and recomputes the small-matrix minimum eigenvalue.
+It does not change predictions or accept a formerly failed approximation.

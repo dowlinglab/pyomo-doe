@@ -38,6 +38,37 @@ def prediction(entry,fit_hash,expected_names):
         'prediction_sha256':audit['prediction_sha256'],'arrays_sha256':audit['arrays_sha256']}
 
 
+def parameter_chain(entry,fit_hash,variants):
+    """Bind every consumed mixture to its accepted curvature and draw receipt."""
+    used=set(variants)&{'parameter_64','parameter_256'}
+    if not used:return None
+    information=Path(entry['information']);auditor=Path(entry['information_audit']);draws=Path(entry['draws'])
+    paths=[information/'information.json',information/'information_matrices.npz',auditor/'audit.json',draws/'draw_receipt.json']
+    info=json.loads(paths[0].read_text());audit=json.loads(paths[2].read_text());receipt=json.loads(paths[3].read_text())
+    for directory in [information,auditor,draws]:
+        assert parent_receipt(directory,require_terminal=True)['exit']['exit_code']==0
+        paths += [directory/'source_snapshot.json',directory/'exit.json']
+    assert info['fit_sha256']==audit['fit_sha256']==receipt['fit_sha256']==fit_hash
+    assert audit['status']=='passed' and receipt['status']=='complete'
+    assert audit['information_sha256']==sha(information/'information.json')
+    assert audit['matrix_sha256']==receipt['information_matrix_sha256']==sha(information/'information_matrices.npz')
+    assert receipt['information_audit_sha256']==sha(auditor/'audit.json')
+    assert receipt['fixed_active_coordinates']==info['active_coordinates']
+    matrices=np.load(information/'information_matrices.npz');basis=matrices['active_face_basis']
+    small=basis.T@matrices['observed_Hessian']@basis
+    minimum=float(np.linalg.eigvalsh((small+small.T)/2)[0]);assert minimum>0
+    for variant in used:
+        count=int(variant.rsplit('_',1)[1]);metadata=variants[variant][0]['parameter_draws']
+        path=Path(metadata['path']);assert path.resolve()==(draws/('parameter_draws_'+str(count)+'.npz')).resolve()
+        assert receipt['parameter_files_sha256'][path.name]==metadata['sha256']==sha(path)
+        data=np.load(path,allow_pickle=False)
+        assert str(data['fit_sha256'])==fit_hash and data['points'].shape==(count,len(info['point']))
+        paths.append(path)
+    return {'source_bindings_sha256':{str(p):sha(p) for p in paths},
+        'minimum_recomputed_active_face_eigenvalue':minimum,
+        'notice':'Covariance/draw provenance and positive curvature verified; the local selected-basin approximation still excludes released-bound, initialization and model-selection uncertainty.'}
+
+
 def aggregate_groups(rows,expected,record_names,partial=False):
     group_rows=[]
     for candidate,kind in [('primary','leave_run_out'),('primary','leave_protocol_out'),('shared','leave_protocol_out')]:
@@ -116,6 +147,7 @@ def main():
                 metadata,arrays,source=prediction(entry['predictions'][name],sha(fitpath),names)
                 assert bool(metadata.get('reference_transport_sensitivity',False))==(name=='reference_transport')
                 variants[name]=(metadata,arrays);sources.append(dict(source,variant=name))
+            chain=parameter_chain(entry,sha(fitpath),variants)
             assert 'noise' in variants,'Noise-only forecast not audited'
             if not args.allow_partial:
                 assert required<=set(variants),'Declared parameter/reference sensitivities missing'
@@ -167,7 +199,7 @@ def main():
                 'Ux_over_CH_per_s':parameters['Ux_over_Ua_nominal']/ta,
                 'sensor_time_s':parameters['rS_s'],'input_lag_s':parameters['input_lag_s']}
             row['reference_notice']='Each training subset defines its own centered geometric Ua nominal. Compare invariant rates and predictions rather than raw nominal coordinates alone.'
-            rows.append(row);bindings.append(dict(identity,predictions=sources))
+            rows.append(row);bindings.append(dict(identity,predictions=sources,parameter_chain=chain))
         except Exception as exc:
             if not args.allow_partial:raise
             rows.append(dict(identity,status='not_ready',exception=repr(exc)));missing.append(key)
