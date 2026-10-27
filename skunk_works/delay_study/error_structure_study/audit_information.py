@@ -111,13 +111,21 @@ def main():
                 value+=f['nll'];cursor+=n
         cache[loading_step]=value;return value
     f0=forward_nll(0.);loading_checks=[]
-    # The saved scalar step study resolves cancellation at tiny steps and
-    # truncation bias at 0.05. Use its two stable smaller stencils, without
-    # relaxing the original 0.001 absolute curvature agreement gate.
-    for step in [.005,.02]:
-        curvature=(2*f0-5*forward_nll(step)+4*forward_nll(2*step)-forward_nll(3*step))/step**2
+    # The refined-loading convergence study shows second-order forward
+    # truncation at interior points. Use the verified fourth-order centered
+    # stencil when its complete support lies inside the original bounds.
+    # Near a bound retain the original small-curvature one-sided checks.
+    # Neither choice changes the 0.001 absolute agreement gate.
+    interior=p[2]-.04>=bounds[2,0] and p[2]+.04<=bounds[2,1]
+    steps=[.01,.02] if interior else [.005,.02]
+    stencil='centered fourth order' if interior else 'forward second order'
+    for step in steps:
+        if interior:
+            curvature=(-forward_nll(2*step)+16*forward_nll(step)-30*f0+16*forward_nll(-step)-forward_nll(-2*step))/(12*step**2)
+        else:
+            curvature=(2*f0-5*forward_nll(step)+4*forward_nll(2*step)-forward_nll(3*step))/step**2
         error=float(abs(curvature-H[2,2]));assert error<.001,(step,curvature,H[2,2],error)
-        loading_checks.append({'step':step,'scalar_one_sided_curvature':float(curvature),'stored_H22':float(H[2,2]),'absolute_error':error})
+        loading_checks.append({'step':step,'stencil':stencil,'scalar_curvature':float(curvature),'stored_H22':float(H[2,2]),'absolute_error':error})
     # Nonpositive observed curvature cannot generate a local-normal covariance.
     # Retain the independent checks rather than failing with only a Cholesky
     # exception or changing the fitted active set to force positive curvature.

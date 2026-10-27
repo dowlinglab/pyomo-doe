@@ -195,3 +195,13 @@ The shared-model protocol120 fold independently fails positive curvature in
 the same weak loading direction. The existing four-seed, two-branch objective-only
 refinement policy applies to that fold too, with its own original fit/audit and
 failed information bindings. It does not change the held-out records or criterion.
+
+The five-step refined120 convergence study is terminal, exit0. Forward
+curvature errors0.6199,0.1516,0.0375,0.00598,0.00152 shrink quadratically;
+fourth-order centered errors remain1.2e-5--2.2e-5 across .02 through .001.
+The correction therefore uses centered fourth-order scalar differences at
+.01 and .02 only if both +/-0.04 lie within the original loading bounds.
+Near a bound it keeps the original .005/.02 forward stencils. Selection uses
+feasible stencil support, never positivity or passing error. The .001 absolute
+gate, stored Hessian, fitted point and all other checks remain unchanged.
+A fresh full information audit must pass before any draw is accepted.
