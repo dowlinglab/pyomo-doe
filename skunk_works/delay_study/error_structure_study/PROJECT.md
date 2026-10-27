@@ -521,3 +521,12 @@ preserved as process_check_truncated_031020.json. A complete direct snapshot
 with strict numeric-PID line validation corrects it; no process was restarted
 or declared stopped from the truncated output. Future captures must reject
 truncation/invalid lines before reconciliation.
+
+Primary refined120 information passed the corrected independent audit. All
+256 local draws,64/256 forecasts and both independent forecast audits passed;
+all twelve new canonical/stress/parameter images were inspected. The preferred
+index now uses that objective-selected fit and preserves its old entry. Old
+all20 canonical aggregate/report tables remain frozen original-fit comparisons;
+regenerate final groups. Eight full transfer components are indexed. The
+released slot now runs shared120's declared additional loading seeds80110.
+Startup and both run queues continue. Next released slot advances shared300/step.
